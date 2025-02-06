@@ -159,4 +159,22 @@ class Year implements JsonSerializable {
 		return $events;
 		// return $rows;
 	}
+	
+	//////////////////////////////////////////////////
+   // user actions
+		// takes us to the Items page, displaying all items
+	static function showYear($input) {
+			// we already have a variable called $year
+		$yearsEvents = new Year(null, new DateTime());
+		ob_start();
+		include 'view/addOrdersDiv.php';
+		include 'view/yearDiv.php';
+		include 'view/year.php';
+		$htmlContent = ob_get_clean(); // Get the buffered content as a string
+		
+		echo json_encode([
+			'html' => $htmlContent,
+			'data' => [	'year' => $yearsEvents ]
+		]);
+	}
 }

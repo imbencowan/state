@@ -98,5 +98,35 @@ class Item implements JsonSerializable {
       }
       return $items;
    }
+	
+	//////////////////////////////////////////////////
+   // user actions
+		// takes us to the Items page, displaying all items
+	static function showItems($data) {
+		$yearsEvents = new Year(null, new DateTime());
+		ob_start();
+		$items = Item::getAllItems();
+		$districts = District::getAllDistricts();
+		$divisions = Division::getAllDivisions();
+		$employees = Employee::getAllEmployees();
+		$sites = Site::getAllSites();
+		$sports = Sport::getAllSports();
+		$vehicles = Vehicle::getAllVehicles();
+		include 'view/addOrdersDiv.php';
+		include 'view/yearDiv.php';
+		include 'view/items.php';
+		$htmlContent = ob_get_clean(); // Get the buffered content as a string
+		
+		echo json_encode([
+			'html' => $htmlContent,
+			'data' => [	'items' => $items,
+							'districts' => $districts,
+							'divisions' => $divisions,
+							'employees' => $employees,
+							'sites' => $sites,
+							'sports' => $sports,
+							'vehicles' => $vehicles ]
+		]);
+	}
 }
 ?>

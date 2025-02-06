@@ -26,14 +26,9 @@
 	<!-- nav list built in js to attach click listeners -->
 
 </ul></nav>
-<nav id="nav2">
-	<ul>
-		<li onclick="showYear()">Year</li>
-		<li onclick="showSchools()">Schools</li>
-		<li onclick="showItems()">Items</li>
-		<li onclick="showTests()">Tests</li>
-	</ul>
-</nav>
+<nav id="nav2"><ul id="nav2List">
+		<!-- nav list built in js to attach click listeners -->
+</ul></nav>
 <section id="display">
 <span class="material-icons">more_horiz</span>
 <span class="material-icons">add</span>

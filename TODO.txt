@@ -6,6 +6,10 @@ IMMEDIATE NEXT
 				leave the old data as is
 					create a new page to test displaying the data from the new tables.
 						if every thing works properly, delete the old.
+						
+	make a show() function in the js to cut down on repeat functions
+	
+	make a renderer class to cut down on repeat code for displaying views
 	
 		// later tater
 	allow manual entry of an order from a sport page

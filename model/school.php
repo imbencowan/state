@@ -149,5 +149,22 @@ class School implements JsonSerializable {
 		}
 		return $results;
    }
+	
+	//////////////////////////////////////////////////
+   // user actions
+		// takes us to the Schools page, displaying all schools
+	static function showSchools($input) {
+		$schools = School::getAllSchools();
+		ob_start();
+		include 'view/addOrdersDiv.php';
+		include 'view/yearDiv.php';
+		include 'view/schools.php';
+		$htmlContent = ob_get_clean(); // Get the buffered content as a string
+		
+		echo json_encode([
+			'html' => $htmlContent,
+			'data' => $schools
+		]);
+	}
 }
 ?>

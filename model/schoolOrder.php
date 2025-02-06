@@ -459,7 +459,34 @@ class SchoolOrder implements JsonSerializable {
 		return $results;
 	}
 	
-	public static function changeOrderDone($id, $isDone) {
+		// we moved this to a user action function
+	// public static function changeOrderDone($id, $isDone) {
+		// $db = Database::getDB();
+		
+		// $query = 'UPDATE schoolOrders
+					// SET isDone = :isDone
+					// WHERE schoolOrderID = :orderID';
+		// $statement = $db->prepare($query);
+		// $statement->bindValue(":orderID", $id);
+		// $statement->bindValue(":isDone", $isDone);
+		// $statement->execute();
+		// $id = $statement->fetchColumn();
+		// $statement->closeCursor();
+		
+		// if (!empty($id)) {
+			// return $id;
+		// } else {
+			// return false;
+		// }
+	// }
+	
+	//////////////////////////////////////////////////
+   // user actions
+		// takes us to the Items page, displaying all items
+	static function changeOrderDone($data) {
+		$id = $data['id'];
+		$isDone = $data['isDone'];
+		
 		$db = Database::getDB();
 		
 		$query = 'UPDATE schoolOrders
@@ -472,11 +499,15 @@ class SchoolOrder implements JsonSerializable {
 		$id = $statement->fetchColumn();
 		$statement->closeCursor();
 		
-		if (!empty($id)) {
-			return $id;
-		} else {
-			return false;
-		}
+			// i think this is working with out this. it was part of the db function that was reworked here.
+		// if (!empty($id)) {
+			// return $id;
+		// } else {
+			// return false;
+		// }
+			// this isn't returning any thing meaningful, but may be some day i'll want to
+				// some thing is expected back, even if it isn't used
+		echo json_encode(['result' => 1]);
 	}
 }
 ?>

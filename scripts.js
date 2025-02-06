@@ -81,7 +81,7 @@ const currentYear = 24;
 
 	// this list is used to match sizes when reading the email string
 		// '2XL' or 'XXL'? '3XL' or 'XXXL'?
-const sizeList = ['S', 'M', 'L', 'XL', '2XL', '3XL'];
+const sizeList = ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'];
 
 
 	// this list is used to build the nav bar.
@@ -116,6 +116,7 @@ let closeBtn;
 function init() {
 		// build the nav bar i guess
 	buildNavList();
+	buildNavList2();
 	
 		// Get modal elements
 	modal = document.getElementById("myModal");
@@ -134,6 +135,26 @@ function buildNavList() {
 		newLI.innerHTML = sport[0];
 			// add a listener to load the appropriate content when clicked
 		newLI.addEventListener('click', function(){ goToSportPage(sport); });
+			// add it to the page
+		navList.appendChild(newLI);
+	});
+}
+
+const nav2Items = [];
+nav2Items.push(['Year', 'showYear', 'Year', null]);
+nav2Items.push(['Schools', 'showSchools', 'School', null]);
+nav2Items.push(['Items', 'showItems', 'Item', null]);
+nav2Items.push(['Tests', 'showTests', 'Test', null]);
+
+function buildNavList2() {
+		// get the nav bar
+	let navList = document.getElementById("nav2List");
+	nav2Items.forEach((item) => {
+			// create the element
+		let newLI = document.createElement("li");
+		newLI.innerHTML = item[0];
+			// add a listener to load the appropriate content when clicked
+		newLI.addEventListener('click', function(){ showPage(item[1], item[2], item[3]); });
 			// add it to the page
 		navList.appendChild(newLI);
 	});
@@ -167,7 +188,9 @@ async function goToSportPage(sport) {
 		year = document.getElementById("selectYear").value;
 	}
 	let sportID = sport[1];
-	let request = new SportPageRequest(sportID, year);
+	// let request = new SportPageRequest(sportID, year);
+	const data = {'sportID': sportID, 'year': year}
+	let request = new ActionRequest('showSport', 'Sport', data)
 
 	let responseJSON = await myFetch(request);
 	stateData = responseJSON.data;
@@ -303,14 +326,16 @@ function getSizes(inputString) {
 
 	// marks an order as complete
 async function changeOrderDone(id) {
-	let checked = document.getElementById('check' + id).checked;
+	let isDone = document.getElementById('check' + id).checked;
 	let row = document.getElementById('row' + id);
 	
-	let request = new ChangeDoneRequest(id, checked);
+	// let request = new ChangeDoneRequest(id, isDone);
+	const data = {'id': id, 'isDone': isDone};
+	let request = new ActionRequest('changeOrderDone', 'schoolOrder', data);
 	let responseJSON = await myFetch(request);
 	
 	if (responseJSON) {
-		if (checked) {
+		if (isDone) {
 			row.classList.remove("unDoneRow");
 			row.classList.add("doneRow");
 		} else {
@@ -337,98 +362,24 @@ async function showTable(item) {
 			item = "colors";
 		}
 	}
-	// const request = {
-		// action: 'showTable',
-		// table: item,
-		// year: year
-	// };
 	const data = {'table': item, 'year': year}
-	const request = new ActionRequest('showTable', 'Test', data);
-	console.log(request);
-	let responseJSON = await myFetch(request);
-	document.getElementById("display").innerHTML = responseJSON.html;
+	showPage('showTable', 'Test', data);
 }
 
-async function showEvents() {
+async function showPage(action, actionClass, data) {
 	let year = currentYear;
 	if (document.getElementById("selectYear")) {
 		year = document.getElementById("selectYear").value;
 	}
-	const request = {
-		action: 'showEvents',
-		year: year
-	};
-	let responseJSON = await myFetch(request);
-	document.getElementById("display").innerHTML = responseJSON.html;
-}
-
-async function showSchools() {
-	let year = currentYear;
-	if (document.getElementById("selectYear")) {
-		year = document.getElementById("selectYear").value;
-	}
-	const request = {
-		action: 'showSchools',
-		year: year
-	};
+	const request = new ActionRequest(action, actionClass, data);
 	let responseJSON = await myFetch(request);
 	// console.log(responseJSON.data);
 	document.getElementById("display").innerHTML = responseJSON.html;
 }
 
-async function showOrders() {
-	let year = currentYear;
-	if (document.getElementById("selectYear")) {
-		year = document.getElementById("selectYear").value;
-	}
-	const request = {
-		action: 'showOrders',
-		year: year
-	};
-	let responseJSON = await myFetch(request);
-	// console.log(responseJSON.data);
-	document.getElementById("display").innerHTML = responseJSON.html;
-}
 
-async function showYear() {
-	let year = currentYear;
-	if (document.getElementById("selectYear")) {
-		year = document.getElementById("selectYear").value;
-	}
-	const request = {
-		action: 'showYear',
-		year: year
-	};
-	let responseJSON = await myFetch(request);
-	// console.log(responseJSON.data);
-	document.getElementById("display").innerHTML = responseJSON.html;
-}
-
-async function showItems() {
-	let year = currentYear;
-	if (document.getElementById("selectYear")) {
-		year = document.getElementById("selectYear").value;
-	}
-	const request = {
-		action: 'showItems',
-		year: year
-	};
-	let responseJSON = await myFetch(request);
-	// console.log(responseJSON.data);
-	document.getElementById("display").innerHTML = responseJSON.html;
-}
-
-async function showTests() {
-	let year = currentYear;
-	if (document.getElementById("selectYear")) {
-		year = document.getElementById("selectYear").value;
-	}
-	const request = new ActionRequest('showTests', 'Test');
-	let responseJSON = await myFetch(request);
-	// console.log(responseJSON.data);
-	document.getElementById("display").innerHTML = responseJSON.html;
-}
-
+	//////////////////////////////////////////////////////////////////////
+	// js functions
 function showOMessage(mText) {
   openModal(mText);
   // console.log(mText);

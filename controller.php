@@ -44,34 +44,12 @@
 			}
 		}
 	}
+		// file was 370 lines before refactoring
 	
 	
 	
 	/////////////////////////////////////////////////////////////////////////////
 	// action functions 
-	
-	function showSport($input) {
-			// we might be able to take the $year assignment out, but i can't test that right now
-		$year = $input['year'];
-		$sportID = $input['sportID'];
-		
-		$event = Event::getEventOrdersBySportIDAndYear($sportID, $year);
-		
-		
-			// output has to be placed between ob_start() and ob_get_clean() as below
-		ob_start(); 
-		// var_dump($event, $sportID, $year);
-		include 'view/addOrdersDiv.php';
-		include 'view/yearDiv.php';
-		include 'view/sport.php';
-			// Get the buffered content as a string
-		$htmlContent = ob_get_clean(); 
-		
-		echo json_encode([
-			'html' => $htmlContent,
-			'data' => $event
-		]);
-	}
 		
 		// i don't know if all or some of this should be a function of a model class (ie going through
 			// the SchoolOrder class), or just left here. 
@@ -199,13 +177,6 @@
 		]);
 	}
 	
-	function changeOrderDone($input) {
-		SchoolOrder::changeOrderDone($input['orderID'], $input['isDone']);
-			// this isn't returning any thing meaningful, but may be some day i'll want to
-				// some thing is expected back, even if it isn't used
-		echo json_encode(['result' => 1]);
-	}
-	
 	function updateAddOns($input) {
 		SchoolOrder::updateAddOns($input['schoolOrderID'], $input['sizes']);
 		echo json_encode(['result' => 1]);
@@ -215,159 +186,4 @@
 		SchoolOrder::updateSizes($input['schoolOrderID'], $input['teamSizes'], $input['addOnSizes']);
 		echo json_encode(['result' => 1]);
 	}
-	
-		// will display a given table from the database with all it's columns
-	function showTable($input) {
-		$table = $input['table'];
-		$items = Database::getTable($table);
-		
-		ob_start();
-		if (!empty($items)) {
-				// Retrieve property names. just use the first item, any will work
-			$propertyNames = array_keys(get_object_vars($items[0]));
-		} else {
-			echo "No results found.";
-		}
-		include 'view/yearDiv.php';
-		include 'view/table.php';
-			// Get the buffered content as a string
-		$htmlContent = ob_get_clean();
-		
-		echo json_encode([
-			'html' => $htmlContent,
-			'data' => $items
-		]);
-	}
-	
-	function showEvents($input) {
-		$year = $input['year'];
-		$events = Event::getEventsByYear($year);
-		ob_start();
-		include 'view/addOrdersDiv.php';
-		include 'view/yearDiv.php';
-		include 'view/events.php';
-		$htmlContent = ob_get_clean(); // Get the buffered content as a string
-		
-		echo json_encode([
-			'html' => $htmlContent,
-			'data' => $events
-		]);
-	}
-	
-	function showSchools($input) {
-		$schools = School::getAllSchools();
-		ob_start();
-		include 'view/addOrdersDiv.php';
-		include 'view/yearDiv.php';
-		include 'view/schools.php';
-		$htmlContent = ob_get_clean(); // Get the buffered content as a string
-		
-		echo json_encode([
-			'html' => $htmlContent,
-			'data' => $schools
-		]);
-	}
-	
-	function showYear($input) {
-			// we already have a variable called $year
-		$yearsEvents = new Year(null, new DateTime());
-		ob_start();
-		include 'view/addOrdersDiv.php';
-		include 'view/yearDiv.php';
-		include 'view/year.php';
-		$htmlContent = ob_get_clean(); // Get the buffered content as a string
-		
-		echo json_encode([
-			'html' => $htmlContent,
-			'data' => [	'year' => $yearsEvents ]
-		]);
-	}
-	
-	function showItems($input) {
-		$yearsEvents = new Year(null, new DateTime());
-		ob_start();
-		$items = Item::getAllItems();
-		$districts = District::getAllDistricts();
-		$divisions = Division::getAllDivisions();
-		$employees = Employee::getAllEmployees();
-		$sites = Site::getAllSites();
-		$sports = Sport::getAllSports();
-		$vehicles = Vehicle::getAllVehicles();
-		include 'view/addOrdersDiv.php';
-		include 'view/yearDiv.php';
-		include 'view/items.php';
-		$htmlContent = ob_get_clean(); // Get the buffered content as a string
-		
-		echo json_encode([
-			'html' => $htmlContent,
-			'data' => [	'items' => $items,
-							'districts' => $districts,
-							'divisions' => $divisions,
-							'employees' => $employees,
-							'sites' => $sites,
-							'sports' => $sports,
-							'vehicles' => $vehicles ]
-		]);
-	}
-		
-		// // takes us to Tests page. who knows what it holds now
-	// function showTests() {
-		// ob_start();
-		// include 'view/tests.php';
-		// $htmlContent = ob_get_clean(); // Get the buffered content as a string
-		
-		// echo json_encode([
-			// 'html' => $htmlContent,
-			// // 'data' => [	'year' => $ ]
-		// ]);
-	// }
-	
-	
-	
-	// function showOrders($input) {
-		// $year = $input['year'];
-		// $schoolOrders = SchoolOrder::getAllOrders();
-		// ob_start();
-		// include 'view/addOrdersDiv.php';
-		// include 'view/yearDiv.php';
-		// include 'view/orders.php';
-			// // Get the buffered content as a string
-		// $htmlContent = ob_get_clean(); 
-		
-		// echo json_encode([
-			// 'html' => $htmlContent,
-			// 'data' => $schoolOrders
-		// ]);
-	// }
-	
-	
-	
-	
-		// here's a test action to check that some thing is happening
-			// it logs (some thing) to the database, since some times it can be a little opaque what happens server side
-	// function test($input) {
-		// $cTime = date('H:i:s');
-		// $txt = 'test time ' . $cTime;
-		// $db = Database::getDB();
-
-		// $query = 'INSERT INTO tests (testText) 
-					// VALUES (:testText)';
-		// $statement = $db->prepare($query);
-		// $statement->bindValue(":testText", $txt);
-		// $statement->execute();
-		// $addedID = $db->lastInsertID();
-		// $statement->closeCursor();
-		// // return $addedID;
-		
-		// ob_start(); // Start output buffering
-		// include 'view/testSuccessful.php'; // Include the PHP template
-		// $htmlContent = ob_get_clean(); // Get the buffered content as a string
-		
-		
-		// echo json_encode([
-			// 'html' => $htmlContent,
-			// 'data' => $txt,
-			// 'data2' => 'last row was ' . $addedID
-		// ]);
-	// }
 ?>

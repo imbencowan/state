@@ -152,5 +152,31 @@ class Sport implements JsonSerializable {
 		}
 		return $sports; // Return an array of Sport objects
 	}
+	
+	//////////////////////////////////////////////////
+   // user actions
+		// takes us to the Items page, displaying all items
+	static function showSport($data) {
+			// output has to be placed between ob_start() and ob_get_clean() as below
+		ob_start(); 
+			// we might be able to take the $year assignment out, but i can't test that right now
+		$year = $data['year'];
+		$sportID = $data['sportID'];
+		
+		$event = Event::getEventOrdersBySportIDAndYear($sportID, $year);
+		
+		
+		// var_dump($event, $sportID, $year);
+		include 'view/addOrdersDiv.php';
+		include 'view/yearDiv.php';
+		include 'view/sport.php';
+			// Get the buffered content as a string
+		$htmlContent = ob_get_clean(); 
+		
+		echo json_encode([
+			'html' => $htmlContent,
+			'data' => $event
+		]);
+	}
 }
 ?>
