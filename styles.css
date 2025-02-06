@@ -1,0 +1,302 @@
+body {
+	background: fixed linear-gradient(67deg, #2a2a2a, #080808);
+	color: #fff;
+	font-family: Grown, serif; 
+}
+
+main {
+	width: 100%;
+}
+
+header {
+	font-size: 250%;
+		/* this was causing the header to overflow and i didn't want to take the time to work it out */
+	/* transform: scale(2,1); */
+}
+
+#stateNav {
+	margin: 0;
+	background-color: #88b;
+}
+
+#stateNav ul {
+	display: flex;
+	flex-wrap: wrap;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#stateNav ul li {
+	display: inline-block;
+	flex: auto;
+	vertical-align: middle;
+	text-align: center;
+	margin: 0;
+	padding: 5px;
+	border: 1px solid black;
+}
+
+#stateNav ul li a:visited {
+	color: white;
+}
+
+#nav2 {
+	margin: 0;
+	background-color: #dce;
+}
+
+#nav2 ul {
+	display: flex;
+	flex-wrap: wrap;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#nav2 ul li {
+	display: inline-block;
+	flex: auto;
+	vertical-align: middle;
+	text-align: center;
+	margin: 0;
+	padding: 5px;
+	color: black;
+	border: 1px solid black;
+}
+
+#nav2 ul li a:visited {
+	color: black;
+}
+
+#yearDiv {
+	float: right;
+	display: inline-block;
+	text-align: right;
+	font-size: 115%;
+	margin-right: 35px;	
+}
+
+#addOrdersDiv {
+	float: right;
+	display: inline-block;
+}
+
+section {
+	/* width: 100%; */
+	background: #116;
+	border-radius: 8px;
+	padding: 16px;
+}
+
+.eventsSection h3 {
+	display: inline-block;
+}
+
+.inlineHeader {
+	font-weight: bold;
+	font-size: 200%;
+	margin-right: 18px;
+}
+
+.defaultTable th {
+	text-align: left;
+}
+
+.table-container {
+    overflow-x: auto; /* Allows horizontal scrolling */
+    width: 100%;      /* Container takes full width */
+}
+
+table {
+    width: 100%;      /* Table takes full width of container */
+    border-collapse: collapse;
+}
+
+
+.orderTable {
+	table-layout: fixed;
+	width: 100%;
+	min-width: 900px;
+	border: 2px solid black;
+	color: black;
+	background-color: white;	
+}
+
+.orderTable thead { 
+	background-color: white;
+	position: sticky; 
+	top: 0; 
+	font-size: 115%;
+}
+
+.orderTable thead th {
+	padding: 2px 8px;
+}
+
+/* Allow the first and last columns to adjust automatically */
+.orderTable th:first-child, 
+.orderTable td:first-child {
+	width: auto;
+	min-width: 100px;
+	text-align: left;
+}
+
+.orderTable th:last-child, 
+.orderTable td:last-child {
+	width: auto;
+	text-align: center;
+}
+
+/* Target the 2nd through 7th columns (the middle 7 columns) */
+.orderTable th:nth-child(n+2):nth-child(-n+7),
+.orderTable td:nth-child(n+2):nth-child(-n+7) {
+    width: 5.5%;
+	 min-width: 100px;
+	 text-align: right;
+}
+
+/* Make the 8th column a little larger than the others */
+.orderTable th:nth-child(8),
+.orderTable td:nth-child(8) {
+    width: 10%;
+	 text-align: right;
+}
+
+.orderTable td input {
+	margin: 4px;
+	box-sizing: border-box;
+}
+
+.doneRow {
+	background-color: #ddf;
+}
+
+.unDoneRow {
+	background-color: #fdd;
+}
+
+.partDoneRow {
+	background-color: #ecf;
+}
+
+.addOnRow {
+	color: #777;
+	font-size: 92%;
+}
+
+.addOnRow td:first-child {
+    padding-left: 30px;
+}
+
+.eventsTable tr {
+	border-bottom: 1px solid black;
+}
+
+.eventsTable th {
+	text-align: left;
+	font-size: 120%;
+	font-weight: bold;
+}
+
+.eventsTable td {
+	padding: 10px;
+	font-size: 90%;
+}
+
+.darkOrangeRow {
+	background: #840;
+}
+
+.darkGreenRow {
+	background: #152;
+}
+
+.addedOrdersTable td {
+	color: black;
+}
+
+/* Target the last 6 */
+.addedOrdersTable th:nth-child(n+5):nth-child(-n+10),
+.addedOrdersTable td:nth-child(n+5):nth-child(-n+10) {
+	 text-align: right;
+}
+
+.tdWithInput {
+	padding: 4px;
+}
+
+.tdWithInput input {
+	width: 100%;
+	min-width: 0;
+}
+
+.addOnSubmitButton {
+	font-size: 75%;
+}
+
+.right {
+	text-align: right;
+}
+
+.hidden {
+	display: none;
+}
+
+#sportPage h1 {
+	font-size: 170%;
+	text-decoration: underline;
+}
+
+.clickable:hover {
+	cursor: pointer;
+}
+
+/* The Modal (background) */
+.modal {
+	display: none; /* Hidden by default */
+	position: fixed;
+	z-index: 1000; /* Ensure it appears above other elements */
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+}
+
+/* Modal stuff **********************************************************************************/
+/* Modal Content */
+.modal-content {
+	background-color: white;
+	color: black;
+	font-size: 70%;
+	white-space: pre-line; /* Collapses extra spaces but respects \n */
+	margin: 15% auto; /* Center the modal */
+	padding: 20px;
+	border: 1px solid #888;
+	width: 80%; /* Adjust as needed */
+	max-width: 500px; /* Optional max width */
+	border-radius: 8px;
+}
+
+/* Close Button */
+.close {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.genPDFButton {
+	margin-left: 30px;
+	font-size: 66%;
+}

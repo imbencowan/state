@@ -1,0 +1,63 @@
+IMMEDIATE NEXT
+		// i suppose it's time to actually do this one so that we can actually do the pdf generation
+	rework how sweatshirts are stored in the db to accomodate crews, +sizes, etc
+		this will involve a secondary table
+			migrate the existing data to the new tables. 
+				leave the old data as is
+					create a new page to test displaying the data from the new tables.
+						if every thing works properly, delete the old.
+	
+		// later tater
+	allow manual entry of an order from a sport page
+	
+	
+	
+
+what the state app does:
+	ADDS new orders by uploading files sent as email attachments
+	allows EDITing order quantities, including add ons
+	VIEWS orders by sport and division, split by gender as appropriate
+	MARKS orders complete
+	
+
+
+what does this state app need to do:
+	VIEW the next event on load
+	PRINT data from orders. signature sheets for individual sites, original .txt files, box labels
+	PRINT totals for a sport
+	
+	
+/////
+TODO:
+/////
+	
+	autogenerate:
+		box labels
+		pick up sheets
+		totals for Nancy
+		invoice emails for add ons
+		
+	view/year works, but we'll want to go back some day, and change the db to support multiple vehicles and managers
+		for an eventSite. also naming divisions by boys/girls for soccer
+	and the ability to edit from the year view
+		
+	fix multi upload on live site
+	
+	i'd like to be able to upload the qualifiers, and compare orders against it
+		also track which schools we're still missing
+	i'd like to be able to upload the year's schedule
+	
+	i'd like to have the sports page say how many more shirts we need total for incomplete orders
+	
+	we can handle fall/spring golf by just having a separate Event for each, and having them reference the same Sport
+		we can worry about how to select (not just by sport and year) in the future. i suppose if we get two, 
+			which should only happen for golf, we can include specific logic for that
+	
+
+///////////////////////////////////
+TEST
+	what happens when we try to add a school that is not yet in the DB. or a division. 
+	
+
+
+
