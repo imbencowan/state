@@ -685,7 +685,7 @@ async function getAllItems() {
 	console.log(request);
 	console.log(responseJSON);
 	let responseClass = responseJSON.data.className;
-	openModal(JSON.stringify(responseJSON));
+	openModal(JSON.stringify(responseJSON, null, 2));
 }
 
 async function addAnItem() {
@@ -702,14 +702,14 @@ async function addAnItem() {
 }
 
 async function deleteAnItem() {
-	// let table = document.getElementById('selectTable').value;
-		// // remove the 's'
-	// let className = table.slice(0, -1);
-	// let id = document.getElementById('getByNameSelect').value;
-	// const data = {'className': className, 'id': id };
-	// let request = new ActionRequest('getItemByID', 'Test', data);
-	// let responseJSON = await myFetch(request);
-	// console.log(request);
-	// console.log(responseJSON);
-	// openModal(JSON.stringify(responseJSON));
+	let table = document.getElementById('selectTable').value;
+		// remove the 's'
+	let className = table.slice(0, -1);
+	let id = document.getElementById('deleteByNameSelect').value;
+	const data = {'className': className, 'id': id };
+	let request = new ActionRequest('deleteItem', 'Test', data);
+	let responseJSON = await myFetch(request);
+	console.log(request);
+	console.log(responseJSON);
+	openModal(JSON.stringify(responseJSON));
 }

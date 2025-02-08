@@ -38,6 +38,12 @@ class Test implements JsonSerializable {
 		ob_start();
 		$table = 'Colors';
 		$colors = Color::getAllFromDB();
+		$districts = District::getAllFromDB();
+		$employees = Employee::getAllFromDB();
+		$sites = Site::getAllFromDB();
+		$sizes = Size::getAllFromDB();
+		$styles = Style::getAllFromDB();
+		$vehicles = Vehicle::getAllFromDB();
 		$items = Database::getTable($table);
 		if (!empty($items)) {
 				// Retrieve property names. just use the first item, any will work
@@ -51,7 +57,8 @@ class Test implements JsonSerializable {
 		
 		echo json_encode([
 			'html' => $htmlContent,
-			// 'data' => [	'year' => $ ]
+			'data' => [	'colors' => $colors, 'districts' => $districts, 'employees' => $employees,
+							'sites' => $sites, 'sizes' => $sizes, 'styles' => $styles, 'vehicles' => $vehicles ]
 		]);
 	}
 	
@@ -107,8 +114,11 @@ class Test implements JsonSerializable {
 	}
 	
 	static function deleteItem($data) {
+		$class = $data['className'];
+		$action = 'deleteByID';
+		$newID = call_user_func([$class, $action], $data['id']);
 		$html = "The Test::deleteItem() function was called";
-		echo json_encode(['html' => $html]);
+		echo json_encode(['deletedID' => $data['id']]);
 	}
 }
 ?>

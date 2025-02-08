@@ -1,18 +1,17 @@
 <?php
-class Site extends BasicTableModel {
+class Size extends BasicTableModel {
 		// these give the table and column names to be used else where in the class
-   protected static function getTableName(): string { return 'sites'; }
+   protected static function getTableName(): string { return 'sizes'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
-		return ['id' => 'siteID', 
-					'name' => 'siteName', 
-					'city' => 'siteCity']; 
+		return ['id' => 'sizeID', 
+					'name' => 'sizeName', 
+					'abbrName' => 'sizeChars']; 
 	}
 	
 	public function __construct(
       public readonly int $id,
       public readonly ?string $name,
-      public readonly ?string $city
+      public readonly ?string $abbrName
    ) {}
 }
-?>

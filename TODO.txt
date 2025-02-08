@@ -1,4 +1,7 @@
 IMMEDIATE NEXT
+
+	i would like to be able to test the new BasicTable class: get(), add(), delete()
+		
 		// i suppose it's time to actually do this one so that we can actually do the pdf generation
 	rework how sweatshirts are stored in the db to accomodate crews, +sizes, etc
 		this will involve a secondary table

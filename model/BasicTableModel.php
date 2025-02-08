@@ -97,9 +97,10 @@ abstract class BasicTableModel implements JsonSerializable {
 	
 	public static function deleteByID(int $id): bool {
 		$db = Database::getDB();
-		$query = "DELETE FROM " . static::getTableName() . " WHERE id = :id";
+		$idCol = static::getColumns()['id'];
+		$query = "DELETE FROM " . static::getTableName() . " WHERE $idCol = :id";
 		$statement = $db->prepare($query);
-		$statement->bindValue(':id', $id);
+		$statement->bindValue(':id', $id, PDO::PARAM_INT);
 		$statement->execute();
 		$affectedRows = $statement->rowCount();
 		$statement->closeCursor();

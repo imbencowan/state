@@ -5,24 +5,19 @@
 <button onclick="testPDF()">Test Box Label</button>
 <br />
 
+<?php 
+	$db = Database::getDB();
+	$query = "SHOW TABLES";
+	$statement = $db->query($query);
+	$tables = $statement->fetchAll(PDO::FETCH_COLUMN);
+	$tables = array_filter($tables, fn($str) => strpos($str, 'has') === false);
+?>
+
 <label>Select a Table to interact with in the DB: </label>
 <select id="selectTable" onchange="changeSelectedTable(this)">
-	<option value="Colors">Colors</option>
-	<option value="Districts">Districts</option>
-	<option value="Divisions">Divisions</option>
-	<option value="Employees">Employees</option>
-	<option value="Events">Events</option>
-	<option value="Genders">Genders</option>
-	<option value="InventoryItems">Inventory Items</option>
-	<option value="MessageOrders">Message Orders</option>
-	<option value="SchoolOrders">School Orders</option>
-	<option value="Schools">Schools</option>
-	<option value="Sites">Sites</option>
-	<option value="Sizes">Sizes</option>
-	<option value="Sports">Sports</option>
-	<option value="Styles">Styles</option>
-	<option value="Vehicles">Vehicles</option>
-	<option value="Tests">Tests</option>
+	<?php foreach ($tables as $table) : ?>
+		<option value="<?= $table ?>"><?= $table ?></option>
+	<?php endforeach; ?>
 </select>
 <br />
 

@@ -69,6 +69,7 @@
 				$sport = $order['sport'];
 					// gender should come in as the table's id value, because it's easy (just 1, 2, or 3)
 				$genderID = $order['gender'];
+					// it looks like i'm making gender a pair of properties in the order, rather than a gender object
 				$order['genderName'] = '';
 				if ($genderID == 1) {
 					$order['genderName'] = 'Boys ';
