@@ -81,11 +81,8 @@ class Site implements JsonSerializable {
       $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
       $statement->closeCursor();
 
-      $sites = [];
-      foreach ($rows as $row) {
-         $sites[] = self::buildFromRow($row);
-      }
-      return $sites;
+      	// returns an array of all sites built from $rows
+		return array_map([self::class, 'buildFromRow'], $rows);
    }
 }
 ?>

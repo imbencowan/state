@@ -84,6 +84,17 @@ class District implements JsonSerializable {
          $results[] = self::buildFromRow($row);
       }
       return $results;
+		
+		// $db = Database::getDB();
+
+      // $query = 'SELECT * FROM divisions';
+      // $statement = $db->prepare($query);
+      // $statement->execute();
+      // $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+      // $statement->closeCursor();
+
+      	// // returns an array of all divisions built from $rows
+		// return array_map([self::class, 'buildFromRow'], $rows);
    }
 }
 ?>

@@ -1,3 +1,4 @@
+<!--
 <label>This button shows the selected table from the DB</label>
 <select id="selectTable">
 	<option value="colors">Colors</option>
@@ -18,6 +19,7 @@
 	<option value="tests">Tests</option>
 </select>
 <button onclick="showTable()">Show Table</button><h2><?php echo $table; ?></h2>
+-->
 
 <?php if ($propertyNames) : ?>
 	<table class="defaultTable">

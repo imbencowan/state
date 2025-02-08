@@ -71,19 +71,17 @@ class Vehicle implements JsonSerializable {
 
 		// Get all Vehicles
    static function getAllVehicles() {
-       $db = Database::getDB();
+      $db = Database::getDB();
 
-       $query = 'SELECT * FROM vehicles';
-       $statement = $db->prepare($query);
-       $statement->execute();
-       $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
-       $statement->closeCursor();
+      $query = 'SELECT * FROM vehicles';
+      $statement = $db->prepare($query);
+      $statement->execute();
+      $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+      $statement->closeCursor();
 
-       $vehicles = [];
-       foreach ($rows as $row) {
-           $vehicles[] = self::buildFromRow($row);
-       }
-       return $vehicles;
+			// returns an array of all vehicles built from $rows
+		return array_map([self::class, 'buildFromRow'], $rows);
+
    }
 }
 ?>

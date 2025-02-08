@@ -1,13 +1,11 @@
 <?php
 class Item implements JsonSerializable {
-   private $id;
-   private $style;
-   private $size;
-   private $color;
-   private $price;
-   private $stock;
+   private int $id, $price, $stock;
+   private Style $style;
+   private Size $size;
+   private Color $color;
 
-   public function __construct($id, $style, $size, $color, $price, $stock = 0) {
+   public function __construct(int $id, Style $style, Size $size, Color $color, int $price, int $stock = 0) {
       $this->id = $id;
       $this->style = $style;
       $this->size = $size;
@@ -85,7 +83,12 @@ class Item implements JsonSerializable {
    static function getAllItems() {
       $db = Database::getDB();
 
-      $query = 'SELECT * FROM InventoryItems';
+      $query = 'SELECT * FROM InventoryItems
+					INNER JOIN Styles ON InventoryItems.styleID = Styles.styleID
+					INNER JOIN Sizes ON InventoryItems.sizeID = Sizes.sizeID
+					INNER JOIN Colors ON InventoryItems.colorID = Colors.colorID';
+					
+					// INNER JOIN sites ON eventSites.siteID = sites.siteID
       $statement = $db->prepare($query);
       $statement->execute();
       $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -125,7 +128,8 @@ class Item implements JsonSerializable {
 							'employees' => $employees,
 							'sites' => $sites,
 							'sports' => $sports,
-							'vehicles' => $vehicles ]
+							'vehicles' => $vehicles 
+						]
 		]);
 	}
 }

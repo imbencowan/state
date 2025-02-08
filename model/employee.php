@@ -96,11 +96,8 @@ class Employee implements JsonSerializable {
       $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
       $statement->closeCursor();
 
-      $employees = [];
-      foreach ($rows as $row) {
-         $employees[] = self::buildFromRow($row);
-      }
-      return $employees;
+			// returns an array of all vehicles built from $rows
+		return array_map([self::class, 'buildFromRow'], $rows);
    }
 }
 ?>

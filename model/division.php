@@ -104,11 +104,8 @@ class Division implements JsonSerializable {
       $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
       $statement->closeCursor();
 
-      $divisions = [];
-      foreach ($rows as $row) {
-         $divisions[] = self::buildFromRow($row);
-      }
-      return $divisions;
+      	// returns an array of all divisions built from $rows
+		return array_map([self::class, 'buildFromRow'], $rows);
    }
 }
 ?>

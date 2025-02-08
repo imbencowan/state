@@ -146,11 +146,8 @@ class Sport implements JsonSerializable {
 		$rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 		$statement->closeCursor();
 
-		$sports = [];
-		foreach ($rows as $row) {
-			$sports[] = self::buildFromRow($row);
-		}
-		return $sports; // Return an array of Sport objects
+			// returns an array of all sports built from $rows
+		return array_map([self::class, 'buildFromRow'], $rows);
 	}
 	
 	//////////////////////////////////////////////////

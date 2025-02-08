@@ -36,7 +36,17 @@ class Test implements JsonSerializable {
 		// takes us to Tests page. who knows what it holds now
 	static function showTests($data) {
 		ob_start();
+		$table = 'Colors';
+		$colors = Color::getAllFromDB();
+		$items = Database::getTable($table);
+		if (!empty($items)) {
+				// Retrieve property names. just use the first item, any will work
+			$propertyNames = array_keys(get_object_vars($items[0]));
+		} else {
+			echo "No results found.";
+		}
 		include 'view/tests.php';
+		include 'view/table.php';
 		$htmlContent = ob_get_clean(); // Get the buffered content as a string
 		
 		echo json_encode([
@@ -48,8 +58,8 @@ class Test implements JsonSerializable {
 	static function showTable($data) {
 		ob_start();
 		$table = $data['table'];
-		// self::logText($table);
 		$items = Database::getTable($table);
+		$colors = Color::getAllFromDB();
 		if (!empty($items)) {
 				// Retrieve property names. just use the first item, any will work
 			$propertyNames = array_keys(get_object_vars($items[0]));
@@ -57,14 +67,48 @@ class Test implements JsonSerializable {
 			echo "No results found.";
 		}
 		include 'view/yearDiv.php';
+		include 'view/tests.php';
 		include 'view/table.php';
 			// Get the buffered content as a string
 		$htmlContent = ob_get_clean();
 		
 		echo json_encode([
 			'html' => $htmlContent,
-			'data' => $items
+			'data' => $items,
+			'colors' => $colors
 		]);
+	}
+	
+	static function getItemByID($data) {
+		$class = $data['className'];
+		$action = 'getByID';
+		$id = $data['id'];
+		$item = call_user_func([$class, $action], $id);
+		// call_user_func([$class, $action], $data);
+		$html = "The Test::getItemsByID() function was called";
+		echo json_encode(['item' => $item, 'data' => $data]);
+	}
+	
+	static function getAllItems($data) {
+		$class = $data['className'];
+		$action = 'getAllFromDB';
+		$items = call_user_func([$class, $action]);
+		$html = "The Test::getAllItems() function was called";
+		echo json_encode(['data' => $data, 'items' => $items]);
+	}
+	
+	static function addItem($data) {
+		$class = $data['className'];
+		$action = 'addToDB';
+		$name = $data['name'];
+		$newID = call_user_func([$class, $action], $data);
+		$html = "The Test::addItem() function was called";
+		echo json_encode(['newID' => $newID]);
+	}
+	
+	static function deleteItem($data) {
+		$html = "The Test::deleteItem() function was called";
+		echo json_encode(['html' => $html]);
 	}
 }
 ?>

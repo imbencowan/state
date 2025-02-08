@@ -331,7 +331,7 @@ async function changeOrderDone(id) {
 	
 	// let request = new ChangeDoneRequest(id, isDone);
 	const data = {'id': id, 'isDone': isDone};
-	let request = new ActionRequest('changeOrderDone', 'schoolOrder', data);
+	let request = new ActionRequest('changeOrderDone', 'SchoolOrder', data);
 	let responseJSON = await myFetch(request);
 	
 	if (responseJSON) {
@@ -656,4 +656,60 @@ async function testFetch() {
 	} catch (error) {
 		console.error(error.message);
 	}
+}
+
+function changeSelectedTable(tableSelect) {
+	console.log('Selected ' + tableSelect.value);
+}
+
+async function getAnItem() {
+	let table = document.getElementById('selectTable').value;
+		// remove the 's'
+	let className = table.slice(0, -1);
+	let id = document.getElementById('getByNameSelect').value;
+	const data = {'className': className, 'id': id };
+	let request = new ActionRequest('getItemByID', 'Test', data);
+	let responseJSON = await myFetch(request);
+	console.log(request);
+	console.log(responseJSON);
+	openModal(JSON.stringify(responseJSON));
+}
+
+async function getAllItems() {
+	let table = document.getElementById('selectTable').value;
+		// remove the 's'
+	let className = table.slice(0, -1);
+	const data = {'className': className };
+	let request = new ActionRequest('getAllItems', 'Test', data);
+	let responseJSON = await myFetch(request);
+	console.log(request);
+	console.log(responseJSON);
+	let responseClass = responseJSON.data.className;
+	openModal(JSON.stringify(responseJSON));
+}
+
+async function addAnItem() {
+	let table = document.getElementById('selectTable').value;
+		// remove the 's'
+	let className = table.slice(0, -1);
+	let name = document.getElementById('nameInput').value;
+	const data = {'className': className, 'name': name };
+	let request = new ActionRequest('addItem', 'Test', data);
+	let responseJSON = await myFetch(request);
+	console.log(request);
+	console.log(responseJSON);
+	openModal(JSON.stringify(responseJSON));
+}
+
+async function deleteAnItem() {
+	// let table = document.getElementById('selectTable').value;
+		// // remove the 's'
+	// let className = table.slice(0, -1);
+	// let id = document.getElementById('getByNameSelect').value;
+	// const data = {'className': className, 'id': id };
+	// let request = new ActionRequest('getItemByID', 'Test', data);
+	// let responseJSON = await myFetch(request);
+	// console.log(request);
+	// console.log(responseJSON);
+	// openModal(JSON.stringify(responseJSON));
 }
