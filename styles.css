@@ -118,7 +118,7 @@ table {
 	table-layout: fixed;
 	width: 100%;
 	min-width: 900px;
-	border: 2px solid black;
+	border: 3px solid black;
 	color: black;
 	background-color: white;	
 }
@@ -132,6 +132,10 @@ table {
 
 .orderTable thead th {
 	padding: 2px 8px;
+}
+
+.orderTable tr {
+	border-top: solid #bbf 1px;
 }
 
 /* Allow the first and last columns to adjust automatically */
@@ -180,13 +184,18 @@ table {
 	background-color: #ecf;
 }
 
-.addOnRow {
-	color: #777;
+tr.addOnRow {
+	color: #666;
 	font-size: 92%;
+	border-top: none;
 }
 
 .addOnRow td:first-child {
     padding-left: 30px;
+}
+
+.eventsTable {
+	border: 3px solid black;
 }
 
 .eventsTable tr {

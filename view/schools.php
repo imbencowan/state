@@ -10,15 +10,12 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach ($schools as $school) : 
-				// $school = $schools[0];
-				// var_dump($school);
-			?>
-				<tr id="row<?php echo $school->getSchoolID(); ?>">
-					<td><?php echo $school->getSchoolID(); ?></td>
-					<td><?php echo $school->getSchoolShortName(); ?></td>
-					<td><?php echo $school->getDistrict()->getDistrictName(); ?></td>
-					<td><?php echo $school->getDivision()->getDivisionName(); ?></td>
+			<?php foreach ($schools as $school) : ?>
+				<tr id="row<?php echo $school->id; ?>">
+					<td><?= $school->id; ?></td>
+					<td><?= $school->shortName; ?></td>
+					<td><?= $school->district->name; ?></td>
+					<td><?= $school->division->name; ?></td>
 				</tr>
 			<?php endforeach; ?>
 		</tbody>

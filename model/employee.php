@@ -10,6 +10,8 @@ class Employee extends BasicTableModel {
 					'phone' => 'employeePhone', 
 					'email' => 'employeeEmail']; 
 	}
+		// no relations
+	protected static function getRelations(): array { return []; }
 	
 	public function __construct(
       public readonly int $id,

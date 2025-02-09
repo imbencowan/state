@@ -1,32 +1,29 @@
-<h2>Items</h2><table id="eventsTable" class = "eventsTable">
+<h2>Items</h2><table id="itemsTable" class = "eventsTable">
 	<thead>
 		<tr>
 			<th>Style</th>
 			<th>Size</th>
+			<th>Color</th>
 			<th>Price</th>
 			<th>Stock</th>
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach ($items as $item) : 
-			$styleName = $item->getItemID();
-			$sizes = [1];
-			$rowspan = count($sizes);
-			$rowClass = '';
+		<?php foreach ($gItems as $key => $gStyle) : 
+			$rowspan = count($gStyle);
 			$i = 0;
 		?>
-			<tr id="row<?php echo $item->getItemID(); ?>" class="<?php echo $rowClass; ?>">
-				<td rowspan="<?php echo $rowspan; ?>"><h2><?php echo $styleName; ?></h2><?php echo $styleName; ?></td>
-				<?php foreach ($sizes as $size) :
-					
+			<tr id="row<?= $key; ?>" class="">
+				<td rowspan="<?= $rowspan; ?>"><?= $key; ?></td>
+				<?php foreach ($gStyle as $item) : 
 					++$i;
 				?>
-					<td><?php echo ''; ?></td>
-					<td><?php echo $styleName; ?></td>
-					<td><?php echo $styleName; ?></td>
+				<td><?= $item->size->abbrName; ?></td>
+				<td><?= $item->color->name; ?></td>
+				<td><?= $item->price; ?></td>
+				<td><?= $item->stock; ?></td>
 					<?php if ($i < $rowspan) : ?>
-						</tr>
-						<tr class="<?php echo $rowClass; ?>">
+						</tr><tr class="">
 					<?php endif; ?>
 				<?php endforeach; ?>
 			</tr>

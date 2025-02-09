@@ -17,7 +17,14 @@ class Test implements JsonSerializable {
    
    //////////////////////////////////////////////////
    // db functions
-   static function logX($x) {
+   static function logX(...$x) {
+			// returns info on where logX was called
+		$callerInfo = debug_backtrace()[0];
+		$fileName = basename($callerInfo['file']);
+		$callerText = $fileName . ': line ' . $callerInfo['line'];
+			// put it on the front of $x
+		$x = [$callerText, ...$x];
+		
 		$db = Database::getDB();
 	
 		$query = 'INSERT INTO tests (testText) VALUES (:x)';
@@ -27,7 +34,7 @@ class Test implements JsonSerializable {
 		$statement->execute();
 		$statement->closeCursor();
 	
-		// Return the ID of the newly added site
+			// Return the ID of the newly added site
 		return $db->lastInsertId();
    }
 	
@@ -39,11 +46,15 @@ class Test implements JsonSerializable {
 		$table = 'Colors';
 		$colors = Color::getAllFromDB();
 		$districts = District::getAllFromDB();
+		$divisions = Division::getAllFromDB();
 		$employees = Employee::getAllFromDB();
+		$schools = School::getAllFromDB();
 		$sites = Site::getAllFromDB();
 		$sizes = Size::getAllFromDB();
+		$sports = Sport::getAllFromDB();
 		$styles = Style::getAllFromDB();
 		$vehicles = Vehicle::getAllFromDB();
+		$oneSchool = School::getByID(1);
 		$items = Database::getTable($table);
 		if (!empty($items)) {
 				// Retrieve property names. just use the first item, any will work
@@ -57,8 +68,11 @@ class Test implements JsonSerializable {
 		
 		echo json_encode([
 			'html' => $htmlContent,
-			'data' => [	'colors' => $colors, 'districts' => $districts, 'employees' => $employees,
-							'sites' => $sites, 'sizes' => $sizes, 'styles' => $styles, 'vehicles' => $vehicles ]
+			'data' => [	'colors' => $colors, 'districts' => $districts, 'divisions' => $divisions, 
+			'employees' => $employees, 'schools' => $schools, 'sites' => $sites, 'sizes' => $sizes, 
+			'sports' => $sports, 
+			'styles' => $styles, 'vehicles' => $vehicles, 'oneSchool' => $oneSchool
+			]
 		]);
 	}
 	

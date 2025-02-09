@@ -29,10 +29,10 @@
 				<td rowspan="<?php echo $rowspan; ?>"><h2><?php echo $eventName; ?></h2><?php echo $eventDates; ?></td>
 				<?php foreach ($eventSites as $eventSite) :
 					$site = $eventSite->getSite();
-					$siteName = $site->getSiteName();
+					$siteName = $site->name;
 					$managerName = $eventSite->getManagerName();
 						// '' vehicleName if vehicle is unassigned
-					$vehicleName = ($eventSite->getVehicle()) ? $eventSite->getVehicle()->getVehicleName() : '';
+					$vehicleName = ($eventSite->getVehicle()) ? $eventSite->getVehicle()->name : '';
 					$divisionName = $eventSite->getDivisionsDisplay();
 					$employeesStr = $eventSite->getEmployeesString();
 					++$i;

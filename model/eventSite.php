@@ -45,17 +45,17 @@ class EventSite implements JsonSerializable {
 	public function getDivisions() { return $this->divisions; }
 	// public function setDivisions($value) { $this->divisions = $value; }
 		// i gave this a key to make an associative array, since ids match names for the 6 divisions
-	public function pushDivisions($value) { $this->divisions[$value->getDivisionID()] = $value; }
+	public function pushDivisions($value) { $this->divisions[$value->id] = $value; }
 	
 	public function getDivisionsDisplay() {
 			// get all the division IDs in an array
 		if (!empty($this->divisions)) {
 			$divIDs = [];
-			foreach ($this->divisions as $div) { $divIDs[] = $div->getDivisionID(); }
+			foreach ($this->divisions as $div) { $divIDs[] = $div->id; }
 				// if there is only one division return it's name
 			if (count($divIDs) == 1) {
 					// reset() works for this because there is only one id in the array
-				return $this->divisions[reset($divIDs)]->getDivisionName();
+				return $this->divisions[reset($divIDs)]->name;
 			} else {
 					// get the min and max
 				$minDiv = min($divIDs);
@@ -63,11 +63,11 @@ class EventSite implements JsonSerializable {
 				
 					// i'm like pretty sure this correctly checks that the range of ids is continuous
 				if (($maxDiv - $minDiv) == (count($divIDs) - 1)) {
-					return $this->divisions[$minDiv]->getDivisionName() . '-' . $this->divisions[$maxDiv]->getDivisionName();
+					return $this->divisions[$minDiv]->name . '-' . $this->divisions[$maxDiv]->name;
 				} else {
 						// this is for sites like football that might not have a continuous range of divisions
 					$divNames = [];
-					foreach ($divIDs as $id) { $divNames[] = $this->divisions[$id]->getDivisionName(); }
+					foreach ($divIDs as $id) { $divNames[] = $this->divisions[$id]->name; }
 					sort($divNames);
 					return implode(', ', $divNames);
 				}
@@ -80,10 +80,10 @@ class EventSite implements JsonSerializable {
 
 	public function getEmployees() { return $this->employees; }
 	// public function setEmployees($value) { $this->employees = $value; }
-	public function pushEmployees($value) { $this->employees[$value->getEmployeeID()] = $value; }
+	public function pushEmployees($value) { $this->employees[$value->id] = $value; }
 	public function getEmployeesString() {
 		$employeeNames = [];
-		foreach ($this->employees as $employee) { $employeeNames[] = $employee->getEmployeeShortName(); }
+		foreach ($this->employees as $employee) { $employeeNames[] = $employee->shortName; }
 		return implode(', ', $employeeNames); 
 	}
 

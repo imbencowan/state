@@ -16,7 +16,7 @@
 <label>Select a Table to interact with in the DB: </label>
 <select id="selectTable" onchange="changeSelectedTable(this)">
 	<?php foreach ($tables as $table) : ?>
-		<option value="<?= $table ?>"><?= $table ?></option>
+		<option value="<?= $table ?>" <?php if ($table == 'colors') echo 'selected'; ?>><?= $table ?></option>
 	<?php endforeach; ?>
 </select>
 <br />

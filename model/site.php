@@ -8,6 +8,8 @@ class Site extends BasicTableModel {
 					'name' => 'siteName', 
 					'city' => 'siteCity']; 
 	}
+		// no relations
+	protected static function getRelations(): array { return []; }
 	
 	public function __construct(
       public readonly int $id,

@@ -106,7 +106,7 @@ class Year implements JsonSerializable {
 					$row['endDate']
 				);
 					// check if the event already has the sport specific to this row. necessary for Dance & Cheer
-			} elseif ($events[$eventID]->getSports()[0]->getSportID() != $row['sportID']) {
+			} elseif ($events[$eventID]->getSports()[0]->id != $row['sportID']) {
 					// Create and push a Sport object
 				$sport = Sport::buildFromRow($row);
 				$events[$eventID]->pushSports($sport);
@@ -121,7 +121,7 @@ class Year implements JsonSerializable {
 				if (!array_key_exists($row['eventSiteID'], $eventSites)) {
 						// vehicle and site are handled here, because each eventSite has only one of each
 							// divisions and employees are handled after, as there can be multiple
-					$vehicle = Vehicle::buildFromRow($row);
+					$vehicle = isset($row['vehicleID']) ? Vehicle::buildFromRow($row) : null;
 					$site = Site::buildFromRow($row);
 					//////////////////////////////////////////////////////////////////////////////////////////
 					//////////////////////////////////////////////////////////////////////////////////////////

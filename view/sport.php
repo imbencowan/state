@@ -5,12 +5,12 @@
 	foreach ($sports as $sport) :
 ?>
 		<h1>
-			<?php echo $sport->getSportName() . ' ' . $realYear;?>
+			<?php echo $sport->name . ' ' . $realYear;?>
 			<button class="genPDFButton" data-btnType="genAllSoSPDF">Get All SoS</button>
 		</h1>
 <?php	foreach ($sport->getEventSites() as $eventSite) : ?>
 			<h2>
-				<?php echo $eventSite->getSite()->getSiteName(); ?>
+				<?php echo $eventSite->getSite()->name; ?>
 				<button class="genPDFButton" data-btnType="genSoSPDF"	
 					data-eventSiteID="<?php echo $eventSite->getEventSiteID(); ?>">Get SoS</button>
 			</h2>
@@ -19,7 +19,7 @@
 			krsort($divisions);
 			foreach($divisions as $division) : 
 ?>
-				<h3><?php echo $division->getDivisionName(); ?></h3>
+				<h3><?php echo $division->name; ?></h3>
 <?php	
 				$schoolOrders = $division->getSchoolOrders();
 				ksort($schoolOrders);

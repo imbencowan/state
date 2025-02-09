@@ -62,10 +62,10 @@ class Event implements JsonSerializable {
 		// this only handles events with 2 or fewer sports. hopefully that's all we ever need
 	public function getEventName() {
 		if (count($this->sports) == 1) {
-			return $this->sports[0]->getSportName();
+			return $this->sports[0]->name;
 			//this only handles two sports. it's only purpose is to handle Dance & Cheer
 		} else {
-			return $this->sports[0]->getSportName() . ' & ' . $this->sports[1]->getSportName();
+			return $this->sports[0]->name . ' & ' . $this->sports[1]->name;
 		}
 	}
 
@@ -170,7 +170,7 @@ class Event implements JsonSerializable {
 						$sport->pushEventSites(new EventSite(
 							$row['eventSiteID'],
 							$row['eventID'],
-							new Site($row['siteID'], $row['siteName'], $row['city']),
+							new Site($row['siteID'], $row['siteName'], $row['siteCity']),
 							$row['managerName'],
 							null	// leave the vehicle as null, we don't want it for this.
 						), $row['siteName']);
@@ -194,7 +194,7 @@ class Event implements JsonSerializable {
 									$divisionID,
 									$divisionName,
 									$row['minPop'],
-									$row['pre24DivisionName']
+									$row['pre24Name']
 								), $divisionID);
 							}
 						} else {
@@ -204,7 +204,7 @@ class Event implements JsonSerializable {
 									$divisionID,
 									$divisionName,
 									$row['minPop'],
-									$row['pre24DivisionName']
+									$row['pre24Name']
 								), $divisionID);
 							}
 						}

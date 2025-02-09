@@ -1,6 +1,6 @@
 <?php
 class Style extends BasicTableModel {
-		// these give the table and column names to be used else where in the class
+		// these give the table, column names, and relations to be used in the class
    protected static function getTableName(): string { return 'styles'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
@@ -10,6 +10,8 @@ class Style extends BasicTableModel {
 					'code' => 'styleCode', 
 					'brandID' => 'brandID']; 
 	}
+		// no relations
+	protected static function getRelations(): array { return []; }
 	
 	public function __construct(
       public readonly int $id,

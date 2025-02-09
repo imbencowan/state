@@ -33,7 +33,7 @@
 				$addRowClass = "hidden";
 				$orderID = $order->getSchoolOrderID();
 				$checkID = "check" . $orderID;
-				$schoolName = $order->getSchool()->getSchoolShortName();
+				$schoolName = $order->getSchool()->shortName;
 					// dashes are easier to identify in a field of numbers than zeros. replace zeros with dashes
 					// style rows based on additions
 				if ($order->getAddedTotal() > 0) {
