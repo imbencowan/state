@@ -1,14 +1,13 @@
 IMMEDIATE NEXT
 
-	i would like to be able to test the new BasicTable class: get(), add(), delete()
+	
 		
 		// i suppose it's time to actually do this one so that we can actually do the pdf generation
-	rework how sweatshirts are stored in the db to accomodate crews, +sizes, etc
-		this will involve a secondary table
-			migrate the existing data to the new tables. 
-				leave the old data as is
-					create a new page to test displaying the data from the new tables.
-						if every thing works properly, delete the old.
+	// rework how sweatshirts are stored in the db to accomodate crews, +sizes, etc
+		// this will involve a secondary table
+			// migrate the existing data to the new tables. 
+				// leave the old data as is
+					ITS TIME data is migrated, time to start reworking the MessageOrder and SchoolOrder classes
 	
 	make a renderer class to cut down on repeat code for displaying views
 	

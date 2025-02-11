@@ -3,6 +3,7 @@
 class Sport extends BasicTableModel {
 		// define the corresponding table, columns, and dependent tables to be used in the class
    protected static function getTableName(): string { return 'sports'; }
+   protected static function getPrimaryKey(): string { return 'sportID'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
 		return ['id' => 'sportID', 
@@ -12,7 +13,7 @@ class Sport extends BasicTableModel {
 					'maxTeamSize' => 'maxTeamSize', 
 					'minDiv' => 'minDiv']; 
 	}
-		// defined as ['propertyName' => 'RelatedClass']
+		// defined as: new Relation($property, $class, $foreignKey, $isMany)
 			// removed 'minDiv' => 'Division' for the time being
 	protected static function getRelations(): array {
       return [];

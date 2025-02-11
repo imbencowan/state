@@ -2,6 +2,7 @@
 class Employee extends BasicTableModel {
 		// these give the table and column names to be used else where in the class
    protected static function getTableName(): string { return 'employees'; }
+   protected static function getPrimaryKey(): string { return 'employeeID'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
 		return ['id' => 'employeeID', 

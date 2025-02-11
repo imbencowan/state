@@ -2,6 +2,7 @@
 class Site extends BasicTableModel {
 		// these give the table and column names to be used else where in the class
    protected static function getTableName(): string { return 'sites'; }
+   protected static function getPrimaryKey(): string { return 'siteID'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
 		return ['id' => 'siteID', 

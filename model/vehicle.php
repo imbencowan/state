@@ -2,6 +2,7 @@
 class Vehicle extends BasicTableModel {
 		// these give the table, column names, and relations to be used in the class
    protected static function getTableName(): string { return 'vehicles'; }
+   protected static function getPrimaryKey(): string { return 'vehicleID'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
 		return ['id' => 'vehicleID', 

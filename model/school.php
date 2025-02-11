@@ -2,6 +2,7 @@
 class School extends BasicTableModel {
 		// define the corresponding table, columns, and dependent tables to be used in the class
    protected static function getTableName(): string { return 'schools'; }
+   protected static function getPrimaryKey(): string { return 'schoolID'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
 		return ['id' => 'schoolID', 
@@ -9,9 +10,10 @@ class School extends BasicTableModel {
 					'division' => 'divisionID', 
 					'district' => 'districtID']; 
 	}
-		// defined as ['propertyName' => 'RelatedClass']
+		// defined as: new Relation($property, $class, $foreignKey, $isMany)
 	protected static function getRelations(): array {
-      return ['division' => 'Division', 'district' => 'District'];
+      return [new Relation('division', 'Division', 'divisionID', false), 
+					new Relation('district', 'District', 'districtID', false)];
    }
 	
 	public readonly string $shortName;

@@ -2,6 +2,7 @@
 	<thead>
 		<tr>
 			<th>Style</th>
+			<th></th>
 			<th>Size</th>
 			<th>Color</th>
 			<th>Price</th>
@@ -18,7 +19,8 @@
 				<?php foreach ($gStyle as $item) : 
 					++$i;
 				?>
-				<td><?= $item->size->abbrName; ?></td>
+				<td><?= $item->id ?></td>
+				<td><?= $item->size->charName; ?></td>
 				<td><?= $item->color->name; ?></td>
 				<td><?= $item->price; ?></td>
 				<td><?= $item->stock; ?></td>

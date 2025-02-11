@@ -672,7 +672,7 @@ async function getAnItem() {
 	let responseJSON = await myFetch(request);
 	console.log(request);
 	console.log(responseJSON);
-	openModal(JSON.stringify(responseJSON));
+	openModal(JSON.stringify(responseJSON.item));
 }
 
 async function getAllItems() {
@@ -685,7 +685,7 @@ async function getAllItems() {
 	console.log(request);
 	console.log(responseJSON);
 	let responseClass = responseJSON.data.className;
-	openModal(JSON.stringify(responseJSON, null, 2));
+	openModal(JSON.stringify(responseJSON.items, null, 2));
 }
 
 async function addAnItem() {

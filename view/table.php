@@ -31,10 +31,10 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach ($items as $item) : ?>
+			<?php foreach ($rows as $row) : ?>
 				<tr>
 					<?php foreach ($propertyNames as $col) : ?>
-						<td><?php echo htmlspecialchars($item->$col); ?></td>
+						<td><?php echo htmlspecialchars($row->$col); ?></td>
 					<?php endforeach; ?>
 				</tr>
 			<?php endforeach; ?>

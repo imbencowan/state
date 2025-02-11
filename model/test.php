@@ -44,21 +44,26 @@ class Test implements JsonSerializable {
 	static function showTests($data) {
 		ob_start();
 		$table = 'Colors';
-		$colors = Color::getAllFromDB();
-		$districts = District::getAllFromDB();
-		$divisions = Division::getAllFromDB();
-		$employees = Employee::getAllFromDB();
-		$schools = School::getAllFromDB();
-		$sites = Site::getAllFromDB();
-		$sizes = Size::getAllFromDB();
-		$sports = Sport::getAllFromDB();
-		$styles = Style::getAllFromDB();
-		$vehicles = Vehicle::getAllFromDB();
-		$oneSchool = School::getByID(1);
-		$items = Database::getTable($table);
-		if (!empty($items)) {
+		// $colors = Color::getAllFromDB();
+		// $districts = District::getAllFromDB();
+		// $divisions = Division::getAllFromDB();
+		// $employees = Employee::getAllFromDB();
+		// $items = Item::getAllFromDB();
+		// $messageOrders = MessageOrder::getAllFromDB();
+		// $mOrderItems = MOrderItem::getAllFromDB();
+		// $schools = School::getAllFromDB();
+		$schoolOrders = SchoolOrder::getAllFromDB();
+		// $sites = Site::getAllFromDB();
+		// $sizes = Size::getAllFromDB();
+		// $sOrderItems = SOrderItem::getAllFromDB();
+		// $sports = Sport::getAllFromDB();
+		// $styles = Style::getAllFromDB();
+		// $vehicles = Vehicle::getAllFromDB();
+		// $oneSchool = School::getByID(1);
+		$rows = Database::getTable($table);
+		if (!empty($rows)) {
 				// Retrieve property names. just use the first item, any will work
-			$propertyNames = array_keys(get_object_vars($items[0]));
+			$propertyNames = array_keys(get_object_vars($rows[0]));
 		} else {
 			echo "No results found.";
 		}
@@ -68,10 +73,18 @@ class Test implements JsonSerializable {
 		
 		echo json_encode([
 			'html' => $htmlContent,
-			'data' => [	'colors' => $colors, 'districts' => $districts, 'divisions' => $divisions, 
-			'employees' => $employees, 'schools' => $schools, 'sites' => $sites, 'sizes' => $sizes, 
-			'sports' => $sports, 
-			'styles' => $styles, 'vehicles' => $vehicles, 'oneSchool' => $oneSchool
+			'data' => [	
+			// 'colors' => $colors, 
+			// 'districts' => $districts, 'divisions' => $divisions, 'employees' => $employees, 
+			// 'items' => $items, 
+			// 'mOrderItems' => $mOrderItems, 
+			// 'messageOrders' => $messageOrders, 
+			// 'schools' => $schools, 
+			'schoolOrders' => $schoolOrders, 
+			// 'sites' => $sites, 'sizes' => $sizes, 
+			// 'sOrderItems' => $sOrderItems, 
+			// 'sports' => $sports, 'styles' => $styles, 'vehicles' => $vehicles, 
+			// 'oneSchool' => $oneSchool
 			]
 		]);
 	}
@@ -79,11 +92,11 @@ class Test implements JsonSerializable {
 	static function showTable($data) {
 		ob_start();
 		$table = $data['table'];
-		$items = Database::getTable($table);
+		$rows = Database::getTable($table);
 		$colors = Color::getAllFromDB();
-		if (!empty($items)) {
+		if (!empty($rows)) {
 				// Retrieve property names. just use the first item, any will work
-			$propertyNames = array_keys(get_object_vars($items[0]));
+			$propertyNames = array_keys(get_object_vars($rows[0]));
 		} else {
 			echo "No results found.";
 		}
@@ -95,7 +108,7 @@ class Test implements JsonSerializable {
 		
 		echo json_encode([
 			'html' => $htmlContent,
-			'data' => $items,
+			'data' => $rows,
 			'colors' => $colors
 		]);
 	}

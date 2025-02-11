@@ -20,9 +20,11 @@
 	<?php endforeach; ?>
 </select>
 <br />
-
 <button onclick="showTable()">Show Table</button>
 <br />
+
+
+<!--
 <button onclick="getAnItem()">Get An Item</button>
 <select id="getByNameSelect">
 	<?php foreach ($colors as $color) : ?>
@@ -44,3 +46,5 @@
 </select>
 <br />
 <br />
+
+-->

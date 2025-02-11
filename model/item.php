@@ -2,6 +2,7 @@
 class Item extends BasicTableModel {
 		// define the corresponding table, columns, and dependent tables to be used in the class
    protected static function getTableName(): string { return 'inventoryitems'; }
+   protected static function getPrimaryKey(): string { return 'itemID'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
 		return ['id' => 'itemID', 
@@ -11,9 +12,11 @@ class Item extends BasicTableModel {
 					'price' => 'price', 
 					'stock' => 'stock']; 
 	}
-		// defined as ['propertyName' => 'RelatedClass']
+		// defined as: new Relation($property, $class, $foreignKey, $isMany)
 	protected static function getRelations(): array {
-      return ['style' => 'Style', 'size' => 'Size', 'color' => 'Color'];
+      return [new Relation('style', 'Style', 'styleID', false), 
+				new Relation('size', 'Size', 'sizeID', false), 
+				new Relation('color', 'Color', 'colorID', false)];
    }
 	
 	public function __construct(
@@ -22,7 +25,7 @@ class Item extends BasicTableModel {
       public readonly ?Size $size,
       public readonly ?Color $color,
       public readonly ?int $price,
-      public readonly int $stock = 0
+      public readonly ?int $stock = 0
    ) {}
 	
 	

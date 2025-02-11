@@ -1,7 +1,8 @@
 <?php
 class District extends BasicTableModel {
-		// these give the table, column names, and relations to be used in the class
+		// these give the table, primary key, column names, and relations to be used in the class
    protected static function getTableName(): string { return 'districts'; }
+   protected static function getPrimaryKey(): string { return 'districtID'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
 		return ['id' => 'districtID', 
