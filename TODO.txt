@@ -1,13 +1,42 @@
 IMMEDIATE NEXT
 
+
+// i think i can make getting all orders for an event work by adding an EventSiteDivision class that extends Division to give it 
+	// different relations, and then giving the schoolOrders table an eventSiteID or eventSiteDivionsID to allow the db relations 
+	// to correspond to the object hierarchy
+		// Event								:events
+			// Sport								:sports
+			// EventSite						:eventsites
+				// Site								:sites
+				// Vehicle							:vehicles
+				// Employee							:employees
+				// EventSiteDivision				:eventsitehasdivision
+					// Division							:divisions
+					// SchoolOrder						:schoolorders
+						// School							:schools
+							// Division							:divisions
+							// District							:districts
+						// SOrderItem						:sorderitems
+							// Item								:items
+								// Style								:styles
+								// Size								:sizes
+								// Color								:color
+						//MessageOrder						:messageorders
+							// MOrderItem						:morderitems
+								// Item								:items
+									// Style								:styles
+									// Size								:sizes
+									// Color								:color
+
+
+MOrderItems and SorderItems are functional. we can now get all SchoolOrders from a db call
+that means it's time to update EventSite and Event so that we can make our sport pages start working again
+
+	then we'll need to fix our add order functions
+		// i'll probably want to intstitute a way to select which relations to utilize
+			// so an event can get all it's associated orders, or just it's basic info. 
 	
-		
-		// i suppose it's time to actually do this one so that we can actually do the pdf generation
-	// rework how sweatshirts are stored in the db to accomodate crews, +sizes, etc
-		// this will involve a secondary table
-			// migrate the existing data to the new tables. 
-				// leave the old data as is
-					ITS TIME data is migrated, time to start reworking the MessageOrder and SchoolOrder classes
+	then we can work on our pdf generation
 	
 	make a renderer class to cut down on repeat code for displaying views
 	
@@ -15,6 +44,7 @@ IMMEDIATE NEXT
 	allow manual entry of an order from a sport page
 	
 20250207 179 kb
+20250210 165 kb
 	
 	
 	

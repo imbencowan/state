@@ -20,14 +20,6 @@ class InputOrder {
 	}
 }
 
-class SportPageRequest {
-	constructor(sportID, year) {
-		this.action = 'showSport';
-		this.sportID = sportID;
-		this.year = year;
-	}
-}
-
 class AddOrdersRequest {
 	constructor(orders) {
 		this.action = 'addOrders';
@@ -57,13 +49,6 @@ class SizeEditRequest {
 		this.schoolOrderID = schoolOrderID;
 		this.teamSizes = teamSizes;
 		this.addOnSizes = addOnsizes;
-	}
-}
-
-class TestRequest {
-	constructor() {
-		this.action = 'test';
-		this.message = 'test';
 	}
 }
 
@@ -188,7 +173,6 @@ async function goToSportPage(sport) {
 		year = document.getElementById("selectYear").value;
 	}
 	let sportID = sport[1];
-	// let request = new SportPageRequest(sportID, year);
 	const data = {'sportID': sportID, 'year': year}
 	let request = new ActionRequest('showSport', 'Sport', data)
 
@@ -634,28 +618,6 @@ function testPDF() {
 	const pdfBlob = doc.output("blob");
 	const url = URL.createObjectURL(pdfBlob);
 	window.open(url, "_blank"); // Opens in a new tab
-}
-
-
-async function testFetch() {
-	const url = 'controller.php';
-	let data = new TestRequest();
-	console.log(data);
-	try {
-		const response = await fetch(url, {
-			method: "POST", 
-			headers: {'Content-Type': 'application/json'}, 
-			body: JSON.stringify(data)
-		});
-		if (!response.ok) {throw new Error(`Response status: ${response.status}`);}
-
-		const json = await response.json();
-		console.log(json);
-		let display = document.getElementById('display');
-		display.innerHTML += json.html;
-	} catch (error) {
-		console.error(error.message);
-	}
 }
 
 function changeSelectedTable(tableSelect) {

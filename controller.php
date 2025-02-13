@@ -12,8 +12,7 @@
 	
 		// name the actions that can be called 
 	$allowedActions = [
-      'showSport', 'addOrders', 'changeOrderDone', 'updateAddOns', 'updateSizes', 'showTable', 
-		'showSchools', 'showYear', 'showItems', 'showTests', 'test'
+      'showSport', 'addOrders', 'changeOrderDone', 'updateAddOns', 'updateSizes'
    ];
 	
 		// set the time zone

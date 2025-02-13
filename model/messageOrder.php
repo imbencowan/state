@@ -14,9 +14,8 @@ class MessageOrder extends BasicTableModel {
 					'orderDate' => 'orderDate'];
 	}
 		// defined as: new Relation($property, $class, $foreignKey, $isMany)
-	protected static function getRelations(): array {
-      return [new Relation('teamShirts', 'MOrderItem', 'messageOrderID', true)];
-   }
+	protected static function getRelations(): array { return [new Relation('teamShirts', 'MOrderItem', 'messageOrderID', true)]; }
+	
 	
 	public readonly DateTime $orderDate;
 	
@@ -35,7 +34,7 @@ class MessageOrder extends BasicTableModel {
 	
 	public function jsonSerialize(): mixed {
 		return [
-			'orderID' => $this->id,
+			'id' => $this->id,
 			'schoolOrderID' => $this->schoolOrderID,
 			'genderID' => $this->genderID,
 			// 'genderName' => $this->genderName,

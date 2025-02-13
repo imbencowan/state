@@ -44,15 +44,17 @@ class Test implements JsonSerializable {
 	static function showTests($data) {
 		ob_start();
 		$table = 'Colors';
-		// $colors = Color::getAllFromDB();
+		$colors = Color::getAllFromDB();
 		// $districts = District::getAllFromDB();
 		// $divisions = Division::getAllFromDB();
 		// $employees = Employee::getAllFromDB();
+		$events = Event::getAllFromDB();
+		// $eventSites = EventSite::getAllFromDB();
 		// $items = Item::getAllFromDB();
 		// $messageOrders = MessageOrder::getAllFromDB();
 		// $mOrderItems = MOrderItem::getAllFromDB();
 		// $schools = School::getAllFromDB();
-		$schoolOrders = SchoolOrder::getAllFromDB();
+		// $schoolOrders = SchoolOrder::getAllFromDB();
 		// $sites = Site::getAllFromDB();
 		// $sizes = Size::getAllFromDB();
 		// $sOrderItems = SOrderItem::getAllFromDB();
@@ -76,11 +78,13 @@ class Test implements JsonSerializable {
 			'data' => [	
 			// 'colors' => $colors, 
 			// 'districts' => $districts, 'divisions' => $divisions, 'employees' => $employees, 
+			'events' => $events,
+			// 'eventSites' => $eventSites,
 			// 'items' => $items, 
 			// 'mOrderItems' => $mOrderItems, 
 			// 'messageOrders' => $messageOrders, 
 			// 'schools' => $schools, 
-			'schoolOrders' => $schoolOrders, 
+			// 'schoolOrders' => $schoolOrders, 
 			// 'sites' => $sites, 'sizes' => $sizes, 
 			// 'sOrderItems' => $sOrderItems, 
 			// 'sports' => $sports, 'styles' => $styles, 'vehicles' => $vehicles, 

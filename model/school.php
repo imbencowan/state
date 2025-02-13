@@ -10,10 +10,12 @@ class School extends BasicTableModel {
 					'division' => 'divisionID', 
 					'district' => 'districtID']; 
 	}
-		// defined as: new Relation($property, $class, $foreignKey, $isMany)
+		// defined as: new Relation($property, $class, $matchKey, $isMany, $interTable)
 	protected static function getRelations(): array {
-      return [new Relation('division', 'Division', 'divisionID', false), 
-					new Relation('district', 'District', 'districtID', false)];
+      return [
+			new Relation('division', 'Division', 'divisionID', false), 
+			new Relation('district', 'District', 'districtID', false)
+		];
    }
 	
 	public readonly string $shortName;
@@ -50,13 +52,12 @@ class School extends BasicTableModel {
    // user actions
 		// takes us to the Schools page, displaying all schools
 	static function showSchools($input) {
-		// $schools = School::getAllSchools();
 		$schools = School::getAllFromDB();
 		ob_start();
 		include 'view/addOrdersDiv.php';
 		include 'view/yearDiv.php';
 		include 'view/schools.php';
-		$htmlContent = ob_get_clean(); // Get the buffered content as a string
+		$htmlContent = ob_get_clean();
 		
 		echo json_encode([
 			'html' => $htmlContent,

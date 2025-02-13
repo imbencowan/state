@@ -2,7 +2,9 @@
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	// a lot of classes representing db tables were looking very similar, so i made this.
 	// it gives child classes an $id and a $name, and a jsonSerialization of all public properties
-	// it includes basic db functions, add(), getByID(), getAll(), and i should probably add a delete
+	// it includes basic db functions, add(), getByID(), getAll(), and deleteByID()
+	// it involves some messy stuff making complex JOINs in get()s work, particularly buildJoins() and buildFromRow()
+	// but it's working
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
 abstract class BasicTableModel implements JsonSerializable {
@@ -12,17 +14,8 @@ abstract class BasicTableModel implements JsonSerializable {
 	abstract protected static function getPrimaryKey(): string;
 		// format as: return [propName1 => colName1, propName2 => colName2]
 	abstract protected static function getColumns(): array;
-		// defined as: new Relation($property, $class, $foreignKey)
-   protected static function getRelations(): array { return []; }
-	
-	protected static function getColumnMaps(): array {
-		$maps = [];
-		foreach (static::getColumns() as $prop => $col) {
-				// ColumnMap is formatted as ($property, $columnName, $alias). this will give unique aliases 
-			$maps[$prop] = new ColumnMap($prop, $col, static::getTableName() . "_$col");
-		}
-	}
-	
+		// defined as: new Relation($property, $class, $matchKey, $isMany)
+   protected static function getRelations(): array { return []; }	
 	
 		// basic constructor. every child will have an $id and $name
 	public function __construct(public readonly int $id, public readonly ?string $name) {}
@@ -34,20 +27,21 @@ abstract class BasicTableModel implements JsonSerializable {
    }
 	
 		// builds a new object from a $row returned from a db call
-	public static function buildFromRow(array $groupedRows, string $colPrefix = ''): mixed { // ?static {
-		if (empty($groupedRows)) return null;
+			// we have to screw with prefixes to deconstruct unique column aliases in $row['keys']
+	public static function buildFromRow(array $rows, string $colPrefix = ''): mixed { // ?static {
+		if (empty($rows)) return null;
 	
-		$firstRow = $groupedRows[0]; // Use first row for parent data
+		$firstRow = $rows[0]; // Use first row for parent data
 		$columns = static::getColumns();
 		$relations = static::getRelations();
-		
+			// we have to screw with prefixes to deconstruct unique column aliases in $row['keys']
 		$colPrefix .= static::getTableName() . '_';
 		
 		$mappedRow = [];
 			// Map parent properties
 		foreach ($columns as $propName => $colName) {
 			$colAlias = $colPrefix . $colName;
-			if (!array_key_exists($colAlias, $firstRow)) Test::logX($colAlias); // return null;
+			if (!array_key_exists($colAlias, $firstRow)) return null;
 			$mappedRow[$propName] = $firstRow[$colAlias];
 		}
 	
@@ -59,13 +53,14 @@ abstract class BasicTableModel implements JsonSerializable {
 				
 				$relColPrefix = $colPrefix . $relation->rClass::getTableName() . '_';
 	
-					// Group related objects by their primary key (prevents duplicates)
-				$relatedGrouped = [];
-				foreach ($groupedRows as $row) {
-					if (!isset($row[$colPrefix . $relation->foreignKey])) continue;
-					$relatedKey = $row[$relColPrefix . $relationPK];
-					$relatedGrouped[$relatedKey][] = $row;
-				}
+					// Group related objects by their primary key ($rows, $rowKey)
+				$relatedGrouped = self::groupRowsByKey($rows, $relColPrefix . $relationPK);
+				// $relatedGrouped = [];
+				// foreach ($rows as $row) {
+					// if (!isset($row[$colPrefix . $relation->matchKey])) continue;
+					// $relatedKey = $row[$relColPrefix . $relationPK];
+					// $relatedGrouped[$relatedKey][] = $row;
+				// }
 				
 					// Recursively process related entities
 				foreach ($relatedGrouped as $relatedRows) {
@@ -77,20 +72,26 @@ abstract class BasicTableModel implements JsonSerializable {
 				$mappedRow[$relation->property] = $relation->isMany ? $relatedObjects : ($relatedObjects[0] ?? null);
 			}
 		}
-		
 		return new static(...$mappedRow);
 	}
 
 	
 		// Helper function to group rows by primary key before passing to buildFromRow
-	protected static function groupAndBuild(array $rows): array {
-		$groupedRows = [];
-		foreach ($rows as $row) {
-			$key = static::getTableName() . '_' . static::getPrimaryKey();
-			$pkValue = $row[$key];
-			$groupedRows[$pkValue][] = $row;
-		}
+	protected static function groupAndBuild(array $rows): array {	
+			// ($rows, $rowKey)
+		$groupedRows = self::groupRowsByKey($rows, static::getTableName() . '_' . static::getPrimaryKey());
 		return array_map([static::class, 'buildFromRow'], $groupedRows);
+	}
+	
+		// helper to group fetched rows by a key. // $keyPrefix is used for aliased column names
+	protected static function groupRowsByKey(array $rows, string $rowKey): array {
+		 $grouped = [];
+		 foreach ($rows as $row) {
+			  if (!isset($row[$rowKey])) continue;
+			  $key = $row[$rowKey];
+			  $grouped[$key][] = $row;
+		 }
+		 return $grouped;
 	}
 
 	
@@ -122,9 +123,23 @@ abstract class BasicTableModel implements JsonSerializable {
       return $db->lastInsertId();
    }
 	
-		// getAll and getByID both implement a pair of helper functions that do the heavy lifting
+	public static function deleteByID(int $id): bool {
+		$db = Database::getDB();
+		$idCol = static::getColumns()['id'];
+		$query = "DELETE FROM " . static::getTableName() . " WHERE $idCol = :id";
+		$statement = $db->prepare($query);
+		$statement->bindValue(':id', $id, PDO::PARAM_INT);
+		$statement->execute();
+		$affectedRows = $statement->rowCount();
+		$statement->closeCursor();
+
+		return $statement->rowCount() > 0; // return true if rows were affected
+	}
+	
+		// getAll and getByID both implement a pair of helper functions (buildSelect() and buildJoins()) that do the heavy lifting
 	public static function getAllFromDB(): mixed { // array {
 		$query = static::buildSelect();
+		// return $query;
 		$rows = static::getFromDB($query);
 		return static::groupAndBuild($rows);
 	}
@@ -152,80 +167,69 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $rows;
 	}
 	
-		// builds the SELECT statement for get...FromDB() functions. includes a helper to recursively build JOINs
+		// builds the SELECT statement for get...FromDB() functions. includes helpers to build JOINs and column selections
+			// this and buildJoins() got a little messy in needing to build a query with unique table aliases for JOINs, and
+				// unique column aliases. this is so we can join the same table to different tables, and have the returned
+				// associative array know what is what. those constructed aliases are deconstructed in buildFromRow()
 	private static function buildSelect(): string {
 		$table = static::getTableName();
 		$columns = static::getColumns();
 		$relations = static::getRelations();
 	
 		$selectColumns = [];
-		foreach ($columns as $colName) {
-			$selectColumns[] = "$table.$colName AS $table" . "_$colName";
-		}
-	
-			// Initialize the joins arrays
-		$joins = [];
-	
-			// Recursive function to handle deep relations (relations of relations)
-		$buildJoins = function ($currentTable, $currentRelations, $prefix = '', $depth = 0) 
-										use (&$buildJoins, &$joins, &$selectColumns, $table) {
-			
-			$oldAlias = $prefix . $currentTable;
-			$prefix .= $currentTable . '_';
-			
-			foreach ($currentRelations as $currentRelation) {
-				$relatedClass = $currentRelation->rClass;
-		
-				if (!class_exists($relatedClass)) continue;
-		
-				$relatedTable = $relatedClass::getTableName();
-				$relatedColumns = $relatedClass::getColumns();
-				$foreignKey = $currentRelation->foreignKey;
-					
-				$tableAlias = $prefix . $relatedTable;
-				
-					// Add columns of the related table to the SELECT clause
-				foreach ($relatedColumns as $relCol) {
-						// the if () prevents duplicate column names from JOIN clauses clashing in the returned associative array
-					$alias = $tableAlias . "_$relCol";
-					// if ($relCol !== $foreignKey) $selectColumns[] = "$tableAlias.$relCol AS $alias";
-					$selectColumns[] = "$tableAlias.$relCol AS $alias";
-				}
-				
-					// Build JOIN condition
-				$joins[] = "LEFT JOIN $relatedTable AS $tableAlias ON $oldAlias.$foreignKey = $tableAlias.$foreignKey";
-		
-					// Recursively handle relations of the related class (i.e., relations of relations)
-				$relatedRelations = $relatedClass::getRelations();
-				if (!empty($relatedRelations)) {
-					$buildJoins($relatedTable, $relatedRelations, $prefix, $depth + 1);
-				}
-			}
-		};
-	
-			// Call recursive function to handle relations and their relations
-		$buildJoins($table, $relations);
-	
+		self::buildSelects($selectColumns, $table, $columns);
+			// Call recursive function to handle relations and their relations. returns array of JOIN statements
+		$joins = self::buildJoins($table, $relations, $selectColumns);
 			// Build the final SELECT query
-		$query = "SELECT " . implode(", ", $selectColumns) . " FROM $table ";
-		if (!empty($joins)) {
-			$query .= implode(" ", $joins);
-		}
-		
+		$query = "SELECT " . implode(", ", $selectColumns) . " FROM $table " . implode(" ", $joins);
 		return $query;
 	}
 	
-	public static function deleteByID(int $id): bool {
-		$db = Database::getDB();
-		$idCol = static::getColumns()['id'];
-		$query = "DELETE FROM " . static::getTableName() . " WHERE $idCol = :id";
-		$statement = $db->prepare($query);
-		$statement->bindValue(':id', $id, PDO::PARAM_INT);
-		$statement->execute();
-		$affectedRows = $statement->rowCount();
-		$statement->closeCursor();
-
-		return $statement->rowCount() > 0; // return true if rows were affected
+	private static function buildSelects(&$selectColumns, $table, $columns) {
+		foreach ($columns as $col) {
+			$selectColumns[] = "$table.$col AS $table" . "_$col";
+		}
+	}
+	
+		// Recursive helper function to handle deep relations (relations of relations) for query builder
+	private static function buildJoins($currentTable, $currentRelations, &$selectColumns, $joins = [], $prefix = '') {
+		$oldAlias = $prefix . $currentTable;
+		$prefix .= $currentTable . '_';
+		
+		foreach ($currentRelations as $currentRelation) {
+			$relatedClass = $currentRelation->rClass;
+	
+			if (!class_exists($relatedClass)) continue;
+	
+			$relatedTable = $relatedClass::getTableName();
+			$relatedColumns = $relatedClass::getColumns();
+			$matchKey = $currentRelation->matchKey;
+			
+			$tableAlias = $prefix . $relatedTable;
+				// Add columns of the related table to the SELECT clause
+			self::buildSelects($selectColumns, $tableAlias, $relatedColumns);
+			
+				// build joins with an intermediate table, or without
+			if ($currentRelation->interTable) {
+				$interTable = $currentRelation->interTable;
+				$tableAlias = $prefix . $interTable;
+				$joins[] = self::writeJoin($interTable, $tableAlias, $oldAlias, $matchKey);
+				$priorAlias = $tableAlias;
+				$tableAlias = $prefix . $relatedTable;
+				$joins[] = self::writeJoin($relatedTable, $tableAlias, $priorAlias, $relatedClass::getPrimaryKey());
+			} else {
+// Test::logX($relatedClass, $relatedTable);
+				$tableAlias = $prefix . $relatedTable;
+				$joins[] = self::writeJoin($relatedTable, $tableAlias, $oldAlias, $matchKey);
+			}
+				// Recursively handle relations of the related class (i.e., relations of relations)
+			$joins = self::buildJoins($relatedTable, $relatedClass::getRelations(), $selectColumns, $joins, $prefix);
+		}
+		return $joins;
+	}
+	
+	private static function writeJoin($relatedTable, $tableAlias, $oldAlias, $matchKey) {
+		return "LEFT JOIN $relatedTable AS $tableAlias ON $oldAlias.$matchKey = $tableAlias.$matchKey";
 	}
 }
 ?>

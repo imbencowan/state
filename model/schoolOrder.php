@@ -1,7 +1,7 @@
 <?php
 class SchoolOrder extends BasicTableModel {
 		// define the corresponding table, columns, and dependent tables to be used in the class
-   protected static function getTableName(): string { return 'schoolOrders'; }
+   protected static function getTableName(): string { return 'schoolorders'; }
    protected static function getPrimaryKey(): string { return 'schoolOrderID'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 

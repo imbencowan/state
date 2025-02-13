@@ -1,6 +1,8 @@
+<!--
 <label>This button simply logs that it was clicked in the `tests` table of the DB.</label>
 <button onclick="testFetch()">Test DB</button>
 <br />
+-->
 <label>This button generates a PDF</label>
 <button onclick="testPDF()">Test Box Label</button>
 <br />
@@ -24,7 +26,7 @@
 <br />
 
 
-<!--
+
 <button onclick="getAnItem()">Get An Item</button>
 <select id="getByNameSelect">
 	<?php foreach ($colors as $color) : ?>
@@ -47,4 +49,3 @@
 <br />
 <br />
 
--->
