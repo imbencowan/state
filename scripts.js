@@ -119,7 +119,7 @@ function buildNavList() {
 		let newLI = document.createElement("li");
 		newLI.innerHTML = sport[0];
 			// add a listener to load the appropriate content when clicked
-		newLI.addEventListener('click', function(){ goToSportPage(sport); });
+		newLI.addEventListener('click', function(){ goToEventPage(sport); });
 			// add it to the page
 		navList.appendChild(newLI);
 	});
@@ -166,7 +166,7 @@ async function myFetch(request) {
 	}
 }
 
-async function goToSportPage(sport) {
+async function goToEventPage(sport) {
 		//we'll want to swap year statements once this is out of test
 	let year = currentYear;
 	if (document.getElementById("selectYear")) {
@@ -174,7 +174,7 @@ async function goToSportPage(sport) {
 	}
 	let sportID = sport[1];
 	const data = {'sportID': sportID, 'year': year}
-	let request = new ActionRequest('showSport', 'Sport', data)
+	let request = new ActionRequest('showEvent', 'Event', data)
 
 	let responseJSON = await myFetch(request);
 	stateData = responseJSON.data;

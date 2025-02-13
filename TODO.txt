@@ -43,6 +43,9 @@ that means it's time to update EventSite and Event so that we can make our sport
 		// later tater
 	allow manual entry of an order from a sport page
 	
+	
+worry about soccer's girls and boys sites later, 
+	
 20250207 179 kb
 20250210 165 kb
 	
@@ -101,6 +104,38 @@ Try recursive joins for deep relationships.
 Implement lazy loading via __get().
 Optimize query performance with caching.
 Add filtering/sorting to avoid unnecessary queries.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+GIT HOW TO
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// navigate to the correct directory
+cd /c/xampp/htdocs/state4
+
+	// select which files to add
+git add .
+
+	// commit
+git commit -m "what changed"
+
+	// push
+git push origin main
 	
 
 

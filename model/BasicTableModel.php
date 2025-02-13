@@ -137,7 +137,7 @@ abstract class BasicTableModel implements JsonSerializable {
 	}
 	
 		// getAll and getByID both implement a pair of helper functions (buildSelect() and buildJoins()) that do the heavy lifting
-	public static function getAllFromDB(): mixed { // array {
+	public static function getAllFromDB(): array {
 		$query = static::buildSelect();
 		// return $query;
 		$rows = static::getFromDB($query);
@@ -153,7 +153,7 @@ abstract class BasicTableModel implements JsonSerializable {
 	}
 	
 		// a helper for various get()s. takes a $query and $params, and makes the actual call
-	private static function getFromDB(string $query, array $params = []): array {
+	protected static function getFromDB(string $query, array $params = []): array {
 		$db = Database::getDB();
 		$statement = $db->prepare($query);
 
@@ -171,7 +171,7 @@ abstract class BasicTableModel implements JsonSerializable {
 			// this and buildJoins() got a little messy in needing to build a query with unique table aliases for JOINs, and
 				// unique column aliases. this is so we can join the same table to different tables, and have the returned
 				// associative array know what is what. those constructed aliases are deconstructed in buildFromRow()
-	private static function buildSelect(): string {
+	protected static function buildSelect(): string {
 		$table = static::getTableName();
 		$columns = static::getColumns();
 		$relations = static::getRelations();
@@ -185,14 +185,14 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $query;
 	}
 	
-	private static function buildSelects(&$selectColumns, $table, $columns) {
+	protected static function buildSelects(&$selectColumns, $table, $columns) {
 		foreach ($columns as $col) {
 			$selectColumns[] = "$table.$col AS $table" . "_$col";
 		}
 	}
 	
 		// Recursive helper function to handle deep relations (relations of relations) for query builder
-	private static function buildJoins($currentTable, $currentRelations, &$selectColumns, $joins = [], $prefix = '') {
+	protected static function buildJoins($currentTable, $currentRelations, &$selectColumns, $joins = [], $prefix = '') {
 		$oldAlias = $prefix . $currentTable;
 		$prefix .= $currentTable . '_';
 		
