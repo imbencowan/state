@@ -12,9 +12,24 @@ class Size extends BasicTableModel {
 		// no relations
 	protected static function getRelations(): array { return []; }
 	
+	private int $quantity = 0;
+	
 	public function __construct(
       public readonly int $id,
       public readonly ?string $name,
       public readonly ?string $charName
    ) {}
+	
+	public function jsonSerialize(): array {
+		return [
+			'id' => $this->id,
+			'name' => $this->name,
+			'charName' => $this->charName,
+			'quantity' => $this->quantity
+		];
+	}
+	
+	
+	public function getQuantity() { return $this->quantity; }
+   public function setQuantity($value) { $this->quantity = $value; }
 }

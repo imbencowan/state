@@ -19,6 +19,7 @@ class Event extends BasicTableModel {
 	
 	public readonly DateTime $startDate;
 	public readonly DateTime $endDate;
+	public readonly array $eventSites;
 	
 	public function __construct(
       public readonly int $id,
@@ -26,10 +27,11 @@ class Event extends BasicTableModel {
       string|DateTime $startDate, 
       string|DateTime $endDate, 
       public readonly int $year,
-		private array $eventSites = []
+		array $eventSites
    ) {
 		$this->startDate = is_string($startDate) ? new DateTime($startDate) : $startDate;
 		$this->endDate = is_string($endDate) ? new DateTime($endDate) : $endDate;
+		$this->eventSites = self::organizeEventSites($eventSites);
 	}
 	
 	public function jsonSerialize(): mixed {
@@ -43,16 +45,37 @@ class Event extends BasicTableModel {
 		];
 	}
 	
+		// returns the sent array keyed and sorted
+	private static function organizeEventSites($eventSites) {
+		$organized = [];
+		foreach ($eventSites as $eSite) {
+			$organized[$eSite->site->name] = $eSite;
+		}
+		ksort($organized);
+		return $organized;
+	}
+	
 	
 		//////////////////////////////////////////////////
-		// Database functions
-	
-	
-	public static function getOrdersBySportAndYear(int $sportID, int $year) { //: ?static {
+		// Database functions	
+	public static function getOrdersBySportAndYear(int $sportID, int $year): ?static {
 		$query = static::buildSelect() . " WHERE events.sportID = :id AND events.eventYear = :year";
-		// return $query;
 		$rows = static::getFromDB($query, [':id' => $sportID, ':year' => $year]);
-		return !empty($rows) ? static::groupAndBuild($rows)[$sportID] : null;
+			// returns an array of events, but we only want one
+// try changing these last two lines like Sport::getByName() to just return one instance
+		$events = static::groupAndBuild($rows);
+			// send back the *first* element
+		return !empty($events) ? reset($events) : null;
+	}
+	
+	public static function getIDBySportIDAndYear($sportID, $year) {
+		$db = Database::getDB();
+		$query = 'SELECT eventID FROM events 
+					WHERE sportID = :sportID AND eventYear = :year';
+		$statement = $db->prepare($query);
+		$statement->execute([':sportID' => $sportID, ':year' => $year]);
+			// return the id or null
+		return $statement->fetchColumn() ?: null;
 	}
 	
 	
@@ -81,7 +104,7 @@ class Event extends BasicTableModel {
 		
 		echo json_encode([
 			'html' => $htmlContent,
-			'data' => $event
+			$event->sport->name => $event
 		]);
 	}
 	
@@ -152,162 +175,6 @@ class Event extends BasicTableModel {
 	// // db functions
 
 
-	
-	// public static function getEventOrdersBySportIDAndYear($sportID, $year) {
-		// $db = Database::getDB();
-			// // inner joins for the first two only, since events like football don't have sites until the week of.
-		// $query = "SELECT events.*, sports.*, eventSites.eventSiteID, eventSites.managerName, 
-						// eventSiteHasGender.genderID AS siteGenderID, sites.*, divisions.*,
-						// schoolOrders.isDone, schoolOrders.addedS, schoolOrders.addedM, schoolOrders.addedL, 
-						// schoolOrders.addedXL, schoolOrders.addedXXL, schoolOrders.addedXXXL, schoolOrders.due, 
-						// schoolOrders.paid, schoolOrders.schoolOrderNote, schoolOrders.invoiceSent, 
-						// schools.*, messageOrders.*, genders.genderName
-					// FROM events
-					// INNER JOIN eventHasSport ON events.eventID = eventHasSport.eventID
-					// INNER JOIN sports ON eventHasSport.sportID = sports.sportID
-					// LEFT JOIN eventSites ON events.eventID = eventSites.eventID
-					// LEFT JOIN sites ON eventSites.siteID = sites.siteID
-					// LEFT JOIN eventSiteHasDivision ON eventSites.eventSiteID = eventSiteHasDivision.eventSiteID 
-					// LEFT JOIN eventSiteHasGender ON eventSites.eventSiteID = eventSiteHasGender.eventSiteID 
-					// LEFT JOIN divisions ON eventSiteHasDivision.divisionID = divisions.divisionID
-					// LEFT JOIN schoolOrders ON events.eventID = schoolOrders.eventID
-						// AND divisions.divisionID = schoolOrders.divisionID
-					// LEFT JOIN schools ON schoolOrders.schoolID = schools.schoolID
-					// LEFT JOIN messageOrders ON schoolOrders.schoolOrderID = messageOrders.schoolOrderID
-                    	// AND (eventSiteHasGender.genderID = messageOrders.genderID
-                        // OR eventSiteHasGender.genderID IS NULL)
-					// LEFT JOIN genders ON MessageOrders.genderID = genders.genderID 
-					// WHERE eventHasSport.sportID = :sportID AND events.eventYear = :eventYear";
-		// $stmt = $db->prepare($query);
-		// $stmt->bindValue(':sportID', $sportID);
-		// $stmt->bindValue(':eventYear', $year);
-		// $stmt->execute();
-		// $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		
-		// if ($rows) {
-			// $sports[$rows[0]['sportName']] = new Sport(
-				// $rows[0]['sportID'],
-				// $rows[0]['sportName'],
-				// $rows[0]['isGendered'],
-				// $rows[0]['isIndividualed'],
-				// $rows[0]['maxTeamSize'],
-				// $rows[0]['minDiv']
-			// );
-				// // if the sport is dance or cheer, add the other
-			// // if ($rows[0]['sportID'] == 10) {
-				// // $sports['Cheer'] = new Sport(11, 'Cheer', 0, 0, null);
-			// // } elseif ($rows[0]['sportID'] == 11) {
-				// // $sports['Dance'] = new Sport(10, 'Dance', 0, 0, null);
-			// // }
-			
-			// foreach ($rows as $row) {
-					// // only add sites if there are sites to add
-				// if ($row['siteName']) {
-						// // make an easy reference
-					// $sport = &$sports[$row['sportName']];
-						// // add the eventSite if it has not been
-					// if (!array_key_exists($row['siteName'], $sport->getEventSites())) {
-						// $sport->pushEventSites(new EventSite(
-							// $row['eventSiteID'],
-							// $row['eventID'],
-							// new Site($row['siteID'], $row['siteName'], $row['siteCity']),
-							// $row['managerName'],
-							// null	// leave the vehicle as null, we don't want it for this.
-						// ), $row['siteName']);
-					// }
-					// if ($row['divisionName']) {
-							// // an other easy reference, after eventSite additions
-						// $eventSite = &$sport->getEventSites()[$row['siteName']];
-						// $divisionName = $row['divisionName'];
-						// $divisionID = $row['divisionID'];
-						// $minDiv = $row['minDiv'];
-						// if ($divisionID < $minDiv) $divisionID = $minDiv;
-						
-							// // we need to handle things a little differently for soccer, where teams will be 
-								// // separated by gender
-						// if ($row['sportName'] == 'Soccer' && $row['siteGenderID']) {
-							// if ($row['siteGenderID'] == 1) { $genderName = ' Boys';
-							// } else { $genderName = ' Girls'; }
-							// $divisionName = $row['divisionName'] . $genderName;
-							// if (!array_key_exists($divisionID, $eventSite->getDivisions())) {
-								// $eventSite->pushDivisions(new Division(
-									// $divisionID,
-									// $divisionName,
-									// $row['minPop'],
-									// $row['pre24Name']
-								// ), $divisionID);
-							// }
-						// } else {
-								// // if not soccer, do it normal
-							// if (!array_key_exists($divisionID, $eventSite->getDivisions())) {
-								// $eventSite->pushDivisions(new Division(
-									// $divisionID,
-									// $divisionName,
-									// $row['minPop'],
-									// $row['pre24Name']
-								// ), $divisionID);
-							// }
-						// }
-	
-						// if ($row['schoolName'] && $row['messageOrderID']) {
-							// $mOrder = new MessageOrder(
-								// $row['messageOrderID'],
-								// $row['schoolOrderID'],
-								// $row['genderID'],
-								// $row['genderName'],
-								// new SizeList($row['s'], $row['m'], $row['l'], $row['xl'], $row['xxl'], $row['xxxl']),
-								// $row['endedBy'],
-								// $row['endText'],
-								// $row['fileName'],
-								// $row['endDate']
-							// );					
-							
-								// // easy reference
-							// $division = &$eventSite->getDivisions()[$divisionID];
-							
-		// // if ($row['schoolID'] == 154) 
-			// // Test::logX([$row['divisionID'], $row['schoolID']]);
-		
-		
-							// if (!array_key_exists($row['schoolName'], $division->getSchoolOrders())) {
-								// $division->pushSchoolOrders(new SchoolOrder(
-									// $row['eventID'],
-									// null,		// null the division, no circular references
-									// new School($row['schoolID'], $row['schoolName'], null, null),	// no division or district
-									// $mOrder,
-									// $row['isDone'],
-									// $row['addedS'],
-									// $row['addedM'],
-									// $row['addedL'],
-									// $row['addedXL'],
-									// $row['addedXXL'],
-									// $row['addedXXXL'],
-									// $row['due'],
-									// $row['paid'],
-									// $row['schoolOrderID'],
-									// $row['schoolOrderNote'],
-									// $row['invoiceSent'],
-								// ), $row['schoolName']);
-							// } else {
-								// $division->getSchoolOrders()[$row['schoolName']]->pushMessageOrders($mOrder);
-							// }
-						// }
-					// }
-				// }
-				
-			// }
-			
-			// $event = new Event(
-				// $rows[0]['eventID'], 
-				// null,
-				// $rows[0]['eventYear'],
-				// $rows[0]['startDate'],
-				// $rows[0]['endDate']
-			// );
-			// $event->setSports($sports);
-			// return $event;
-		// }
-	// }
 	
 	// static function getEventsByYear($year) {
 		// $db = Database::getDB();

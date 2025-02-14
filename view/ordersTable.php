@@ -18,46 +18,41 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach ($schoolOrders as $order) : 
-					// variables for ease
-				$isDone = $order->getIsDone();
-					// $isDone can be 0, 1, or 2: undone, done, or partial
-				if ($isDone == 0) {
-					$trClass = 'unDoneRow';
-				} elseif ($isDone == 1) {
-					$trClass = 'doneRow';
-				} elseif ($isDone == 2) {
-					$trClass = 'partDoneRow';
-				}
-				$hasAddOns = false;
-				$addRowClass = "hidden";
-				$orderID = $order->getSchoolOrderID();
-				$checkID = "check" . $orderID;
-				$schoolName = $order->getSchool()->shortName;
-					// dashes are easier to identify in a field of numbers than zeros. replace zeros with dashes
-					// style rows based on additions
-				if ($order->getAddedTotal() > 0) {
-					$hasAddOns = true;
-					$addRowClass = "";
-				} 
-			?>
+<?php foreach ($schoolOrders as $order) : 
+		// variables for ease
+	$isDone = $order->isDone;
+		// $isDone can be 0, 1, or 2: undone, done, or partial
+	if ($isDone == 0) {
+		$trClass = 'unDoneRow';
+	} elseif ($isDone == 1) {
+		$trClass = 'doneRow';
+	} elseif ($isDone == 2) {
+		$trClass = 'partDoneRow';
+	}
+	$hasAddOns = false;
+	$orderID = $order->id;
+	$checkID = "check" . $orderID;
+	$schoolName = $order->school->shortName;
+	$teamShirts = $order->teamShirts['Adult Hoods']->getSizes();
+	$rowspan = count($order->addedShirts) + 1;
+?>
 				<tbody id="row<?php echo $orderID; ?>" class="<?php echo $trClass;?>" 
 						data-schoolOrderID="<?php echo $orderID; ?>"
-						data-messageOrderText="<?php echo $order->getMessageOrderText(); ?>">
+						data-messageOrderText="<?php echo $order->getMessageOrdersText(); ?>">
 					<tr>
 						<td title="<?php echo $order->getMessageFileNames() ?>"><?php echo $schoolName; ?></td>
-						<td title="S"><?php echo $order->getTeamDisplaySize('s'); ?></td>
-						<td title="M"><?php echo $order->getTeamDisplaySize('m'); ?></td>
-						<td title="L"><?php echo $order->getTeamDisplaySize('l'); ?></td>
-						<td title="XL"><?php echo $order->getTeamDisplaySize('xl'); ?></td>
-						<td title="2X"><?php echo $order->getTeamDisplaySize('xxl'); ?></td>
-						<td title="3X"><?php echo $order->getTeamDisplaySize('xxxl'); ?></td>
-						<td title="total"><?php echo $order->getTeamDisplayTotal(); ?></td>
+						<td title="S"><?= isset($teamShirts['S']) ? $teamShirts['S']->getQuantity() : '-'; ?></td>
+						<td title="M"><?= isset($teamShirts['M']) ? $teamShirts['M']->getQuantity() : '-'; ?></td>
+						<td title="L"><?= isset($teamShirts['L']) ? $teamShirts['L']->getQuantity() : '-'; ?></td>
+						<td title="XL"><?= isset($teamShirts['XL']) ? $teamShirts['XL']->getQuantity() : '-'; ?></td>
+						<td title="2X"><?= isset($teamShirts['2XL']) ? $teamShirts['2XL']->getQuantity() : '-'; ?></td>
+						<td title="3X"><?= isset($teamShirts['3XL']) ? $teamShirts['3XL']->getQuantity() : '-'; ?></td>
+						<td title="total"><?= $order->getTeamTotal(); ?></td>
 							<?php // a cell to hold action buttons ?>
-						<td rowspan="2">
-							<?php if (!$hasAddOns) : ?>
+						<td rowspan="<?= $rowspan ?>">
+		<?php if (!$hasAddOns) : ?>
 							<span class="material-icons clickable" title="add add ons">add</span>
-							<?php endif; ?>
+		<?php endif; ?>
 							<span class="material-icons clickable" title="edit the sizes">edit</span>
 							<span class="material-icons clickable" title="view the original message">article</span>
 							<span class="material-icons clickable" title="print box label">print</span>
@@ -66,18 +61,22 @@
 									<?php if ($isDone == 1) echo "checked"; ?>/>
 						</td>
 					</tr>
-					<tr class="addOnRow <?php echo $addRowClass; ?>">
-						<td>add ons</td>
-						<td title="S"><?php echo $order->getAddedS(); ?></td>
-						<td title="M"><?php echo $order->getAddedM(); ?></td>
-						<td title="L"><?php echo $order->getAddedL(); ?></td>
-						<td title="XL"><?php echo $order->getAddedXL(); ?></td>
-						<td title="2X"><?php echo $order->getAddedXXL(); ?></td>
-						<td title="3X"><?php echo $order->getAddedXXXL(); ?></td>
-						<td title="total"><?php echo $order->getAddedTotal(); ?></td>
+		<?php if (!empty($order->addedShirts['Adult Hoods'])) : 
+			$addedHoods = $order->addedShirts['Adult Hoods']->getSizes();
+		?>
+					<tr class="addOnRow">
+						<td>added hoods</td>
+						<td title="S"><?= isset($addedHoods['S']) ? $addedHoods['S']->getQuantity() : ''; ?></td>
+						<td title="M"><?= isset($addedHoods['M']) ? $addedHoods['M']->getQuantity() : ''; ?></td>
+						<td title="L"><?= isset($addedHoods['L']) ? $addedHoods['L']->getQuantity() : ''; ?></td>
+						<td title="XL"><?= isset($addedHoods['XL']) ? $addedHoods['XL']->getQuantity() : ''; ?></td>
+						<td title="2X"><?= isset($addedHoods['2XL']) ? $addedHoods['2XL']->getQuantity() : ''; ?></td>
+						<td title="3X"><?= isset($addedHoods['3XL']) ? $addedHoods['3XL']->getQuantity() : ''; ?></td>
+						<td title="total"><?php echo $order->getAddedHoodsTotal(); ?></td>
 					</tr>
 				</tbody>
-			<?php endforeach; ?>
+		<?php endif; ?>
+	<?php endforeach; ?>
 		</tbody>
 	</table>
 </div>

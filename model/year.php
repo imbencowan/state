@@ -62,6 +62,24 @@ class Year implements JsonSerializable {
    // public function setEvent($value) { $this->events = $value; }
 	public function pushEvent($value) { $this->events[$value->getEventID()] = $value; }
 	
+	static function convertDateToSchoolYear(DateTime $date) {
+		$defaultMonth = 6;
+		$defaultStartDay = 16;
+		$defaultEndDay = 15;
+		
+		$year = $date->format('y');
+			// if the $date is in the first 'half' of the year, -1 from the '$year'.
+		if ($date->format('m') < $defaultMonth || 
+				($date->format('m') == $defaultMonth && $date->format('d') <= $defaultEndDay)) {
+			$year -= 1;
+		}
+		return $year;
+	}
+	
+	
+	
+	
+	
 	//////////////////////////////////////////////////
    // DB Functions
 	

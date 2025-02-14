@@ -27,7 +27,7 @@ class MessageOrder extends BasicTableModel {
       public readonly string $orderText,
       public readonly ?string $fileName,
       string|DateTime $orderDate, 
-		private array $teamShirts = []
+		public readonly array $teamShirts = []
    ) {
 		$this->orderDate = is_string($orderDate) ? new DateTime($orderDate) : $orderDate;
 	}

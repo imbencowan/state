@@ -12,30 +12,50 @@ class EventSiteDivision extends BasicTableModel {
 		return [new Relation('division', 'Division', 'divisionID'), 
 					new Relation('schoolOrders', 'SchoolOrder', 'eventSiteHasDivisionID', true)
 		];}
+		
+	public readonly ?string $name;
+	public readonly array $schoolOrders;
 	
 	public function __construct(
       public readonly int $id,
       public readonly int $eventSiteID,
       public readonly Division $division,
 			// default empty array
-		private array $schoolOrders = []
-   ) {}
+		array $schoolOrders = []
+   ) {
+		$this->name = $division->name;
+		$this->schoolOrders = self::organizeSchoolOrders($schoolOrders);
+	}
 		
-		// over ride base class method to include private properties
-   public function jsonSerialize(): array {
-      return [
-         'id' => $this->id,
-         'eventSiteID' => $this->eventSiteID,
-         'division' => $this->division,
-         'schoolOrders' => $this->schoolOrders
-      ];
-   }
+		// // over ride base class method to include private properties
+   // public function jsonSerialize(): array {
+      // return [
+         // 'id' => $this->id,
+         // 'eventSiteID' => $this->eventSiteID,
+         // 'division' => $this->division,
+         // 'schoolOrders' => $this->schoolOrders
+      // ];
+   // }
 
-	public function getSchoolOrders() { return $this->schoolOrders; }
-		// public function setSchoolOrders(array $value) { $this->schoolOrders[] = $value; }
-	public function pushSchoolOrders($value, $key = null) { 
-		if ($key === null) $this->schoolOrders[] = $value; 
-		else $this->schoolOrders[$key] = $value;
+	// 	// returns the sent array keyed and sorted
+	private static function organizeSchoolOrders($orders) {
+		$organized = [];
+		foreach ($orders as $order) {
+			$organized[$order->school->shortName] = $order;
+		}
+		ksort($organized);
+		return $organized;
+	}
+	
+	
+	//////////////////////////////////////////////////////
+	// Database functions	
+	public static function getIDByEventAndDivision($eventID, $divisionID) {
+		$query = "SELECT eventSiteHasDivisionID FROM eventSiteHasDivision 
+					INNER JOIN eventSites ON eventSites.eventSiteID = eventSiteHasDivision.eventSiteID 
+					WHERE eventID = :eventID AND divisionID = :divisionID";
+		$rows = static::getFromDB($query, [':eventID' => $eventID, ':divisionID' => $divisionID]);
+		return !empty($rows) ? $rows[0]['eventSiteHasDivisionID'] : null;
 	}
 }
 ?>

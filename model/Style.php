@@ -14,11 +14,28 @@ class Style extends BasicTableModel {
 		// no relations
 	protected static function getRelations(): array { return []; }
 	
+	
 	public function __construct(
       public readonly int $id,
       public readonly ?string $name,
       public readonly ?string $shortName,
       public readonly ?string $code,
-		public readonly int $brandID
+		public readonly int $brandID,
+		private array $sizes = []
    ) {}
+	
+	public function jsonSerialize(): array {
+		return [
+			'id' => $this->id,
+			'name' => $this->name,
+			'shortName' => $this->shortName,
+			'code' => $this->code,
+			'brandID' => $this->brandID,
+			'sizes' => $this->sizes
+		];
+	}
+	
+	
+	public function getSizes() { return $this->sizes; }
+   public function pushSizes($value) { $this->sizes[$value->charName] = $value; }
 }

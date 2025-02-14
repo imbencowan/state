@@ -1,40 +1,7 @@
 IMMEDIATE NEXT
 
-
-// i think i can make getting all orders for an event work by adding an EventSiteDivision class that extends Division to give it 
-	// different relations, and then giving the schoolOrders table an eventSiteID or eventSiteDivionsID to allow the db relations 
-	// to correspond to the object hierarchy
-		// Event								:events
-			// Sport								:sports
-			// EventSite						:eventsites
-				// Site								:sites
-				// Vehicle							:vehicles
-				// Employee							:employees
-				// EventSiteDivision				:eventsitehasdivision
-					// Division							:divisions
-					// SchoolOrder						:schoolorders
-						// School							:schools
-							// Division							:divisions
-							// District							:districts
-						// SOrderItem						:sorderitems
-							// Item								:items
-								// Style								:styles
-								// Size								:sizes
-								// Color								:color
-						//MessageOrder						:messageorders
-							// MOrderItem						:morderitems
-								// Item								:items
-									// Style								:styles
-									// Size								:sizes
-									// Color								:color
-
-
-MOrderItems and SorderItems are functional. we can now get all SchoolOrders from a db call
-that means it's time to update EventSite and Event so that we can make our sport pages start working again
-
-	then we'll need to fix our add order functions
-		// i'll probably want to intstitute a way to select which relations to utilize
-			// so an event can get all it's associated orders, or just it's basic info. 
+	need to fix our add order functions
+		
 	
 	then we can work on our pdf generation
 	
@@ -43,8 +10,14 @@ that means it's time to update EventSite and Event so that we can make our sport
 		// later tater
 	allow manual entry of an order from a sport page
 	
-	
-worry about soccer's girls and boys sites later, 
+// SOME DAY
+	improve context
+	// i'll probably want to intstitute a way to select which relations to utilize
+			// so an event can get all it's associated orders, or just it's basic info. 
+	worry about soccer's girls and boys sites later
+	worry about selecting the right golf by sport and year
+		// potentially we could do this by returning both Events, and pushing one's divisions to the other's, if they're different
+			// or just getting one that is closest in time, depending on context
 	
 20250207 179 kb
 20250210 165 kb
@@ -104,15 +77,6 @@ Try recursive joins for deep relationships.
 Implement lazy loading via __get().
 Optimize query performance with caching.
 Add filtering/sorting to avoid unnecessary queries.
-
-
-
-
-
-
-
-
-
 
 
 

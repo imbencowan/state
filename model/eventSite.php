@@ -19,26 +19,28 @@ class EventSite extends BasicTableModel {
 					new Relation('employees', 'Employee', 'eventSiteID', true, 'eventSiteHasEmployee')];
    }
 	
+	public readonly array $divisions;
+	
 	public function __construct(
       public readonly int $id,
       public readonly int $eventID,
       public readonly ?Site $site,
       public readonly ?string $managerName,
       public readonly ?Vehicle $vehicle,
-		private array $divisions = [],
-		private array $employees = []
-   ) {}
+		array $divisions = [],
+		public readonly array $employees = []
+   ) {
+		$this->divisions = self::organizeDivisions($divisions);
+	}
 	
-	public function jsonSerialize(): mixed {
-		return [
-			'id' => $this->id,
-			'eventID' => $this->eventID,
-			'site' => $this->site,
-			'managerName' => $this->managerName,
-			'vehicle' => $this->vehicle,
-			'divisions' => $this->divisions,
-			'employees' => $this->employees
-		];
+		// returns the sent array keyed and sorted
+	private static function organizeDivisions($divisions) {
+		$organized = [];
+		foreach ($divisions as $division) {
+			$organized[$division->name] = $division;
+		}
+		krsort($organized);
+		return $organized;
 	}
 	
 }
@@ -85,8 +87,6 @@ class EventSite extends BasicTableModel {
 		// return implode(', ', $employeeNames); 
 	// }
 
-	// public function getEvent() { return $this->event; }
-	// public function setEvent($value) { $this->event = $value; }
 
 
 	// ////////////////////////////////////////////////

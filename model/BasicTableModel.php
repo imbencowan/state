@@ -26,7 +26,7 @@ abstract class BasicTableModel implements JsonSerializable {
       return get_object_vars($this);
    }
 	
-		// builds a new object from a $row returned from a db call
+		// builds a new object from $rows returned from a db call
 			// we have to screw with prefixes to deconstruct unique column aliases in $row['keys']
 	public static function buildFromRow(array $rows, string $colPrefix = ''): mixed { // ?static {
 		if (empty($rows)) return null;
@@ -55,12 +55,6 @@ abstract class BasicTableModel implements JsonSerializable {
 	
 					// Group related objects by their primary key ($rows, $rowKey)
 				$relatedGrouped = self::groupRowsByKey($rows, $relColPrefix . $relationPK);
-				// $relatedGrouped = [];
-				// foreach ($rows as $row) {
-					// if (!isset($row[$colPrefix . $relation->matchKey])) continue;
-					// $relatedKey = $row[$relColPrefix . $relationPK];
-					// $relatedGrouped[$relatedKey][] = $row;
-				// }
 				
 					// Recursively process related entities
 				foreach ($relatedGrouped as $relatedRows) {
@@ -92,6 +86,16 @@ abstract class BasicTableModel implements JsonSerializable {
 			  $grouped[$key][] = $row;
 		 }
 		 return $grouped;
+	}
+	
+		// returns the sent array keyed by element's name property and sorted
+	protected static function organizeArray($arr): array {
+		$organized = [];
+		foreach ($arr as $a) {
+			$organized[$a->name] = $a;
+		}
+		ksort($organized);
+		return $organized;
 	}
 
 	
@@ -152,11 +156,21 @@ abstract class BasicTableModel implements JsonSerializable {
 		return !empty($rows) ? static::groupAndBuild($rows)[$id] : null;
 	}
 	
+		// If the subclass doesn't have a 'name' property, return null. otherwise, get wild.
+	public static function getIDByName(string $name): ?int {
+		if (!array_key_exists('name', static::getColumns())) return null;
+		$nameCol = static::getColumns()['name'];
+		$idCol = static::getColumns()['id'];
+		$query = static::buildSelect() . " WHERE " . $nameCol . " = :name";
+		$rows = static::getFromDB($query, [':name' => $name]);
+		return !empty($rows) ? $rows[0][static::getTableName() . "_$idCol"] : null;
+	}
+
+	
 		// a helper for various get()s. takes a $query and $params, and makes the actual call
 	protected static function getFromDB(string $query, array $params = []): array {
 		$db = Database::getDB();
 		$statement = $db->prepare($query);
-
 		foreach ($params as $key => $value) {
 			$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
 		}

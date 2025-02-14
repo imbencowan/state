@@ -7,16 +7,11 @@ class SOrderItem extends BasicTableModel {
    protected static function getColumns(): array { 
 		return ['id' => 'sOrderItemsID', 
 					'schoolOrderID' => 'schoolOrderID', 
-						// to avoid extraneous data, we could change the 'item' property to 'size', and just capture 
-							// the item's size in the constructor
-								// i think
-							// or just make 'item' not be a property, but a parameter in the constructor that is 
-								// translated in to the size property
 					'item' => 'itemID', 
 					'quantity' => 'sOrderItemsQuantity']; 
 	}
 		// defined as: new Relation($property, $class, $foreignKey, $isMany)
-		// Item only, no circular reference
+			// Item only, no circular reference
 	protected static function getRelations(): array {
       return [new Relation('item', 'Item', 'itemID', false)];
    }

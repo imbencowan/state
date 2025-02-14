@@ -20,13 +20,6 @@ class InputOrder {
 	}
 }
 
-class AddOrdersRequest {
-	constructor(orders) {
-		this.action = 'addOrders';
-		this.orders = orders;
-	}
-}
-
 class ChangeDoneRequest {
 	constructor(id, isDone) {
 		this.action = 'changeOrderDone';
@@ -217,7 +210,8 @@ async function submitOrderFiles() {
     }
 		// read the files and build orders from them
 	let orders = await readFiles(files);
-	let request = new AddOrdersRequest(orders);
+	let request = new ActionRequest('uploadOrders', 'SchoolOrder', { 'orders': orders });
+	// constructor(action, actionClass, data)
 	let responseJSON = await myFetch(request);
 	document.getElementById("display").innerHTML = responseJSON.html;
 }	
@@ -313,7 +307,6 @@ async function changeOrderDone(id) {
 	let isDone = document.getElementById('check' + id).checked;
 	let row = document.getElementById('row' + id);
 	
-	// let request = new ChangeDoneRequest(id, isDone);
 	const data = {'id': id, 'isDone': isDone};
 	let request = new ActionRequest('changeOrderDone', 'SchoolOrder', data);
 	let responseJSON = await myFetch(request);

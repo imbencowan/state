@@ -1,32 +1,20 @@
-<div id="sportPage">
-<?php 
-	$sport = $event->sport->name;
-	$realYear = $event->startDate->format('Y');
-?>
+<div id="eventPage">
+
 		<h1>
-			<?php echo $sport . ' ' . $realYear;?>
+			<?= $event->sport->name . ' ' . $event->startDate->format('Y'); ?>
 			<button class="genPDFButton" data-btnType="genAllSoSPDF">Get All SoS</button>
 		</h1>
-<?php //	foreach ($sport->getEventSites() as $eventSite) : ?>
-			<h2>
-				<?php // echo $eventSite->getSite()->name; ?>
-				<button class="genPDFButton" data-btnType="genSoSPDF"	
-					data-eventSiteID="<?php // echo $eventSite->getEventSiteID(); ?>">Get SoS</button>
+<?php	foreach ($event->eventSites as $eventSite) : ?>
+			<h2><?= $eventSite->site->name; ?>
+	<?php if (count($event->eventSites) > 1) : ?>
+				<button class="genPDFButton" data-btnType="genSoSPDF"	data-eventSiteID="<?= $eventSite->id; ?>">Get SoS</button>
+	<?php endif; ?>
 			</h2>
-<?php		
-			// $divisions = $eventSite->getDivisions();
-			// krsort($divisions);
-			// foreach($divisions as $division) : 
-?>
-				<h3><?php // echo $division->name; ?></h3>
-<?php	
-				// $schoolOrders = $division->getSchoolOrders();
-				// ksort($schoolOrders);
-				// if ($schoolOrders) include 'ordersTable.php';
- ?>
-<?php
-
-			// endforeach;
-		// endforeach;
+<?php		foreach($eventSite->divisions as $division) : ?>
+				<h3><?= $division->name; ?></h3>
+<?php			$schoolOrders = $division->schoolOrders;
+				if ($schoolOrders) include 'ordersTable.php';
+			endforeach;
+		endforeach;
 ?>
 </div>

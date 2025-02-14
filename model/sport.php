@@ -26,5 +26,15 @@ class Sport extends BasicTableModel {
       public readonly ?int $maxTeamSize,
       public readonly int $minDiv
    ) {}
+	
+
+
+	//////////////////////////////////////////////////////
+	// Database functions	
+	public static function getByName($name) {
+		$query = static::buildSelect() . " WHERE sportName = :name";
+		$rows = static::getFromDB($query, [':name' => $name]);
+		return !empty($rows) ? static::buildFromRow($rows) : null;
+	}
 }
 ?>
