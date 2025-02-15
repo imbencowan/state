@@ -13,7 +13,7 @@ class Vehicle extends BasicTableModel {
 	protected static function getRelations(): array { return []; }
 	
 	public function __construct(
-      public readonly int $id,
+      public readonly ?int $id,
       public readonly ?string $name,
       public readonly ?string $isUnique
    ) {}

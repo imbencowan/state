@@ -17,10 +17,10 @@ class MessageOrder extends BasicTableModel {
 	protected static function getRelations(): array { return [new Relation('teamShirts', 'MOrderItem', 'messageOrderID', true)]; }
 	
 	
-	public readonly DateTime $orderDate;
+	public readonly string $orderDate;
 	
 	public function __construct(
-      public readonly int $id,
+      public readonly ?int $id,
       public readonly int $schoolOrderID,
       public readonly int $genderID,
       public readonly string $orderedBy,
@@ -29,7 +29,7 @@ class MessageOrder extends BasicTableModel {
       string|DateTime $orderDate, 
 		public readonly array $teamShirts = []
    ) {
-		$this->orderDate = is_string($orderDate) ? new DateTime($orderDate) : $orderDate;
+		   $this->orderDate = $orderDate instanceof DateTime ? $orderDate->format('Y-m-d H:i:s') : $orderDate;
 	}
 	
 	public function jsonSerialize(): mixed {
@@ -51,6 +51,27 @@ class MessageOrder extends BasicTableModel {
 	// public function setTeamShirts(array $value) { $this->teamShirts[] = $value; }
 		// key the array for ease of access
 	public function pushTeamShirtss($value) { $this->teamShirts[$value->id] = $value; }
+	
+	
+	
+	
+	//////////////////////////////////////////////////////
+	// Database functions	
+	public static function getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID) {
+		$query = "SELECT schoolOrderID FROM schoolorders 
+					WHERE eventSiteHasDivisionID = :eshdID AND schoolID = :schoolID";
+		$rows = static::getFromDB($query, [':eshdID' => $eshdID, ':schoolID' => $schoolID]);
+		return !empty($rows) ? $rows : null;
+	}
+	
+	
+	
+	public static function getIDBySchoolOrderIDAndGenderID($schoolOrderID, $genderID) {
+		$query = "SELECT messageOrderID FROM messageorders 
+					WHERE schoolOrderID = :schoolOrderID AND genderID = :genderID";
+		$rows = static::getFromDB($query, [':schoolOrderID' => $schoolOrderID, ':genderID' => $genderID]);
+		return !empty($rows) ? $rows[0]['messageOrderID'] : null;
+	}
 	
 }
 ?>

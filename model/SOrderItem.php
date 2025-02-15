@@ -17,7 +17,7 @@ class SOrderItem extends BasicTableModel {
    }
 	
 	public function __construct(
-      public readonly int $id,
+      public readonly ?int $id,
       public readonly int $schoolOrderID,
       public readonly ?Item $item,
       public readonly int $quantity

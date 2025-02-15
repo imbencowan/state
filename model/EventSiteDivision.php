@@ -17,7 +17,7 @@ class EventSiteDivision extends BasicTableModel {
 	public readonly array $schoolOrders;
 	
 	public function __construct(
-      public readonly int $id,
+      public readonly ?int $id,
       public readonly int $eventSiteID,
       public readonly Division $division,
 			// default empty array

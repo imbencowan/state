@@ -18,7 +18,7 @@ abstract class BasicTableModel implements JsonSerializable {
    protected static function getRelations(): array { return []; }	
 	
 		// basic constructor. every child will have an $id and $name
-	public function __construct(public readonly int $id, public readonly ?string $name) {}
+	public function __construct(public readonly ?int $id, public readonly ?string $name) {}
 
 		// get_object_vars() here will serializes all public properties.
 			// over ride as needed, eg for private properties, or formatted data
@@ -100,32 +100,37 @@ abstract class BasicTableModel implements JsonSerializable {
 
 	
 
-   //////////////////////////////////////////////////
+   ////////////////////////////////////////////////////////////////////////////////////
+   ////////////////////////////////////////////////////////////////////////////////////
    // Database functions
 	
-	public static function addToDB(array $data): ?int {
-      $db = Database::getDB();
-			// Ensure only valid columns are used
-		$validColumnNames = array_intersect_key(static::getColumns(), $data);
-      $validColumns = array_intersect_key($data, static::getColumns());
+	public function addToDB(): ?int {
+		$db = Database::getDB();
+		
+			// get object properties
+		$instanceData = get_object_vars($this);
+			// Remove 'id' so the db can auto set it
+		unset($instanceData['id']);
+			// match columns to properties
+		$validColumns = array_intersect_key($instanceData, static::getColumns());
 			// Avoid inserting nothing
-      if (empty($validColumns)) return null; 
+		if (empty($validColumns)) return null; 
+			// Build substrings for the query
+		$columns = implode(', ', array_keys($validColumns));
+		$placeholders = implode(', ', array_map(fn($col) => ":$col", array_keys($validColumns)));
 
-			// build a couple subStrings to be combined in the $query
-      $columns = implode(', ', $validColumnNames);
-      $placeholders = implode(', ', array_map(fn($col) => ":$col", array_keys($validColumns)));
+		$query = "INSERT INTO " . static::getTableName() . " ($columns) VALUES ($placeholders)";		
+		
+		$statement = $db->prepare($query);
+			// bind the values to be inserted
+		foreach ($validColumns as $column => $value) {
+			$statement->bindValue(":$column", $value);
+		}
 
-      $query = "INSERT INTO " . static::getTableName() . " ($columns) VALUES ($placeholders)";
-      $statement = $db->prepare($query);
-			
-			// dynamically bind the values to be inserted
-      foreach ($validColumns as $column => $value) {
-         $statement->bindValue(":$column", $value);
-      }
+		$statement->execute();
+		return $db->lastInsertId();
+	}
 
-      $statement->execute();
-      return $db->lastInsertId();
-   }
 	
 	public static function deleteByID(int $id): bool {
 		$db = Database::getDB();
@@ -232,7 +237,6 @@ abstract class BasicTableModel implements JsonSerializable {
 				$tableAlias = $prefix . $relatedTable;
 				$joins[] = self::writeJoin($relatedTable, $tableAlias, $priorAlias, $relatedClass::getPrimaryKey());
 			} else {
-// Test::logX($relatedClass, $relatedTable);
 				$tableAlias = $prefix . $relatedTable;
 				$joins[] = self::writeJoin($relatedTable, $tableAlias, $oldAlias, $matchKey);
 			}

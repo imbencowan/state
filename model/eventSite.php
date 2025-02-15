@@ -22,7 +22,7 @@ class EventSite extends BasicTableModel {
 	public readonly array $divisions;
 	
 	public function __construct(
-      public readonly int $id,
+      public readonly ?int $id,
       public readonly int $eventID,
       public readonly ?Site $site,
       public readonly ?string $managerName,

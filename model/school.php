@@ -21,7 +21,7 @@ class School extends BasicTableModel {
 	public readonly string $shortName;
 	
 	public function __construct(
-      public readonly int $id,
+      public readonly ?int $id,
       public readonly ?string $name,
       public readonly ?Division $division,
       public readonly ?District $district

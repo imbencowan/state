@@ -19,7 +19,7 @@ class Sport extends BasicTableModel {
    }
 	
 	public function __construct(
-      public readonly int $id,
+      public readonly ?int $id,
       public readonly ?string $name,
       public readonly bool $isGendered = false,
       public readonly bool $isIndividualed = false,

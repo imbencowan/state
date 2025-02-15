@@ -23,10 +23,26 @@ class MOrderItem extends BasicTableModel {
    }
 	
 	public function __construct(
-      public readonly int $id,
+      public readonly ?int $id,
       public readonly int $messageOrderID,
       public readonly ?Item $item,
       public readonly int $quantity
    ) {}
+	
+	
+	
+	public static function addNewMOrderItem($messageOrderID, $itemID, $quantity) {
+	  $db = Database::getDB();
+	  $query = "INSERT INTO morderitems (messageOrderID, itemID, mOrderItemsQuantity) 
+					VALUES (:messageOrderID, :itemID, :quantity)";
+
+	  $stmt = $db->prepare($query);
+	  $stmt->bindValue(':messageOrderID', $messageOrderID);
+	  $stmt->bindValue(':itemID', $itemID);
+	  $stmt->bindValue(':quantity', $quantity);
+
+	  $stmt->execute();
+	  return $db->lastInsertId();
+	}
 }
 ?>

@@ -33,7 +33,8 @@
 	$orderID = $order->id;
 	$checkID = "check" . $orderID;
 	$schoolName = $order->school->shortName;
-	$teamShirts = $order->teamShirts['Adult Hoods']->getSizes();
+		// the if shouldn't be necessary
+	if (!empty($order->teamShirts['Adult Hoods'] ?? null)) $teamShirts = $order->teamShirts['Adult Hoods']->getSizes();
 	$rowspan = count($order->addedShirts) + 1;
 ?>
 				<tbody id="row<?php echo $orderID; ?>" class="<?php echo $trClass;?>" 
@@ -61,7 +62,7 @@
 									<?php if ($isDone == 1) echo "checked"; ?>/>
 						</td>
 					</tr>
-		<?php if (!empty($order->addedShirts['Adult Hoods'])) : 
+		<?php if (!empty($order->addedShirts['Adult Hoods'] ?? null)) : 
 			$addedHoods = $order->addedShirts['Adult Hoods']->getSizes();
 		?>
 					<tr class="addOnRow">

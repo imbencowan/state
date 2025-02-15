@@ -20,7 +20,7 @@ class Item extends BasicTableModel {
    }
 	
 	public function __construct(
-      public readonly int $id,
+      public readonly ?int $id,
       public readonly ?Style $style,
       public readonly ?Size $size,
       public readonly ?Color $color,

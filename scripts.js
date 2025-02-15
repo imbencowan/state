@@ -20,14 +20,6 @@ class InputOrder {
 	}
 }
 
-class ChangeDoneRequest {
-	constructor(id, isDone) {
-		this.action = 'changeOrderDone';
-		this.orderID = id;
-		this.isDone = isDone;
-	}
-}
-
 class AddAddOnsRequest {
 	constructor(schoolOrderID, sizes) {
 		this.action = 'updateAddOns';
@@ -302,7 +294,7 @@ function getSizes(inputString) {
 	return sizes;
 }
 
-	// marks an order as complete
+	// toggles an order as done / not done
 async function changeOrderDone(id) {
 	let isDone = document.getElementById('check' + id).checked;
 	let row = document.getElementById('row' + id);
@@ -364,45 +356,66 @@ function showOMessage(mText) {
 
 function showAddOnInputs(orderID) {
 		// Find the parent element with the specified data attribute
-	const parent = document.querySelector(`[data-schoolOrderID="${orderID}"]`);
-	if (parent) {
-			// Get the second child of the parent. this will be the add ons tr
-		const secondChild = parent.children[1];
-		if (secondChild) {
-			secondChild.classList.remove('hidden');
-				// Get all <td> elements in the second row
-			const cells = secondChild.querySelectorAll('td');
-
-			if (cells.length >= 8) {
-					// Add number inputs to the 2nd - 7th <td>
-				for (let i = 1; i <= 6; i++) {
-					cells[i].classList.add('tdWithInput');
-					const input = document.createElement('input');
-					input.type = 'number';
-					input.name = `addOn${i}`;
-					input.min = 0; // Optional: Minimum value for the input
-					input.max = 99;
-					cells[i].innerHTML = '';
-					cells[i].appendChild(input);
-				}
+	const prnt = document.querySelector(`[data-schoolOrderID="${orderID}"]`);
+	if (prnt) {
+			// count the tds in the first row
+		const firstTr = prnt.querySelector('tr');
 		
-				// Append a submit button to the text in the first <td>
-				const submitButton = document.createElement('button');
-				submitButton.type = 'button';
-				submitButton.textContent = 'Submit';
-				submitButton.classList.add('addOnSubmitButton'); // Add a class for styling
-				cells[7].innerHTML = '';
-				cells[7].appendChild(submitButton);
-				submitButton.addEventListener('click', () => { submitAddOns(orderID, secondChild); });
-			} else {
-				console.error(`Second child does not have enough <td> elements (expected at least 8).`);
-			}
-		} else {
-			console.error(`Second child not found for orderID: ${orderID}`);
+			// increase the button's rowcount
+		let lastTd = firstTr.querySelector('td:last-child');
+			// get the current rowcount, or default to 0
+		let currentValue = lastTd.getAttribute('rowspan');;
+			// Set the new value in the last <td>
+		lastTd.setAttribute('rowspan', 1 + +currentValue);
+		console.log(lastTd.getAttribute('rowspan'));
+		
+		const tdCount = firstTr ? firstTr.children.length : 0;
+
+		const newTr = document.createElement('tr');
+		newTr.classList.add('addOnRow');
+		const newTd = document.createElement('td');
+		newTd.textContent = 'Style';  
+		newTr.appendChild(newTd);
+		
+			// create the inputs
+		for (let i = 0; i < tdCount - 3; i++) {
+			const newTd = document.createElement('td');
+			const input = document.createElement('input');  
+			input.type = 'number';
+			input.name = `addOn${i}`;
+			input.min = 0;
+			input.max = 99;
+			newTd.appendChild(input);  
+			newTr.appendChild(newTd);  
 		}
+		
+			// put a submit button in the last <td>
+		lastTd = document.createElement('td');
+		const submitButton = document.createElement('button');
+		submitButton.type = 'button';
+		submitButton.textContent = 'Submit';
+		submitButton.classList.add('addOnButton');
+			// add an event listenter
+		submitButton.addEventListener('click', () => { submitAddOns(orderID, newTr); });
+		lastTd.appendChild(submitButton);
+		const cancelButton = document.createElement('button');
+		cancelButton.type = 'button';
+		cancelButton.textContent = 'X';
+		cancelButton.classList.add('addOnButton');
+			// add an event listenter
+		cancelButton.addEventListener('click', () => { cancelAddOns(orderID, newTr); });
+		lastTd.appendChild(cancelButton);
+		newTr.appendChild(lastTd);
+		
+			// Append the newly created <tr> to the <prnt>
+		prnt.appendChild(newTr);
 	} else {
 		console.error(`Element with data-schoolOrderID="${orderID}" not found.`);
 	}
+}
+
+function cancelAddOns(orderID, row) {
+	row.remove(); 
 }
 
 async function submitAddOns(orderID, row) {

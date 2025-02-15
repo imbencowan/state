@@ -16,7 +16,7 @@ class Style extends BasicTableModel {
 	
 	
 	public function __construct(
-      public readonly int $id,
+      public readonly ?int $id,
       public readonly ?string $name,
       public readonly ?string $shortName,
       public readonly ?string $code,

@@ -1,6 +1,6 @@
 IMMEDIATE NEXT
 
-	need to fix our add order functions
+	need to fix our add order functions in SchoolOrder
 		
 	
 	then we can work on our pdf generation

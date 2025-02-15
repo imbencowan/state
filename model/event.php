@@ -22,7 +22,7 @@ class Event extends BasicTableModel {
 	public readonly array $eventSites;
 	
 	public function __construct(
-      public readonly int $id,
+      public readonly ?int $id,
 		public readonly Sport $sport,
       string|DateTime $startDate, 
       string|DateTime $endDate, 
