@@ -4,7 +4,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 
-let stateData;
+let eventOrders;
+let sizeCodesByStyles;
+
 
 class InputOrder {
 		//we're using 'sport' in place of 'event' because event is a key word
@@ -17,14 +19,6 @@ class InputOrder {
 		this.fileName = fileName;
 		this.orderedBy = orderedBy;
 		this.orderText = orderText;
-	}
-}
-
-class AddAddOnsRequest {
-	constructor(schoolOrderID, sizes) {
-		this.action = 'updateAddOns';
-		this.schoolOrderID = schoolOrderID;
-		this.sizes = sizes;
 	}
 }
 
@@ -44,7 +38,13 @@ class ActionRequest {
 		this.data = data;
 	}
 }
-////////////////////////// this file was 698 lines before refactoring with ActionRequest
+
+class Coord{
+	constructor(x, y) {
+		this.x = x;
+		this.y = y;
+	}
+}
 
 const currentYear = 24;
 
@@ -83,10 +83,13 @@ let closeBtn;
 
 	// init is called onload() and does stuff after the script and html is in place
 		// importantly it adds event listeners after the elements exist
-function init() {
+async function init() {
 		// build the nav bar i guess
 	buildNavList();
 	buildNavList2();
+	
+	let request = new ActionRequest('loadSizeCodesByStyle', 'Item')
+	sizeCodesByStyles = await myFetch(request);
 	
 		// Get modal elements
 	modal = document.getElementById("myModal");
@@ -162,7 +165,8 @@ async function goToEventPage(sport) {
 	let request = new ActionRequest('showEvent', 'Event', data)
 
 	let responseJSON = await myFetch(request);
-	stateData = responseJSON.data;
+	eventOrders = responseJSON.data;
+	console.log(eventOrders);
 	document.getElementById("display").innerHTML = responseJSON.html;
 	
 	///// ATTACH EVENT LISTENERS /////////////////////////////////
@@ -178,10 +182,12 @@ async function goToEventPage(sport) {
 		const articleSpan = spans.find(span => span.innerHTML.trim() === 'article');
 		const addSpan = spans.find(span => span.innerHTML.trim() === 'add');
 		const editSpan = spans.find(span => span.innerHTML.trim() === 'edit');
+		const printSpan = spans.find(span => span.innerHTML.trim() === 'print');
 			// if found, add the event listeners to specific <span>s
 		if (articleSpan) articleSpan.addEventListener('click', () => {showOMessage(orderText); });
 		if (addSpan) addSpan.addEventListener('click', () => {showAddOnInputs(schoolOrderID); });
 		if (editSpan) editSpan.addEventListener('click', () => {showEditRowInputs(schoolOrderID); });
+		if (printSpan) printSpan.addEventListener('click', () => {printBoxLabel(schoolOrderID); });
 		
 	});
 		
@@ -189,6 +195,10 @@ async function goToEventPage(sport) {
 	const siteSoSButtons = document.querySelectorAll('[data-btnType="genSoSPDF"]');
 	siteSoSButtons.forEach(btn => {
 		btn.addEventListener('click', () => {genSoSPDF(); });
+	});
+	const siteBLButtons = document.querySelectorAll('[data-btnType="genBoxLabels"]');
+	siteBLButtons.forEach(btn => {
+		btn.addEventListener('click', () => {printBoxLabels(); });
 	});
 }
 
@@ -314,27 +324,6 @@ async function changeOrderDone(id) {
 	}
 }
 
-	//////////////////////////////////////////////////////////
-	// DON'T LEAVE THIS IN PRODUCTION
-	//////////////////////////////////////////////////////////
-async function showTable(item) {
-		// make sure we have the correct year
-	let year = currentYear;
-	if (document.getElementById("selectYear")) {
-		year = document.getElementById("selectYear").value;
-	}
-		// make sure we have an item
-	if (!item) {
-		if (document.getElementById("selectTable")) {
-			item = document.getElementById("selectTable").value;
-		} else {
-			item = "colors";
-		}
-	}
-	const data = {'table': item, 'year': year}
-	showPage('showTable', 'Test', data);
-}
-
 async function showPage(action, actionClass, data) {
 	let year = currentYear;
 	if (document.getElementById("selectYear")) {
@@ -380,11 +369,7 @@ function showAddOnInputs(orderID) {
 			// create the inputs
 		for (let i = 0; i < tdCount - 3; i++) {
 			const newTd = document.createElement('td');
-			const input = document.createElement('input');  
-			input.type = 'number';
-			input.name = `addOn${i}`;
-			input.min = 0;
-			input.max = 99;
+			const input = makeInput(i);
 			newTd.appendChild(input);  
 			newTr.appendChild(newTd);  
 		}
@@ -415,17 +400,32 @@ function showAddOnInputs(orderID) {
 }
 
 function cancelAddOns(orderID, row) {
+		// decrement the rowspan for the buttons td
+	const firstTr = row.parentElement.firstElementChild;
+   if (firstTr) {
+      const lastTd = firstTr.querySelector('td:last-child');
+      if (lastTd && lastTd.hasAttribute('rowspan')) {
+         let currentRowspan = parseInt(lastTd.getAttribute('rowspan'), 10);
+
+         if (!isNaN(currentRowspan) && currentRowspan > 1) {
+            lastTd.setAttribute('rowspan', currentRowspan - 1);
+         }
+      }
+   }
 	row.remove(); 
 }
 
 async function submitAddOns(orderID, row) {
-	console.log(`Submit button clicked for orderID: ${orderID}`);
+	// console.log(`Submit button clicked for orderID: ${orderID}`);
 		// get the size inputs, and their values
 	const inputs = row.querySelectorAll('input[type="number"]');
 	const sizes = Array.from(inputs).map(input => input.value);
-	console.log(sizes);
 	
-	let request = new AddAddOnsRequest(orderID, sizes);
+	const data = {'schoolOrderID': orderID, 'sizes': sizes };
+	console.log(data);
+	return;
+	
+	let request = new ActionRequest('updateAddOns', 'SchoolOrder', data);
 	let responseJSON = await myFetch(request);
 	
 	let total = 0;
@@ -478,11 +478,7 @@ function showEditRowInputs(orderID) {
 					const currentValue = cell.textContent.trim();
 						// Only add inputs to cells that have numeric values or are empty
 					// if (currentValue !== '') {
-						const input = document.createElement('input');
-						input.type = 'number';
-						input.name = `addOn${i}`;
-						input.min = 0; // Optional: Minimum value for the input
-						input.max = 99;
+						const input = makeInput(i);
 						input.value = currentValue; // Set initial value from current text in <td>
 						cell.innerHTML = ''; // Clear existing content
 						cell.appendChild(input);
@@ -490,7 +486,6 @@ function showEditRowInputs(orderID) {
 				}
 			}
       });
-
 			// Append a submit button to the second row (last cell of the second row)
       const submitButton = document.createElement('button');
       submitButton.type = 'button';
@@ -509,6 +504,15 @@ function showEditRowInputs(orderID) {
   } else {
     console.error(`Element with data-schoolOrderID="${orderID}" not found.`);
   }
+}
+
+function makeInput(i) {
+	input = document.createElement('input');
+						input.type = 'number';
+						input.name = `addOn${i}`;
+						input.min = 0; // Optional: Minimum value for the input
+						input.max = 99;
+	return input;
 }
 
 async function submitSizeEdits(orderID, teamRow, addOnRow) {
@@ -563,6 +567,131 @@ async function submitSizeEdits(orderID, teamRow, addOnRow) {
 }
 
 
+function printBoxLabels() {
+	let orders = [];
+	Object.values(eventOrders.eventSites).forEach(eventSite => {
+      Object.values(eventSite.divisions).forEach(division => {
+         Object.values(division.schoolOrders).forEach(schoolOrder => {
+            if (!schoolOrder.isDone || true) {
+					schoolOrder.division = division.name;
+					schoolOrder.site = eventSite.site.name;
+					schoolOrder.sport = eventOrders.sport.name;
+					orders.push(schoolOrder);
+            }
+         });
+      });
+   });
+	
+	const { jsPDF } = window.jspdf; 
+   const doc = new jsPDF('p', 'mm', 'letter');
+	let origin;
+	let i = 0;
+	let j = 0;
+	orders.forEach(order => {
+		origin = labelPage.labelOrigins[i];
+		console.log(origin, i);
+		genBoxLabel(doc, order, origin);
+		++i;
+		++j;
+		if (i == 6 && (j < orders.length)) {
+			doc.addPage();
+			i = 0;
+		}
+	});
+	
+		// Generate a Blob URL and open it in a new tab
+	const pdfBlob = doc.output("blob");
+	const url = URL.createObjectURL(pdfBlob);
+	window.open(url, "_blank", "noopener");
+}
+
+
+function printBoxLabel(orderID) {
+	orderID = Number(orderID);
+	let order;
+	Object.values(eventOrders.eventSites).forEach(eventSite => {
+      Object.values(eventSite.divisions).forEach(division => {
+         Object.values(division.schoolOrders).forEach(schoolOrder => {
+            if (schoolOrder.orderID === orderID) {
+               order = schoolOrder;
+					order.division = division.name;
+					order.site = eventSite.site.name;
+					order.sport = eventOrders.sport.name;
+            }
+         });
+      });
+   });
+	console.log(order);
+		// Access jsPDF from the global object
+	const { jsPDF } = window.jspdf; 
+   const doc = new jsPDF('p', 'mm', 'letter');
+	genBoxLabel(doc, order, labelPage.labelOrigins[0]);
+	
+		// Generate a Blob URL and open it in a new tab
+	const pdfBlob = doc.output("blob");
+	const url = URL.createObjectURL(pdfBlob);
+	window.open(url, "_blank", "noopener");
+}
+
+function genBoxLabel(doc, order, origin) {
+   
+	drawLabelRects(doc);
+	
+	const oX = origin.x;
+	const oY = origin.y;
+	const padding = 8;
+	const labelHeight = 85;
+	const indentX = oX + 21;
+	const lineSpace = 9;
+	const lineX = oX + 16;
+		// use lineY so forEach will work
+	let lineY = oY + 10;
+	
+	let txt = order.division + " - " + order.site;
+	let txtWdth = doc.getTextWidth(txt);
+	let rotY = oY + (labelHeight / 2) + (txtWdth / 2);
+		// rotate this first line
+	doc.setFontSize(14);
+   doc.text(txt, (oX + padding), rotY, {angle: 90});
+	
+		// start the normal rows
+   doc.text(order.sport, indentX, lineY);
+	doc.setFontSize(18);
+	lineY += 9;
+   doc.text(order.school.shortName, (lineX - 1), lineY);
+
+	
+	doc.setFontSize(11);
+	lineY += 8;
+   doc.text("Team Hoods:", indentX, (oY + 27));
+	lineY += 7;
+	doc.text(genBLSizesString(order.teamShirts['Adult Hoods'].sizes), lineX, lineY);
+	if (!Array.isArray(order.addedShirts)) {
+		Object.values(order.addedShirts).forEach(style => {
+			lineY += 9;
+			doc.text("Additional " + style.shortName + ":", indentX, lineY);
+			lineY += 7;
+			doc.text(genBLSizesString(style.sizes), lineX, lineY);
+		});
+		doc.setFontSize(14);
+		lineY += 9;
+		txt = "Due: $" + order.due;
+		txtWdth = doc.getTextWidth(txt);
+		doc.setFillColor(255, 255, 0);
+		doc.rect((lineX - 1), (lineY + 1), (txtWdth + 2), -7, "F");
+		doc.text(txt, lineX, lineY);
+	}
+}
+
+
+function genBLSizesString(sizes) {
+   return Object.values(sizes)
+        .sort((a, b) => sizeList.indexOf(a.charName) - sizeList.indexOf(b.charName)) // Sort based on the sizeList
+        .map(size => size.charName + ": " + size.quantity)
+        .join(", ");
+}
+
+
 function genSoSPDF() {
 	const btn = event.currentTarget;
 	const eventSiteID = btn.dataset.eventSiteID;
@@ -599,31 +728,56 @@ window.addEventListener("click", (event) => {
 
 
 
+const labelPage = {
+	width : 215,
+	height : 279,
+	xMargin : 4,
+	yMargin : 13,
+	labelWidth : 103,
+	labelHeight : 85,
+	xCenter : 108,
+	yCenter : 140,
+	labelOrigins : [
+		new Coord(4, 13), new Coord(109, 13), new Coord(4, 98), new Coord(109, 98), new Coord(4, 183), new Coord(109, 183)
+	],
+	padding : 6
+}
+
+// 210 x 295
 
 
 
 
 
-	///////////////////////////////////////////////////////////test stuff
+	/////////////////////////////////////////////////////////
+	//test stuff
+	
 function testPDF() {
-	   // jsPDF logic
-   const { jsPDF } = window.jspdf; // Access jsPDF from the global object
-   const doc = new jsPDF();
-	doc.setFontSize(16);
-		// rotate this first line
-   doc.text("Sport - Division", 10, 60, {angle: 90});
-   doc.text("Site", 25, 20);
-   doc.text("School Name", 20, 30);
-	doc.setFontSize(11);
-   doc.text("Sizes: S:  M:  L:  XL:  2XL:  3XL:  ", 20, 40);
-   doc.text("Add Ons: S:  M:  L:  XL:  2XL:  3XL:  ", 20, 50);
-	doc.setFontSize(14);
-   doc.text("Due: ", 20, 60);
-	// doc.autoPrint();
+	// Access jsPDF from the global object
+   const { jsPDF } = window.jspdf; 
+   const doc = new jsPDF('p', 'mm', 'letter');
+	doc.setFontSize(10);
+	doc.setLineWidth(1);
+	// doc.rect(100, 0, 10, 295)
+	// doc.rect(0, 100, 210, 10)
+	let x = labelPage.xMargin;
+	// let xInc = 103;
+	// let yInc = 85;
+	// labelPage.labelOrigins.forEach(coord => {
+		// doc.rect(coord.x, coord.y, xInc, yInc);
+	// });
+	drawLabelRects(doc);
+	
 		// Generate a Blob URL and open it in a new tab
 	const pdfBlob = doc.output("blob");
 	const url = URL.createObjectURL(pdfBlob);
 	window.open(url, "_blank"); // Opens in a new tab
+}
+
+function drawLabelRects(doc) {
+	labelPage.labelOrigins.forEach(coord => {
+		doc.rect(coord.x, coord.y, labelPage.labelWidth, labelPage.labelHeight);
+	});
 }
 
 function changeSelectedTable(tableSelect) {
@@ -680,4 +834,28 @@ async function deleteAnItem() {
 	console.log(request);
 	console.log(responseJSON);
 	openModal(JSON.stringify(responseJSON));
+}
+
+
+
+
+	//////////////////////////////////////////////////////////
+	// DON'T LEAVE THIS IN PRODUCTION
+	//////////////////////////////////////////////////////////
+async function showTable(item) {
+		// make sure we have the correct year
+	let year = currentYear;
+	if (document.getElementById("selectYear")) {
+		year = document.getElementById("selectYear").value;
+	}
+		// make sure we have an item
+	if (!item) {
+		if (document.getElementById("selectTable")) {
+			item = document.getElementById("selectTable").value;
+		} else {
+			item = "colors";
+		}
+	}
+	const data = {'table': item, 'year': year}
+	showPage('showTable', 'Test', data);
 }

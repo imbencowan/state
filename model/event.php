@@ -104,7 +104,8 @@ class Event extends BasicTableModel {
 		
 		echo json_encode([
 			'html' => $htmlContent,
-			$event->sport->name => $event
+			'data' => $event
+			// $event->sport->name => $event
 		]);
 	}
 	

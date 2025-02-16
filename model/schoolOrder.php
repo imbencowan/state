@@ -160,13 +160,12 @@ class SchoolOrder extends BasicTableModel {
 				$eventID = Event::getIDBySportIDAndYear($sport->id, $year);
 				$divisionID = Division::getIDByName($order['division']);	
 
-
-				$eventSiteHasDivisionID = EventSiteDivision::getIDByEventAndDivision($eventID, $divisionID);
-
-
 					// some sports only have competitions for a couple divisions. 
 						// schools in lower divisions play in the lowest division that has a competition
 				if ($divisionID < $sport->minDiv) $divisionID = $sport->minDiv;
+
+				$eventSiteHasDivisionID = EventSiteDivision::getIDByEventAndDivision($eventID, $divisionID);
+				
 					// need to add logic for if $school is not in the db
 				$schoolID = School::getIDByName($order['school']);
 				$order['shortSchool'] = School::shortenSchoolName($order['school']);
@@ -229,7 +228,7 @@ class SchoolOrder extends BasicTableModel {
 					$schoolOrderID = SchoolOrder::getIDByEventSiteHasDivisionAndSchool($eventSiteHasDivisionID, $schoolID);
 						// if there is no schoolOrder, add it, and return the id for the new row
 					if (!$schoolOrderID) {
-						$schoolOrderID = SchoolOrder::addNewOrder($eventSiteHasDivisionID, $eventID, $divisionID, $schoolID);
+						$schoolOrderID = SchoolOrder::addNewOrder($eventSiteHasDivisionID, $schoolID);
 					} 
 						// check if a messageOrder exists using the schoolOrderID and genderID
 					$messageOrderID = MessageOrder::getIDBySchoolOrderIDAndGenderID($schoolOrderID, $genderID);
@@ -277,15 +276,13 @@ class SchoolOrder extends BasicTableModel {
 		]);
 	}
 	
-	public static function addNewOrder($eventSiteHasDivisionID, $eventID, $divisionID, $schoolID) {
+	public static function addNewOrder($eventSiteHasDivisionID, $schoolID) {
 	  $db = Database::getDB();
-	  $query = "INSERT INTO schoolOrders (eventSiteHasDivisionID, eventID, divisionID, schoolID) 
-					VALUES (:eventSiteHasDivisionID, :eventID, :divisionID, :schoolID)";
+	  $query = "INSERT INTO schoolOrders (eventSiteHasDivisionID, schoolID) 
+					VALUES (:eventSiteHasDivisionID, :schoolID)";
 
 	  $stmt = $db->prepare($query);
 	  $stmt->bindValue(':eventSiteHasDivisionID', $eventSiteHasDivisionID);
-	  $stmt->bindValue(':eventID', $eventID);
-	  $stmt->bindValue(':divisionID', $divisionID);
 	  $stmt->bindValue(':schoolID', $schoolID);
 
 	  $stmt->execute();

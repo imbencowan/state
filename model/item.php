@@ -50,5 +50,40 @@ class Item extends BasicTableModel {
 			'data' => $groupedItems
 		]);
 	}
+	
+	
+	
+	
+		/////////////////////////////////////////////////////////////////////////////////////////
+		// loading functions?
+	public static function loadSizeCodesByStyle() {
+		ob_start();
+		$items = static::getAllFromDB();
+		
+		$styles = [];
+		foreach ($items as $item) {
+			$shortName = $item->style->shortName;
+			if (!isset($styles[$shortName])) {
+				$newObj = new stdClass();
+				$sizeObj = new stdClass();
+				$sizeObj->name = $item->size->name;
+				$sizeObj->charName = $item->size->charName;
+				$sizeObj->itemID = $item->id;
+				$newObj->sizes[] = $sizeObj;
+				
+				$styles[$shortName] = $newObj;
+			} else {
+				$sizeObj = new stdClass();
+				$sizeObj->name = $item->size->name;
+				$sizeObj->charName = $item->size->charName;
+				$sizeObj->itemID = $item->id;
+				$styles[$shortName]->sizes[] = $sizeObj;
+			}
+		}
+		
+		$htmlContent = ob_get_clean(); 
+		
+		echo json_encode(['data' => $styles]);
+	}
 }
 ?>
