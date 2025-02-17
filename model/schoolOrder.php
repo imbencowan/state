@@ -155,6 +155,8 @@ class SchoolOrder extends BasicTableModel {
 			foreach ($orders as &$order) {
 					// get the whole sport, we need sport->minDiv later
 				$sport = Sport::getByName($order['sport']);
+header('Content-Type: application/json');
+echo json_encode(['orderSport' => $order['sport']]);
 					// get the school year. an event in january - may of the 24-25 school year will be represented by 24
 				$year = Year::convertDateToSchoolYear(new DateTime());
 				$eventID = Event::getIDBySportIDAndYear($sport->id, $year);

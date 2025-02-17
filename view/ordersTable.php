@@ -34,7 +34,7 @@
 	$checkID = "check" . $orderID;
 	$schoolName = $order->school->shortName;
 		// the if shouldn't be necessary
-	if (!empty($order->teamShirts['Adult Hoods'] ?? null)) $teamShirts = $order->teamShirts['Adult Hoods']->getSizes();
+	$teamShirts = !empty($order->teamShirts['Adult Hoods'] ?? null) ? $order->teamShirts['Adult Hoods']->getSizes() : null;
 	$rowspan = count($order->addedShirts) + 1;
 ?>
 				<tbody id="row<?php echo $orderID; ?>" class="<?php echo $trClass;?>" 

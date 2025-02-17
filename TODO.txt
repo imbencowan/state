@@ -8,7 +8,8 @@ IMMEDIATE NEXT
 	make a renderer class to cut down on repeat code for displaying views
 	
 		// later tater
-	allow manual entry of an order from a sport page
+	allow manual entry of an order from an event page
+	add file name to 'there is already an order for'
 	
 // SOME DAY
 	improve context

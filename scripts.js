@@ -256,13 +256,17 @@ function getOrder(orderText, fileName) {
 	let division = getSlice(inputString);
 	let sport = getSlice(inputString);
 	let gender = 3;
+		// make it match the names in the db
 	if (sport.includes('Boys')) {
 		gender = 1;
 		sport = sport.slice(0, -7);
+		if (sport == "Basketball") sport = "Boys Basketbal";
 	} else if (sport.includes('Girls')) {
 		gender = 2;
 		sport = sport.slice(0, -8);
+		if (sport == "Basketball") sport = "Girls Basketball";
 	} 
+	
 	let sizes = getSizes(inputString);
 	let order = new InputOrder(orderedBy, school, division, sport, gender, sizes, fileName, orderText);
 	
@@ -456,19 +460,14 @@ async function submitAddOns(orderID, row) {
 }
 
 function showEditRowInputs(orderID) {
-  // Find the parent element with the specified data attribute
-  const parent = document.querySelector(`[data-schoolOrderID="${orderID}"]`);
+		// Find the parent element with the specified data attribute
+	const parent = document.querySelector(`[data-schoolOrderID="${orderID}"]`);
   
-  if (parent) {
-    // Get the first and second children of the parent. These are the rows to work with.
-    const firstChild = parent.children[0]; // First row
-    const secondChild = parent.children[1]; // Second row
-    
-    if (firstChild && secondChild) {
-			// Show the second row (which is the "add ons" row)
-      secondChild.classList.remove('hidden');
-			// Process both the first and second rows
-      [firstChild, secondChild].forEach((currentRow, rowIndex) => {
+	if (parent) {
+			// get the rows for the order
+		const rows = Array.from(parent.children);
+  
+      rows.forEach((currentRow, rowIndex) => {
 			const cells = currentRow.querySelectorAll('td');
         
 			if (cells.length >= 8) {
@@ -491,19 +490,29 @@ function showEditRowInputs(orderID) {
       submitButton.type = 'button';
       submitButton.textContent = 'Submit';
       submitButton.classList.add('addOnSubmitButton'); // Add a class for styling
-      secondChild.querySelectorAll('td')[7].innerHTML = ''; // Clear any previous content in last cell
-      secondChild.querySelectorAll('td')[7].appendChild(submitButton);
-
-      // Add event listener to submit button
-      submitButton.addEventListener('click', () => {
-        submitSizeEdits(orderID, firstChild, secondChild);
-      });
-    } else {
-      console.error(`Second child does not have enough <td> elements (expected at least 8).`);
-    }
-  } else {
-    console.error(`Element with data-schoolOrderID="${orderID}" not found.`);
-  }
+			// Add event listener to submit button
+      submitButton.addEventListener('click', () => { submitSizeEdits(orderID, rows); });
+		
+			// Get all <td> elements in the last row
+		const cells = rows[rows.length - 1].children;
+			// put the button in the right place
+		if (rows.length == 1) {
+				// append the submit to the next-to-last <td>, if there are enough <td>s
+			if (cells.length > 2) {
+				targetCell = cells[cells.length - 2];
+				targetCell.innerHTML = '';
+				targetCell.appendChild(submitButton);
+			}
+		} else {
+			if (cells.length > 2) {
+				targetCell = cells[cells.length - 1];
+				targetCell.innerHTML = '';
+				targetCell.appendChild(submitButton);
+			}
+		}
+	} else {
+		console.error(`Element with data-schoolOrderID="${orderID}" not found.`);
+	}
 }
 
 function makeInput(i) {
@@ -572,7 +581,7 @@ function printBoxLabels() {
 	Object.values(eventOrders.eventSites).forEach(eventSite => {
       Object.values(eventSite.divisions).forEach(division => {
          Object.values(division.schoolOrders).forEach(schoolOrder => {
-            if (!schoolOrder.isDone || true) {
+            if (!schoolOrder.isDone) {
 					schoolOrder.division = division.name;
 					schoolOrder.site = eventSite.site.name;
 					schoolOrder.sport = eventOrders.sport.name;
@@ -589,7 +598,7 @@ function printBoxLabels() {
 	let j = 0;
 	orders.forEach(order => {
 		origin = labelPage.labelOrigins[i];
-		console.log(origin, i);
+		// console.log(origin, i);
 		genBoxLabel(doc, order, origin);
 		++i;
 		++j;
@@ -665,7 +674,12 @@ function genBoxLabel(doc, order, origin) {
 	lineY += 8;
    doc.text("Team Hoods:", indentX, (oY + 27));
 	lineY += 7;
-	doc.text(genBLSizesString(order.teamShirts['Adult Hoods'].sizes), lineX, lineY);
+	
+	const sizes = order.teamShirts?.['Adult Hoods']?.sizes;
+	if (sizes && Object.keys(sizes).length > 0) {
+		doc.text(genBLSizesString(sizes), lineX, lineY);
+	}
+	
 	if (!Array.isArray(order.addedShirts)) {
 		Object.values(order.addedShirts).forEach(style => {
 			lineY += 9;
@@ -676,10 +690,18 @@ function genBoxLabel(doc, order, origin) {
 		doc.setFontSize(14);
 		lineY += 9;
 		txt = "Due: $" + order.due;
-		txtWdth = doc.getTextWidth(txt);
-		doc.setFillColor(255, 255, 0);
-		doc.rect((lineX - 1), (lineY + 1), (txtWdth + 2), -7, "F");
+		if (!order.paid) {
+			txtWdth = doc.getTextWidth(txt);
+			doc.setFillColor(255, 255, 0);
+			doc.rect((lineX - 1), (lineY + 1), (txtWdth + 2), -7, "F");
+		}
 		doc.text(txt, lineX, lineY);
+		if (order.paid) {
+			doc.setTextColor(255, 0, 0); // red
+			txtWdth = doc.getTextWidth(txt);
+			doc.text(" PAID", lineX + txtWdth, lineY);
+			doc.setTextColor(0, 0, 0); // Black
+		}
 	}
 }
 
