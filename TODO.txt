@@ -1,11 +1,38 @@
 IMMEDIATE NEXT
 
-	need to fix our add order functions in SchoolOrder
-		
+	fix edit sizes	
+	
+	trim submit inputs in js
+	
+	make a function to mark comments as handled
+	
+	if a school isDone, and a second messageOrder comes in we need to reset isDone
+	
+	make the changeOrderDone() update the eventOrders object in js
+	make the changeOrderDone() update the row class for partial completes
+	
+	check if 'duplicate' messageOrders are identical on submission
+		if the shirt quantities are different, update to the new order, mark it as partial if already complete
 	
 	then we can work on our pdf generation
+		color code divisions
+		color code dance / cheer (or may be all sports)
+		add totals
+		gray the additions
+		make a box around the school name rather than just an underline
+		BOX 1/2
+		make box size icons
+		
+	
+	fix the ordering of eventSites to be by division
+	
+	remove the outdated classes from the js
 	
 	make a renderer class to cut down on repeat code for displaying views
+	
+	fix the sticky ordersTable head
+	
+	
 	
 		// later tater
 	allow manual entry of an order from an event page
@@ -16,7 +43,7 @@ IMMEDIATE NEXT
 	// i'll probably want to intstitute a way to select which relations to utilize
 			// so an event can get all it's associated orders, or just it's basic info. 
 	worry about soccer's girls and boys sites later
-	worry about selecting the right golf by sport and year
+	worry about selecting the right golf by sport and year later
 		// potentially we could do this by returning both Events, and pushing one's divisions to the other's, if they're different
 			// or just getting one that is closest in time, depending on context
 	
@@ -28,8 +55,8 @@ IMMEDIATE NEXT
 
 what the state app does:
 	ADDS new orders by uploading files sent as email attachments
-	allows EDITing order quantities, including add ons
-	VIEWS orders by sport and division, split by gender as appropriate
+	// allows EDITing order quantities, including add ons
+	VIEWS orders by sport and division, // split by gender as appropriate
 	MARKS orders complete
 	
 
@@ -58,6 +85,7 @@ TODO:
 	
 	i'd like to be able to upload the qualifiers, and compare orders against it
 		also track which schools we're still missing
+			add a css class for rows for schools we are still missing
 	i'd like to be able to upload the year's schedule
 	
 	i'd like to have the sports page say how many more shirts we need total for incomplete orders

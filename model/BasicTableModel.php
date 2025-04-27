@@ -107,23 +107,29 @@ abstract class BasicTableModel implements JsonSerializable {
 	public function addToDB(): ?int {
 		$db = Database::getDB();
 		
-			// get object properties
+			// get object properties and columns
 		$instanceData = get_object_vars($this);
+		$columnNames = static::getColumns();
 			// Remove 'id' so the db can auto set it
-		unset($instanceData['id']);
-			// match columns to properties
-		$validColumns = array_intersect_key($instanceData, static::getColumns());
+		unset($columnNames['id']);
+		
+			// match column names to property values
+		$insertArray = [];
+		foreach ($columnNames as $propName => $colName) {
+			$insertArray[$colName] = $instanceData[$propName];
+		}
+		
 			// Avoid inserting nothing
-		if (empty($validColumns)) return null; 
+		if (empty($insertArray)) return null; 
 			// Build substrings for the query
-		$columns = implode(', ', array_keys($validColumns));
-		$placeholders = implode(', ', array_map(fn($col) => ":$col", array_keys($validColumns)));
+		$columns = implode(', ', array_keys($insertArray));
+		$placeholders = implode(', ', array_map(fn($col) => ":$col", array_keys($insertArray)));
 
 		$query = "INSERT INTO " . static::getTableName() . " ($columns) VALUES ($placeholders)";		
 		
 		$statement = $db->prepare($query);
 			// bind the values to be inserted
-		foreach ($validColumns as $column => $value) {
+		foreach ($insertArray as $column => $value) {
 			$statement->bindValue(":$column", $value);
 		}
 

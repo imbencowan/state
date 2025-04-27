@@ -3,7 +3,8 @@
 ?>
 
 <div class="table-container">
-	<table id="orderTable" class = "orderTable">
+	<table class="orderTable" data-event-id="<?= $event->id; ?>" data-event-site-id="<?= $eventSite->id; ?>"
+	data-event-site-division-id="<?= $division->id; ?>">
 		<thead>
 			<tr>
 				<th>School</th>
@@ -37,11 +38,9 @@
 	$teamShirts = !empty($order->teamShirts['Adult Hoods'] ?? null) ? $order->teamShirts['Adult Hoods']->getSizes() : null;
 	$rowspan = count($order->addedShirts) + 1;
 ?>
-				<tbody id="row<?php echo $orderID; ?>" class="<?php echo $trClass;?>" 
-						data-schoolOrderID="<?php echo $orderID; ?>"
-						data-messageOrderText="<?php echo $order->getMessageOrdersText(); ?>">
+				<tbody id="row<?= $orderID; ?>" class="<?= $trClass;?>" data-school-order-id="<?= $orderID; ?>">
 					<tr>
-						<td title="<?php echo $order->getMessageFileNames() ?>"><?php echo $schoolName; ?></td>
+						<td title="<?= $orderID . ' / ' . $order->getMessageFileNames(); ?>"><?= $schoolName; ?></td>
 						<td title="S"><?= isset($teamShirts['S']) ? $teamShirts['S']->getQuantity() : '-'; ?></td>
 						<td title="M"><?= isset($teamShirts['M']) ? $teamShirts['M']->getQuantity() : '-'; ?></td>
 						<td title="L"><?= isset($teamShirts['L']) ? $teamShirts['L']->getQuantity() : '-'; ?></td>
@@ -51,14 +50,12 @@
 						<td title="total"><?= $order->getTeamTotal(); ?></td>
 							<?php // a cell to hold action buttons ?>
 						<td rowspan="<?= $rowspan ?>">
-		<?php if (!$hasAddOns) : ?>
-							<span class="material-icons clickable" title="add add ons">add</span>
-		<?php endif; ?>
-							<span class="material-icons clickable" title="edit the sizes">edit</span>
-							<span class="material-icons clickable" title="view the original message">article</span>
-							<span class="material-icons clickable" title="print box label">print</span>
-							<input type="checkbox" id="<?php echo $checkID?>" name="<?php echo $checkID?>" value="<?php echo $orderID;?>" 
-									title="mark order complete" onchange="changeOrderDone(<?php echo $orderID; ?>)" 
+							<span class="material-icons clickable addAddOns" title="add add ons">add</span>
+							<span class="material-icons clickable editSizes" title="edit the sizes">edit</span>
+							<span class="material-icons clickable showMessage" title="view the original message">article</span>
+							<span class="material-icons clickable printLabel" title="print box label">print</span>
+							<input type="checkbox" id="<?= $checkID?>" name="<?= $checkID?>" value="<?= $orderID;?>" 
+									title="mark order complete" onchange="changeOrderDone(<?= $orderID; ?>)" 
 									<?php if ($isDone == 1) echo "checked"; ?>/>
 						</td>
 					</tr>

@@ -41,7 +41,7 @@ class Event extends BasicTableModel {
 			'startDate' => $this->startDate,
 			'endDate' => $this->endDate,
 			'year' => $this->year,
-			'eventSites' => $this->eventSites
+			'eventSites' => array_values($this->eventSites)
 		];
 	}
 	

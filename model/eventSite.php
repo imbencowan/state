@@ -33,6 +33,18 @@ class EventSite extends BasicTableModel {
 		$this->divisions = self::organizeDivisions($divisions);
 	}
 	
+	public function jsonSerialize(): mixed {
+		return [
+			'id' => $this->id,
+			'eventID' => $this->eventID,
+			'site' => $this->site,
+			'managerName' => $this->managerName,
+			'vehicle' => $this->vehicle,
+			'divisions' => array_values($this->divisions),
+			'employees' => $this->employees
+		];
+	}
+	
 		// returns the sent array keyed and sorted
 	private static function organizeDivisions($divisions) {
 		$organized = [];

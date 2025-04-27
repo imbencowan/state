@@ -29,7 +29,7 @@ class SchoolOrder extends BasicTableModel {
       public readonly ?int $id,
 		public readonly int $eventSiteHasDivisionID, 
       public readonly School $school,
-      public readonly bool $isDone = false,
+      public readonly int $isDone = 0,
       public readonly ?int $due = 0,
       public readonly ?bool $paid = false,
       public readonly ?string $note = '',
@@ -114,17 +114,14 @@ class SchoolOrder extends BasicTableModel {
 	private static function organizeMOrderItems($mOrders): array {
 		$styles = [];
 		foreach ($mOrders as $mOrder) {
-			// Test::logX($mOrder->schoolOrderID);
 			foreach ($mOrder->teamShirts as $oItem) {
 				$styleName = $oItem->item->style->shortName;
 				if (!isset($styles[$styleName])) $styles[$styleName] = $oItem->item->style;
 				$sizeChars = $oItem->item->size->charName;
-				// Test::logX(array_keys($styles[$styleName]->getSizes()), $sizeChars);
 				if (!isset($styles[$styleName]->getSizes()[$sizeChars])) {
 					$oItem->item->size->setQuantity($oItem->quantity);
 					$styles[$styleName]->pushSizes($oItem->item->size);
 				} else {
-					// Test::logX('in the else');
 					$addedQ = $oItem->quantity + $styles[$styleName]->getSizes()[$sizeChars]->getQuantity();
 					$styles[$styleName]->getSizes()[$sizeChars]->setQuantity($addedQ);
 				}
@@ -155,8 +152,6 @@ class SchoolOrder extends BasicTableModel {
 			foreach ($orders as &$order) {
 					// get the whole sport, we need sport->minDiv later
 				$sport = Sport::getByName($order['sport']);
-header('Content-Type: application/json');
-echo json_encode(['orderSport' => $order['sport']]);
 					// get the school year. an event in january - may of the 24-25 school year will be represented by 24
 				$year = Year::convertDateToSchoolYear(new DateTime());
 				$eventID = Event::getIDBySportIDAndYear($sport->id, $year);
@@ -193,6 +188,9 @@ echo json_encode(['orderSport' => $order['sport']]);
 				
 
 				$orderedBy = $order['orderedBy'];
+				$comment = $order['comment'];
+					// comment is handled if it is empty
+				$commentHandled = ($comment == '') ? 1 : 0;
 				$orderText = $order['orderText'];
 				$fileName = $order['fileName'];
 				
@@ -239,9 +237,9 @@ echo json_encode(['orderSport' => $order['sport']]);
 					if (!$messageOrderID) {
 							// create a new MessageOrder, and then add it to the db
 								// the new id will be returned
-	
-								
-						$o = new MessageOrder(null, $schoolOrderID, $genderID, $orderedBy, $orderText, $fileName, date('Y-m-d H:i:s'));	
+				
+						$o = new MessageOrder(null, $schoolOrderID, $genderID, $orderedBy, $comment, $commentHandled, $orderText, $fileName, 
+													date('Y-m-d H:i:s'));	
 						$messageOrderID = $o->addToDB();
 						
 						foreach ($hoods as $itemID => $quantity) {

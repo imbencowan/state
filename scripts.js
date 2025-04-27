@@ -10,7 +10,7 @@ let sizeCodesByStyles;
 
 class InputOrder {
 		//we're using 'sport' in place of 'event' because event is a key word
-	constructor(orderedBy, school, division, sport, gender, sizes, fileName, orderText) {
+	constructor(orderedBy, school, division, sport, gender, sizes, fileName, orderText, comment) {
 		this.sport = sport;
 		this.division = division;
 		this.school = school;
@@ -19,6 +19,7 @@ class InputOrder {
 		this.fileName = fileName;
 		this.orderedBy = orderedBy;
 		this.orderText = orderText;
+		this.comment = comment;
 	}
 }
 
@@ -171,11 +172,22 @@ async function goToEventPage(sport) {
 	
 	///// ATTACH EVENT LISTENERS /////////////////////////////////
 		// first the in table action buttons
-	const rows = document.querySelectorAll('tbody[data-schoolOrderID]');
+		// this is one listener that handles clicks for all the buttons in the table
+	document.getElementById('eventContainer').addEventListener('click', function(event) {
+			// get ids from data-attributes
+		const orderID = Number(event.target.closest('tbody').getAttribute('data-school-order-id'));
+		const divID = Number(event.target.closest('table').getAttribute('data-event-site-division-id'));
+		const eventSiteID = Number(event.target.closest('table').getAttribute('data-event-site-id'));
+			// call the correct function
+		if (event.target.matches('span.showMessage')) {
+        showOMessage(eventSiteID, divID, orderID);
+    } 
+	});
+	
+	const rows = document.querySelectorAll('tbody[data-school-order-id]');
 	rows.forEach(row => {
 			// get the ID
-		const schoolOrderID = row.getAttribute('data-schoolOrderID');
-		const orderText = row.getAttribute('data-messageOrderText');
+		const schoolOrderID = row.getAttribute('data-school-order-id');
 			// make an array of spans in the row. these will become 'buttons'
 		const spans = Array.from(row.querySelectorAll('span'));
 			// Find the specific <span>s by innerHTML 
@@ -184,14 +196,12 @@ async function goToEventPage(sport) {
 		const editSpan = spans.find(span => span.innerHTML.trim() === 'edit');
 		const printSpan = spans.find(span => span.innerHTML.trim() === 'print');
 			// if found, add the event listeners to specific <span>s
-		if (articleSpan) articleSpan.addEventListener('click', () => {showOMessage(orderText); });
 		if (addSpan) addSpan.addEventListener('click', () => {showAddOnInputs(schoolOrderID); });
 		if (editSpan) editSpan.addEventListener('click', () => {showEditRowInputs(schoolOrderID); });
 		if (printSpan) printSpan.addEventListener('click', () => {printBoxLabel(schoolOrderID); });
-		
 	});
 		
-		//next the PDF buttons
+		// next the PDF buttons
 	const siteSoSButtons = document.querySelectorAll('[data-btnType="genSoSPDF"]');
 	siteSoSButtons.forEach(btn => {
 		btn.addEventListener('click', () => {genSoSPDF(); });
@@ -248,6 +258,18 @@ function getOrder(orderText, fileName) {
 				// (a function can't return > 1 value, but it can change properties of an object passed to it)
 	let inputString = new Object;
 	inputString.str = orderText;
+	
+		// get the COMMENT if there is one
+	let comment = '';
+	let commentIndex = inputString.str.indexOf('COMMENT');
+	
+	if (commentIndex > -1) {
+		inputString.subStart = commentIndex + 9;
+		inputString.subEnd = inputString.str.indexOf('-----------------', inputString.subStart);
+		comment = inputString.str.slice(inputString.subStart, inputString.subEnd);
+	}
+	
+		// reset the start and end for SHIRTS
 	inputString.subStart = inputString.str.indexOf('SHIRTS') + 8;
 	inputString.subEnd = inputString.str.indexOf('\n', inputString.subStart);
 	
@@ -260,7 +282,7 @@ function getOrder(orderText, fileName) {
 	if (sport.includes('Boys')) {
 		gender = 1;
 		sport = sport.slice(0, -7);
-		if (sport == "Basketball") sport = "Boys Basketbal";
+		if (sport == "Basketball") sport = "Boys Basketball";
 	} else if (sport.includes('Girls')) {
 		gender = 2;
 		sport = sport.slice(0, -8);
@@ -268,7 +290,7 @@ function getOrder(orderText, fileName) {
 	} 
 	
 	let sizes = getSizes(inputString);
-	let order = new InputOrder(orderedBy, school, division, sport, gender, sizes, fileName, orderText);
+	let order = new InputOrder(orderedBy, school, division, sport, gender, sizes, fileName, orderText, comment);
 	
 	return order;
 }
@@ -308,6 +330,36 @@ function getSizes(inputString) {
 	return sizes;
 }
 
+
+async function showPage(action, actionClass, data) {
+	let year = currentYear;
+	if (document.getElementById("selectYear")) {
+		year = document.getElementById("selectYear").value;
+	}
+	const request = new ActionRequest(action, actionClass, data);
+	let responseJSON = await myFetch(request);
+	// console.log(responseJSON.data);
+	document.getElementById("display").innerHTML = responseJSON.html;
+}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	// js functions
+		// get an order from the big ol eventOrders object
+function getOrderByIDs(eventSiteID, divID, orderID) {
+	if (eventOrders) {
+			// get the site, then division, then order. return null if not found
+		const eventSite = eventOrders.eventSites.find(eSite => eSite.id === eventSiteID);
+		if (!eventSite) return null;
+		
+		const division = eventSite.divisions.find(div => div.id === divID);
+		if (!division) return null;
+
+		const order = division.schoolOrders.find(order => order.orderID === orderID);
+		return order || null;
+	}
+}
+
 	// toggles an order as done / not done
 async function changeOrderDone(id) {
 	let isDone = document.getElementById('check' + id).checked;
@@ -328,23 +380,14 @@ async function changeOrderDone(id) {
 	}
 }
 
-async function showPage(action, actionClass, data) {
-	let year = currentYear;
-	if (document.getElementById("selectYear")) {
-		year = document.getElementById("selectYear").value;
-	}
-	const request = new ActionRequest(action, actionClass, data);
-	let responseJSON = await myFetch(request);
-	// console.log(responseJSON.data);
-	document.getElementById("display").innerHTML = responseJSON.html;
-}
-
-
-	//////////////////////////////////////////////////////////////////////
-	// js functions
-function showOMessage(mText) {
-  openModal(mText);
-  // console.log(mText);
+	// shows the original message
+function showOMessage(orderID, divID, eventSiteID) {
+	order = getOrderByIDs(orderID, divID, eventSiteID);
+	mText = order.messageOrders[0].orderText;
+	if (order.messageOrders[1]) mText += "\n\n" + order.messageOrders[1].orderText;
+	console.log(order);
+	
+	openModal(mText);
 }
 
 function showAddOnInputs(orderID) {
@@ -524,15 +567,21 @@ function makeInput(i) {
 	return input;
 }
 
-async function submitSizeEdits(orderID, teamRow, addOnRow) {
-	console.log(`Submit button clicked for orderID: ${orderID}`);
+async function submitSizeEdits(orderID, rows) {
+	// console.log(`Submit button clicked for orderID: ${orderID}`);
 		// get the size inputs and their values
-	const teamInputs = teamRow.querySelectorAll('input[type="number"]');
-	const addOnInputs = addOnRow.querySelectorAll('input[type="number"]');
+	const teamInputs = rows[0].querySelectorAll('input[type="number"]');
 	const teamSizes = Array.from(teamInputs).map(input => input.value === '' ? 0 : Number(input.value));
-	const addOnSizes = Array.from(addOnInputs).map(input => input.value === '' ? 0 : Number(input.value));
+	let addOnSizes;
+	if (rows.length > 1) {
+		const addOnInputs = addOnRows.querySelectorAll('input[type="number"]');
+		addOnSizes = Array.from(addOnInputs).map(input => input.value === '' ? 0 : Number(input.value));
+	}
 
 	console.log(teamSizes, addOnSizes);
+	let order = getOrderByID(orderID);
+	console.log(order);
+	return;
 	
 	let request = new SizeEditRequest(orderID, teamSizes, addOnSizes);
 	let responseJSON = await myFetch(request);
@@ -574,6 +623,29 @@ async function submitSizeEdits(orderID, teamRow, addOnRow) {
 		cell.appendChild(textNode); 
 	}
 }
+
+
+
+
+function getOrderByID(id) {
+   if (eventOrders) {
+      for (const eventSite of Object.values(eventOrders.eventSites)) {
+         for (const division of Object.values(eventSite.divisions)) {
+            for (const schoolOrder of Object.values(division.schoolOrders)) {
+               if (schoolOrder.orderID == id) {
+                  schoolOrder.division = division.name;
+                  schoolOrder.site = eventSite.site.name;
+                  schoolOrder.sport = eventOrders.sport.name;
+                  return schoolOrder;
+               }
+            }
+         }
+      }
+   }
+   return undefined;
+}
+
+
 
 
 function printBoxLabels() {
@@ -643,31 +715,44 @@ function printBoxLabel(orderID) {
 }
 
 function genBoxLabel(doc, order, origin) {
-   
-	drawLabelRects(doc);
+	// drawLabelRects(doc);
 	
 	const oX = origin.x;
 	const oY = origin.y;
 	const padding = 8;
 	const labelHeight = 85;
+	const labelWidth = 103;
 	const indentX = oX + 21;
 	const lineSpace = 9;
 	const lineX = oX + 16;
 		// use lineY so forEach will work
 	let lineY = oY + 10;
 	
-	let txt = order.division + " - " + order.site;
+
+	// const halfLabelX = oX + labelWidth / 2;
+	// const halfLabelY = oY + labelHeight / 2;
+	// doc.line(halfLabelX, oY, halfLabelX, oY + labelHeight);
+	// doc.line(oX, halfLabelY, oX + labelWidth, halfLabelY);
+	
+
+	const school = order.school.shortName;
+	
+	doc.setFontSize(14);
+	let txt = order.site + " - " + order.division;
 	let txtWdth = doc.getTextWidth(txt);
 	let rotY = oY + (labelHeight / 2) + (txtWdth / 2);
 		// rotate this first line
-	doc.setFontSize(14);
    doc.text(txt, (oX + padding), rotY, {angle: 90});
 	
 		// start the normal rows
-   doc.text(order.sport, indentX, lineY);
+	centerTextInLabel(doc, order.sport, oX, lineY);
+   // doc.text(order.sport, indentX, lineY);
 	doc.setFontSize(18);
 	lineY += 9;
-   doc.text(order.school.shortName, (lineX - 1), lineY);
+   doc.text(school, (lineX - 1), lineY);
+		// underline the school name
+	txtWdth = doc.getTextWidth(school);
+	doc.line((lineX - 1), lineY + 1, (lineX - 1 + txtWdth), lineY + 1);
 
 	
 	doc.setFontSize(11);
@@ -711,6 +796,13 @@ function genBLSizesString(sizes) {
         .sort((a, b) => sizeList.indexOf(a.charName) - sizeList.indexOf(b.charName)) // Sort based on the sizeList
         .map(size => size.charName + ": " + size.quantity)
         .join(", ");
+}
+
+function centerTextInLabel(doc, txt, oX, y) {
+	let lblWdth = 103;
+	let txtWdth = doc.getTextWidth(txt);
+	let x = oX + ((lblWdth - txtWdth) / 2);
+	doc.text(txt, x, y)
 }
 
 
@@ -775,25 +867,110 @@ const labelPage = {
 	//test stuff
 	
 function testPDF() {
-	// Access jsPDF from the global object
-   const { jsPDF } = window.jspdf; 
+	const { jsPDF } = window.jspdf; 
    const doc = new jsPDF('p', 'mm', 'letter');
-	doc.setFontSize(10);
-	doc.setLineWidth(1);
-	// doc.rect(100, 0, 10, 295)
-	// doc.rect(0, 100, 210, 10)
-	let x = labelPage.xMargin;
-	// let xInc = 103;
-	// let yInc = 85;
-	// labelPage.labelOrigins.forEach(coord => {
-		// doc.rect(coord.x, coord.y, xInc, yInc);
-	// });
+	
+	const oX = labelPage.labelOrigins[0].x;
+	const oY = labelPage.labelOrigins[0].y;
+	const padding = 8;
+	const labelHeight = 85;
+	const labelWidth = 103;
+	const indentX = oX + 18;
+	const lineSpace = 9;
+	const lineX = oX + 16;
+		// use lineY so forEach will work
+	let lineY = oY + 10;
+	
 	drawLabelRects(doc);
+	const halfLabelX = oX + labelWidth / 2;
+	const halfLabelY = oY + labelHeight / 2;
+	// doc.line(halfLabelX, oY, halfLabelX, oY + labelHeight);
+	// doc.line(oX, halfLabelY, oX + labelWidth, halfLabelY);
+	// doc.line(oX, oY, oX + labelWidth, oY + labelHeight);
+	// doc.line(oX, oY + labelHeight, oX + labelWidth, oY);
+	
+		// variables
+	const division = "6A";
+	const site = "Northwest Nazarene University";
+	const sport = "Girls Basketball";
+	const school = "American Heritage Charter";
+	const sizeList = [
+         { charName: 'S', quantity: 22 },
+         { charName: 'M', quantity: 22 },
+         { charName: 'L', quantity: 22 },
+         { charName: 'XL', quantity: 22 },
+         { charName: '2XL', quantity: 22 },
+         { charName: '3XL', quantity: 22 }
+      ];
+	let teamShirts = { 'Adult Hoods': { sizes: sizeList } };
+	let addedShirts = { 'Adult Hoods': { sizes: sizeList, shortName: 'Adult Hoods' }, 
+								'Adult Crews': { sizes: sizeList, shortName: 'Adult Crews' },
+								'Youth Hoods': { sizes: sizeList, shortName: 'Youth Hoods' }  };
+	const due = 1218;
+	const paid = false;
+	
+	
+	doc.setFontSize(14);
+	let txt = site + " - " + division;
+	let txtWdth = doc.getTextWidth(txt);
+	// console.log("textWidth", txtWdth, "labelHeight", labelHeight);
+	let rotY = oY + (labelHeight / 2) + (txtWdth / 2);
+	// doc.rect((oX+ padding), rotY, -10, -txtWdth);
+		// rotate this first line
+   doc.text(txt, (oX + padding), rotY, {angle: 90});
+   // doc.text(txt, (oX + padding), rotY, {angle: 180});
+   // doc.text(txt, (oX + padding), rotY, {angle: 270});
+   // doc.text(txt, (oX + padding), rotY);
+	
+		// start the normal rows
+   // doc.text(sport, indentX, lineY);
+	centerTextInLabel(doc, sport, oX, lineY);
+	doc.setFontSize(18);
+	lineY += 9;
+   doc.text(school, (lineX - 1), lineY);
+	txtWdth = doc.getTextWidth(school);
+	doc.line((lineX - 1), lineY + 1, (lineX - 1 + txtWdth), lineY + 1);
+	// doc.rect((lineX - 1), lineY, txtWdth, -10);
+
+	
+	doc.setFontSize(11);
+	lineY += 8;
+   doc.text("Team Hoods:", indentX, (oY + 27));
+	lineY += 4.5;
+	
+	const sizes = teamShirts?.['Adult Hoods']?.sizes;
+	if (sizes && Object.keys(sizes).length > 0) {
+		doc.text(genBLSizesString(sizes), lineX, lineY);
+	}
+	
+	if (!Array.isArray(addedShirts)) {
+		Object.values(addedShirts).forEach(style => {
+			lineY += 6;
+			doc.text("Additional " + style.shortName + ":", indentX, lineY);
+			lineY += 4.5;
+			doc.text(genBLSizesString(style.sizes), lineX, lineY);
+		});
+		doc.setFontSize(14);
+		lineY += 9;
+		txt = "Due: $" + due.toLocaleString();
+		if (!paid) {
+			txtWdth = doc.getTextWidth(txt);
+			doc.setFillColor(255, 255, 0);
+			doc.rect((lineX - 1), (lineY + 1), (txtWdth + 2), -6, "F");
+		}
+		doc.text(txt, lineX, lineY);
+		if (paid) {
+			doc.setTextColor(255, 0, 0); // red
+			txtWdth = doc.getTextWidth(txt);
+			doc.text(" PAID", lineX + txtWdth, lineY);
+			doc.setTextColor(0, 0, 0); // Black
+		}
+	}
 	
 		// Generate a Blob URL and open it in a new tab
 	const pdfBlob = doc.output("blob");
 	const url = URL.createObjectURL(pdfBlob);
-	window.open(url, "_blank"); // Opens in a new tab
+	window.open(url, "_blank", "noopener");
 }
 
 function drawLabelRects(doc) {
