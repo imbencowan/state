@@ -1,11 +1,12 @@
-///////////////////////////////////////////////////////////////////////////////////////
-// there is a handy function in here, show(table), which can even be called from the console
-// to display a table from the database in the browser
-/////////////////////////////////////////////////////////////////////////////////////////
-
-
+	// global containers
 let eventOrders;
 let sizeCodesByStyles;
+	// this one prevents different actions being called while others are still open
+let activeMode;
+	// modal stuff
+let modal;
+let modalText;
+let closeBtn;
 
 
 class InputOrder {
@@ -20,15 +21,6 @@ class InputOrder {
 		this.orderedBy = orderedBy;
 		this.orderText = orderText;
 		this.comment = comment;
-	}
-}
-
-class SizeEditRequest {
-	constructor(schoolOrderID, teamSizes, addOnsizes) {
-		this.action = 'updateSizes';
-		this.schoolOrderID = schoolOrderID;
-		this.teamSizes = teamSizes;
-		this.addOnSizes = addOnsizes;
 	}
 }
 
@@ -77,10 +69,6 @@ sportList.push(['Baseball', 16]);
 sportList.push(['Tennis', 17]);
 sportList.push(['Track', 18]);
 
-let modal;
-let modalText;
-let closeBtn;
-
 
 	// init is called onload() and does stuff after the script and html is in place
 		// importantly it adds event listeners after the elements exist
@@ -90,7 +78,8 @@ async function init() {
 	buildNavList2();
 	
 	let request = new ActionRequest('loadSizeCodesByStyle', 'Item')
-	sizeCodesByStyles = await myFetch(request);
+	let sizeData = await myFetch(request);
+	sizeCodesByStyles = sizeData.data;
 	
 		// Get modal elements
 	modal = document.getElementById("myModal");
@@ -144,9 +133,23 @@ async function myFetch(request) {
 			headers: {'Content-Type': 'application/json'}, 
 			body: JSON.stringify(request)
 		});
-		if (!response.ok) {throw new Error(`Response status: ${response.status} ${response.statusText}`);}
+			// get the response, convert to json or throw. or what ever.
+		const responseText = await response.text();
+		let json;
+		try {
+			json = JSON.parse(responseText);
+		} catch {
+			throw new Error("Invalid JSON returned from server");
+		}
+			// handle other error cases
+		if (!response.ok) {
+			if (response.status === 400 && json.error) {
+				openModal(json.error);
+				return null;
+			}
+			throw new Error(`Response status: ${response.status} ${response.statusText}`);
+		}
 
-		const json = await response.json();
 		console.log(json);
 		return json;
 	} catch (error) {
@@ -170,46 +173,58 @@ async function goToEventPage(sport) {
 	console.log(eventOrders);
 	document.getElementById("display").innerHTML = responseJSON.html;
 	
-	///// ATTACH EVENT LISTENERS /////////////////////////////////
+		// reset mode on load
+	activeMode = null;
+	
+	///// ATTACH EVENT LISTENERS /////////////////////////////////////////////////////////
+	const container = document.getElementById('eventContainer');
 		// first the in table action buttons
 		// this is one listener that handles clicks for all the buttons in the table
-	document.getElementById('eventContainer').addEventListener('click', function(event) {
-			// get ids from data-attributes
-		const orderID = Number(event.target.closest('tbody').getAttribute('data-school-order-id'));
-		const divID = Number(event.target.closest('table').getAttribute('data-event-site-division-id'));
-		const eventSiteID = Number(event.target.closest('table').getAttribute('data-event-site-id'));
-			// call the correct function
-		if (event.target.matches('span.showMessage')) {
-        showOMessage(eventSiteID, divID, orderID);
-    } 
+			///////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// buttons for: AddOns, Editing, ShowingMessage, PrintingLabel. also Submitting and Canceling those actions
+	container.addEventListener('click', function(event) {
+		const target = event.target
+			// call the correct function, send the order and may be the event target
+		if (target.classList.contains('order-action')) {
+				// get the order for these actions
+			const order = getOrderFromTableButton(target);
+			
+			if (target.matches('span.showMessage')) {
+			  showOMessage(order);
+			} else if (target.matches('span.printLabel')) {
+				printBoxLabel(order);
+			} else if (target.matches('span.addAddOns')) {
+					// don't do this if some thing else is active
+				if (activeMode === null || activeMode === 'add') showAddOnInputs(order);
+			} else if (target.matches('span.editSizes')) {
+					// don't allow this if we're already active
+				if (!activeMode) showEditSizeInputs(order);
+			} else if (target.matches('button.submitAddOns')) {
+				submitAddOns(target, order);
+			} else if (target.matches('button.submitEdit')) {
+				submitSizeEdit(target, order);
+			}
+		} else if (target.matches('button.cancelAddOns')) {
+			cancelAddOns(target);
+		} else if (target.matches('button.cancelEdit')) {
+			cancelSizeEdit(target);
+		}
 	});
-	
-	const rows = document.querySelectorAll('tbody[data-school-order-id]');
-	rows.forEach(row => {
-			// get the ID
-		const schoolOrderID = row.getAttribute('data-school-order-id');
-			// make an array of spans in the row. these will become 'buttons'
-		const spans = Array.from(row.querySelectorAll('span'));
-			// Find the specific <span>s by innerHTML 
-		const articleSpan = spans.find(span => span.innerHTML.trim() === 'article');
-		const addSpan = spans.find(span => span.innerHTML.trim() === 'add');
-		const editSpan = spans.find(span => span.innerHTML.trim() === 'edit');
-		const printSpan = spans.find(span => span.innerHTML.trim() === 'print');
-			// if found, add the event listeners to specific <span>s
-		if (addSpan) addSpan.addEventListener('click', () => {showAddOnInputs(schoolOrderID); });
-		if (editSpan) editSpan.addEventListener('click', () => {showEditRowInputs(schoolOrderID); });
-		if (printSpan) printSpan.addEventListener('click', () => {printBoxLabel(schoolOrderID); });
+		// next a listener for the inputs to ensure integer values
+	container.addEventListener("input", (e) => {
+		if (e.target.matches('input[type="number"]')) {
+			e.target.value = e.target.value.replace(/[^\d-]/g, '');
+		}
 	});
-		
 		// next the PDF buttons
+			// sign off sheet buttons
 	const siteSoSButtons = document.querySelectorAll('[data-btnType="genSoSPDF"]');
 	siteSoSButtons.forEach(btn => {
 		btn.addEventListener('click', () => {genSoSPDF(); });
 	});
-	const siteBLButtons = document.querySelectorAll('[data-btnType="genBoxLabels"]');
-	siteBLButtons.forEach(btn => {
-		btn.addEventListener('click', () => {printBoxLabels(); });
-	});
+		// box label button
+	const undoneBLButton = document.querySelector('[data-btnType="genBoxLabels"]');
+	undoneBLButton.addEventListener('click', () => {printBoxLabels(); });
 }
 
 
@@ -346,6 +361,17 @@ async function showPage(action, actionClass, data) {
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	// js functions
 		// get an order from the big ol eventOrders object
+function getOrderFromTableButton(target) {
+	if (eventOrders) {
+			// get ids from data-attributes
+		const orderID = Number(target.closest('tbody').getAttribute('data-school-order-id'));
+		const divID = Number(target.closest('table').getAttribute('data-event-site-division-id'));
+		const eventSiteID = Number(target.closest('table').getAttribute('data-event-site-id'));
+	
+		return getOrderByIDs(eventSiteID, divID, orderID);
+	}
+}
+		
 function getOrderByIDs(eventSiteID, divID, orderID) {
 	if (eventOrders) {
 			// get the site, then division, then order. return null if not found
@@ -356,9 +382,381 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 		if (!division) return null;
 
 		const order = division.schoolOrders.find(order => order.orderID === orderID);
+		
+			// hacky
+				// but may be not in a bad way? how else would i transmit all this? sending div, site, and sport args also?
+				// this is actually kind of clean considering the alternatives for getting this info where it needs to be.
+		order.division = division.name;
+		order.site = eventSite.site.name;
+		order.sport = eventOrders.sport.name;
+		
 		return order || null;
 	}
 }
+
+function showAddOnInputs(order) {
+		// set mode. prevents edit being called while this is open
+	activeMode = 'add';
+		// get the parent element with the specified data attribute
+	const prnt = document.querySelector(`[data-school-order-id="${order.orderID}"]`);
+	if (prnt) {
+			// don't add more rows than there are styles
+		if (prnt.querySelectorAll('tr').length < 9) {
+				// get the first tr
+			const firstTr = prnt.querySelector('tr');
+			
+			const tdCount = firstTr ? firstTr.children.length : 0;
+
+			const newTr = document.createElement('tr');
+			newTr.classList.add('addOnRow');
+				// create the style select
+			const newTd = document.createElement('td');
+				// send the parent so we can omit options that already exist
+			const newSlct = buildAddOnSelect(prnt);
+			newTd.appendChild(newSlct);
+			newTr.appendChild(newTd);
+			
+				// create the inputs for the middle rows
+			for (let i = 0; i < tdCount - 3; i++) {
+				const newTd = document.createElement('td');
+				const input = makeInput(i);
+				newTd.appendChild(input);  
+				newTr.appendChild(newTd);  
+			}
+			
+				// submit/cancel td
+			const btnTD = document.createElement('td');
+				// put submit and cancel buttons in the btnTD, unless there already is one
+			if (prnt.querySelector('button.submitAddOns') === null) makeSubmitCancelButtons(btnTD, 'AddOns');
+			newTr.appendChild(btnTD);
+			
+				// an final empty cell to maintain form
+			const lastTd = document.createElement('td');
+			newTr.appendChild(lastTd);
+			
+				// Append the newly created <tr> to the <tbody>
+			prnt.appendChild(newTr);
+		}
+	} else {
+		console.error(`Element with data-school-order-id="${order.orderID}" not found.`);
+	}
+}
+
+async function submitAddOns(target, order) {
+	const tbody = target.closest('tbody');
+		// get an array of rows with select elements
+	const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => row.querySelector('select'));
+		// check if the multiple styles are duplicate
+	if (checkDuplicateAddedStyles(rows)) {
+		openModal("Two of your styles to add are identical, fix this before submitting");
+		return;
+	}
+	
+		// get the additions
+	let addItems = [];
+	rows.forEach((row) => {
+			// get the itemID
+		let styleID = Number(row.querySelector('select').value);
+		let style = sizeCodesByStyles.find(style => style.id === styleID);
+			// get the inputs
+		const inputs = Array.from(row.querySelectorAll('input[type="number"]'))
+			.filter(input => parseInt(input.value, 10) > 0);
+		inputs.forEach((input) => {
+				// match quantities with itemIDs, then push them to an array
+			let sizeChar = input.dataset.sizeChar;
+			let itemID = style.sizes[sizeChar].itemID;
+			let shirt = {
+				itemID: itemID,
+				quantity: input.value
+			};
+			addItems.push(shirt);
+		});
+	});
+	
+		// send it to the server
+	const data = {'schoolOrderID': order.orderID, 'addItems': addItems };
+	let request = new ActionRequest('addAddOns', 'SOrderItem', data);
+	let responseJSON = await myFetch(request);
+	
+	if (responseJSON.success) {
+		cleanInputRows(rows);
+			// exit 'add' mode
+		activeMode = null;
+	}
+}
+
+function cancelAddOns(target) {
+	const tbody = target.closest('tbody');
+   const rows = Array.from(tbody.querySelectorAll('tr'));
+
+   rows.forEach(row => {
+      if (row.querySelector('select')) {
+         row.remove();
+      }
+   });
+		// exit add on mode
+	activeMode = null;
+}
+
+function makeSubmitCancelButtons(td, action) {
+	const submitButton = document.createElement('button');
+	submitButton.type = 'button';
+	submitButton.textContent = 'Submit';
+	submitButton.classList.add('addOnButton', 'order-action', 'submit' + action);
+	td.appendChild(submitButton);
+	
+	const cancelButton = document.createElement('button');
+	cancelButton.type = 'button';
+	cancelButton.textContent = 'X';
+	cancelButton.classList.add('addOnButton', 'cancel' + action);
+	td.appendChild(cancelButton);
+}
+
+function buildAddOnSelect(prnt) {
+		// get the styles that have already been added. get the rows with the attribute, then pull the ids with .map()
+	const rows = Array.from(prnt.querySelectorAll('tr[data-style-id]'))
+	const preStyleIDs = rows.map(tr => Number(tr.getAttribute('data-style-id')));
+	
+	const newSlct = document.createElement('select');
+	sizeCodesByStyles.forEach((style) => {
+			// exclude the preexisting styles
+		if (!preStyleIDs.includes(style.id)) {
+			const newOptn = document.createElement('option');
+			newOptn.textContent = style.shortName;
+			newOptn.value = style.id;
+			newSlct.appendChild(newOptn);
+		}
+	});
+	return newSlct;
+}
+
+	// takes the values of inputs, puts them directly in table cells
+function cleanInputRows(rows) {
+	rows.forEach((row) => {
+			const cells = row.querySelectorAll('td');
+				// if the first element contains a select, get it's name
+			const slct = row.querySelector('select');
+			if (slct) {
+				const name = slct.options[slct.selectedIndex].text;
+				cells[0].textContent = "+ " + name;
+			}
+			
+			let total = 0;
+				
+				// skip the first and last two cells
+			for (let i = 1; i < cells.length - 2; i++) {
+				const input = cells[i].querySelector('input');
+				let value = 0;
+				if (input) {
+						// if the input.value > 0, put it in the cell, otherwise empty the cell
+					value = parseInt(input.value) || 0;
+					cells[i].textContent = (value > 0) ? value : '';
+				}
+				total += value;
+			}
+			
+				// set the total, and DONT ensure the final cell is empty, because it might hold the buttons
+			cells[cells.length - 2].textContent = total;
+			// cells[cells.length - 1].textContent = '';
+				// remove the row if the row if it was empty
+			if (total === 0) row.remove();
+		});
+}
+
+	// a check for adding to an order, makes sure you don't try to add the same style twice
+function checkDuplicateAddedStyles(rows) {
+		// get an array of selected values from rows
+	const selectedValues = [];
+	Array.from(rows).forEach((row) => {
+		const slct = row.querySelector('select');
+		if (slct.value) selectedValues.push(slct.value);
+	})
+		// some() checks if array values are unique here
+   let check = selectedValues.some((val, idx, arr) => arr.indexOf(val) !== idx);
+	return check;
+}
+
+function makeInput(i) {
+	input = document.createElement('input');
+		input.type = 'number';
+		input.name = `addOn${i}`;
+		input.min = 0; 
+		input.max = 99;
+		input.step = 1;
+		input.dataset.sizeChar = sizeList[i];
+	return input;
+}
+
+function showEditSizeInputs(order) {
+		// set mode. prevents addOns being activated while edit is in progress
+	activeMode = 'edit';
+		// get the parent element with the specified data attribute
+	const prnt = document.querySelector(`[data-school-order-id="${order.orderID}"]`);
+	if (prnt) {
+			// get the rows for the order
+		const rows = Array.from(prnt.children);
+  
+      rows.forEach((currentRow) => {
+			const cells = currentRow.querySelectorAll('td');
+				// Add number inputs to all but the first, and last two cells of each row
+			for (let i = 1; i < cells.length - 2; i++) {
+				const currentValue = cells[i].textContent.trim();
+				const input = makeInput(i);
+					// Set initial value from current text in <td>
+				input.value = currentValue;
+					// also make a data-attribute to compare against on submit
+				cells[i].dataset.oValue = currentValue;
+				cells[i].textContent = ''; // Clear existing content
+				cells[i].appendChild(input);
+			}
+			let totalCell = cells[cells.length - 2];
+			totalCell.dataset.oValue = totalCell.textContent.trim();
+			totalCell.textContent = '';
+      });
+		
+			// put submit and cancel in the right place
+		const firstCells = rows[0].querySelectorAll('td');
+		const btnTD = firstCells[firstCells.length - 2];
+		makeSubmitCancelButtons(btnTD, 'Edit');
+			
+	} else {
+		console.error(`Element with data-schoolOrderID="${orderID}" not found.`);
+	}
+}
+
+function cancelSizeEdit(target) {
+	console.log('function');
+	const tbody = target.closest('tbody');
+	console.log(tbody);
+   const rows = Array.from(tbody.querySelectorAll('tr'));
+	// console.log(rows);
+
+   rows.forEach(row => {
+		const cells = Array.from(row.querySelectorAll('td'));
+		for (let i = 1; i < cells.length -1; i++) {
+			cells[i].textContent = cells[i].dataset.oValue;
+		}
+   });
+		// exit edit mode
+	activeMode = null;
+}
+
+async function submitSizeEdit(target, order) {
+	const tbody = target.closest('tbody');
+		// get the rows
+	const rows = Array.from(tbody.querySelectorAll('tr'));
+		
+		// check which items have changed
+	let teamItems = [];
+	let addedItems = [];
+	rows.forEach((row, index) => {
+			// get the style
+		let styleID = Number(row.dataset.styleId);
+		let style = sizeCodesByStyles.find(style => style.id === styleID);
+			// get the inputs
+		let inputs = Array.from(row.querySelectorAll('input[type="number"]'));
+		inputs.forEach(input => {
+				// if the value has been changed, add it to the array
+			let oValue = input.closest('td').dataset.oValue;
+			if (oValue === '-') oValue = 0;
+			if (input.value != oValue) {
+				const sizeChar = input.closest('td').title;
+				const itemID = style.sizes[sizeChar].itemID;
+				let shirt = {
+					itemID: itemID,
+					quantity: input.value
+				};
+				console.log(index);
+				if (index == 0) {
+					teamItems.push(shirt);
+				} else {
+					addedItems.push(shirt);
+				}
+			}
+		});
+	});
+	
+		// send it to the server
+	const data = { 'schoolOrderID': order.orderID, 'teamItems': teamItems, 'addedItems': addedItems };
+	console.log(data);
+	let request = new ActionRequest('editSizes', 'SchoolOrder', data);
+	let responseJSON = await myFetch(request);
+	
+	if (responseJSON.success) {
+		cleanInputRows(rows);
+			// exit edit mode
+		activeMode = null;
+	}
+	
+	
+	
+	
+		// // get the size inputs and their values
+	// const teamInputs = rows[0].querySelectorAll('input[type="number"]');
+	// const teamSizes = Array.from(teamInputs).map(input => input.value === '' ? 0 : Number(input.value));
+	// let addOnSizes;
+	// if (rows.length > 1) {
+		// const addOnInputs = addOnRows.querySelectorAll('input[type="number"]');
+		// addOnSizes = Array.from(addOnInputs).map(input => input.value === '' ? 0 : Number(input.value));
+	// }
+
+	// console.log(teamSizes, addOnSizes);
+	// // let order = getOrderByID(orderID);
+	// console.log(order);
+	// return;
+	
+	// let request = new SizeEditRequest(orderID, teamSizes, addOnSizes);
+	// let responseJSON = await myFetch(request);
+	
+	// let teamTotal = 0;
+	// let addOnTotal = 0;
+		// // Replace inputs with the plain text values
+	// teamInputs.forEach((input, index) => {
+		// teamTotal += Number(input.value);
+		// putValueInCell(input);
+	// });
+	// addOnInputs.forEach((input, index) => {
+		// addOnTotal += Number(input.value);
+		// putValueInCell(input);
+	// });
+	
+	
+		// // Remove the submit button
+	// const submitButton = addOnRow.querySelector('button');
+	// if (submitButton) submitButton.remove();
+	
+	// putTotalInCell(teamRow, teamTotal);
+	// putTotalInCell(addOnRow, addOnTotal);
+	
+	// function putTotalInCell(row, total) {
+			// // Add the total value in place of the submit button
+		// const totalCell = row.querySelectorAll('td')[7]; // Assuming the total cell is in the 8th column (index 7)
+		// totalCell.innerHTML = ''; // Clear existing content
+		// const totalTextNode = document.createTextNode(total); // create a node for the total
+		// totalCell.appendChild(totalTextNode); // Append the total text
+	// }
+	
+	// function putValueInCell(input) {
+			// // Find the <td> that contains the input
+		// const cell = input.closest('td');
+		// const textNode = document.createTextNode(input.value); 
+			// // clear the cell before adding the new text
+		// cell.innerHTML = '';
+		// cell.appendChild(textNode); 
+	// }
+}
+
+
+
+	// shows the original message
+function showOMessage(order) {
+	mText = order.messageOrders[0].orderText;
+		// if there is a second messageOrder, append it's text
+	if (order.messageOrders[1]) mText += "\n\n" + order.messageOrders[1].orderText;
+		// display it
+	openModal(mText);
+}
+
 
 	// toggles an order as done / not done
 async function changeOrderDone(id) {
@@ -380,273 +778,19 @@ async function changeOrderDone(id) {
 	}
 }
 
-	// shows the original message
-function showOMessage(orderID, divID, eventSiteID) {
-	order = getOrderByIDs(orderID, divID, eventSiteID);
-	mText = order.messageOrders[0].orderText;
-	if (order.messageOrders[1]) mText += "\n\n" + order.messageOrders[1].orderText;
+
+function printBoxLabel(order) {
 	console.log(order);
+		// Access jsPDF from the global object
+	const { jsPDF } = window.jspdf; 
+   const doc = new jsPDF('p', 'mm', 'letter');
+	genBoxLabel(doc, order, labelPage.labelOrigins[0]);
 	
-	openModal(mText);
+		// Generate a Blob URL and open it in a new tab
+	const pdfBlob = doc.output("blob");
+	const url = URL.createObjectURL(pdfBlob);
+	window.open(url, "_blank", "noopener");
 }
-
-function showAddOnInputs(orderID) {
-		// Find the parent element with the specified data attribute
-	const prnt = document.querySelector(`[data-schoolOrderID="${orderID}"]`);
-	if (prnt) {
-			// count the tds in the first row
-		const firstTr = prnt.querySelector('tr');
-		
-			// increase the button's rowcount
-		let lastTd = firstTr.querySelector('td:last-child');
-			// get the current rowcount, or default to 0
-		let currentValue = lastTd.getAttribute('rowspan');;
-			// Set the new value in the last <td>
-		lastTd.setAttribute('rowspan', 1 + +currentValue);
-		console.log(lastTd.getAttribute('rowspan'));
-		
-		const tdCount = firstTr ? firstTr.children.length : 0;
-
-		const newTr = document.createElement('tr');
-		newTr.classList.add('addOnRow');
-		const newTd = document.createElement('td');
-		newTd.textContent = 'Style';  
-		newTr.appendChild(newTd);
-		
-			// create the inputs
-		for (let i = 0; i < tdCount - 3; i++) {
-			const newTd = document.createElement('td');
-			const input = makeInput(i);
-			newTd.appendChild(input);  
-			newTr.appendChild(newTd);  
-		}
-		
-			// put a submit button in the last <td>
-		lastTd = document.createElement('td');
-		const submitButton = document.createElement('button');
-		submitButton.type = 'button';
-		submitButton.textContent = 'Submit';
-		submitButton.classList.add('addOnButton');
-			// add an event listenter
-		submitButton.addEventListener('click', () => { submitAddOns(orderID, newTr); });
-		lastTd.appendChild(submitButton);
-		const cancelButton = document.createElement('button');
-		cancelButton.type = 'button';
-		cancelButton.textContent = 'X';
-		cancelButton.classList.add('addOnButton');
-			// add an event listenter
-		cancelButton.addEventListener('click', () => { cancelAddOns(orderID, newTr); });
-		lastTd.appendChild(cancelButton);
-		newTr.appendChild(lastTd);
-		
-			// Append the newly created <tr> to the <prnt>
-		prnt.appendChild(newTr);
-	} else {
-		console.error(`Element with data-schoolOrderID="${orderID}" not found.`);
-	}
-}
-
-function cancelAddOns(orderID, row) {
-		// decrement the rowspan for the buttons td
-	const firstTr = row.parentElement.firstElementChild;
-   if (firstTr) {
-      const lastTd = firstTr.querySelector('td:last-child');
-      if (lastTd && lastTd.hasAttribute('rowspan')) {
-         let currentRowspan = parseInt(lastTd.getAttribute('rowspan'), 10);
-
-         if (!isNaN(currentRowspan) && currentRowspan > 1) {
-            lastTd.setAttribute('rowspan', currentRowspan - 1);
-         }
-      }
-   }
-	row.remove(); 
-}
-
-async function submitAddOns(orderID, row) {
-	// console.log(`Submit button clicked for orderID: ${orderID}`);
-		// get the size inputs, and their values
-	const inputs = row.querySelectorAll('input[type="number"]');
-	const sizes = Array.from(inputs).map(input => input.value);
-	
-	const data = {'schoolOrderID': orderID, 'sizes': sizes };
-	console.log(data);
-	return;
-	
-	let request = new ActionRequest('updateAddOns', 'SchoolOrder', data);
-	let responseJSON = await myFetch(request);
-	
-	let total = 0;
-		// Replace inputs with the plain text values
-	inputs.forEach((input, index) => {
-		total += Number(input.value);
-			// Find the <td> that contains the input
-		const cell = input.closest('td');
-		const textNode = document.createTextNode(input.value); 
-			// clear the cell before adding the new text
-		cell.innerHTML = '';
-		cell.appendChild(textNode); 
-	});
-		// Remove the submit button
-	const submitButton = row.querySelector('button');
-	if (submitButton) submitButton.remove();
-		// Remove the 'add' span from the sibling row
-	const spans = row.closest('tbody').querySelectorAll('tr span');
-	spans.forEach(span => {
-		if (span.textContent.trim() === 'add') span.remove();
-	});
-	
-		// Add the total value in place of the submit button
-	const totalCell = row.querySelectorAll('td')[7]; // Assuming the total cell is in the 8th column (index 7)
-	totalCell.innerHTML = ''; // Clear existing content
-	const totalTextNode = document.createTextNode(total); // create a node for the total
-	totalCell.appendChild(totalTextNode); // Append the total text
-}
-
-function showEditRowInputs(orderID) {
-		// Find the parent element with the specified data attribute
-	const parent = document.querySelector(`[data-schoolOrderID="${orderID}"]`);
-  
-	if (parent) {
-			// get the rows for the order
-		const rows = Array.from(parent.children);
-  
-      rows.forEach((currentRow, rowIndex) => {
-			const cells = currentRow.querySelectorAll('td');
-        
-			if (cells.length >= 8) {
-					// Add number inputs to the 2nd - 7th <td> for both rows
-				for (let i = 1; i <= 6; i++) {
-					const cell = cells[i];
-					const currentValue = cell.textContent.trim();
-						// Only add inputs to cells that have numeric values or are empty
-					// if (currentValue !== '') {
-						const input = makeInput(i);
-						input.value = currentValue; // Set initial value from current text in <td>
-						cell.innerHTML = ''; // Clear existing content
-						cell.appendChild(input);
-					// }
-				}
-			}
-      });
-			// Append a submit button to the second row (last cell of the second row)
-      const submitButton = document.createElement('button');
-      submitButton.type = 'button';
-      submitButton.textContent = 'Submit';
-      submitButton.classList.add('addOnSubmitButton'); // Add a class for styling
-			// Add event listener to submit button
-      submitButton.addEventListener('click', () => { submitSizeEdits(orderID, rows); });
-		
-			// Get all <td> elements in the last row
-		const cells = rows[rows.length - 1].children;
-			// put the button in the right place
-		if (rows.length == 1) {
-				// append the submit to the next-to-last <td>, if there are enough <td>s
-			if (cells.length > 2) {
-				targetCell = cells[cells.length - 2];
-				targetCell.innerHTML = '';
-				targetCell.appendChild(submitButton);
-			}
-		} else {
-			if (cells.length > 2) {
-				targetCell = cells[cells.length - 1];
-				targetCell.innerHTML = '';
-				targetCell.appendChild(submitButton);
-			}
-		}
-	} else {
-		console.error(`Element with data-schoolOrderID="${orderID}" not found.`);
-	}
-}
-
-function makeInput(i) {
-	input = document.createElement('input');
-						input.type = 'number';
-						input.name = `addOn${i}`;
-						input.min = 0; // Optional: Minimum value for the input
-						input.max = 99;
-	return input;
-}
-
-async function submitSizeEdits(orderID, rows) {
-	// console.log(`Submit button clicked for orderID: ${orderID}`);
-		// get the size inputs and their values
-	const teamInputs = rows[0].querySelectorAll('input[type="number"]');
-	const teamSizes = Array.from(teamInputs).map(input => input.value === '' ? 0 : Number(input.value));
-	let addOnSizes;
-	if (rows.length > 1) {
-		const addOnInputs = addOnRows.querySelectorAll('input[type="number"]');
-		addOnSizes = Array.from(addOnInputs).map(input => input.value === '' ? 0 : Number(input.value));
-	}
-
-	console.log(teamSizes, addOnSizes);
-	let order = getOrderByID(orderID);
-	console.log(order);
-	return;
-	
-	let request = new SizeEditRequest(orderID, teamSizes, addOnSizes);
-	let responseJSON = await myFetch(request);
-	
-	let teamTotal = 0;
-	let addOnTotal = 0;
-		// Replace inputs with the plain text values
-	teamInputs.forEach((input, index) => {
-		teamTotal += Number(input.value);
-		putValueInCell(input);
-	});
-	addOnInputs.forEach((input, index) => {
-		addOnTotal += Number(input.value);
-		putValueInCell(input);
-	});
-	
-	
-		// Remove the submit button
-	const submitButton = addOnRow.querySelector('button');
-	if (submitButton) submitButton.remove();
-	
-	putTotalInCell(teamRow, teamTotal);
-	putTotalInCell(addOnRow, addOnTotal);
-	
-	function putTotalInCell(row, total) {
-			// Add the total value in place of the submit button
-		const totalCell = row.querySelectorAll('td')[7]; // Assuming the total cell is in the 8th column (index 7)
-		totalCell.innerHTML = ''; // Clear existing content
-		const totalTextNode = document.createTextNode(total); // create a node for the total
-		totalCell.appendChild(totalTextNode); // Append the total text
-	}
-	
-	function putValueInCell(input) {
-			// Find the <td> that contains the input
-		const cell = input.closest('td');
-		const textNode = document.createTextNode(input.value); 
-			// clear the cell before adding the new text
-		cell.innerHTML = '';
-		cell.appendChild(textNode); 
-	}
-}
-
-
-
-
-function getOrderByID(id) {
-   if (eventOrders) {
-      for (const eventSite of Object.values(eventOrders.eventSites)) {
-         for (const division of Object.values(eventSite.divisions)) {
-            for (const schoolOrder of Object.values(division.schoolOrders)) {
-               if (schoolOrder.orderID == id) {
-                  schoolOrder.division = division.name;
-                  schoolOrder.site = eventSite.site.name;
-                  schoolOrder.sport = eventOrders.sport.name;
-                  return schoolOrder;
-               }
-            }
-         }
-      }
-   }
-   return undefined;
-}
-
-
-
 
 function printBoxLabels() {
 	let orders = [];
@@ -686,33 +830,6 @@ function printBoxLabels() {
 	window.open(url, "_blank", "noopener");
 }
 
-
-function printBoxLabel(orderID) {
-	orderID = Number(orderID);
-	let order;
-	Object.values(eventOrders.eventSites).forEach(eventSite => {
-      Object.values(eventSite.divisions).forEach(division => {
-         Object.values(division.schoolOrders).forEach(schoolOrder => {
-            if (schoolOrder.orderID === orderID) {
-               order = schoolOrder;
-					order.division = division.name;
-					order.site = eventSite.site.name;
-					order.sport = eventOrders.sport.name;
-            }
-         });
-      });
-   });
-	console.log(order);
-		// Access jsPDF from the global object
-	const { jsPDF } = window.jspdf; 
-   const doc = new jsPDF('p', 'mm', 'letter');
-	genBoxLabel(doc, order, labelPage.labelOrigins[0]);
-	
-		// Generate a Blob URL and open it in a new tab
-	const pdfBlob = doc.output("blob");
-	const url = URL.createObjectURL(pdfBlob);
-	window.open(url, "_blank", "noopener");
-}
 
 function genBoxLabel(doc, order, origin) {
 	// drawLabelRects(doc);
@@ -760,13 +877,18 @@ function genBoxLabel(doc, order, origin) {
    doc.text("Team Hoods:", indentX, (oY + 27));
 	lineY += 7;
 	
-	const sizes = order.teamShirts?.['Adult Hoods']?.sizes;
+		// ?s for safety. only reads the property if it exists, rather than erroring if it doesn't it returns undefined
+	const sizes = order.shirts?.['Dairy Hoods']?.sizes;
 	if (sizes && Object.keys(sizes).length > 0) {
 		doc.text(genBLSizesString(sizes), lineX, lineY);
 	}
 	
-	if (!Array.isArray(order.addedShirts)) {
-		Object.values(order.addedShirts).forEach(style => {
+		// only do this if there are additional styles in order.shirts
+	if (Object.keys(order.shirts).length > 1) {
+			// omit Dairy Hoods
+		Object.entries(order.shirts)
+		.filter(([key]) => key !== 'Dairy Hoods')
+		.forEach(([key, style]) => {
 			lineY += 9;
 			doc.text("Additional " + style.shortName + ":", indentX, lineY);
 			lineY += 7;

@@ -33,7 +33,7 @@
 			if (!empty($class) && method_exists($class, $action)) {
 				call_user_func([$class, $action], $data);
 			} else {
-				echo "Invalid action: $action";
+				echo json_encode(['eMessage' => "Invalid action: $action"]);
 			}
 		}
 	}

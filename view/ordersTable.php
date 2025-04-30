@@ -35,45 +35,48 @@
 	$checkID = "check" . $orderID;
 	$schoolName = $order->school->shortName;
 		// the if shouldn't be necessary
-	$teamShirts = !empty($order->teamShirts['Adult Hoods'] ?? null) ? $order->teamShirts['Adult Hoods']->getSizes() : null;
-	$rowspan = count($order->addedShirts) + 1;
+	$teamShirts = !empty($order->shirts['Dairy Hoods'] ?? null) ? $order->shirts['Dairy Hoods']->getSizes() : null;
 ?>
 				<tbody id="row<?= $orderID; ?>" class="<?= $trClass;?>" data-school-order-id="<?= $orderID; ?>">
-					<tr>
+					<tr data-style-id="<?= $order->shirts['Dairy Hoods']->id; ?>">
 						<td title="<?= $orderID . ' / ' . $order->getMessageFileNames(); ?>"><?= $schoolName; ?></td>
 						<td title="S"><?= isset($teamShirts['S']) ? $teamShirts['S']->getQuantity() : '-'; ?></td>
 						<td title="M"><?= isset($teamShirts['M']) ? $teamShirts['M']->getQuantity() : '-'; ?></td>
 						<td title="L"><?= isset($teamShirts['L']) ? $teamShirts['L']->getQuantity() : '-'; ?></td>
 						<td title="XL"><?= isset($teamShirts['XL']) ? $teamShirts['XL']->getQuantity() : '-'; ?></td>
-						<td title="2X"><?= isset($teamShirts['2XL']) ? $teamShirts['2XL']->getQuantity() : '-'; ?></td>
-						<td title="3X"><?= isset($teamShirts['3XL']) ? $teamShirts['3XL']->getQuantity() : '-'; ?></td>
-						<td title="total"><?= $order->getTeamTotal(); ?></td>
+						<td title="2XL"><?= isset($teamShirts['2XL']) ? $teamShirts['2XL']->getQuantity() : '-'; ?></td>
+						<td title="3XL"><?= isset($teamShirts['3XL']) ? $teamShirts['3XL']->getQuantity() : '-'; ?></td>
+						<td title="total"><?= $order->getStyleTotal('Dairy Hoods'); ?></td>
 							<?php // a cell to hold action buttons ?>
-						<td rowspan="<?= $rowspan ?>">
-							<span class="material-icons clickable addAddOns" title="add add ons">add</span>
-							<span class="material-icons clickable editSizes" title="edit the sizes">edit</span>
-							<span class="material-icons clickable showMessage" title="view the original message">article</span>
-							<span class="material-icons clickable printLabel" title="print box label">print</span>
-							<input type="checkbox" id="<?= $checkID?>" name="<?= $checkID?>" value="<?= $orderID;?>" 
+
+						<td>
+							<span class="material-icons clickable order-action addAddOns" title="add add ons">add</span>
+							<span class="material-icons clickable order-action editSizes" title="edit the sizes">edit</span>
+							<span class="material-icons clickable order-action showMessage" title="view the original message">article</span>
+							<span class="material-icons clickable order-action printLabel" title="print box label">print</span>
+							<input type="checkbox" id="<?= $checkID; ?>" name="<?= $checkID; ?>" value="<?= $orderID; ?>" 
 									title="mark order complete" onchange="changeOrderDone(<?= $orderID; ?>)" 
 									<?php if ($isDone == 1) echo "checked"; ?>/>
 						</td>
 					</tr>
-		<?php if (!empty($order->addedShirts['Adult Hoods'] ?? null)) : 
-			$addedHoods = $order->addedShirts['Adult Hoods']->getSizes();
+		<?php if (!empty($order->shirts)) : 
+			foreach ($order->getAddedShirts() as $addedStyle) :
+				$aStyle = $addedStyle->getSizes();
 		?>
-					<tr class="addOnRow">
-						<td>added hoods</td>
-						<td title="S"><?= isset($addedHoods['S']) ? $addedHoods['S']->getQuantity() : ''; ?></td>
-						<td title="M"><?= isset($addedHoods['M']) ? $addedHoods['M']->getQuantity() : ''; ?></td>
-						<td title="L"><?= isset($addedHoods['L']) ? $addedHoods['L']->getQuantity() : ''; ?></td>
-						<td title="XL"><?= isset($addedHoods['XL']) ? $addedHoods['XL']->getQuantity() : ''; ?></td>
-						<td title="2X"><?= isset($addedHoods['2XL']) ? $addedHoods['2XL']->getQuantity() : ''; ?></td>
-						<td title="3X"><?= isset($addedHoods['3XL']) ? $addedHoods['3XL']->getQuantity() : ''; ?></td>
-						<td title="total"><?php echo $order->getAddedHoodsTotal(); ?></td>
+					<tr class="addOnRow" data-style-id="<?= $addedStyle->id; ?>">
+						<td>+ <?= $addedStyle->shortName; ?></td>
+						<td title="S"><?= isset($aStyle['S']) ? $aStyle['S']->getQuantity() : ''; ?></td>
+						<td title="M"><?= isset($aStyle['M']) ? $aStyle['M']->getQuantity() : ''; ?></td>
+						<td title="L"><?= isset($aStyle['L']) ? $aStyle['L']->getQuantity() : ''; ?></td>
+						<td title="XL"><?= isset($aStyle['XL']) ? $aStyle['XL']->getQuantity() : ''; ?></td>
+						<td title="2XL"><?= isset($aStyle['2XL']) ? $aStyle['2XL']->getQuantity() : ''; ?></td>
+						<td title="3XL"><?= isset($aStyle['3XL']) ? $aStyle['3XL']->getQuantity() : ''; ?></td>
+						<td title="total"><?= $order->getStyleTotal($addedStyle->shortName); ?></td>
+						<td></td><?php // empty table place holder ?>
 					</tr>
-				</tbody>
+			<?php endforeach; ?>
 		<?php endif; ?>
+				</tbody>
 	<?php endforeach; ?>
 		</tbody>
 	</table>

@@ -31,9 +31,9 @@ class Item extends BasicTableModel {
 	
 	//////////////////////////////////////////////////
    // user actions
-		// takes us to the Schools page, displaying all schools
+		// takes us to the Items page, showing all Items
 	static function showItems($input) {
-		$items = Item::getAllFromDB();$groupedItems = [];
+		$items = Item::getAllFromDB();
 		$gItems = [];
 		foreach ($items as $item) {
 			$styleKey = $item->style->shortName; 
@@ -47,7 +47,7 @@ class Item extends BasicTableModel {
 		
 		echo json_encode([
 			'html' => $htmlContent,
-			'data' => $groupedItems
+			'data' => $gItems
 		]);
 	}
 	
@@ -57,19 +57,18 @@ class Item extends BasicTableModel {
 		/////////////////////////////////////////////////////////////////////////////////////////
 		// loading functions?
 	public static function loadSizeCodesByStyle() {
-		ob_start();
 		$items = static::getAllFromDB();
-		
+			// make an array including each style. attach each size that style has to a sizes array
 		$styles = [];
 		foreach ($items as $item) {
 			$shortName = $item->style->shortName;
 			if (!isset($styles[$shortName])) {
-				$newObj = new stdClass();
+				$newObj = $item->style;
 				$sizeObj = new stdClass();
 				$sizeObj->name = $item->size->name;
 				$sizeObj->charName = $item->size->charName;
 				$sizeObj->itemID = $item->id;
-				$newObj->sizes[] = $sizeObj;
+				$newObj->pushSizes($sizeObj);
 				
 				$styles[$shortName] = $newObj;
 			} else {
@@ -77,11 +76,31 @@ class Item extends BasicTableModel {
 				$sizeObj->name = $item->size->name;
 				$sizeObj->charName = $item->size->charName;
 				$sizeObj->itemID = $item->id;
-				$styles[$shortName]->sizes[] = $sizeObj;
+				$styles[$shortName]->pushSizes($sizeObj);
 			}
 		}
 		
-		$htmlContent = ob_get_clean(); 
+		// foreach ($styles as $style) {
+			// $style->sizes = array_values($style->sizes);
+		// }
+		
+			// unkey the array
+		$styles = array_values($styles);
+			// sort it for ease later
+			// set priorities
+		$priority = [
+			'Adult Hoods' => 1,
+			'Adult Crews' => 2,
+			'Youth Hoods' => 3
+		];
+			// the actual sort
+		usort($styles, function($a, $b) use ($priority) {
+			$priorityA = $priority[$a->shortName] ?? 999;
+			$priorityB = $priority[$b->shortName] ?? 999;
+
+			return $priorityA <=> $priorityB;
+		});
+		
 		
 		echo json_encode(['data' => $styles]);
 	}

@@ -14,6 +14,8 @@ class Test implements JsonSerializable {
 
    public function getTxt() { return $this->txt; }
    public function setTxt($value) { $this->txt = $value; }
+	
+	
    
    //////////////////////////////////////////////////
    // db functions
@@ -150,6 +152,10 @@ class Test implements JsonSerializable {
 		$newID = call_user_func([$class, $action], $data['id']);
 		$html = "The Test::deleteItem() function was called";
 		echo json_encode(['deletedID' => $data['id']]);
+	}
+	
+	public static function hEcho($content) {
+		echo json_encode(['content' => $content]);
 	}
 }
 ?>

@@ -18,12 +18,11 @@ class SchoolOrder extends BasicTableModel {
 	protected static function getRelations(): array {
       return [ // new Relation('division', 'Division', 'divisionID', false), 
 					new Relation('school', 'School', 'schoolID', false), 
-					new Relation('addedShirts', 'SOrderItem', 'schoolOrderID', true), 
+					new Relation('shirts', 'SOrderItem', 'schoolOrderID', true), 
 					new Relation('messageOrders', 'MessageOrder', 'schoolOrderID', true)];
    }
 	
-	public readonly array $addedShirts;
-	public readonly array $teamShirts;
+	public readonly array $shirts;
 	
 	public function __construct(
       public readonly ?int $id,
@@ -35,12 +34,9 @@ class SchoolOrder extends BasicTableModel {
       public readonly ?string $note = '',
       public readonly ?bool $invoiceSent = false,
 		private array $messageOrders = [],
-		array $addedShirts = [],
-		array $teamShirts = []
+		array $shirts = [],
    ) {
-			// two different functions
-		$this->addedShirts = self::organizeOrderItems($addedShirts);
-		$this->teamShirts = self::organizeMOrderItems($this->messageOrders);
+		$this->shirts = self::organizeOrderItems($shirts);
 	}
 	
 	public function jsonSerialize(): mixed {
@@ -54,8 +50,7 @@ class SchoolOrder extends BasicTableModel {
          'schoolOrderNote' => $this->note,
          'invoiceSent' => $this->invoiceSent,
 			'messageOrders' => $this->messageOrders,
-			'addedShirts' => $this->addedShirts,
-			'teamShirts' => $this->teamShirts
+			'shirts' => $this->shirts,
       ];
    }
 		
@@ -64,21 +59,14 @@ class SchoolOrder extends BasicTableModel {
 	// public function setMessageOrders(array $value) { $this->messageOrders[] = $value; }
 	public function pushMessageOrders($value) { $this->messageOrders[$value->id] = $value; }
 	
+		// return shirts without the Dairy Hoods
+	public function getAddedShirts() { return array_diff_key($this->shirts, ['Dairy Hoods' => true]); }
 	
-	public function getAddedHoodsTotal() {
+	
+	public function getStyleTotal($style) {
 		$total = 0;
-		foreach($this->addedShirts['Adult Hoods']->getSizes() as $addedSize) {
+		foreach($this->shirts[$style]->getSizes() as $addedSize) {
 			$total += $addedSize->getQuantity();
-		}
-		return $total;
-	}
-	
-	public function getTeamTotal() {
-		$total = 0;
-		foreach($this->messageOrders as $mo) {
-			foreach($mo->teamShirts as $size) {
-				$total += $size->quantity;
-			}
 		}
 		return $total;
 	}
@@ -145,8 +133,8 @@ class SchoolOrder extends BasicTableModel {
 				// set arrays for new orders, and ones that already exist
 			$addedOrders = [];
 			$preexistingOrders = [];
-			$addedOrdersIDs = [];
-			$preexistingOrdersIDs = [];
+			// $addedOrdersIDs = [];
+			// $preexistingOrdersIDs = [];
 			
 				// the & in the foreach allows us to pass a reference rather than a copy, and alter each $order
 			foreach ($orders as &$order) {
@@ -177,8 +165,8 @@ class SchoolOrder extends BasicTableModel {
 					$order['genderName'] = 'Girls ';
 				}
 				
-					// to make MOrderItems
-				$baseSize = 35;
+					// to make SOrderItems
+				$baseSize = 42;
 				$hoods = [];
 				$i = 0;
 				foreach ($order['sizes'] as $size) {
@@ -197,17 +185,17 @@ class SchoolOrder extends BasicTableModel {
 
 					//////////////////////////////////
 					// why are these here? just for a returned object? where are they used? 
-				$order['sportID'] = $sport->id;
-				$order['eventID'] = $eventID;
-				$order['schoolID'] = $schoolID;
-				$order['divisionID'] = $divisionID;
+				// $order['sportID'] = $sport->id;
+				// $order['eventID'] = $eventID;
+				// $order['schoolID'] = $schoolID;
+				// $order['divisionID'] = $divisionID;
 				$order['year'] = $year;
 				
 				
-					// we need to do things uniquely for soccer. each mOrder should have it's own sOrder
+					// we need to do things uniquely for soccer. each MessageOrder should have it's own SchoolOrder
 				if ($sport == 'Soccer') {
-						// don't check for a SchoolOrder, because we will add one as long as there is no messageOrder
 						// check if a MessageOrder already exists
+						// don't check for a SchoolOrder, because we will add one as long as there is no messageOrder
 					$messageOrderID = MessageOrder::getIDByEventIDAndSchoolIDAndGenderID($eventID, $schoolID, $genderID);
 					if (!$messageOrderID) {
 							// SchoolOrder::addNewOrder inserts a row in the schoolOrders table
@@ -215,9 +203,9 @@ class SchoolOrder extends BasicTableModel {
 						$schoolOrderID = SchoolOrder::addNewOrder($eventID, $divisionID, $schoolID);
 							// create a new MessageOrder, and then add it to the db
 							// the new id will be returned
-						$o = new messageOrder(null, $schoolOrderID, $genderID, '', $order['sizes'], 
-							$orderedBy, $orderText, $fileName, date('Y-m-d H:i:s'));					
-						$messageOrderID = MessageOrder::addOrder($o);
+						$o = new messageOrder(null, $schoolOrderID, $genderID, $orderedBy, $comment, $commentHandled, $orderText, 
+													$fileName, date('Y-m-d H:i:s'));							
+						$messageOrderID = $o->addToDB();
 						$addedOrders[] = $order;
 					} else {
 						$preexistingOrders[] = $order;
@@ -238,22 +226,43 @@ class SchoolOrder extends BasicTableModel {
 							// create a new MessageOrder, and then add it to the db
 								// the new id will be returned
 				
-						$o = new MessageOrder(null, $schoolOrderID, $genderID, $orderedBy, $comment, $commentHandled, $orderText, $fileName, 
-													date('Y-m-d H:i:s'));	
+						$o = new MessageOrder(null, $schoolOrderID, $genderID, $orderedBy, $comment, $commentHandled, $orderText, 
+													$fileName, date('Y-m-d H:i:s'));	
 						$messageOrderID = $o->addToDB();
 						
-						foreach ($hoods as $itemID => $quantity) {
-							MOrderItem::addNewMOrderItem($messageOrderID, $itemID, $quantity);
-						}
+						
+						
+						
+						
+						
+						
+						
+						
+						///////////////////////////////////////////////////////////////////
+							// this right here is what we have to change to INSERT to sorderitems in stead
+						// foreach ($hoods as $itemID => $quantity) {
+							SOrderItem::addTeamItems($schoolOrderID, $hoods);
+						// }
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
 						
 						
 							// take this line out
-						$addedOrdersIDs[] = $messageOrderID;
+						// $addedOrdersIDs[] = $messageOrderID;
 						$addedOrders[] = $order;
 					} else {
 						$preexistingOrders[] = $order;
 							// take this line out
-						$preexistingOrdersIDs[] = $messageOrderID;
+						// $preexistingOrdersIDs[] = $messageOrderID;
 					}
 				}
 
@@ -316,6 +325,76 @@ class SchoolOrder extends BasicTableModel {
 			// this isn't returning any thing meaningful, but may be some day i'll want to
 				// some thing is expected back, even if it isn't used
 		echo json_encode(['rowsAffected' => $affectedRows]);
+	}
+	
+	public static function editSizes($data) {
+			// bring in the data
+		$teamItems = $data['teamItems'];
+		$addedItems = $data['addedItems'];
+		$orderID = $data['schoolOrderID'];
+		
+		$query = "SELECT itemID FROM morderitems 
+					INNER JOIN messageorders ON morderitems.messageOrderID = messageorders.messageOrderID
+					WHERE messageorders.schoolOrderID = :schoolOrderID";
+			// use the parent method to get existing itemIDs for the order
+		$priorTeamItems = self::getFromDB($query, [':schoolOrderID' => $orderID]);
+			// make arrays of itemIDs
+		$priorTeamItemIDs = array_column($priorTeamItems, 'itemID');
+		
+		$query = "SELECT itemID FROM sorderitems WHERE schoolOrderID = :schoolOrderID";
+		$priorAddedItems = self::getFromDB($query, [':schoolOrderID' => $orderID]);
+		$priorAddedItemIDs = array_column($priorAddedItems, 'itemID');
+		
+		
+		
+		echo json_encode(['text' => $priorItems]);
+		
+		// $query = "SELECT itemID FROM sorderitems WHERE schoolOrderID = :schoolOrderID";
+			// // use the parent method to get existing itemIDs for the order
+		// $priorItems = SOrderItem::getFromDB($query, [':schoolOrderID' => $orderID]);
+			// // make arrays of itemIDs
+		// $priorItemIDs = array_column($priorItems, 'itemID');
+		// $addItemIDs = array_column($addItems, 'itemID');
+			// // check for duplicates between the arrays
+		// $duplicates = array_intersect($priorItemIDs, $addItemIDs);
+		
+		// if ($duplicates) {
+				// // bad request
+					// // might be nice to check and return what conflicted here
+			// http_response_code(400); 
+			// echo json_encode(['error' => "There is already an add on for at least one of the submitted items. 
+									// Check the order. No items were added"]);
+			// exit;
+		// } 
+		
+			// // INSERT now
+		// try {
+			// $db = Database::getDB();
+				// // using a transaction
+			// $db->beginTransaction();
+
+			// $stmt = $db->prepare("INSERT INTO sorderitems (schoolOrderID, itemID, sOrderItemsQuantity) 
+										// VALUES (:orderID, :itemID, :quantity)");
+
+			// foreach ($addItems as $item) {
+				// $stmt->execute([
+					// ':orderID' => $orderID,
+					// ':itemID' => $item['itemID'],
+					// ':quantity' => $item['quantity']
+				// ]);
+			// }
+
+			// $db->commit();
+
+			// echo json_encode(['success' => true, 'message' => 'Add-ons successfully added.']);
+		// } catch (PDOException $e) {
+			// if ($db->inTransaction()) {
+				// $db->rollBack();
+			// }
+			// http_response_code(500);
+			// echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+			// exit;
+		// }
 	}
 }
 ?>

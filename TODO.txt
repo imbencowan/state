@@ -1,6 +1,7 @@
 IMMEDIATE NEXT
 
 	fix edit sizes	
+	make add add ons update amount due
 	
 	trim submit inputs in js
 	
@@ -23,10 +24,17 @@ IMMEDIATE NEXT
 		BOX 1/2
 		make box size icons
 		
+	// i'm really thinking that i should refactor to have the team hoods key off schoolOrder and only have one record for each	
+		// size for each team, rather than one per message.
+		// i really can not remember the reason i decided not to.
+		// all i remember is reaching the conclusion that there was some factor that made that decidedly a bad idea.
+		// but i can't remember the reason. just the feeling.
+		// all i can think of is soccer, but that should be easy to handle.
+		
 	
 	fix the ordering of eventSites to be by division
 	
-	remove the outdated classes from the js
+	prevent inputs of nonexistent youth sizes
 	
 	make a renderer class to cut down on repeat code for displaying views
 	
@@ -36,7 +44,6 @@ IMMEDIATE NEXT
 	
 		// later tater
 	allow manual entry of an order from an event page
-	add file name to 'there is already an order for'
 	
 // SOME DAY
 	improve context
@@ -132,4 +139,59 @@ git push origin main
 	
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Suggested Previous Climbs
+Mount Rainier is the tallest and most heavily glaciated of all the
+Cascade Volcanoes. We suggest that you have made ascents of
+some of the more challenging routes on the smaller volcanoes
+or have significant experience in technical terrain. Due to the
+complex glaciation and high elevation of Mount Rainier it is difficult
+to approximate the challenge on other mountains. Some similar
+routes would be:
+1. Hotlum Glacier, Mt. Shasta
+2. Easton Glacier, Mt. Baker
+3. Leuthold Couloir, Mt. Hood
+If you are new to this style of climbing, one possible progression
+of climbs to complete, at a minimum before attempting the DC
+route on Mount Rainier would be:
+1. Mt. St. Helens, Monitor Ridge or Worm Flows
+2. Mt. Hood, Hogback Glacier
+3. Mt. Adams, South Side Climb
+4. Mt. Shasta, Avalanche Gulch
+5. Mt. Baker, Easton Glacier
 

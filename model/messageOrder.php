@@ -16,7 +16,7 @@ class MessageOrder extends BasicTableModel {
 					'orderDate' => 'orderDate'];
 	}
 		// defined as: new Relation($property, $class, $foreignKey, $isMany)
-	protected static function getRelations(): array { return [new Relation('teamShirts', 'MOrderItem', 'messageOrderID', true)]; }
+	// protected static function getRelations(): array { return [new Relation('teamShirts', 'MOrderItem', 'messageOrderID', true)]; }
 	
 	
 	public readonly string $orderDate;
@@ -31,7 +31,7 @@ class MessageOrder extends BasicTableModel {
       public readonly string $orderText,
       public readonly ?string $fileName,
       string|DateTime $orderDate, 
-		public readonly array $teamShirts = []
+		// public readonly array $teamShirts = []
    ) {
 		   $this->orderDate = $orderDate instanceof DateTime ? $orderDate->format('Y-m-d H:i:s') : $orderDate;
 	}
@@ -48,15 +48,15 @@ class MessageOrder extends BasicTableModel {
 			'orderText' => $this->orderText,
 			'fileName' => $this->fileName,
 			'orderDate' => $this->orderDate,
-			'teamShirts' => $this->teamShirts
+			// 'teamShirts' => $this->teamShirts
 		];
 	}
 	
 
-	public function getTeamShirts() { return $this->teamShirts; }
-	// public function setTeamShirts(array $value) { $this->teamShirts[] = $value; }
-		// key the array for ease of access
-	public function pushTeamShirtss($value) { $this->teamShirts[$value->id] = $value; }
+	// public function getTeamShirts() { return $this->teamShirts; }
+	// // public function setTeamShirts(array $value) { $this->teamShirts[] = $value; }
+		// // key the array for ease of access
+	// public function pushTeamShirts($value) { $this->teamShirts[$value->id] = $value; }
 	
 	
 	
