@@ -19,7 +19,26 @@ class Database {
 		return self::$db;
 	}
 	
-	
+		// a wrapper to catch errors in db functions
+	public static function withDB(callable $callback) {
+      try {
+         $db = self::getDB();
+         $db->beginTransaction();
+
+         $result = $callback($db);
+
+         $db->commit();
+         return $result;
+
+      } catch (PDOException $e) {
+         if (isset($db) && $db->inTransaction()) {
+            $db->rollBack();
+         }
+         http_response_code(500);
+         echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+         exit;
+      }
+   }
 	
 	public static function getTable($table) {
 		$db = self::getDB();

@@ -136,6 +136,8 @@ class SchoolOrder extends BasicTableModel {
 			
 				// the & in the foreach allows us to pass a reference rather than a copy, and alter each $order
 			foreach ($orders as &$order) {
+					// we could move the logic in this foreach to a function like processOrder(), and wrap it in withDB() for transaction
+				
 					// get the whole sport, we need sport->minDiv later
 				$sport = Sport::getByName($order['sport']);
 					// get the school year. an event in january - may of the 24-25 school year will be represented by 24
@@ -256,6 +258,10 @@ class SchoolOrder extends BasicTableModel {
 		]);
 	}
 	
+	// public static function processOrder($order) {
+		
+	// }
+	
 	public static function addNewOrder($eventSiteHasDivisionID, $schoolID) {
 	  $db = Database::getDB();
 	  $query = "INSERT INTO schoolOrders (eventSiteHasDivisionID, schoolID) 
@@ -299,73 +305,29 @@ class SchoolOrder extends BasicTableModel {
 	}
 	
 	public static function editSizes($data) {
-			// bring in the data
-		$teamItems = $data['teamItems'];
-		$addedItems = $data['addedItems'];
-		$orderID = $data['schoolOrderID'];
-		
-		$query = "SELECT itemID FROM morderitems 
-					INNER JOIN messageorders ON morderitems.messageOrderID = messageorders.messageOrderID
-					WHERE messageorders.schoolOrderID = :schoolOrderID";
-			// use the parent method to get existing itemIDs for the order
-		$priorTeamItems = self::getFromDB($query, [':schoolOrderID' => $orderID]);
-			// make arrays of itemIDs
-		$priorTeamItemIDs = array_column($priorTeamItems, 'itemID');
-		
-		$query = "SELECT itemID FROM sorderitems WHERE schoolOrderID = :schoolOrderID";
-		$priorAddedItems = self::getFromDB($query, [':schoolOrderID' => $orderID]);
-		$priorAddedItemIDs = array_column($priorAddedItems, 'itemID');
-		
-		
-		
-		echo json_encode(['text' => $priorItems]);
-		
-		// $query = "SELECT itemID FROM sorderitems WHERE schoolOrderID = :schoolOrderID";
-			// // use the parent method to get existing itemIDs for the order
-		// $priorItems = SOrderItem::getFromDB($query, [':schoolOrderID' => $orderID]);
-			// // make arrays of itemIDs
-		// $priorItemIDs = array_column($priorItems, 'itemID');
-		// $addItemIDs = array_column($addItems, 'itemID');
-			// // check for duplicates between the arrays
-		// $duplicates = array_intersect($priorItemIDs, $addItemIDs);
-		
-		// if ($duplicates) {
-				// // bad request
-					// // might be nice to check and return what conflicted here
-			// http_response_code(400); 
-			// echo json_encode(['error' => "There is already an add on for at least one of the submitted items. 
-									// Check the order. No items were added"]);
-			// exit;
-		// } 
-		
-			// // INSERT now
-		// try {
-			// $db = Database::getDB();
-				// // using a transaction
-			// $db->beginTransaction();
-
-			// $stmt = $db->prepare("INSERT INTO sorderitems (schoolOrderID, itemID, sOrderItemsQuantity) 
-										// VALUES (:orderID, :itemID, :quantity)");
-
-			// foreach ($addItems as $item) {
-				// $stmt->execute([
-					// ':orderID' => $orderID,
-					// ':itemID' => $item['itemID'],
-					// ':quantity' => $item['quantity']
-				// ]);
-			// }
-
-			// $db->commit();
-
-			// echo json_encode(['success' => true, 'message' => 'Add-ons successfully added.']);
-		// } catch (PDOException $e) {
-			// if ($db->inTransaction()) {
-				// $db->rollBack();
-			// }
-			// http_response_code(500);
-			// echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
-			// exit;
-		// }
+		return Database::withDB(function($db) use ($data) {
+				// bring in the data
+			$items = $data['items'];
+			$orderID = $data['schoolOrderID'];
+			
+			$stmt = $db->prepare("INSERT INTO sorderitems (schoolOrderID, itemID, sOrderItemsQuantity)
+												VALUES (:orderID, :itemID, :quantity)
+												ON DUPLICATE KEY UPDATE sOrderItemsQuantity = VALUES(sOrderItemsQuantity)");
+			
+			foreach ($items as $item) {
+				$stmt->execute([
+					':orderID' => $orderID,
+					':itemID' => $item['itemID'],
+					':quantity' => $item['quantity']
+				]);
+			}
+			
+			$stmt = $db->prepare("DELETE FROM sorderitems WHERE schoolOrderID = :orderID AND sOrderItemsQuantity = 0");
+			$stmt->execute([':orderID' => $orderID]);
+	
+			echo json_encode(['success' => true]);
+			return true;
+		});
 	}
 }
 ?>

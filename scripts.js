@@ -647,9 +647,8 @@ async function submitSizeEdit(target, order) {
 	const rows = Array.from(tbody.querySelectorAll('tr'));
 		
 		// check which items have changed
-	let teamItems = [];
-	let addedItems = [];
-	rows.forEach((row, index) => {
+	let items = [];
+	rows.forEach((row) => {
 			// get the style
 		let styleID = Number(row.dataset.styleId);
 		let style = sizeCodesByStyles.find(style => style.id === styleID);
@@ -658,7 +657,7 @@ async function submitSizeEdit(target, order) {
 		inputs.forEach(input => {
 				// if the value has been changed, add it to the array
 			let oValue = input.closest('td').dataset.oValue;
-			if (oValue === '-') oValue = 0;
+			if (oValue === '-' || oValue === '') oValue = 0;
 			if (input.value != oValue) {
 				const sizeChar = input.closest('td').title;
 				const itemID = style.sizes[sizeChar].itemID;
@@ -666,84 +665,30 @@ async function submitSizeEdit(target, order) {
 					itemID: itemID,
 					quantity: input.value
 				};
-				console.log(index);
-				if (index == 0) {
-					teamItems.push(shirt);
-				} else {
-					addedItems.push(shirt);
-				}
+				items.push(shirt);
 			}
 		});
 	});
 	
 		// send it to the server
-	const data = { 'schoolOrderID': order.orderID, 'teamItems': teamItems, 'addedItems': addedItems };
-	console.log(data);
-	let request = new ActionRequest('editSizes', 'SchoolOrder', data);
-	let responseJSON = await myFetch(request);
-	
-	if (responseJSON.success) {
+	let responseJSON;
+	let success = false;
+	if (items && items.length > 0) {
+		const data = { 'schoolOrderID': order.orderID, 'items': items };
+		console.log(data);	
+		const request = new ActionRequest('editSizes', 'SchoolOrder', data);
+		responseJSON = await myFetch(request);
+		success = responseJSON.success;
+	} else {
+		success = true;
+	}
+		
+		// won't run if the prior db call failed
+	if (success) {
 		cleanInputRows(rows);
 			// exit edit mode
 		activeMode = null;
 	}
-	
-	
-	
-	
-		// // get the size inputs and their values
-	// const teamInputs = rows[0].querySelectorAll('input[type="number"]');
-	// const teamSizes = Array.from(teamInputs).map(input => input.value === '' ? 0 : Number(input.value));
-	// let addOnSizes;
-	// if (rows.length > 1) {
-		// const addOnInputs = addOnRows.querySelectorAll('input[type="number"]');
-		// addOnSizes = Array.from(addOnInputs).map(input => input.value === '' ? 0 : Number(input.value));
-	// }
-
-	// console.log(teamSizes, addOnSizes);
-	// // let order = getOrderByID(orderID);
-	// console.log(order);
-	// return;
-	
-	// let request = new SizeEditRequest(orderID, teamSizes, addOnSizes);
-	// let responseJSON = await myFetch(request);
-	
-	// let teamTotal = 0;
-	// let addOnTotal = 0;
-		// // Replace inputs with the plain text values
-	// teamInputs.forEach((input, index) => {
-		// teamTotal += Number(input.value);
-		// putValueInCell(input);
-	// });
-	// addOnInputs.forEach((input, index) => {
-		// addOnTotal += Number(input.value);
-		// putValueInCell(input);
-	// });
-	
-	
-		// // Remove the submit button
-	// const submitButton = addOnRow.querySelector('button');
-	// if (submitButton) submitButton.remove();
-	
-	// putTotalInCell(teamRow, teamTotal);
-	// putTotalInCell(addOnRow, addOnTotal);
-	
-	// function putTotalInCell(row, total) {
-			// // Add the total value in place of the submit button
-		// const totalCell = row.querySelectorAll('td')[7]; // Assuming the total cell is in the 8th column (index 7)
-		// totalCell.innerHTML = ''; // Clear existing content
-		// const totalTextNode = document.createTextNode(total); // create a node for the total
-		// totalCell.appendChild(totalTextNode); // Append the total text
-	// }
-	
-	// function putValueInCell(input) {
-			// // Find the <td> that contains the input
-		// const cell = input.closest('td');
-		// const textNode = document.createTextNode(input.value); 
-			// // clear the cell before adding the new text
-		// cell.innerHTML = '';
-		// cell.appendChild(textNode); 
-	// }
 }
 
 
