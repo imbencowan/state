@@ -19,6 +19,8 @@ class Database {
 		return self::$db;
 	}
 	
+	
+	
 	public static function getTable($table) {
 		$db = self::getDB();
 			// Use backticks to allow table name substitution. table names can not be bound

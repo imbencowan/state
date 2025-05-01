@@ -133,8 +133,6 @@ class SchoolOrder extends BasicTableModel {
 				// set arrays for new orders, and ones that already exist
 			$addedOrders = [];
 			$preexistingOrders = [];
-			// $addedOrdersIDs = [];
-			// $preexistingOrdersIDs = [];
 			
 				// the & in the foreach allows us to pass a reference rather than a copy, and alter each $order
 			foreach ($orders as &$order) {
@@ -230,39 +228,12 @@ class SchoolOrder extends BasicTableModel {
 													$fileName, date('Y-m-d H:i:s'));	
 						$messageOrderID = $o->addToDB();
 						
-						
-						
-						
-						
-						
-						
-						
-						
-						///////////////////////////////////////////////////////////////////
-							// this right here is what we have to change to INSERT to sorderitems in stead
-						// foreach ($hoods as $itemID => $quantity) {
-							SOrderItem::addTeamItems($schoolOrderID, $hoods);
-						// }
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-							// take this line out
-						// $addedOrdersIDs[] = $messageOrderID;
+							// add the team items
+						SOrderItem::addTeamItems($schoolOrderID, $hoods);
+
 						$addedOrders[] = $order;
 					} else {
 						$preexistingOrders[] = $order;
-							// take this line out
-						// $preexistingOrdersIDs[] = $messageOrderID;
 					}
 				}
 
