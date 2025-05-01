@@ -8,7 +8,7 @@ class SchoolOrder extends BasicTableModel {
 		return ['id' => 'schoolOrderID', 
 					'eventSiteHasDivisionID' => 'eventSiteHasDivisionID', 
 					'school' => 'schoolID',
-					'isDone' => 'isDone',
+					'completeness' => 'completeness',
 					'due' => 'due',
 					'paid' => 'paid',
 					'note' => 'schoolOrderNote',
@@ -28,7 +28,7 @@ class SchoolOrder extends BasicTableModel {
       public readonly ?int $id,
 		public readonly int $eventSiteHasDivisionID, 
       public readonly School $school,
-      public readonly int $isDone = 0,
+      public readonly int $completeness = 0,
       public readonly ?int $due = 0,
       public readonly ?bool $paid = false,
       public readonly ?string $note = '',
@@ -44,7 +44,7 @@ class SchoolOrder extends BasicTableModel {
          'orderID' => $this->id,
          'eventSiteHasDivisionID' => $this->eventSiteHasDivisionID,
          'school' => $this->school,
-         'isDone' => $this->isDone,
+         'completeness' => $this->completeness,
          'due' => $this->due,
          'paid' => $this->paid,
          'schoolOrderNote' => $this->note,
@@ -182,13 +182,7 @@ class SchoolOrder extends BasicTableModel {
 				$orderText = $order['orderText'];
 				$fileName = $order['fileName'];
 				
-
-					//////////////////////////////////
-					// why are these here? just for a returned object? where are they used? 
-				// $order['sportID'] = $sport->id;
-				// $order['eventID'] = $eventID;
-				// $order['schoolID'] = $schoolID;
-				// $order['divisionID'] = $divisionID;
+				
 				$order['year'] = $year;
 				
 				
@@ -196,6 +190,7 @@ class SchoolOrder extends BasicTableModel {
 				if ($sport == 'Soccer') {
 						// check if a MessageOrder already exists
 						// don't check for a SchoolOrder, because we will add one as long as there is no messageOrder
+							// this is soccer, each gender gets a SchoolOrder
 					$messageOrderID = MessageOrder::getIDByEventIDAndSchoolIDAndGenderID($eventID, $schoolID, $genderID);
 					if (!$messageOrderID) {
 							// SchoolOrder::addNewOrder inserts a row in the schoolOrders table
@@ -210,14 +205,21 @@ class SchoolOrder extends BasicTableModel {
 					} else {
 						$preexistingOrders[] = $order;
 					}
+					
 						// if it's not soccer, do it the normal way
 				} else {
 						// check if a schoolOrder already exists
-					$schoolOrderID = SchoolOrder::getIDByEventSiteHasDivisionAndSchool($eventSiteHasDivisionID, $schoolID);
+					$schoolOrderID = self::getIDByEventSiteHasDivisionAndSchool($eventSiteHasDivisionID, $schoolID);
 						// if there is no schoolOrder, add it, and return the id for the new row
 					if (!$schoolOrderID) {
-						$schoolOrderID = SchoolOrder::addNewOrder($eventSiteHasDivisionID, $schoolID);
-					} 
+						$schoolOrderID = self::addNewOrder($eventSiteHasDivisionID, $schoolID);
+					} else {
+							// here we make sure completeness is set correctly
+								// if the existing SchoolOrder is already marked complete, and a second MessageOrder comes in,
+									// it needs to change to partial complete
+										// we could make a general function in BasicTableModel to UPDATE x to y if z 
+						self::updateCompletenessIf($schoolOrderID, 1, 2);
+					}
 						// check if a messageOrder exists using the schoolOrderID and genderID
 					$messageOrderID = MessageOrder::getIDBySchoolOrderIDAndGenderID($schoolOrderID, $genderID);
 					
@@ -262,6 +264,18 @@ class SchoolOrder extends BasicTableModel {
 		
 	// }
 	
+	public static function updateCompletenessIf($orderID, $oldValue, $newValue) {
+		$db = Database::getDB();
+		$stmt = $db->prepare("UPDATE schoolorders
+									SET completeness = :newValue
+									WHERE schoolOrderID = :id AND completeness = :oldValue");
+		$stmt->bindValue(':id', $orderID);
+		$stmt->bindValue(':oldValue', $oldValue);
+		$stmt->bindValue(':newValue', $newValue);
+
+		$stmt->execute();
+	}
+	
 	public static function addNewOrder($eventSiteHasDivisionID, $schoolID) {
 	  $db = Database::getDB();
 	  $query = "INSERT INTO schoolOrders (eventSiteHasDivisionID, schoolID) 
@@ -289,18 +303,16 @@ class SchoolOrder extends BasicTableModel {
 	//////////////////////////////////////////////////
    // user actions
 	
-	static function changeOrderDone($data) {
+	static function changeOrderCompleteness($data) {
 		$db = Database::getDB();
 		
-		$query = 'UPDATE schoolOrders SET isDone = :isDone WHERE schoolOrderID = :orderID';
-		$statement = $db->prepare($query);
+		$statement = $db->prepare('UPDATE schoolOrders SET completeness = :completeness WHERE schoolOrderID = :orderID');
 		$statement->bindValue(":orderID", $data['id']);
-		$statement->bindValue(":isDone", $data['isDone']);
+		$statement->bindValue(":completeness", $data['completeness']);
 		$statement->execute();
 		$affectedRows = $statement->rowCount();
 		$statement->closeCursor();
-			// this isn't returning any thing meaningful, but may be some day i'll want to
-				// some thing is expected back, even if it isn't used
+			
 		echo json_encode(['rowsAffected' => $affectedRows]);
 	}
 	
@@ -310,6 +322,7 @@ class SchoolOrder extends BasicTableModel {
 			$items = $data['items'];
 			$orderID = $data['schoolOrderID'];
 			
+				// this will UPDATE records for existing sizes, and create new records for nonexisting
 			$stmt = $db->prepare("INSERT INTO sorderitems (schoolOrderID, itemID, sOrderItemsQuantity)
 												VALUES (:orderID, :itemID, :quantity)
 												ON DUPLICATE KEY UPDATE sOrderItemsQuantity = VALUES(sOrderItemsQuantity)");
@@ -318,16 +331,39 @@ class SchoolOrder extends BasicTableModel {
 				$stmt->execute([
 					':orderID' => $orderID,
 					':itemID' => $item['itemID'],
-					':quantity' => $item['quantity']
+					':quantity' => (int) $item['quantity']
 				]);
 			}
-			
+				// DELETE records that have been changed to 0
 			$stmt = $db->prepare("DELETE FROM sorderitems WHERE schoolOrderID = :orderID AND sOrderItemsQuantity = 0");
 			$stmt->execute([':orderID' => $orderID]);
+			
+				// UPDATE due
+			$due = self::updateDue($db, $orderID);
+				// UPDATE completeness IF currently complete
+			self::updateCompletenessIf($orderID, 1, 2);
 	
-			echo json_encode(['success' => true]);
+			echo json_encode(['success' => true, 'newOrder' => self::getByID($orderID)]);
+			// echo json_encode(['success' => true, 'due' => $due]);
 			return true;
 		});
+	}
+	
+	public static function updateDue($db, $orderID) {
+		$stmt = $db->prepare("UPDATE schoolorders
+					SET due = (
+						SELECT SUM(ii.price * si.sOrderItemsQuantity)
+						FROM sorderitems si
+						JOIN inventoryitems ii ON si.itemID = ii.itemID
+						WHERE si.schoolOrderID = schoolorders.schoolOrderID
+					)
+					WHERE schoolOrderID = :id");
+		$stmt->execute([':id' => $orderID]);
+		
+			// return new due
+		$stmt = $db->prepare("SELECT due FROM schoolorders WHERE schoolOrderID = :id");
+		$stmt->execute([':id' => $orderID]);
+		return $stmt->fetchColumn();
 	}
 }
 ?>

@@ -216,6 +216,12 @@ async function goToEventPage(sport) {
 			e.target.value = e.target.value.replace(/[^\d-]/g, '');
 		}
 	});
+		// changeOrderCompleteness listeners
+	container.addEventListener('change', function(event) {
+		if (event.target.matches('input[type="checkbox"]')) {
+			changeOrderCompleteness(event.target, getOrderFromTableButton(event.target));
+		}
+	});
 		// next the PDF buttons
 			// sign off sheet buttons
 	const siteSoSButtons = document.querySelectorAll('[data-btnType="genSoSPDF"]');
@@ -394,6 +400,7 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 	}
 }
 
+
 function showAddOnInputs(order) {
 		// set mode. prevents edit being called while this is open
 	activeMode = 'add';
@@ -473,12 +480,19 @@ async function submitAddOns(target, order) {
 		});
 	});
 	
+		// cancel if no thing was input
+	if (addItems.length === 0) {
+		cancelAddOns(target);
+		return;
+	}
+	
 		// send it to the server
 	const data = {'schoolOrderID': order.orderID, 'addItems': addItems };
 	let request = new ActionRequest('addAddOns', 'SOrderItem', data);
 	let responseJSON = await myFetch(request);
 	
 	if (responseJSON.success) {
+		updateObject(order, responseJSON.newOrder);
 		cleanInputRows(rows);
 			// exit 'add' mode
 		activeMode = null;
@@ -532,35 +546,51 @@ function buildAddOnSelect(prnt) {
 
 	// takes the values of inputs, puts them directly in table cells
 function cleanInputRows(rows) {
+		// check if the row was marked complete. if so, change to partial. uncheck the box
+	const tbody = rows[0].closest('tbody');
+	if (tbody.classList.contains('doneRow')) {
+		tbody.classList.remove('doneRow');
+		tbody.classList.add('partDoneRow');
+		tbody.querySelector('input[type="checkbox"]').checked = false;
+	}
 	rows.forEach((row) => {
-			const cells = row.querySelectorAll('td');
-				// if the first element contains a select, get it's name
-			const slct = row.querySelector('select');
-			if (slct) {
-				const name = slct.options[slct.selectedIndex].text;
-				cells[0].textContent = "+ " + name;
-			}
+		const cells = row.querySelectorAll('td');
+			// if the first element contains a select, get it's name and make that the first td
+		const slct = row.querySelector('select');
+		if (slct) {
+			const name = slct.options[slct.selectedIndex].text;
+			cells[0].textContent = "+ " + name;
+				// be sure to set the data-attributej
+			row.dataset.styleId = slct.value;
+		}
+		
+		let total = 0;
+		let zeroReplacement = '';
+			// if this is the first row, use '-'
+		if (row === row.parentElement.firstElementChild) zeroReplacement = '-';
+
 			
-			let total = 0;
-				
-				// skip the first and last two cells
-			for (let i = 1; i < cells.length - 2; i++) {
-				const input = cells[i].querySelector('input');
-				let value = 0;
-				if (input) {
-						// if the input.value > 0, put it in the cell, otherwise empty the cell
-					value = parseInt(input.value) || 0;
-					cells[i].textContent = (value > 0) ? value : '';
-				}
-				total += value;
+			// skip the first and last two cells
+		for (let i = 1; i < cells.length - 2; i++) {
+			const input = cells[i].querySelector('input');
+			let value = 0;
+			if (input) {
+					// if the input.value > 0, put it in the cell, otherwise empty the cell
+				value = parseInt(input.value) || 0;
+				cells[i].textContent = (value > 0) ? value : zeroReplacement;
 			}
+			total += value;
 			
-				// set the total, and DONT ensure the final cell is empty, because it might hold the buttons
-			cells[cells.length - 2].textContent = total;
-			// cells[cells.length - 1].textContent = '';
-				// remove the row if the row if it was empty
-			if (total === 0) row.remove();
-		});
+				// add a title for new rows
+			if (!cells[i].title) cells[i].title = sizeList[i - 1];
+		}
+		
+			// set the total, and DONT ensure the final cell is empty, because it might hold the buttons
+		cells[cells.length - 2].textContent = total;
+		// cells[cells.length - 1].textContent = '';
+			// remove the row if the row if it was empty
+		if (total === 0) row.remove();
+	});
 }
 
 	// a check for adding to an order, makes sure you don't try to add the same style twice
@@ -586,6 +616,7 @@ function makeInput(i) {
 		input.dataset.sizeChar = sizeList[i];
 	return input;
 }
+
 
 function showEditSizeInputs(order) {
 		// set mode. prevents addOns being activated while edit is in progress
@@ -625,12 +656,9 @@ function showEditSizeInputs(order) {
 }
 
 function cancelSizeEdit(target) {
-	console.log('function');
 	const tbody = target.closest('tbody');
-	console.log(tbody);
    const rows = Array.from(tbody.querySelectorAll('tr'));
-	// console.log(rows);
-
+		// a quick clean. remove the inputs and set the cell values to the oValues we stored in a data attribute
    rows.forEach(row => {
 		const cells = Array.from(row.querySelectorAll('td'));
 		for (let i = 1; i < cells.length -1; i++) {
@@ -670,21 +698,20 @@ async function submitSizeEdit(target, order) {
 		});
 	});
 	
-		// send it to the server
-	let responseJSON;
-	let success = false;
-	if (items && items.length > 0) {
-		const data = { 'schoolOrderID': order.orderID, 'items': items };
-		console.log(data);	
-		const request = new ActionRequest('editSizes', 'SchoolOrder', data);
-		responseJSON = await myFetch(request);
-		success = responseJSON.success;
-	} else {
-		success = true;
+		// cancel if no thing was changed
+	if (items.length === 0) {
+		cancelSizeEdit(target);
+		return;
 	}
-		
-		// won't run if the prior db call failed
-	if (success) {
+	
+		// send it to the server
+	const data = { 'schoolOrderID': order.orderID, 'items': items };	
+	const request = new ActionRequest('editSizes', 'SchoolOrder', data);
+	let responseJSON = await myFetch(request);
+
+	if (responseJSON.success) {
+		updateObject(order, responseJSON.newOrder);
+		console.log(order);
 		cleanInputRows(rows);
 			// exit edit mode
 		activeMode = null;
@@ -704,21 +731,22 @@ function showOMessage(order) {
 
 
 	// toggles an order as done / not done
-async function changeOrderDone(id) {
-	let isDone = document.getElementById('check' + id).checked;
-	let row = document.getElementById('row' + id);
+async function changeOrderCompleteness(box, order) {
+	let completeness = box.checked;
+	let tbody = box.closest('tbody');
 	
-	const data = {'id': id, 'isDone': isDone};
-	let request = new ActionRequest('changeOrderDone', 'SchoolOrder', data);
+	const data = {'id': order.orderID, 'completeness': completeness};
+	let request = new ActionRequest('changeOrderCompleteness', 'SchoolOrder', data);
 	let responseJSON = await myFetch(request);
 	
 	if (responseJSON) {
-		if (isDone) {
-			row.classList.remove("unDoneRow");
-			row.classList.add("doneRow");
+		order.completeness = completeness;
+		if (completeness) {
+			tbody.classList.remove("unDoneRow", "partDoneRow");
+			tbody.classList.add("doneRow");
 		} else {
-			row.classList.remove("doneRow");
-			row.classList.add("unDoneRow");
+			tbody.classList.remove("doneRow", "partDoneRow");
+			tbody.classList.add("unDoneRow");
 		}
 	}
 }
@@ -742,7 +770,7 @@ function printBoxLabels() {
 	Object.values(eventOrders.eventSites).forEach(eventSite => {
       Object.values(eventSite.divisions).forEach(division => {
          Object.values(division.schoolOrders).forEach(schoolOrder => {
-            if (!schoolOrder.isDone) {
+            if (!schoolOrder.completeness) {
 					schoolOrder.division = division.name;
 					schoolOrder.site = eventSite.site.name;
 					schoolOrder.sport = eventOrders.sport.name;
@@ -925,6 +953,15 @@ const labelPage = {
 }
 
 // 210 x 295
+
+
+
+
+	// delete all properties from an object, and assign properties from a new object. wanted to update a nested object
+function updateObject(obj, newObj) {
+    Object.keys(obj).forEach(key => delete obj[key]);
+    Object.assign(obj, newObj);
+}
 
 
 

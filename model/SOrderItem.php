@@ -65,10 +65,15 @@ class SOrderItem extends BasicTableModel {
 					':quantity' => $item['quantity']
 				]);
 			}
+			
+				// UPDATE due
+			$due = SchoolOrder::updateDue($db, $orderID);
+				// UPDATE completeness IF currently complete
+			SchoolOrder::updateCompletenessIf($orderID, 1, 2);
 
 			$db->commit();
 
-			echo json_encode(['success' => true, 'message' => 'Add-ons successfully added.']);
+			echo json_encode(['success' => true, 'newOrder' => SchoolOrder::getByID($orderID), 'message' => 'Add-ons successfully added.']);
 		} catch (PDOException $e) {
 			if ($db->inTransaction()) {
 				$db->rollBack();

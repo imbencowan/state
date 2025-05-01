@@ -21,13 +21,13 @@
 		<tbody>
 <?php foreach ($schoolOrders as $order) : 
 		// variables for ease
-	$isDone = $order->isDone;
-		// $isDone can be 0, 1, or 2: undone, done, or partial
-	if ($isDone == 0) {
+	$completeness = $order->completeness;
+		// $completeness can be 0, 1, or 2: undone, done, or partial
+	if ($completeness == 0) {
 		$trClass = 'unDoneRow';
-	} elseif ($isDone == 1) {
+	} elseif ($completeness == 1) {
 		$trClass = 'doneRow';
-	} elseif ($isDone == 2) {
+	} elseif ($completeness == 2) {
 		$trClass = 'partDoneRow';
 	}
 	$hasAddOns = false;
@@ -55,8 +55,7 @@
 							<span class="material-icons clickable order-action showMessage" title="view the original message">article</span>
 							<span class="material-icons clickable order-action printLabel" title="print box label">print</span>
 							<input type="checkbox" id="<?= $checkID; ?>" name="<?= $checkID; ?>" value="<?= $orderID; ?>" 
-									title="mark order complete" onchange="changeOrderDone(<?= $orderID; ?>)" 
-									<?php if ($isDone == 1) echo "checked"; ?>/>
+									title="mark order complete" <?php if ($completeness == 1) echo "checked"; ?>/>
 						</td>
 					</tr>
 		<?php if (!empty($order->shirts)) : 

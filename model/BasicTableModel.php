@@ -161,8 +161,9 @@ abstract class BasicTableModel implements JsonSerializable {
 
 		// see above
 	public static function getByID(int $id): ?static {
+		$table = static::getTableName();
 		$idCol = static::getColumns()['id'];
-		$query = static::buildSelect() . " WHERE " . $idCol . " = :id";
+		$query = static::buildSelect() . " WHERE $table.$idCol  = :id";
 		$rows = static::getFromDB($query, [':id' => $id]);
 		return !empty($rows) ? static::groupAndBuild($rows)[$id] : null;
 	}
