@@ -6,7 +6,7 @@ class SchoolOrder extends BasicTableModel {
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
 		return ['id' => 'schoolOrderID', 
-					'eventSiteHasDivisionID' => 'eventSiteHasDivisionID', 
+					'eshdID' => 'eventSiteHasDivisionID', 
 					'school' => 'schoolID',
 					'completeness' => 'completeness',
 					'due' => 'due',
@@ -26,7 +26,7 @@ class SchoolOrder extends BasicTableModel {
 	
 	public function __construct(
       public readonly ?int $id,
-		public readonly int $eventSiteHasDivisionID, 
+		public readonly int $eshdID, 
       public readonly School $school,
       public readonly int $completeness = 0,
       public readonly ?int $due = 0,
@@ -41,8 +41,8 @@ class SchoolOrder extends BasicTableModel {
 	
 	public function jsonSerialize(): mixed {
       return [
-         'orderID' => $this->id,
-         'eventSiteHasDivisionID' => $this->eventSiteHasDivisionID,
+         'id' => $this->id,
+         'eshdID' => $this->eshdID,
          'school' => $this->school,
          'completeness' => $this->completeness,
          'due' => $this->due,
@@ -50,7 +50,7 @@ class SchoolOrder extends BasicTableModel {
          'schoolOrderNote' => $this->note,
          'invoiceSent' => $this->invoiceSent,
 			'messageOrders' => $this->messageOrders,
-			'shirts' => $this->shirts,
+			'shirts' => array_values($this->shirts),
       ];
    }
 		
@@ -149,7 +149,7 @@ class SchoolOrder extends BasicTableModel {
 						// schools in lower divisions play in the lowest division that has a competition
 				if ($divisionID < $sport->minDiv) $divisionID = $sport->minDiv;
 
-				$eventSiteHasDivisionID = EventSiteDivision::getIDByEventAndDivision($eventID, $divisionID);
+				$eshdID = EventSiteDivision::getIDByEventAndDivision($eventID, $divisionID);
 				
 					// need to add logic for if $school is not in the db
 				$schoolID = School::getIDByName($order['school']);
@@ -209,10 +209,10 @@ class SchoolOrder extends BasicTableModel {
 						// if it's not soccer, do it the normal way
 				} else {
 						// check if a schoolOrder already exists
-					$schoolOrderID = self::getIDByEventSiteHasDivisionAndSchool($eventSiteHasDivisionID, $schoolID);
+					$schoolOrderID = self::getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID);
 						// if there is no schoolOrder, add it, and return the id for the new row
 					if (!$schoolOrderID) {
-						$schoolOrderID = self::addNewOrder($eventSiteHasDivisionID, $schoolID);
+						$schoolOrderID = self::addNewOrder($eshdID, $schoolID);
 					} else {
 							// here we make sure completeness is set correctly
 								// if the existing SchoolOrder is already marked complete, and a second MessageOrder comes in,
@@ -276,13 +276,13 @@ class SchoolOrder extends BasicTableModel {
 		$stmt->execute();
 	}
 	
-	public static function addNewOrder($eventSiteHasDivisionID, $schoolID) {
+	public static function addNewOrder($eshdID, $schoolID) {
 	  $db = Database::getDB();
-	  $query = "INSERT INTO schoolOrders (eventSiteHasDivisionID, schoolID) 
-					VALUES (:eventSiteHasDivisionID, :schoolID)";
+	  $query = "INSERT INTO schoolOrders (eshdID, schoolID) 
+					VALUES (:eshdID, :schoolID)";
 
 	  $stmt = $db->prepare($query);
-	  $stmt->bindValue(':eventSiteHasDivisionID', $eventSiteHasDivisionID);
+	  $stmt->bindValue(':eshdID', $eshdID);
 	  $stmt->bindValue(':schoolID', $schoolID);
 
 	  $stmt->execute();
@@ -292,7 +292,7 @@ class SchoolOrder extends BasicTableModel {
 	
 	public static function getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID) {
 		$query = "SELECT schoolOrderID FROM schoolorders 
-					WHERE eventSiteHasDivisionID = :eshdID AND schoolID = :schoolID";
+					WHERE eshdID = :eshdID AND schoolID = :schoolID";
 		$rows = static::getFromDB($query, [':eshdID' => $eshdID, ':schoolID' => $schoolID]);
 		return !empty($rows) ? $rows[0]['schoolOrderID'] : null;
 	}

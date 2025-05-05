@@ -1,5 +1,5 @@
 	// global containers
-let eventOrders;
+let stateEvent;
 let sizeCodesByStyles;
 	// this one prevents different actions being called while others are still open
 let activeMode;
@@ -9,6 +9,10 @@ let modalText;
 let closeBtn;
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CLASSES	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class InputOrder {
 		//we're using 'sport' in place of 'event' because event is a key word
 	constructor(orderedBy, school, division, sport, gender, sizes, fileName, orderText, comment) {
@@ -23,6 +27,7 @@ class InputOrder {
 		this.comment = comment;
 	}
 }
+
 
 class ActionRequest {
 	constructor(action, actionClass, data) {
@@ -39,35 +44,369 @@ class Coord{
 	}
 }
 
+	// used in pdf functions
+class Label {
+	constructor(doc, origin) {
+		this.doc = doc;
+		this.origin = origin;
+		this.oX = origin.x;
+		this.oY = origin.y;
+		this.padding = 6;
+		this.height = labelPage.labelHeight;
+		this.width = labelPage.labelWidth;
+		this.indentX = origin.x + 21;
+		this.lineSpaces = [4.5, 7, 9];
+		this.offsetX = 16;
+		this.offsetY = 10;
+			// define where the cursor starts
+		this.lineX = origin.x + this.offsetX;
+		this.lineY = origin.y + this.offsetY;
+	}
+	
+	lineDown(step) {
+		this.lineY += this.lineSpaces[step];
+	}
+	
+	rectText(txt, color = '#000000', style = 'S') {
+		this.doc.setDrawColor(color);
+		this.doc.setFillColor(color);
+		const txtWdth = this.doc.getTextWidth(txt);
+		const txtHt = this.doc.getFontSize() / this.doc.internal.scaleFactor;
+		this.doc.rect((this.lineX - 2), (this.lineY + 2), (txtWdth + 4), -(txtHt + 1.7), style);
+		this.doc.text(txt, this.lineX, this.lineY);
+		
+			// unset colors
+		this.doc.setDrawColor('#000000');
+		this.doc.setFillColor('#000000');
+	}
+	
+	centerTextInLabel(txt) {
+		let txtWdth = this.doc.getTextWidth(txt);
+		let x = this.origin.x + ((this.width - txtWdth) / 2);
+		this.doc.text(txt, x, this.lineY);
+	}
+	
+	addSiteDivision(site, div) {
+		this.doc.setFontSize(14);
+		const txt = site + " - " + div;
+		const txtWdth = this.doc.getTextWidth(txt);
+		const y = this.origin.y + (this.height / 2) + (txtWdth / 2);
+			// rotate this first line
+		this.doc.text(txt, (this.origin.x + this.padding), y, {angle: 90});
+	}
+}
+
+
+////////////////////////////////////////////////////////////
+// db classes
+	// define how an event works from json
+class StateEvent {
+   constructor({ id, sport, startDate, endDate, year, eventSites = [] }) {
+      this.id = id;
+      this.sport = sport;
+      this.startDate = startDate;
+      this.endDate = endDate;
+      this.year = year;
+      this.eventSites = eventSites.map(site => site instanceof EventSite ? site : EventSite.fromJSON(site));
+   }
+
+   static fromValues(id, sport, startDate, endDate, year, eventSites = []) {
+      return new StateEvent({ id, sport, startDate, endDate, year, eventSites });
+   }
+
+   static fromJSON(json) {
+      return new StateEvent(json);
+   }
+	
+	getUndoneOrders() {
+		let orders = [];
+		this.eventSites.forEach(eventSite => {
+			eventSite.divisions.forEach(eshd => {
+				eshd.schoolOrders.forEach(order => {
+						// check completeness. 0 == incomplete.
+					if (!order.completeness) {
+						order.division = eshd.division.name;
+						order.site = eventSite.site.name;
+						order.sport = stateEvent.sport.name;
+						orders.push(order);
+					}
+				});
+			});
+		});
+		return orders;
+	}
+}
+
+class Sport {
+   constructor({ id, name, isGendered, isIndividualed, maxTeamSize, minDiv }) {
+      this.id = id;
+      this.name = name;
+      this.isGendered = isGendered;
+      this.isIndividualed = isIndividualed;
+      this.maxTeamSize = maxTeamSize;
+      this.minDiv = minDiv;
+   }
+
+   static fromValues(id, name, isGendered, isIndividualed, maxTeamSize, minDiv) {
+      return new Sport({ id, name, isGendered, isIndividualed, maxTeamSize, minDiv });
+   }
+
+   static fromJSON(json) {
+      return new Sport(json);
+   }
+}
+
+class EventSite {
+   constructor({ id, eventID, site, managerName, vehicle, divisions = [] }) {
+		this.id = id;
+		this.eventID = eventID;
+		this.site = site instanceof Site ? site : site != null ? Site.fromJSON(site) : null;
+		this.managerName = managerName;
+		this.vehicle = vehicle instanceof Vehicle ? vehicle : vehicle != null ? Vehicle.fromJSON(vehicle) : null;
+		this.divisions = divisions.map(div => div instanceof EventSiteDivision ? div : EventSiteDivision.fromJSON(div));
+	}
+
+   static fromValues(id, eventID, site, managerName, vehicle, divisions = []) {
+      return new EventSite({ id, eventID, site, managerName, vehicle, divisions });
+   }
+
+   static fromJSON(json) {
+      return new EventSite(json);
+   }
+}
+
+class Site {
+   constructor({ id, name, city }) {
+      this.id = id;
+      this.name = name;
+      this.city = city;
+   }
+
+   static fromValues(id, name, city) {
+      return new Site({ id, name, city });
+   }
+
+   static fromJSON(json) {
+      return new Site(json);
+   }
+}
+
+class Vehicle {
+   constructor({ id, name, isUnique }) {
+      this.id = id;
+      this.name = name;
+      this.isUnique = isUnique;
+   }
+
+   static fromValues(id, name, isUnique) {
+      return new Vehicle({ id, name, isUnique });
+   }
+
+   static fromJSON(json) {
+      return new Vehicle(json);
+   }
+}
+
+class EventSiteDivision {
+   constructor({ id, eventSiteID, division, schoolOrders = [] }) {
+      this.id = id;
+      this.eventSiteID = eventSiteID;
+      this.division = division instanceof Division ? division : Division.fromJSON(division);
+      this.schoolOrders = schoolOrders.map(so => so instanceof SchoolOrder ? so : SchoolOrder.fromJSON(so));
+   }
+
+   static fromValues(id, eventSiteID, division, schoolOrders = []) {
+      return new EventSiteDivision({ id, eventSiteID, division, schoolOrders });
+   }
+
+   static fromJSON(json) {
+      return new EventSiteDivision(json);
+   }
+}
+
+class Division {
+   constructor({ id, name, minPop, pre24Name }) {
+      this.id = id;
+      this.name = name;
+      this.minPop = minPop;
+      this.pre24Name = pre24Name;
+   }
+
+   static fromValues(id, name, minPop, pre24Name) {
+      return new Division({ id, name, minPop, pre24Name });
+   }
+
+   static fromJSON(json) {
+      return new Division(json);
+   }
+}
+
+class SchoolOrder {
+   constructor({ id, eshdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders = [], shirts = [], 
+					division, site, sport }) {
+      this.id = id;
+      this.eshdID = eshdID;
+      this.school = school;
+      this.completeness = completeness;
+      this.due = due;
+      this.paid = paid;
+      this.schoolOrderNote = schoolOrderNote;
+      this.invoiceSent = invoiceSent;
+      this.messageOrders = messageOrders;
+      this.shirts = shirts.map(style => style instanceof Style ? style : Style.fromJSON(style));
+      this.division = division;
+      this.site = site;
+      this.sport = sport;
+   }
+
+   static fromValues(id, eShdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders, shirts, division, 
+							site, sport) {
+      return new SchoolOrder({ id, eShdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders, shirts, 
+										division, site, sport });
+   }
+
+   static fromJSON(json) {
+      return new SchoolOrder(json);
+   }
+	
+	getTeamSizes() {
+		return this.shirts.find(shirt => shirt.shortName === 'Dairy Hoods').sizes;
+	}
+	
+	getAddedStyles() {
+		
+	}
+}
+
+class MessageOrder {
+   constructor({id, schoolOrderID, genderID, orderedBy, mOrderComment, mOrderCommentHandled, orderText, fileName, orderDate}) {
+      this.id = id;
+      this.schoolOrderID = schoolOrderID;
+      this.genderID = genderID;
+      this.orderedBy = orderedBy;
+      this.mOrderComment = mOrderComment;
+      this.mOrderCommentHandled = mOrderCommentHandled;
+      this.orderText = orderText;
+      this.fileName = fileName;
+      this.orderDate = orderDate;
+   }
+
+   static fromValues(id, schoolOrderID, genderID, orderedBy, mOrderComment, mOrderCommentHandled, orderText, fileName, orderDate) {
+      return new MessageOrder({id, schoolOrderID, genderID, orderedBy, mOrderComment, mOrderCommentHandled, orderText, fileName, orderDate});
+   }
+
+   static fromJSON(json) {
+      return new MessageOrder(json);
+   }
+}
+
+class Style {
+   constructor({ id, name, shortName, vShortName, brandID, code, sizes = [] }) {
+      this.id = id;
+      this.name = name;
+      this.shortName = shortName;
+      this.vShortName = vShortName;
+      this.brandID = brandID;
+      this.code = code;
+      this.sizes = sizes.map(size => size instanceof Size ? size : Size.fromJSON(size));
+			
+      this.sizeMap = {};
+      for (const size of this.sizes) {
+         this.sizeMap[size.charName] = size;
+		}
+   }
+
+   static fromValues(id, name, shortName, vShortName, brandID, code, sizes = []) {
+      return new Style({ id, name, shortName, vShortName, brandID, code, sizes });
+   }
+
+   static fromJSON(json) {
+      return new Style(json);
+   }
+}
+
+class Size {
+   constructor({ id, name, charName, quantity }) {
+      this.itemID = id;
+      this.name = name;
+      this.charName = charName;
+      this.quantity = quantity;
+   }
+
+   static fromValues(id, name, charName, quantity) {
+      return new Size({ id, name, charName, quantity });
+   }
+
+   static fromJSON(json) {
+      return new Size(json);
+   }
+}
+
+
+
+
 const currentYear = 24;
 
-
 	// this list is used to match sizes when reading the email string
-		// '2XL' or 'XXL'? '3XL' or 'XXXL'?
 const sizeList = ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'];
+const teamStyle = "Dairy Hoods";
+
+const labelPage4 = {
+	labels : 4,
+	width : 215,
+	height : 279,
+	xMargin : 4,
+	yMargin : 13,
+	labelWidth : 103,
+	labelHeight : 127,
+	xCenter : 108,
+	yCenter : 140,
+	origins : [ new Coord(4, 13), new Coord(109, 13), new Coord(4, 140), new Coord(109, 140) ],
+	padding : 6
+}
+
+const labelPage6 = {
+	labels : 6,
+	width : 215,
+	height : 279,
+	xMargin : 4,
+	yMargin : 13,
+	labelWidth : 103,
+	labelHeight : 85,
+	xCenter : 108,
+	yCenter : 140,
+	origins : [
+		new Coord(4, 13), new Coord(109, 13), new Coord(4, 98), new Coord(109, 98), new Coord(4, 183), new Coord(109, 183)
+	],
+	padding : 6
+}
+
+const labelPage = labelPage4;
 
 
 	// this list is used to build the nav bar.
 		// this is no longer necessary, since each sport now has one associated id in the db
-const sportList = [];
-sportList.push(['Golf', 1]);
-sportList.push(['Soccer', 2]);
-sportList.push(['Volleyball', 3]);
-sportList.push(['X-Country', 4]);
-sportList.push(['Swimming', 5]);
-sportList.push(['Football', 6]);
-sportList.push(['Drama', 7]);
-sportList.push(['G Basketball', 8]);
-sportList.push(['Wrestling', 9]);
-sportList.push(['Dance', 10]);
-sportList.push(['Cheer', 11]);
-sportList.push(['B Basketball', 12]);
-sportList.push(['Debate', 13]);
-sportList.push(['Speech', 14]);
-sportList.push(['Softball', 15]);
-sportList.push(['Baseball', 16]);
-sportList.push(['Tennis', 17]);
-sportList.push(['Track', 18]);
+const sportList = [
+   ['Golf', 1],
+   ['Soccer', 2],
+   ['Volleyball', 3],
+   ['X-Country', 4],
+   ['Swimming', 5],
+   ['Football', 6],
+   ['Drama', 7],
+   ['G Basketball', 8],
+   ['Wrestling', 9],
+   ['Dance', 10],
+   ['Cheer', 11],
+   ['B Basketball', 12],
+   ['Debate', 13],
+   ['Speech', 14],
+   ['Softball', 15],
+   ['Baseball', 16],
+   ['Tennis', 17],
+   ['Track', 18]
+];
+
 
 
 	// init is called onload() and does stuff after the script and html is in place
@@ -79,7 +418,7 @@ async function init() {
 	
 	let request = new ActionRequest('loadSizeCodesByStyle', 'Item')
 	let sizeData = await myFetch(request);
-	sizeCodesByStyles = sizeData.data;
+	sizeCodesByStyles = sizeData.data.map(styleData => Style.fromJSON(styleData));
 	
 		// Get modal elements
 	modal = document.getElementById("myModal");
@@ -103,15 +442,18 @@ function buildNavList() {
 	});
 }
 
-const nav2Items = [];
-nav2Items.push(['Year', 'showYear', 'Year', null]);
-nav2Items.push(['Schools', 'showSchools', 'School', null]);
-nav2Items.push(['Items', 'showItems', 'Item', null]);
-nav2Items.push(['Tests', 'showTests', 'Test', null]);
+
+
 
 function buildNavList2() {
 		// get the nav bar
 	let navList = document.getElementById("nav2List");
+	const nav2Items = [
+		['Year', 'showYear', 'Year', null],
+		['Schools', 'showSchools', 'School', null],
+		['Items', 'showItems', 'Item', null],
+		['Tests', 'showTests', 'Test', null]
+	];
 	nav2Items.forEach((item) => {
 			// create the element
 		let newLI = document.createElement("li");
@@ -169,8 +511,12 @@ async function goToEventPage(sport) {
 	let request = new ActionRequest('showEvent', 'Event', data)
 
 	let responseJSON = await myFetch(request);
-	eventOrders = responseJSON.data;
-	console.log(eventOrders);
+	// stateEvent = responseJSON.data;
+	console.log(responseJSON.data);
+	stateEvent = StateEvent.fromJSON(responseJSON.data);
+
+
+	console.log(stateEvent);
 	document.getElementById("display").innerHTML = responseJSON.html;
 	
 		// reset mode on load
@@ -366,9 +712,9 @@ async function showPage(action, actionClass, data) {
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	// js functions
-		// get an order from the big ol eventOrders object
+		// get an order from the big ol stateEvent object
 function getOrderFromTableButton(target) {
-	if (eventOrders) {
+	if (stateEvent) {
 			// get ids from data-attributes
 		const orderID = Number(target.closest('tbody').getAttribute('data-school-order-id'));
 		const divID = Number(target.closest('table').getAttribute('data-event-site-division-id'));
@@ -379,33 +725,36 @@ function getOrderFromTableButton(target) {
 }
 		
 function getOrderByIDs(eventSiteID, divID, orderID) {
-	if (eventOrders) {
+	if (stateEvent) {
 			// get the site, then division, then order. return null if not found
-		const eventSite = eventOrders.eventSites.find(eSite => eSite.id === eventSiteID);
+		const eventSite = stateEvent.eventSites.find(eSite => eSite.id === eventSiteID);
 		if (!eventSite) return null;
 		
 		const division = eventSite.divisions.find(div => div.id === divID);
 		if (!division) return null;
 
-		const order = division.schoolOrders.find(order => order.orderID === orderID);
+		const order = division.schoolOrders.find(order => order.id === orderID);
+		console.log(eventSiteID, divID, orderID);
+		console.log(eventSite, division, order);
 		
 			// hacky
 				// but may be not in a bad way? how else would i transmit all this? sending div, site, and sport args also?
 				// this is actually kind of clean considering the alternatives for getting this info where it needs to be.
 		order.division = division.name;
 		order.site = eventSite.site.name;
-		order.sport = eventOrders.sport.name;
+		order.sport = stateEvent.sport.name;
 		
 		return order || null;
 	}
 }
 
 
+
 function showAddOnInputs(order) {
 		// set mode. prevents edit being called while this is open
 	activeMode = 'add';
 		// get the parent element with the specified data attribute
-	const prnt = document.querySelector(`[data-school-order-id="${order.orderID}"]`);
+	const prnt = document.querySelector(`[data-school-order-id="${order.id}"]`);
 	if (prnt) {
 			// don't add more rows than there are styles
 		if (prnt.querySelectorAll('tr').length < 9) {
@@ -445,7 +794,7 @@ function showAddOnInputs(order) {
 			prnt.appendChild(newTr);
 		}
 	} else {
-		console.error(`Element with data-school-order-id="${order.orderID}" not found.`);
+		console.error(`Element with data-school-order-id="${order.id}" not found.`);
 	}
 }
 
@@ -470,9 +819,9 @@ async function submitAddOns(target, order) {
 			.filter(input => parseInt(input.value, 10) > 0);
 		inputs.forEach((input) => {
 				// match quantities with itemIDs, then push them to an array
-			let sizeChar = input.dataset.sizeChar;
-			let itemID = style.sizes[sizeChar].itemID;
-			let shirt = {
+			const sizeChar = input.dataset.sizeChar;
+			const itemID = style.sizeMap[sizeChar].itemID;
+			const shirt = {
 				itemID: itemID,
 				quantity: input.value
 			};
@@ -487,7 +836,7 @@ async function submitAddOns(target, order) {
 	}
 	
 		// send it to the server
-	const data = {'schoolOrderID': order.orderID, 'addItems': addItems };
+	const data = {'schoolOrderID': order.id, 'addItems': addItems };
 	let request = new ActionRequest('addAddOns', 'SOrderItem', data);
 	let responseJSON = await myFetch(request);
 	
@@ -618,11 +967,12 @@ function makeInput(i) {
 }
 
 
+
 function showEditSizeInputs(order) {
 		// set mode. prevents addOns being activated while edit is in progress
 	activeMode = 'edit';
 		// get the parent element with the specified data attribute
-	const prnt = document.querySelector(`[data-school-order-id="${order.orderID}"]`);
+	const prnt = document.querySelector(`[data-school-order-id="${order.id}"]`);
 	if (prnt) {
 			// get the rows for the order
 		const rows = Array.from(prnt.children);
@@ -688,7 +1038,7 @@ async function submitSizeEdit(target, order) {
 			if (oValue === '-' || oValue === '') oValue = 0;
 			if (input.value != oValue) {
 				const sizeChar = input.closest('td').title;
-				const itemID = style.sizes[sizeChar].itemID;
+				const itemID = style.sizeMap[sizeChar].itemID;
 				let shirt = {
 					itemID: itemID,
 					quantity: input.value
@@ -705,7 +1055,7 @@ async function submitSizeEdit(target, order) {
 	}
 	
 		// send it to the server
-	const data = { 'schoolOrderID': order.orderID, 'items': items };	
+	const data = { 'schoolOrderID': order.id, 'items': items };	
 	const request = new ActionRequest('editSizes', 'SchoolOrder', data);
 	let responseJSON = await myFetch(request);
 
@@ -735,7 +1085,7 @@ async function changeOrderCompleteness(box, order) {
 	let completeness = box.checked;
 	let tbody = box.closest('tbody');
 	
-	const data = {'id': order.orderID, 'completeness': completeness};
+	const data = {'id': order.id, 'completeness': completeness};
 	let request = new ActionRequest('changeOrderCompleteness', 'SchoolOrder', data);
 	let responseJSON = await myFetch(request);
 	
@@ -757,7 +1107,7 @@ function printBoxLabel(order) {
 		// Access jsPDF from the global object
 	const { jsPDF } = window.jspdf; 
    const doc = new jsPDF('p', 'mm', 'letter');
-	genBoxLabel(doc, order, labelPage.labelOrigins[0]);
+	genBoxLabel(doc, order, labelPage.origins[0]);
 	
 		// Generate a Blob URL and open it in a new tab
 	const pdfBlob = doc.output("blob");
@@ -766,37 +1116,18 @@ function printBoxLabel(order) {
 }
 
 function printBoxLabels() {
-	let orders = [];
-	Object.values(eventOrders.eventSites).forEach(eventSite => {
-      Object.values(eventSite.divisions).forEach(division => {
-         Object.values(division.schoolOrders).forEach(schoolOrder => {
-            if (!schoolOrder.completeness) {
-					schoolOrder.division = division.name;
-					schoolOrder.site = eventSite.site.name;
-					schoolOrder.sport = eventOrders.sport.name;
-					orders.push(schoolOrder);
-            }
-         });
-      });
-   });
+		// get all incomplete orders
+	let orders = stateEvent.getUndoneOrders();
 	
+		// format is jsPDF(orientation, unit, format); 'p' = portrait
 	const { jsPDF } = window.jspdf; 
    const doc = new jsPDF('p', 'mm', 'letter');
-	let origin;
-	let i = 0;
-	let j = 0;
-	orders.forEach(order => {
-		origin = labelPage.labelOrigins[i];
-		// console.log(origin, i);
-		genBoxLabel(doc, order, origin);
-		++i;
-		++j;
-		if (i == 6 && (j < orders.length)) {
-			doc.addPage();
-			i = 0;
-		}
-	});
 	
+		// add a page as necessary
+	for (let i = 0; i < orders.length; i++) {
+		genBoxLabel(doc, orders[i], labelPage.origins[(i % 4)]);
+		if ((i % 4 === 3) && (i < orders.length - 1)) doc.addPage();
+	}
 		// Generate a Blob URL and open it in a new tab
 	const pdfBlob = doc.output("blob");
 	const url = URL.createObjectURL(pdfBlob);
@@ -805,84 +1136,121 @@ function printBoxLabels() {
 
 
 function genBoxLabel(doc, order, origin) {
-	// drawLabelRects(doc);
+	drawLabelRects(doc);	
 	
-	const oX = origin.x;
-	const oY = origin.y;
-	const padding = 8;
-	const labelHeight = 85;
-	const labelWidth = 103;
-	const indentX = oX + 21;
-	const lineSpace = 9;
-	const lineX = oX + 16;
-		// use lineY so forEach will work
-	let lineY = oY + 10;
+		// origin, padding, indentLeft, lineSpaces, offsetX, offsetY
+	const lbl = new Label(doc, origin);	
+		
+		// this one is rotated to be vertical along the left edge
+	lbl.addSiteDivision(order.site, order.division);
 	
-
-	// const halfLabelX = oX + labelWidth / 2;
-	// const halfLabelY = oY + labelHeight / 2;
-	// doc.line(halfLabelX, oY, halfLabelX, oY + labelHeight);
-	// doc.line(oX, halfLabelY, oX + labelWidth, halfLabelY);
-	
-
-	const school = order.school.shortName;
-	
-	doc.setFontSize(14);
-	let txt = order.site + " - " + order.division;
-	let txtWdth = doc.getTextWidth(txt);
-	let rotY = oY + (labelHeight / 2) + (txtWdth / 2);
-		// rotate this first line
-   doc.text(txt, (oX + padding), rotY, {angle: 90});
-	
-		// start the normal rows
-	centerTextInLabel(doc, order.sport, oX, lineY);
-   // doc.text(order.sport, indentX, lineY);
+		// start the horizontal rows
+	lbl.centerTextInLabel(order.sport);
+	lbl.lineY += 9;
 	doc.setFontSize(18);
-	lineY += 9;
-   doc.text(school, (lineX - 1), lineY);
-		// underline the school name
-	txtWdth = doc.getTextWidth(school);
-	doc.line((lineX - 1), lineY + 1, (lineX - 1 + txtWdth), lineY + 1);
+   // doc.text(order.school.shortName, (lbl.lineX - 1), lbl.lineY);
+		// box the school name
+	lbl.rectText(order.school.shortName);
+	// txtWdth = doc.getTextWidth(order.school.shortName);
+	// let txtHt = doc.getFontSize() / doc.internal.scaleFactor;
+	// doc.rect((lbl.lineX - 2), (lbl.lineY + 1), (txtWdth + 3), -(txtHt + 1.5));
+	// doc.line((lbl.lineX - 1), lbl.lineY + 1, (lbl.lineX - 1 + txtWdth), lbl.lineY + 1);
 
 	
 	doc.setFontSize(11);
-	lineY += 8;
-   doc.text("Team Hoods:", indentX, (oY + 27));
-	lineY += 7;
+	lbl.lineY += 8;
+   doc.text("Team Hoods:", lbl.indentX, (lbl.oY + 27));
+	lbl.lineY += 4.5;
 	
 		// ?s for safety. only reads the property if it exists, rather than erroring if it doesn't it returns undefined
-	const sizes = order.shirts?.['Dairy Hoods']?.sizes;
-	if (sizes && Object.keys(sizes).length > 0) {
-		doc.text(genBLSizesString(sizes), lineX, lineY);
+	const teamSizes = order.shirts?.find(shirt => shirt.shortName === 'Dairy Hoods').sizes;
+	if (hasItems(teamSizes)) {
+		doc.text(genBLSizesString(teamSizes), lbl.lineX, lbl.lineY);
 	}
 	
 		// only do this if there are additional styles in order.shirts
-	if (Object.keys(order.shirts).length > 1) {
+	if (order.shirts.length > 1) {
 			// omit Dairy Hoods
-		Object.entries(order.shirts)
-		.filter(([key]) => key !== 'Dairy Hoods')
-		.forEach(([key, style]) => {
-			lineY += 9;
-			doc.text("Additional " + style.shortName + ":", indentX, lineY);
-			lineY += 7;
-			doc.text(genBLSizesString(style.sizes), lineX, lineY);
+		order.shirts
+		.filter(style => style.shortName !== 'Dairy Hoods')
+		.forEach(style => {
+			lbl.lineY += 6;
+			doc.text("Additional " + style.shortName + ":", lbl.indentX, lbl.lineY);
+			lbl.lineY += 4.5;
+			doc.text(genBLSizesString(style.sizes), lbl.lineX, lbl.lineY);
 		});
 		doc.setFontSize(14);
-		lineY += 9;
+		lbl.lineY += 9;
 		txt = "Due: $" + order.due;
 		if (!order.paid) {
 			txtWdth = doc.getTextWidth(txt);
-			doc.setFillColor(255, 255, 0);
-			doc.rect((lineX - 1), (lineY + 1), (txtWdth + 2), -7, "F");
+			doc.setFillColor('#ffff00');
+			doc.rect((lbl.lineX - 1), (lbl.lineY + 1), (txtWdth + 2), -7, "F");
 		}
-		doc.text(txt, lineX, lineY);
+		doc.text(txt, lbl.lineX, lbl.lineY);
 		if (order.paid) {
-			doc.setTextColor(255, 0, 0); // red
+			doc.setTextColor('#ff0000'); // red
 			txtWdth = doc.getTextWidth(txt);
-			doc.text(" PAID", lineX + txtWdth, lineY);
-			doc.setTextColor(0, 0, 0); // Black
+			doc.text(" PAID", lbl.lineX + txtWdth, lbl.lineY);
+			doc.setTextColor('#000000'); // Black
 		}
 	}
+	
+	addReturnWarning(doc, lbl);
+}
+
+function addReturnWarning(doc, lbl) {
+	lbl.lineX = lbl.origin.x + lbl.offsetX;
+	lbl.lineY = lbl.origin.y + 75;
+	
+	doc.line(lbl.lineX, lbl.lineY, (lbl.oX + lbl.width - lbl.padding), lbl.lineY)
+	lbl.lineY += 7;
+	
+	doc.setTextColor(255, 0, 0); // red
+	// doc.setFont('helvetica', 'bold');
+	doc.setFontSize(18);
+	lbl.centerTextInLabel("NO EXCHANGES");
+		// switch the text back
+	doc.setFont('helvetica', 'normal');
+	doc.setTextColor(0, 0, 0); // black
+	lbl.lineY += 4.5;
+	
+	
+	doc.setFontSize(10);
+	const explnTxt = "All orders are pre-printed to the specifications of the order submitted by your administrator.";
+	const maxWidth = lbl.width - lbl.offsetX - lbl.padding;
+		// multi line
+	let lines = doc.splitTextToSize(explnTxt, maxWidth);
+	doc.text(lines, lbl.lineX, lbl.lineY);
+	
+	lbl.lineY += 12;
+	doc.setFontSize(12);
+	const rtrnTxt = "Please verify contents before distributing. If there are any discrepancies between the contents in the box " +
+						 "and the printed label on the box the ENTIRE order and box must be returned";
+
+	
+	lines = doc.splitTextToSize(rtrnTxt, maxWidth);
+	// const lineHeight = doc.getFontSize() / doc.internal.scaleFactor + 2; // add padding between lines if needed
+
+	let underlineWord = "ENTIRE";
+	let x = lbl.lineX;
+	let y = lbl.lineY;
+
+	lines.forEach((line, i) => {
+		doc.text(line, x, y);
+		if (line.includes(underlineWord)) {
+				// Find offset of the word within the line
+			const parts = line.split(underlineWord);
+			const beforeWidth = doc.getTextWidth(parts[0]);
+			const wordWidth = doc.getTextWidth(underlineWord);
+
+				// Draw underline under the word
+			const underlineY = y + 0.7; // a little below baseline
+			doc.line(x + beforeWidth, underlineY, x + beforeWidth + wordWidth, underlineY);
+		}
+
+		y += 5;
+	});
 }
 
 
@@ -891,13 +1259,6 @@ function genBLSizesString(sizes) {
         .sort((a, b) => sizeList.indexOf(a.charName) - sizeList.indexOf(b.charName)) // Sort based on the sizeList
         .map(size => size.charName + ": " + size.quantity)
         .join(", ");
-}
-
-function centerTextInLabel(doc, txt, oX, y) {
-	let lblWdth = 103;
-	let txtWdth = doc.getTextWidth(txt);
-	let x = oX + ((lblWdth - txtWdth) / 2);
-	doc.text(txt, x, y)
 }
 
 
@@ -937,31 +1298,20 @@ window.addEventListener("click", (event) => {
 
 
 
-const labelPage = {
-	width : 215,
-	height : 279,
-	xMargin : 4,
-	yMargin : 13,
-	labelWidth : 103,
-	labelHeight : 85,
-	xCenter : 108,
-	yCenter : 140,
-	labelOrigins : [
-		new Coord(4, 13), new Coord(109, 13), new Coord(4, 98), new Coord(109, 98), new Coord(4, 183), new Coord(109, 183)
-	],
-	padding : 6
-}
 
-// 210 x 295
-
-
-
+//////////////////////////////////////////////////////////////////////////////////
+// ARBITRARY HELPERS
 
 	// delete all properties from an object, and assign properties from a new object. wanted to update a nested object
 function updateObject(obj, newObj) {
     Object.keys(obj).forEach(key => delete obj[key]);
     Object.assign(obj, newObj);
 }
+
+function hasItems(arr) {
+   return (Array.isArray(arr) && arr.length > 0);
+}
+
 
 
 
@@ -974,24 +1324,17 @@ function testPDF() {
 	const { jsPDF } = window.jspdf; 
    const doc = new jsPDF('p', 'mm', 'letter');
 	
-	const oX = labelPage.labelOrigins[0].x;
-	const oY = labelPage.labelOrigins[0].y;
-	const padding = 8;
-	const labelHeight = 85;
-	const labelWidth = 103;
-	const indentX = oX + 18;
-	const lineSpace = 9;
-	const lineX = oX + 16;
-		// use lineY so forEach will work
-	let lineY = oY + 10;
+	let origin = labelPage.origins[0];
+		// doc, origin, lbl.padding, indentLeft, lineSpaces, offsetX, offsetY
+	let lbl = new Label(doc, origin);
 	
 	drawLabelRects(doc);
-	const halfLabelX = oX + labelWidth / 2;
-	const halfLabelY = oY + labelHeight / 2;
-	// doc.line(halfLabelX, oY, halfLabelX, oY + labelHeight);
-	// doc.line(oX, halfLabelY, oX + labelWidth, halfLabelY);
-	// doc.line(oX, oY, oX + labelWidth, oY + labelHeight);
-	// doc.line(oX, oY + labelHeight, oX + labelWidth, oY);
+	const halfLabelX = lbl.oX + lbl.width / 2;
+	const halfLabelY = lbl.oY + lbl.height / 2;
+	// doc.line(halfLabelX, lbl.oY, halfLabelX, lbl.oY + lbl.height);
+	// doc.line(lbl.oX, halfLabelY, lbl.oX + lbl.width, halfLabelY);
+	// doc.line(lbl.oX, lbl.oY, lbl.oX + lbl.width, lbl.oY + lbl.height);
+	// doc.line(lbl.oX, lbl.oY + lbl.height, lbl.oX + lbl.width, lbl.oY);
 	
 		// variables
 	const division = "6A";
@@ -1003,73 +1346,224 @@ function testPDF() {
          { charName: 'M', quantity: 22 },
          { charName: 'L', quantity: 22 },
          { charName: 'XL', quantity: 22 },
-         { charName: '2XL', quantity: 22 },
-         { charName: '3XL', quantity: 22 }
+         { charName: '2X', quantity: 22 },
+         { charName: '3X', quantity: 22 }
       ];
 	let teamShirts = { 'Adult Hoods': { sizes: sizeList } };
 	let addedShirts = { 'Adult Hoods': { sizes: sizeList, shortName: 'Adult Hoods' }, 
 								'Adult Crews': { sizes: sizeList, shortName: 'Adult Crews' },
-								'Youth Hoods': { sizes: sizeList, shortName: 'Youth Hoods' }  };
+								'Youth Hoods': { sizes: sizeList, shortName: 'Yth Hoods' }  };
 	const due = 1218;
 	const paid = false;
 	
+	let txt;
+	let txtWdth;
+	
 	
 	doc.setFontSize(14);
-	let txt = site + " - " + division;
-	let txtWdth = doc.getTextWidth(txt);
-	// console.log("textWidth", txtWdth, "labelHeight", labelHeight);
-	let rotY = oY + (labelHeight / 2) + (txtWdth / 2);
-	// doc.rect((oX+ padding), rotY, -10, -txtWdth);
-		// rotate this first line
-   doc.text(txt, (oX + padding), rotY, {angle: 90});
-   // doc.text(txt, (oX + padding), rotY, {angle: 180});
-   // doc.text(txt, (oX + padding), rotY, {angle: 270});
-   // doc.text(txt, (oX + padding), rotY);
+	lbl.addSiteDivision(site, division);
 	
 		// start the normal rows
-   // doc.text(sport, indentX, lineY);
-	centerTextInLabel(doc, sport, oX, lineY);
+   // doc.text(sport, lbl.indentX, lbl.lineY);
+	lbl.centerTextInLabel(sport);
 	doc.setFontSize(18);
-	lineY += 9;
-   doc.text(school, (lineX - 1), lineY);
+	lbl.lineY += 9;
+   doc.text(school, (lbl.lineX - 1), lbl.lineY);
 	txtWdth = doc.getTextWidth(school);
-	doc.line((lineX - 1), lineY + 1, (lineX - 1 + txtWdth), lineY + 1);
-	// doc.rect((lineX - 1), lineY, txtWdth, -10);
+	doc.line((lbl.lineX - 1), lbl.lineY + 1, (lbl.lineX - 1 + txtWdth), lbl.lineY + 1);
+	// doc.rect((lbl.lineX - 1), lbl.lineY, txtWdth, -10);
 
 	
 	doc.setFontSize(11);
-	lineY += 8;
-   doc.text("Team Hoods:", indentX, (oY + 27));
-	lineY += 4.5;
+	lbl.lineY += 8;
+   doc.text("Team Hoods:", lbl.indentX, (lbl.oY + 27));
+	lbl.lineY += 4.5;
 	
 	const sizes = teamShirts?.['Adult Hoods']?.sizes;
 	if (sizes && Object.keys(sizes).length > 0) {
-		doc.text(genBLSizesString(sizes), lineX, lineY);
+		doc.text(genBLSizesString(sizes), lbl.lineX, lbl.lineY);
 	}
 	
 	if (!Array.isArray(addedShirts)) {
 		Object.values(addedShirts).forEach(style => {
-			lineY += 6;
-			doc.text("Additional " + style.shortName + ":", indentX, lineY);
-			lineY += 4.5;
-			doc.text(genBLSizesString(style.sizes), lineX, lineY);
+			lbl.lineY += 6;
+			doc.text("Additional " + style.shortName + ":", lbl.indentX, lbl.lineY);
+			lbl.lineY += 4.5;
+			doc.text(genBLSizesString(style.sizes), lbl.lineX, lbl.lineY);
 		});
 		doc.setFontSize(14);
-		lineY += 9;
+		lbl.lineY += 9;
+		txt = "Due: $" + due.toLocaleString();
+		if (!paid) {
+			txtWdth = doc.getTextWidth(txt);
+			doc.setFillColor('ffff00'); // yellow
+			doc.rect((lbl.lineX - 1), (lbl.lineY + 1), (txtWdth + 2), -6, "F");
+		}
+		doc.text(txt, lbl.lineX, lbl.lineY);
+		if (paid) {
+			doc.setTextColor(255, 0, 0); // red
+			txtWdth = doc.getTextWidth(txt);
+			doc.text(" PAID", lbl.lineX + txtWdth, lbl.lineY);
+			doc.setTextColor(0, 0, 0); // Black
+		}
+	}
+	
+	lbl.lineX += 60;
+	lbl.rectText("Box 1/2", '#ff5844', 'F');
+	lbl.lineX -= 60;
+	
+	addReturnWarning(doc, lbl);
+	
+	
+	/////////////////////////////////////////////////////////////////////////////////////
+		// a second label to compare
+	lbl = new Label(doc, labelPage.origins[1]);
+	
+	lbl.addSiteDivision(site, division);
+	
+		// start the normal rows
+   doc.text(sport, lbl.indentX, lbl.lineY);
+	
+		// put school in a rectangle
+	doc.setFontSize(18);
+	lbl.lineY += 9;
+	lbl.rectText(school);
+
+	
+	doc.setFontSize(11);
+	lbl.lineY += 8;
+	txt = "Team";
+	txtWdth  = doc.getTextWidth(txt);
+   doc.text(txt, lbl.lineX, (lbl.oY + 27));
+	
+	lbl.lineX = lbl.origin.x + 42;
+	sizeList.forEach(size => {
+		doc.text(size.charName, lbl.lineX, (lbl.oY + 27));
+		lbl.lineX += 8;
+	});
+	lbl.lineX = lbl.origin.x + lbl.offsetX;
+	lbl.lineY += 4.5;
+	
+	doc.text("Hoods", lbl.lineX, lbl.lineY);
+	lbl.lineX = lbl.origin.x + 42;
+	sizeList.forEach(size => {
+		doc.text(String(size.quantity), lbl.lineX, lbl.lineY);
+		lbl.lineX += 8;
+	});
+	lbl.lineX = lbl.origin.x + lbl.offsetX;
+	
+	
+	doc.setTextColor('444444');
+	
+	if (!Array.isArray(addedShirts)) {
+		lbl.lineY += 7;
+		txt = "Additional: ";
+		txtWdth = doc.getTextWidth(txt);
+		
+		doc.text("Additional: ", lbl.indentX, lbl.lineY);
+		
+		Object.values(addedShirts).forEach(style => {
+			lbl.lineY += 6;
+			doc.text(style.shortName + ":", (lbl.origin.x + lbl.offsetX), lbl.lineY);
+			lbl.lineX = lbl.origin.x + 42;
+			sizeList.forEach(size => {
+				doc.text(String(size.quantity), lbl.lineX, lbl.lineY);
+				lbl.lineX += 8;
+			});
+		});
+		
+		lbl.lineX = lbl.origin.x + lbl.offsetX;
+		
+		doc.setTextColor('000000');
+		doc.setFontSize(14);
+		lbl.lineY += 9;
+		txt = "Due: $" + due.toLocaleString();
+		if (!paid) {
+			txtWdth = doc.getTextWidth(txt);
+			doc.setFillColor('ffff00');
+			doc.rect((lbl.lineX - 1), (lbl.lineY + 1), (txtWdth + 2), -6, "F");
+		}
+		doc.text(txt, lbl.lineX, lbl.lineY);
+		if (paid) {
+			doc.setTextColor(255, 0, 0); // red
+			txtWdth = doc.getTextWidth(txt);
+			doc.text(" PAID", lbl.lineX + txtWdth, lbl.lineY);
+			doc.setTextColor(0, 0, 0); // Black
+		}
+	}
+	
+	lbl.lineX += 60;
+	lbl.rectText("Box 1/2", '#ff5844', 'F');
+	lbl.lineX -= 60;
+	
+	addReturnWarning(doc, lbl);
+	
+	
+	/////////////////////////////////////////////////////////////////////////////////////
+		// a third label to compare
+	lbl = new Label(doc, labelPage.origins[2]);
+	
+	
+	doc.setFontSize(14);
+	txt = site + " - " + division;
+	txtWdth = doc.getTextWidth(txt);
+	rotY = lbl.oY + txtWdth + lbl.padding;
+	// doc.rect((lbl.oX+ lbl.padding), rotY, -10, -txtWdth);
+		// rotate this first line
+   doc.text(txt, (lbl.oX + lbl.padding), rotY, {angle: 90});
+	
+		// start the normal rows
+   doc.text(sport, lbl.indentX, lbl.lineY);
+	// lbl.centerTextInLabel(sport);
+	
+	doc.setFontSize(18);
+	lbl.lineY += 9;
+	lbl.rectText(school, '#ccccff', 'F');
+	
+
+	
+	doc.setFontSize(11);
+	lbl.lineY += 8;
+   doc.text("Team Hoods:", lbl.indentX, (lbl.oY + 27));
+	lbl.lineY += 4.5;
+	
+	if (sizes && Object.keys(sizes).length > 0) {
+		doc.text(genBLSizesString(sizes), lbl.lineX, lbl.lineY);
+	}
+	
+	doc.setTextColor('333333');
+	
+	if (!Array.isArray(addedShirts)) {
+		Object.values(addedShirts).forEach(style => {
+			lbl.lineY += 6;
+			doc.text("Additional " + style.shortName + ":", lbl.indentX, lbl.lineY);
+			lbl.lineY += 4.5;
+			doc.text(genBLSizesString(style.sizes), lbl.lineX, lbl.lineY);
+		});
+		
+		doc.setTextColor('000000');
+		doc.setFontSize(14);
+		lbl.lineY += 9;
 		txt = "Due: $" + due.toLocaleString();
 		if (!paid) {
 			txtWdth = doc.getTextWidth(txt);
 			doc.setFillColor(255, 255, 0);
-			doc.rect((lineX - 1), (lineY + 1), (txtWdth + 2), -6, "F");
+			doc.rect((lbl.lineX - 1), (lbl.lineY + 1), (txtWdth + 2), -6, "F");
 		}
-		doc.text(txt, lineX, lineY);
+		doc.text(txt, lbl.lineX, lbl.lineY);
 		if (paid) {
 			doc.setTextColor(255, 0, 0); // red
 			txtWdth = doc.getTextWidth(txt);
-			doc.text(" PAID", lineX + txtWdth, lineY);
+			doc.text(" PAID", lbl.lineX + txtWdth, lbl.lineY);
 			doc.setTextColor(0, 0, 0); // Black
 		}
 	}
+	
+	lbl.lineX += 60;
+	lbl.rectText("Box 1/2", '#ff5844', 'F');
+	lbl.lineX -= 60;
+	
+	addReturnWarning(doc, lbl);
 	
 		// Generate a Blob URL and open it in a new tab
 	const pdfBlob = doc.output("blob");
@@ -1078,7 +1572,7 @@ function testPDF() {
 }
 
 function drawLabelRects(doc) {
-	labelPage.labelOrigins.forEach(coord => {
+	labelPage.origins.forEach(coord => {
 		doc.rect(coord.x, coord.y, labelPage.labelWidth, labelPage.labelHeight);
 	});
 }

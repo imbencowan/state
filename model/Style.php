@@ -8,6 +8,7 @@ class Style extends BasicTableModel {
 		return ['id' => 'styleID', 
 					'name' => 'styleName', 
 					'shortName' => 'styleShortName', 
+					'vShortName' => 'styleVeryShortName',
 					'code' => 'styleCode', 
 					'brandID' => 'brandID']; 
 	}
@@ -19,6 +20,7 @@ class Style extends BasicTableModel {
       public readonly ?int $id,
       public readonly ?string $name,
       public readonly ?string $shortName,
+      public readonly ?string $vShortName,
       public readonly ?string $code,
 		public readonly int $brandID,
 		private array $sizes = []
@@ -29,9 +31,10 @@ class Style extends BasicTableModel {
 			'id' => $this->id,
 			'name' => $this->name,
 			'shortName' => $this->shortName,
+			'vShortName' => $this->vShortName,
 			'code' => $this->code,
 			'brandID' => $this->brandID,
-			'sizes' => $this->sizes
+			'sizes' => array_values($this->sizes)
 		];
 	}
 	

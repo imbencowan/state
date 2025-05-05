@@ -67,7 +67,7 @@ class Item extends BasicTableModel {
 				$sizeObj = new stdClass();
 				$sizeObj->name = $item->size->name;
 				$sizeObj->charName = $item->size->charName;
-				$sizeObj->itemID = $item->id;
+				$sizeObj->id = $item->id;
 				$newObj->pushSizes($sizeObj);
 				
 				$styles[$shortName] = $newObj;
@@ -75,7 +75,7 @@ class Item extends BasicTableModel {
 				$sizeObj = new stdClass();
 				$sizeObj->name = $item->size->name;
 				$sizeObj->charName = $item->size->charName;
-				$sizeObj->itemID = $item->id;
+				$sizeObj->id = $item->id;
 				$styles[$shortName]->pushSizes($sizeObj);
 			}
 		}
