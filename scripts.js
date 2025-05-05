@@ -54,10 +54,13 @@ class Label {
 		this.padding = 6;
 		this.height = labelPage.labelHeight;
 		this.width = labelPage.labelWidth;
-		this.indentX = origin.x + 21;
 		this.lineSpaces = [4.5, 7, 9];
-		this.offsetX = 16;
+		this.offsetX = 14;
 		this.offsetY = 10;
+		this.indentX = origin.x + this.offsetX + 5;
+		this.alignX = origin.x + this.offsetX;
+		this.gridX = origin.x + 41;
+		this.gridStep = 8.5;
 			// define where the cursor starts
 		this.lineX = origin.x + this.offsetX;
 		this.lineY = origin.y + this.offsetY;
@@ -92,7 +95,26 @@ class Label {
 		const txtWdth = this.doc.getTextWidth(txt);
 		const y = this.origin.y + (this.height / 2) + (txtWdth / 2);
 			// rotate this first line
-		this.doc.text(txt, (this.origin.x + this.padding), y, {angle: 90});
+		this.doc.text(txt, (this.origin.x + this.padding + 2), y, {angle: 90});
+	}
+	
+	addGridSizes(min, max) {
+		this.doc.setFontSize(12);
+		let x = this.gridX;
+		for (let i = min - 1; i < max; ++i) {
+			this.doc.text(sizeList[i], x, this.lineY);
+			x += this.gridStep;
+		}
+	}
+	
+	addGridQuantities(sizes, min) {
+		this.doc.setFontSize(11);
+		sizes.forEach(size => {
+			console.log(size);
+			let x = this.gridX + (this.gridStep * (size.id - min));
+			console.log(String(size.quantity), x, this.lineY);
+			this.doc.text(String(size.quantity), x, this.lineY);
+		});
 	}
 }
 
@@ -276,6 +298,26 @@ class SchoolOrder {
 	getAddedStyles() {
 		
 	}
+	
+	getMinSize() {
+		let min = Infinity;
+		this.shirts.forEach(style => {
+			style.sizes.forEach(size => {
+				if (size.id < min) min = size.id;
+			});
+		});
+		return min;
+	}
+	
+	getMaxSize() {
+		let max = 0;
+		this.shirts.forEach(style => {
+			style.sizes.forEach(size => {
+				if (size.id > max) max = size.id;
+			});
+		});
+		return max;
+	}
 }
 
 class MessageOrder {
@@ -327,7 +369,7 @@ class Style {
 
 class Size {
    constructor({ id, name, charName, quantity }) {
-      this.itemID = id;
+      this.id = id;
       this.name = name;
       this.charName = charName;
       this.quantity = quantity;
@@ -344,12 +386,11 @@ class Size {
 
 
 
-
+const teamStyle = "Dairy Hoods";
 const currentYear = 24;
 
 	// this list is used to match sizes when reading the email string
 const sizeList = ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'];
-const teamStyle = "Dairy Hoods";
 
 const labelPage4 = {
 	labels : 4,
@@ -357,11 +398,11 @@ const labelPage4 = {
 	height : 279,
 	xMargin : 4,
 	yMargin : 13,
-	labelWidth : 103,
+	labelWidth : 101.6,
 	labelHeight : 127,
 	xCenter : 108,
 	yCenter : 140,
-	origins : [ new Coord(4, 13), new Coord(109, 13), new Coord(4, 140), new Coord(109, 140) ],
+	origins : [ new Coord(4, 14), new Coord(107.4, 14), new Coord(4, 140), new Coord(107.4, 140) ],
 	padding : 6
 }
 
@@ -734,8 +775,6 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 		if (!division) return null;
 
 		const order = division.schoolOrders.find(order => order.id === orderID);
-		console.log(eventSiteID, divID, orderID);
-		console.log(eventSite, division, order);
 		
 			// hacky
 				// but may be not in a bad way? how else would i transmit all this? sending div, site, and sport args also?
@@ -1135,10 +1174,10 @@ function printBoxLabels() {
 }
 
 
+
 function genBoxLabel(doc, order, origin) {
 	drawLabelRects(doc);	
 	
-		// origin, padding, indentLeft, lineSpaces, offsetX, offsetY
 	const lbl = new Label(doc, origin);	
 		
 		// this one is rotated to be vertical along the left edge
@@ -1146,41 +1185,38 @@ function genBoxLabel(doc, order, origin) {
 	
 		// start the horizontal rows
 	lbl.centerTextInLabel(order.sport);
+	
 	lbl.lineY += 9;
 	doc.setFontSize(18);
-   // doc.text(order.school.shortName, (lbl.lineX - 1), lbl.lineY);
 		// box the school name
-	lbl.rectText(order.school.shortName);
-	// txtWdth = doc.getTextWidth(order.school.shortName);
-	// let txtHt = doc.getFontSize() / doc.internal.scaleFactor;
-	// doc.rect((lbl.lineX - 2), (lbl.lineY + 1), (txtWdth + 3), -(txtHt + 1.5));
-	// doc.line((lbl.lineX - 1), lbl.lineY + 1, (lbl.lineX - 1 + txtWdth), lbl.lineY + 1);
+	lbl.rectText(order.school.shortName, '#cfcfff', 'F');
 
 	
-	doc.setFontSize(11);
 	lbl.lineY += 8;
-   doc.text("Team Hoods:", lbl.indentX, (lbl.oY + 27));
+	lbl.addGridSizes(order.getMinSize(), order.getMaxSize());
 	lbl.lineY += 4.5;
+	doc.setFontSize(11);
+   doc.text("Team Hoods:", lbl.alignX, lbl.lineY);
 	
-		// ?s for safety. only reads the property if it exists, rather than erroring if it doesn't it returns undefined
-	const teamSizes = order.shirts?.find(shirt => shirt.shortName === 'Dairy Hoods').sizes;
-	if (hasItems(teamSizes)) {
-		doc.text(genBLSizesString(teamSizes), lbl.lineX, lbl.lineY);
-	}
+		// put in the team quantities
+	lbl.addGridQuantities(order.getTeamSizes(), order.getMinSize());
 	
 		// only do this if there are additional styles in order.shirts
 	if (order.shirts.length > 1) {
+		lbl.lineY += 8;
+		doc.setTextColor('666666');
+		doc.text("Additional", lbl.indentX, lbl.lineY);
 			// omit Dairy Hoods
 		order.shirts
 		.filter(style => style.shortName !== 'Dairy Hoods')
 		.forEach(style => {
 			lbl.lineY += 6;
-			doc.text("Additional " + style.shortName + ":", lbl.indentX, lbl.lineY);
-			lbl.lineY += 4.5;
-			doc.text(genBLSizesString(style.sizes), lbl.lineX, lbl.lineY);
+			doc.text(style.shortName, lbl.alignX, lbl.lineY);
+			lbl.addGridQuantities(style.sizes, order.getMinSize());
 		});
 		doc.setFontSize(14);
 		lbl.lineY += 9;
+		doc.setTextColor('#000000');
 		txt = "Due: $" + order.due;
 		if (!order.paid) {
 			txtWdth = doc.getTextWidth(txt);
@@ -1199,8 +1235,72 @@ function genBoxLabel(doc, order, origin) {
 	addReturnWarning(doc, lbl);
 }
 
+// function genBoxLabel(doc, order, origin) {
+	// drawLabelRects(doc);	
+	
+		// // origin, padding, indentLeft, lineSpaces, offsetX, offsetY
+	// const lbl = new Label(doc, origin);	
+		
+		// // this one is rotated to be vertical along the left edge
+	// lbl.addSiteDivision(order.site, order.division);
+	
+		// // start the horizontal rows
+	// lbl.centerTextInLabel(order.sport);
+	// lbl.lineY += 9;
+	// doc.setFontSize(18);
+   // // doc.text(order.school.shortName, (lbl.lineX - 1), lbl.lineY);
+		// // box the school name
+	// lbl.rectText(order.school.shortName);
+	// // txtWdth = doc.getTextWidth(order.school.shortName);
+	// // let txtHt = doc.getFontSize() / doc.internal.scaleFactor;
+	// // doc.rect((lbl.lineX - 2), (lbl.lineY + 1), (txtWdth + 3), -(txtHt + 1.5));
+	// // doc.line((lbl.lineX - 1), lbl.lineY + 1, (lbl.lineX - 1 + txtWdth), lbl.lineY + 1);
+
+	
+	// doc.setFontSize(11);
+	// lbl.lineY += 8;
+   // doc.text("Team Hoods:", lbl.indentX, (lbl.oY + 27));
+	// lbl.lineY += 4.5;
+	
+		// // ?s for safety. only reads the property if it exists, rather than erroring if it doesn't it returns undefined
+	// const teamSizes = order.shirts?.find(shirt => shirt.shortName === 'Dairy Hoods').sizes;
+	// if (hasItems(teamSizes)) {
+		// doc.text(genBLSizesString(teamSizes), lbl.lineX, lbl.lineY);
+	// }
+	
+		// // only do this if there are additional styles in order.shirts
+	// if (order.shirts.length > 1) {
+			// // omit Dairy Hoods
+		// order.shirts
+		// .filter(style => style.shortName !== 'Dairy Hoods')
+		// .forEach(style => {
+			// lbl.lineY += 6;
+			// doc.text("Additional " + style.shortName + ":", lbl.indentX, lbl.lineY);
+			// lbl.lineY += 4.5;
+			// doc.text(genBLSizesString(style.sizes), lbl.lineX, lbl.lineY);
+		// });
+		// doc.setFontSize(14);
+		// lbl.lineY += 9;
+		// txt = "Due: $" + order.due;
+		// if (!order.paid) {
+			// txtWdth = doc.getTextWidth(txt);
+			// doc.setFillColor('#ffff00');
+			// doc.rect((lbl.lineX - 1), (lbl.lineY + 1), (txtWdth + 2), -7, "F");
+		// }
+		// doc.text(txt, lbl.lineX, lbl.lineY);
+		// if (order.paid) {
+			// doc.setTextColor('#ff0000'); // red
+			// txtWdth = doc.getTextWidth(txt);
+			// doc.text(" PAID", lbl.lineX + txtWdth, lbl.lineY);
+			// doc.setTextColor('#000000'); // Black
+		// }
+	// }
+	
+	// addReturnWarning(doc, lbl);
+// }
+
 function addReturnWarning(doc, lbl) {
-	lbl.lineX = lbl.origin.x + lbl.offsetX;
+	lbl.lineX = lbl.alignX;
 	lbl.lineY = lbl.origin.y + 75;
 	
 	doc.line(lbl.lineX, lbl.lineY, (lbl.oX + lbl.width - lbl.padding), lbl.lineY)
@@ -1441,7 +1541,7 @@ function testPDF() {
 		doc.text(size.charName, lbl.lineX, (lbl.oY + 27));
 		lbl.lineX += 8;
 	});
-	lbl.lineX = lbl.origin.x + lbl.offsetX;
+	lbl.lineX = lbl.alignX;
 	lbl.lineY += 4.5;
 	
 	doc.text("Hoods", lbl.lineX, lbl.lineY);
@@ -1450,7 +1550,7 @@ function testPDF() {
 		doc.text(String(size.quantity), lbl.lineX, lbl.lineY);
 		lbl.lineX += 8;
 	});
-	lbl.lineX = lbl.origin.x + lbl.offsetX;
+	lbl.lineX = lbl.alignX;
 	
 	
 	doc.setTextColor('444444');
@@ -1472,7 +1572,7 @@ function testPDF() {
 			});
 		});
 		
-		lbl.lineX = lbl.origin.x + lbl.offsetX;
+		lbl.lineX = lbl.alignX;
 		
 		doc.setTextColor('000000');
 		doc.setFontSize(14);

@@ -91,7 +91,9 @@ class SchoolOrder extends BasicTableModel {
 		$styles = [];
 		foreach ($oItems as $oItem) {
 			$styleName = $oItem->item->style->shortName;
+				// make an array of unique styles
 			if (!isset($styles[$styleName])) $styles[$styleName] = $oItem->item->style;
+			
 			$sizeChars = $oItem->item->size->charName;
 			$oItem->item->size->setQuantity($oItem->quantity);
 			$styles[$styleName]->pushSizes($oItem->item->size);	
