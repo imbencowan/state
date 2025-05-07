@@ -8,7 +8,10 @@ class School extends BasicTableModel {
 		return ['id' => 'schoolID', 
 					'name' => 'schoolName', 
 					'division' => 'divisionID', 
-					'district' => 'districtID']; 
+					'district' => 'districtID',
+					'addressPhysical' => 'schoolAddressPhysical',
+					'addressMailing' => 'schoolAddressMailing',
+					'addressLine2' => 'schoolAddressLine2']; 
 	}
 		// defined as: new Relation($property, $class, $matchKey, $isMany, $interTable)
 	protected static function getRelations(): array {
@@ -23,6 +26,9 @@ class School extends BasicTableModel {
 	public function __construct(
       public readonly ?int $id,
       public readonly ?string $name,
+      public readonly ?string $addressPhysical,
+      public readonly ?string $addressMailing,
+      public readonly ?string $addressLine2,
       public readonly ?Division $division,
       public readonly ?District $district
    ) {
@@ -59,10 +65,7 @@ class School extends BasicTableModel {
 		include 'view/schools.php';
 		$htmlContent = ob_get_clean();
 		
-		echo json_encode([
-			'html' => $htmlContent,
-			'data' => $schools
-		]);
+		return [ 'html' => $htmlContent, 'data' => $schools ];
 	}
 }
 ?>

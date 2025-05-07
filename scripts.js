@@ -57,7 +57,7 @@ class Label {
 		this.lineSpaces = [4.5, 7, 9];
 		this.offsetX = 14;
 		this.offsetY = 10;
-		this.indentX = origin.x + this.offsetX + 5;
+		this.indentX = origin.x + this.offsetX + 3;
 		this.alignX = origin.x + this.offsetX;
 		this.gridX = origin.x + 41;
 		this.gridStep = 8.5;
@@ -110,11 +110,51 @@ class Label {
 	addGridQuantities(sizes, min) {
 		this.doc.setFontSize(11);
 		sizes.forEach(size => {
-			console.log(size);
 			let x = this.gridX + (this.gridStep * (size.id - min));
-			console.log(String(size.quantity), x, this.lineY);
 			this.doc.text(String(size.quantity), x, this.lineY);
 		});
+	}
+}
+
+class InvoicePage {
+	constructor(doc) {
+		this.doc = doc;
+		this.width = 215.9;
+		this.height = 280;
+		this.alignX = 20;
+		this.colsX = [0, 20, 60, 105, 140, 160, 175, 200];
+		this.lineStep = 4;
+		this.lineX = this.alignX;
+		this.lineY = 30;
+		
+		this.doc.setFontSize(10);
+	}
+	
+	lineDown(step) {
+		this.lineY += this.lineStep;
+	}
+	
+	centerTextInPage(txt) {
+		let txtWdth = this.doc.getTextWidth(txt);
+		let x = ((this.width - txtWdth) / 2);
+		this.doc.text(txt, x, this.lineY);
+	}
+		
+		// centers text in a box based off column values
+	cell(txt, col) {
+			// draw the box
+		let bxWdth = this.colsX[col + 1] - this.colsX[col];
+		this.doc.rect(this.colsX[col], (this.lineY + .85), bxWdth, -this.lineStep);
+			// insert the text
+		let txtWdth = this.doc.getTextWidth(String(txt));
+		let x = this.colsX[col] + ((bxWdth - txtWdth) / 2);
+		this.doc.text(String(txt), x, this.lineY);
+	}
+	
+	drawAddressBox() {
+		const w = .9 * (this.colsX[3] - this.colsX[1]);
+		const h = this.lineStep * 3;
+		this.doc.rect(this.alignX - 1, this.lineY + 1, w, h);
 	}
 }
 
@@ -268,7 +308,7 @@ class SchoolOrder {
 					division, site, sport }) {
       this.id = id;
       this.eshdID = eshdID;
-      this.school = school;
+      this.school = school instanceof School ? school : School.fromJSON(school);
       this.completeness = completeness;
       this.due = due;
       this.paid = paid;
@@ -319,6 +359,32 @@ class SchoolOrder {
 		return max;
 	}
 }
+
+class School {
+   constructor({ id, name, shortName, addressPhysical, addressMailing, addressLine2, district, division }) {
+      this.id = id;
+      this.name = name;
+      this.shortName = shortName;
+		this.addressPhysical = addressPhysical;
+		this.addressMailing = addressMailing;
+		this.addressLine2 = addressLine2
+      this.division = division instanceof Division ? division : Division.fromJSON(division);
+      this.division = division;
+   }
+
+   static fromValues(id, name, shortName, addressPhysical, addressMailing, addressLine2, district, division) {
+      return new School({ id, name, shortName, addressPhysical, addressMailing, addressLine2, district, division });
+   }
+
+   static fromJSON(json) {
+      return new School(json);
+   }
+	
+	getSchoolCode() {
+		return this.name.slice(0, 3).toUpperCase() + String(this.id);
+	}
+}
+
 
 class MessageOrder {
    constructor({id, schoolOrderID, genderID, orderedBy, mOrderComment, mOrderCommentHandled, orderText, fileName, orderDate}) {
@@ -520,6 +586,7 @@ async function myFetch(request) {
 		const responseText = await response.text();
 		let json;
 		try {
+			// console.log(responseText);
 			json = JSON.parse(responseText);
 		} catch {
 			throw new Error("Invalid JSON returned from server");
@@ -859,7 +926,7 @@ async function submitAddOns(target, order) {
 		inputs.forEach((input) => {
 				// match quantities with itemIDs, then push them to an array
 			const sizeChar = input.dataset.sizeChar;
-			const itemID = style.sizeMap[sizeChar].itemID;
+			const itemID = style.sizeMap[sizeChar].id;
 			const shirt = {
 				itemID: itemID,
 				quantity: input.value
@@ -876,11 +943,14 @@ async function submitAddOns(target, order) {
 	
 		// send it to the server
 	const data = {'schoolOrderID': order.id, 'addItems': addItems };
+	// console.log(data);
 	let request = new ActionRequest('addAddOns', 'SOrderItem', data);
 	let responseJSON = await myFetch(request);
 	
 	if (responseJSON.success) {
+		console.log(order);
 		updateObject(order, responseJSON.newOrder);
+		console.log(order);
 		cleanInputRows(rows);
 			// exit 'add' mode
 		activeMode = null;
@@ -1077,7 +1147,7 @@ async function submitSizeEdit(target, order) {
 			if (oValue === '-' || oValue === '') oValue = 0;
 			if (input.value != oValue) {
 				const sizeChar = input.closest('td').title;
-				const itemID = style.sizeMap[sizeChar].itemID;
+				const itemID = style.sizeMap[sizeChar].id;
 				let shirt = {
 					itemID: itemID,
 					quantity: input.value
@@ -1112,6 +1182,7 @@ async function submitSizeEdit(target, order) {
 	// shows the original message
 function showOMessage(order) {
 	mText = order.messageOrders[0].orderText;
+	console.log(order);
 		// if there is a second messageOrder, append it's text
 	if (order.messageOrders[1]) mText += "\n\n" + order.messageOrders[1].orderText;
 		// display it
@@ -1176,7 +1247,7 @@ function printBoxLabels() {
 
 
 function genBoxLabel(doc, order, origin) {
-	drawLabelRects(doc);	
+	// drawLabelRects(doc);	
 	
 	const lbl = new Label(doc, origin);	
 		
@@ -1420,7 +1491,113 @@ function hasItems(arr) {
 	/////////////////////////////////////////////////////////
 	//test stuff
 	
-function testPDF() {
+async function testInvoicePDF() {
+	const { jsPDF } = window.jspdf; 
+   const doc = new jsPDF('p', 'mm', 'letter');
+	
+	let invP = new InvoicePage(doc);
+	
+	const date = new Date();
+	const strDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+
+	let request = new ActionRequest('getByID', 'SchoolOrder', 568);
+	let responseJSON = await myFetch(request);
+	order = SchoolOrder.fromJSON(responseJSON.data);
+	
+	invP.centerTextInPage("****** INVOICE ******")
+	invP.lineY += (2 * invP.lineStep);
+	
+	doc.text("McU SPORTS", invP.alignX, invP.lineY);
+	doc.text("INVOICE NUMBER:", invP.colsX[3], invP.lineY);
+		// puts text in a cell. position is determined by provided column, and current lineY. arguments are (text, colsX[])
+	invP.cell(order.id, 4);
+	invP.lineDown();
+	doc.text("822 W JEFFERSON", invP.alignX, invP.lineY);
+	doc.text("INVOICE DATE:", invP.colsX[3], invP.lineY);
+	invP.cell(strDate, 4);
+	invP.lineDown();
+	doc.text("BOISE, ID 83702", invP.alignX, invP.lineY);
+	
+	invP.lineDown();
+	invP.lineDown();
+	doc.text("ORDER NUMBER:", invP.colsX[3], invP.lineY);
+	invP.cell(order.id, 4);
+	invP.lineDown();
+	doc.text("ORDER DATE:", invP.colsX[3], invP.lineY);
+	invP.cell(strDate, 4);
+	invP.lineDown();
+	doc.text("SALESPERSON:", invP.colsX[3], invP.lineY);
+	invP.cell("Ben", 4);
+	invP.lineDown();
+	doc.text("CUSTOMER #:", invP.colsX[3], invP.lineY);
+	invP.cell(order.school.getSchoolCode(), 4);
+	
+	invP.lineDown();
+	invP.lineDown();
+	invP.lineDown();
+	doc.text("SOLD TO:", invP.colsX[1], invP.lineY);
+	doc.text("SHIP TO:", invP.colsX[3], invP.lineY);
+	
+	invP.drawAddressBox();
+	
+	invP.lineDown();
+	doc.text(order.school.name, invP.colsX[1], invP.lineY);
+	doc.text(order.school.name, invP.colsX[3], invP.lineY);
+	invP.lineDown();
+	doc.text(order.school.addressPhysical, invP.colsX[1], invP.lineY);
+	doc.text(order.school.addressPhysical, invP.colsX[3], invP.lineY);
+	invP.lineDown();
+	doc.text(order.school.addressLine2, invP.colsX[1], invP.lineY);
+	doc.text(order.school.addressLine2, invP.colsX[3], invP.lineY);
+	
+	invP.lineDown();
+	invP.lineDown();
+	invP.lineDown();
+	doc.text("CONFIRM TO:", invP.colsX[1], invP.lineY);
+	invP.cell("SOLD TO:", 2);
+	invP.lineDown();
+	doc.text("COMMENT: PH#", invP.colsX[1], invP.lineY);
+	invP.cell("", 2);
+	invP.lineDown();
+	doc.text("PAYMENT:", invP.colsX[1], invP.lineY);
+	doc.text("check / card", invP.colsX[2], invP.lineY);
+	
+	invP.lineDown();
+	invP.lineDown();
+	invP.lineDown();
+	doc.text("ITEM:", invP.colsX[1], invP.lineY);
+	doc.text("ORDERED:", invP.colsX[3], invP.lineY);
+	doc.text("PRICE:", invP.colsX[4], invP.lineY);
+	doc.text("AMOUNT:", invP.colsX[5], invP.lineY);
+	
+	invP.lineDown();
+	invP.lineDown();
+	invP.cell("item", 1);
+	invP.lineDown();
+	invP.lineDown();
+	doc.text("Total Ordered", invP.colsX[3], invP.lineY);
+	doc.text("", invP.colsX[4], invP.lineY);
+	invP.lineDown();
+	// doc.line(10, 10, 100, 100);
+	invP.lineDown();
+	doc.text("INVOICE TOTAL:", invP.colsX[3], invP.lineY);
+	doc.text("$", invP.colsX[5], invP.lineY);
+	
+	invP.lineDown();
+	invP.lineDown();
+	invP.centerTextInPage("Sport Year");
+	
+	
+	
+	
+	
+		// Generate a Blob URL and open it in a new tab
+	const pdfBlob = doc.output("blob");
+	const url = URL.createObjectURL(pdfBlob);
+	window.open(url, "_blank", "noopener");
+}
+	
+function testBoxLabelPDF() {
 	const { jsPDF } = window.jspdf; 
    const doc = new jsPDF('p', 'mm', 'letter');
 	

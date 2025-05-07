@@ -155,9 +155,10 @@ table {
 /* Target the 2nd through 7th columns (the middle 7 columns) */
 .orderTable th:nth-child(n+2):nth-child(-n+7),
 .orderTable td:nth-child(n+2):nth-child(-n+7) {
-    width: 5.5%;
-	 min-width: 100px;
-	 text-align: right;
+	width: 5.5%;
+	min-width: 100px;
+	text-align: right;
+	padding-right: 0;
 }
 
 /* Make the 8th column a little larger than the others */

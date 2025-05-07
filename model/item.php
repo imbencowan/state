@@ -45,10 +45,7 @@ class Item extends BasicTableModel {
 		include 'view/items.php';
 		$htmlContent = ob_get_clean();
 		
-		echo json_encode([
-			'html' => $htmlContent,
-			'data' => $gItems
-		]);
+		return [ 'html' => $htmlContent, 'data' => $gItems ];
 	}
 	
 	
@@ -102,7 +99,7 @@ class Item extends BasicTableModel {
 		});
 		
 		
-		echo json_encode(['data' => $styles]);
+		return ['data' => $styles];
 	}
 }
 ?>

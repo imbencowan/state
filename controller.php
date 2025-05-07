@@ -31,9 +31,20 @@
 		
 		if (!empty($action)) {
 			if (!empty($class) && method_exists($class, $action)) {
-				call_user_func([$class, $action], $data);
+				try {
+					$result = call_user_func([$class, $action], $data);
+						// merge assoc array results, assign others
+					if (is_array($result) && array_keys($result) !== range(0, count($result) - 1)) {
+						echo json_encode(array_merge(['success' => true], $result));
+					} else {
+						echo json_encode(['success' => true, 'data' => $result]);
+					}
+				} catch (Exception $e) {
+					error_log(print_r($e->getTrace(), true));
+					echo json_encode(['success' => false, 'eMessage' => $e->getMessage(), 'error' => $e]);
+				}
 			} else {
-				echo json_encode(['eMessage' => "Invalid action: $action"]);
+				echo json_encode(['success' => false, 'eMessage' => "Invalid action: $action"]);
 			}
 		}
 	}

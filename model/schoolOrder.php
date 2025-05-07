@@ -256,10 +256,7 @@ class SchoolOrder extends BasicTableModel {
 		include 'view/ordersAdded.php';
 		$htmlContent = ob_get_clean();
 		
-		echo json_encode([
-			'html' => $htmlContent,
-			'data' => $orders
-		]);
+		return [ 'html' => $htmlContent, 'data' => $orders ];
 	}
 	
 	// public static function processOrder($order) {
@@ -280,7 +277,7 @@ class SchoolOrder extends BasicTableModel {
 	
 	public static function addNewOrder($eshdID, $schoolID) {
 	  $db = Database::getDB();
-	  $query = "INSERT INTO schoolOrders (eshdID, schoolID) 
+	  $query = "INSERT INTO schoolOrders (eventSiteHasDivisionID, schoolID) 
 					VALUES (:eshdID, :schoolID)";
 
 	  $stmt = $db->prepare($query);
@@ -294,7 +291,7 @@ class SchoolOrder extends BasicTableModel {
 	
 	public static function getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID) {
 		$query = "SELECT schoolOrderID FROM schoolorders 
-					WHERE eshdID = :eshdID AND schoolID = :schoolID";
+					WHERE eventSiteHasDivisionID = :eshdID AND schoolID = :schoolID";
 		$rows = static::getFromDB($query, [':eshdID' => $eshdID, ':schoolID' => $schoolID]);
 		return !empty($rows) ? $rows[0]['schoolOrderID'] : null;
 	}
@@ -315,7 +312,7 @@ class SchoolOrder extends BasicTableModel {
 		$affectedRows = $statement->rowCount();
 		$statement->closeCursor();
 			
-		echo json_encode(['rowsAffected' => $affectedRows]);
+		return ['rowsAffected' => $affectedRows];
 	}
 	
 	public static function editSizes($data) {
@@ -345,9 +342,7 @@ class SchoolOrder extends BasicTableModel {
 				// UPDATE completeness IF currently complete
 			self::updateCompletenessIf($orderID, 1, 2);
 	
-			echo json_encode(['success' => true, 'newOrder' => self::getByID($orderID)]);
-			// echo json_encode(['success' => true, 'due' => $due]);
-			return true;
+			return [ 'newOrder' => self::getByID($orderID) ];
 		});
 	}
 	

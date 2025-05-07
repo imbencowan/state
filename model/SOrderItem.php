@@ -44,8 +44,8 @@ class SOrderItem extends BasicTableModel {
 				// bad request
 					// might be nice to check and return what conflicted here
 			http_response_code(400); 
-			echo json_encode(['error' => "There is already an add on for at least one of the submitted items. 
-									Check the order. No items were added"]);
+			return ['error' => "There is already an add on for at least one of the submitted items. 
+									Check the order. No items were added"];
 			exit;
 		} 
 		
@@ -73,13 +73,13 @@ class SOrderItem extends BasicTableModel {
 
 			$db->commit();
 
-			echo json_encode(['success' => true, 'newOrder' => SchoolOrder::getByID($orderID), 'message' => 'Add-ons successfully added.']);
+			return [ 'newOrder' => SchoolOrder::getByID($orderID), 'message' => 'Add-ons successfully added.' ];
 		} catch (PDOException $e) {
 			if ($db->inTransaction()) {
 				$db->rollBack();
 			}
 			http_response_code(500);
-			echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+			return ['error' => 'Database error: ' . $e->getMessage() ];
 			exit;
 		}
 	}
@@ -111,66 +111,9 @@ class SOrderItem extends BasicTableModel {
 				$db->rollBack();
 			}
 			http_response_code(500);
-			echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+			return [ 'error' => 'Database error: ' . $e->getMessage() ];
 			exit;
 		}
 	}
-
-	// public static function addTeamItems($orderID, $items) {
-		// $query = "SELECT itemID FROM sorderitems WHERE schoolOrderID = :schoolOrderID";
-			// // use the parent method to get existing itemIDs for the order
-		// $priorItems = SOrderItem::getFromDB($query, [':schoolOrderID' => $orderID]);
-			// // make arrays of itemIDs
-		// $priorItemIDs = array_column($priorItems, 'itemID');
-		// $incomingItemIDs = array_column($items, 'itemID');
-			// // check for duplicates between the arrays
-		// $duplicates = array_intersect($priorItemIDs, $incomingItemIDs);
-			// // make a useful array, so we don't have to run foreach every time we want a q by id from $priorItems
-		// $priorQuantityMap = [];
-		// foreach ($priorItems as $item) {
-			// $priorQuantityMap[$item['itemID']] = $item['sOrderItemsQuantity'];
-		// }
-
-			// // INSERT and UPDATE
-		// try {
-			// $db = Database::getDB();
-				// // using a transaction
-			// $db->beginTransaction();
-				
-				// // prepare statements for INSERT and UPDATE
-			// $insertStmt = $db->prepare("INSERT INTO sorderitems (schoolOrderID, itemID, sOrderItemsQuantity) 
-												// VALUES (:orderID, :itemID, :quantity)");
-			// $updateStmt = $db->prepare("UPDATE sorderitems SET sOrderItemsQuantity = :quantity
-												// WHERE schoolOrderID = :orderID AND itemID = :itemID");
-
-			// foreach ($items as $item) {
-					// // update existing records
-				// if (in_array($item['itemID'], $duplicates)) {
-					// $updateStmt->execute([
-						// ':orderID' => $orderID,
-						// ':itemID' => $item['itemID'],
-						// ':quantity' => $item['quantity'] + $priorQuantityMap[$item['itemID']]
-					// ]);
-				// } else {
-						// // insert new records
-					// $insertStmt->execute([
-						// ':orderID' => $orderID,
-						// ':itemID' => $item['itemID'],
-						// ':quantity' => $item['quantity']
-					// ]);
-				// }
-			// }
-
-			// $db->commit();
-
-		// } catch (PDOException $e) {
-			// if ($db->inTransaction()) {
-				// $db->rollBack();
-			// }
-			// http_response_code(500);
-			// echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
-			// exit;
-		// }
-	// }
 }
 ?>

@@ -39,7 +39,8 @@
 <span class="material-icons">article</span>
 <br />
 <button onclick="testFetch()">Test DB</button>
-<button onclick="testPDF()">Test Box Label</button>
+<button onclick="testBoxLabelPDF()">Test Box Label</button>
+<button onclick="testInvoicePDF()">Test Invoice</button>
 		<?php
 			include 'view/addOrdersDiv.php';
 			include 'view/yearDiv.php';

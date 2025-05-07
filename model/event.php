@@ -60,22 +60,49 @@ class Event extends BasicTableModel {
 		// Database functions	
 	public static function getOrdersBySportAndYear(int $sportID, int $year): ?static {
 		$query = static::buildSelect() . " WHERE events.sportID = :id AND events.eventYear = :year";
+		Test::logX($query);
 		$rows = static::getFromDB($query, [':id' => $sportID, ':year' => $year]);
 			// returns an array of events, but we only want one
 // try changing these last two lines like Sport::getByName() to just return one instance
 		$events = static::groupAndBuild($rows);
+		if (empty($events)) {
+			return null;
+		}
+		
+			// this if logic is specifically to handle golf, which has two events in the year
+				// it sets $event to which ever is closer by date
+		if (count($events) > 0) {
+			usort($events, function($a, $b) {
+				$now = new DateTime();
+				$diffA = abs($now->getTimestamp() - $a->startDate->getTimestamp());
+				$diffB = abs($now->getTimestamp() - $b->startDate->getTimestamp());
+				return $diffA <=> $diffB;
+			});
+
+			$event = $events[0];
+		} else {
+			$event = reset($events);
+		}
 			// send back the *first* element
-		return !empty($events) ? reset($events) : null;
+		return !empty($events) ? $event : null;
 	}
 	
 	public static function getIDBySportIDAndYear($sportID, $year) {
 		$db = Database::getDB();
-		$query = 'SELECT eventID FROM events 
+		$query = 'SELECT eventID, startDate FROM events 
 					WHERE sportID = :sportID AND eventYear = :year';
 		$statement = $db->prepare($query);
 		$statement->execute([':sportID' => $sportID, ':year' => $year]);
+		$events = $statement->fetchAll(PDO::FETCH_ASSOC);
+		
+		if (empty($events)) {
+			return null;
+		}
+		
+		$closest = self::getCloserEvent($events);
+			
 			// return the id or null
-		return $statement->fetchColumn() ?: null;
+		return $closest['eventID'] ?? null;
 	}
 	
 	
@@ -94,39 +121,30 @@ class Event extends BasicTableModel {
 		$event = Event::getOrdersBySportAndYear($sportID, $year);
 		// $event = Event::getAllFromDB();
 		
-		
-		// var_dump($event, $sportID, $year);
 		include 'view/addOrdersDiv.php';
 		include 'view/yearDiv.php';
 		include 'view/event.php';
 			// Get the buffered content as a string
 		$htmlContent = ob_get_clean(); 
 		
-		echo json_encode([
-			'html' => $htmlContent,
-			'data' => $event
-			// $event->sport->name => $event
-		]);
+		return [ 'html' => $htmlContent, 'data' => $event ];
 	}
 	
-		//////////////////////////////////////////////////
-   // user actions
-		// takes us to the Schools page, displaying all schools
-	// static function showSchools($input) {
-		// // $schools = School::getAllSchools();
-		// $schools = School::getAllFromDB();
-		// ob_start();
-		// include 'view/addOrdersDiv.php';
-		// include 'view/yearDiv.php';
-		// include 'view/schools.php';
-		// $htmlContent = ob_get_clean(); // Get the buffered content as a string
-		
-		// echo json_encode([
-			// 'html' => $htmlContent,
-			// 'data' => $schools
-		// ]);
-	// }
 	
+	///////////////////////////////////////
+	// helper
+	static function getCloserEvent($events) {
+		$now = new DateTime();
+		usort($events, function ($a, $b) use ($now) {
+			$aDate = new DateTime($a['startDate']);
+			$bDate = new DateTime($b['startDate']);
+			return abs($now->getTimestamp() - $aDate->getTimestamp()) 
+				  - abs($now->getTimestamp() - $bDate->getTimestamp());
+		});
+		
+		return $events[0] ?? null;
+	}
+		
 }
 
 
@@ -147,27 +165,6 @@ class Event extends BasicTableModel {
 			// }
 			// return $start . $conjunction . $end;	
 		// }
-	// }
-	
-		// // this only handles events with 2 or fewer sports. hopefully that's all we ever need
-	// public function getEventName() {
-		// if (count($this->sports) == 1) {
-			// return $this->sports[0]->name;
-			// //this only handles two sports. it's only purpose is to handle Dance & Cheer
-		// } else {
-			// return $this->sports[0]->name . ' & ' . $this->sports[1]->name;
-		// }
-	// }
-
-	// public function getEventSites() { return $this->eventSites; }
-	// // public function setEventSites(array $value) { $this->eventSites[] = $value; }
-		// // key the array for ease of access
-	// public function pushEventSites($value) { $this->eventSites[$value->getEventSiteID()] = $value; }
-	
-	// public function getSeason() {
-		// if ($this->startDate->format('m') < 5) return 1;
-		// elseif ($this->startDate->format('m') == 5) return 2;
-		// elseif ($this->startDate->format('m') > 5) return 3;
 	// }
 	
 	
