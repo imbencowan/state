@@ -14,9 +14,9 @@ class Item extends BasicTableModel {
 	}
 		// defined as: new Relation($property, $class, $foreignKey, $isMany)
 	protected static function getRelations(): array {
-      return [new Relation('style', 'Style', 'styleID', false), 
-				new Relation('size', 'Size', 'sizeID', false), 
-				new Relation('color', 'Color', 'colorID', false)];
+      return [new Relation('style', 'Style', 'styleID', 'styleID', false), 
+				new Relation('size', 'Size', 'sizeID', 'sizeID', false), 
+				new Relation('color', 'Color', 'colorID', 'colorID', false)];
    }
 	
 	public function __construct(

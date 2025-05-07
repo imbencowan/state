@@ -13,11 +13,11 @@ class School extends BasicTableModel {
 					'addressMailing' => 'schoolAddressMailing',
 					'addressLine2' => 'schoolAddressLine2']; 
 	}
-		// defined as: new Relation($property, $class, $matchKey, $isMany, $interTable)
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 	protected static function getRelations(): array {
       return [
-			new Relation('division', 'Division', 'divisionID', false), 
-			new Relation('district', 'District', 'districtID', false)
+			new Relation('division', 'Division', 'divisionID', 'divisionID', false), 
+			new Relation('district', 'District', 'districtID', 'districtID', false)
 		];
    }
 	

@@ -11,12 +11,12 @@ class EventSite extends BasicTableModel {
 					'managerName' => 'managerName',
 					'vehicle' => 'vehicleID'];
 	}
-		// defined as: new Relation($property, $rClass, $matchKey, $isMany, $interTable)
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 	protected static function getRelations(): array {
-      return [new Relation('site', 'Site', 'siteID', false),
-					new Relation('vehicle', 'Vehicle', 'vehicleID', false), 
-					new Relation('divisions', 'EventSiteDivision', 'eventSiteID', true),
-					new Relation('employees', 'Employee', 'eventSiteID', true, 'eventSiteHasEmployee')];
+      return [new Relation('site', 'Site', 'siteID', 'siteID', false),
+					new Relation('vehicle', 'Vehicle', 'vehicleID', 'vehicleID', false), 
+					new Relation('divisions', 'EventSiteDivision', 'eventSiteID', 'eventSiteID', true),
+					new Relation('employees', 'Employee', 'eventSiteID', 'employeeID', true, 'eventSiteHasEmployee')];
    }
 	
 	public readonly array $divisions;

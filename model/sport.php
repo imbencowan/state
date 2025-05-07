@@ -12,7 +12,7 @@ class Sport extends BasicTableModel {
 					'maxTeamSize' => 'maxTeamSize', 
 					'minDiv' => 'minDiv']; 
 	}
-		// defined as ['propertyName' => 'RelatedClass']
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 			// removed 'minDiv' => 'Division' for the time being
 	protected static function getRelations(): array {
       return [];

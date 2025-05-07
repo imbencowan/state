@@ -11,10 +11,10 @@ class EventSiteDivision extends BasicTableModel {
    protected static function getColumns(): array { 
 		return ['id' => 'eventSiteHasDivisionID', 'eventSiteID' => 'eventSiteID', 'division' => 'divisionID']; 
 	}
-		// defined as: new Relation($property, $class, $matchKey, $isMany, $interTable)
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 	protected static function getRelations(): array { 
-		return [new Relation('division', 'Division', 'divisionID'), 
-					new Relation('schoolOrders', 'SchoolOrder', 'eventSiteHasDivisionID', true)
+		return [new Relation('division', 'Division', 'divisionID', 'divisionID'), 
+					new Relation('schoolOrders', 'SchoolOrder', 'eventSiteHasDivisionID', 'eventSiteHasDivisionID', true)
 		];}
 		
 	public readonly ?string $name;

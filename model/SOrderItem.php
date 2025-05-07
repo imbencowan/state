@@ -10,10 +10,10 @@ class SOrderItem extends BasicTableModel {
 					'item' => 'itemID', 
 					'quantity' => 'sOrderItemsQuantity']; 
 	}
-		// defined as: new Relation($property, $class, $foreignKey, $isMany)
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 			// Item only, no circular reference
 	protected static function getRelations(): array {
-      return [new Relation('item', 'Item', 'itemID', false)];
+      return [new Relation('item', 'Item', 'itemID', 'itemID', false)];
    }
 	
 	public function __construct(

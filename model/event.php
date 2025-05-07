@@ -11,10 +11,10 @@ class Event extends BasicTableModel {
 					'endDate' => 'endDate',
 					'year' => 'eventYear'];
 	}
-		// defined as: new Relation($property, $rClass, $matchKey, $isMany)
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 	protected static function getRelations(): array {
-      return [new Relation('eventSites', 'EventSite', 'eventID', true), 
-					new Relation('sport', 'Sport', 'sportID', false)];
+      return [new Relation('eventSites', 'EventSite', 'eventID', 'eventID', true), 
+					new Relation('sport', 'Sport', 'sportID', 'sportID', false)];
    }
 	
 	public readonly DateTime $startDate;

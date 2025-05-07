@@ -230,7 +230,8 @@ abstract class BasicTableModel implements JsonSerializable {
 	
 			$relatedTable = $relatedClass::getTableName();
 			$relatedColumns = $relatedClass::getColumns();
-			$matchKey = $currentRelation->matchKey;
+			$leftKey = $currentRelation->leftKey;
+			$rightKey = $currentRelation->rightKey;
 			
 			$tableAlias = $prefix . $relatedTable;
 				// Add columns of the related table to the SELECT clause
@@ -240,13 +241,13 @@ abstract class BasicTableModel implements JsonSerializable {
 			if ($currentRelation->interTable) {
 				$interTable = $currentRelation->interTable;
 				$tableAlias = $prefix . $interTable;
-				$joins[] = self::writeJoin($interTable, $tableAlias, $oldAlias, $matchKey);
+				$joins[] = self::writeJoin($interTable, $tableAlias, $oldAlias, $leftKey, $leftKey);
 				$priorAlias = $tableAlias;
 				$tableAlias = $prefix . $relatedTable;
-				$joins[] = self::writeJoin($relatedTable, $tableAlias, $priorAlias, $relatedClass::getPrimaryKey());
+				$joins[] = self::writeJoin($relatedTable, $tableAlias, $priorAlias, $rightKey, $rightKey);
 			} else {
 				$tableAlias = $prefix . $relatedTable;
-				$joins[] = self::writeJoin($relatedTable, $tableAlias, $oldAlias, $matchKey);
+				$joins[] = self::writeJoin($relatedTable, $tableAlias, $oldAlias, $leftKey, $rightKey);
 			}
 				// Recursively handle relations of the related class (i.e., relations of relations)
 			$joins = self::buildJoins($relatedTable, $relatedClass::getRelations(), $selectColumns, $joins, $prefix);
@@ -254,8 +255,8 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $joins;
 	}
 	
-	private static function writeJoin($relatedTable, $tableAlias, $oldAlias, $matchKey) {
-		return "LEFT JOIN $relatedTable AS $tableAlias ON $oldAlias.$matchKey = $tableAlias.$matchKey";
+	private static function writeJoin($relatedTable, $tableAlias, $oldAlias, $leftKey, $rightKey) {
+		return "LEFT JOIN $relatedTable AS $tableAlias ON $oldAlias.$leftKey = $tableAlias.$rightKey";
 	}
 }
 ?>

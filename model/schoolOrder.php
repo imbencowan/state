@@ -14,12 +14,12 @@ class SchoolOrder extends BasicTableModel {
 					'note' => 'schoolOrderNote',
 					'invoiceSent' => 'invoiceSent'];
 	}
-		// defined as: new Relation($property, $rClass, $foreignKey, $isMany)
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 	protected static function getRelations(): array {
       return [ // new Relation('division', 'Division', 'divisionID', false), 
-					new Relation('school', 'School', 'schoolID', false), 
-					new Relation('shirts', 'SOrderItem', 'schoolOrderID', true), 
-					new Relation('messageOrders', 'MessageOrder', 'schoolOrderID', true)];
+					new Relation('school', 'School', 'schoolID', 'schoolID', false), 
+					new Relation('shirts', 'SOrderItem', 'schoolOrderID', 'schoolOrderID', true), 
+					new Relation('messageOrders', 'MessageOrder', 'schoolOrderID', 'schoolOrderID', true)];
    }
 	
 	public readonly array $shirts;

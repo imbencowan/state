@@ -15,8 +15,7 @@ class MessageOrder extends BasicTableModel {
 					'fileName' => 'fileName',
 					'orderDate' => 'orderDate'];
 	}
-		// defined as: new Relation($property, $class, $foreignKey, $isMany)
-	// protected static function getRelations(): array { return [new Relation('teamShirts', 'MOrderItem', 'messageOrderID', true)]; }
+		// no relations
 	
 	
 	public readonly string $orderDate;
