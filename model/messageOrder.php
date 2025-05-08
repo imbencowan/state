@@ -69,5 +69,21 @@ class MessageOrder extends BasicTableModel {
 		return !empty($rows) ? $rows[0]['messageOrderID'] : null;
 	}
 	
+	
+	//////////////////////////////////////////////////////////
+	// user actions
+	static function changeCommentHandled($data) {
+		$db = Database::getDB();
+		
+		$statement = $db->prepare('UPDATE messageOrders SET mOrderCommentHandled = :handled WHERE messageOrderID = :orderID');
+		$statement->bindValue(":orderID", $data['id']);
+		$statement->bindValue(":handled", $data['handled']);
+		$statement->execute();
+		$affectedRows = $statement->rowCount();
+		$statement->closeCursor();
+			
+		return ['rowsAffected' => $affectedRows];
+	}
+	
 }
 ?>

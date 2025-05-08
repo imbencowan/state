@@ -10,10 +10,12 @@ class Style extends BasicTableModel {
 					'shortName' => 'styleShortName', 
 					'vShortName' => 'styleVeryShortName',
 					'code' => 'styleCode', 
-					'brandID' => 'brandID']; 
+					'brand' => 'brandID']; 
 	}
-		// no relations
-	protected static function getRelations(): array { return []; }
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
+	protected static function getRelations(): array {
+      return [new Relation('brand', 'Brand', 'brandID', 'brandID')];
+   }
 	
 	
 	public function __construct(
@@ -22,7 +24,7 @@ class Style extends BasicTableModel {
       public readonly ?string $shortName,
       public readonly ?string $vShortName,
       public readonly ?string $code,
-		public readonly int $brandID,
+		public readonly ?Brand $brand,
 		private array $sizes = []
    ) {}
 	
@@ -33,7 +35,7 @@ class Style extends BasicTableModel {
 			'shortName' => $this->shortName,
 			'vShortName' => $this->vShortName,
 			'code' => $this->code,
-			'brandID' => $this->brandID,
+			'brand' => $this->brand,
 			'sizes' => array_values($this->sizes)
 		];
 	}

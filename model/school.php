@@ -11,13 +11,16 @@ class School extends BasicTableModel {
 					'district' => 'districtID',
 					'addressPhysical' => 'schoolAddressPhysical',
 					'addressMailing' => 'schoolAddressMailing',
-					'addressLine2' => 'schoolAddressLine2']; 
+					'addressLine2' => 'schoolAddressLine2',
+					'ad' => 'activitiesDirectorID']; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 	protected static function getRelations(): array {
       return [
 			new Relation('division', 'Division', 'divisionID', 'divisionID', false), 
-			new Relation('district', 'District', 'districtID', 'districtID', false)
+			new Relation('district', 'District', 'districtID', 'districtID', false),
+				// right now we're only joining the ad, no need for principal, superintendent, etc
+			new Relation('ad', 'Person', 'activitiesDirectorID', 'personID', false)
 		];
    }
 	
@@ -30,7 +33,8 @@ class School extends BasicTableModel {
       public readonly ?string $addressMailing,
       public readonly ?string $addressLine2,
       public readonly ?Division $division,
-      public readonly ?District $district
+      public readonly ?District $district,
+		public readonly ?Person $ad
    ) {
 		$this->shortName = self::shortenSchoolName($name);
 	}

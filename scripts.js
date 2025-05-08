@@ -1,6 +1,8 @@
 	// global containers
 let stateEvent;
 let sizeCodesByStyles;
+let styleMap;
+let allItems;
 	// this one prevents different actions being called while others are still open
 let activeMode;
 	// modal stuff
@@ -59,7 +61,7 @@ class Label {
 		this.offsetY = 10;
 		this.indentX = origin.x + this.offsetX + 3;
 		this.alignX = origin.x + this.offsetX;
-		this.gridX = origin.x + 41;
+		this.gridX = origin.x + 40;
 		this.gridStep = 8.5;
 			// define where the cursor starts
 		this.lineX = origin.x + this.offsetX;
@@ -102,17 +104,29 @@ class Label {
 		this.doc.setFontSize(12);
 		let x = this.gridX;
 		for (let i = min - 1; i < max; ++i) {
-			this.doc.text(sizeList[i], x, this.lineY);
+			// this.doc.text(sizeListShort[i], x, this.lineY);
+			this.centerInGrid(sizeListShort[i], x);
 			x += this.gridStep;
 		}
+		// this.doc.text("Total", x, this.lineY);
+		this.centerInGrid("Total", x);
 	}
 	
-	addGridQuantities(sizes, min) {
+	addGridQuantities(style, min, max) {
 		this.doc.setFontSize(11);
-		sizes.forEach(size => {
-			let x = this.gridX + (this.gridStep * (size.id - min));
-			this.doc.text(String(size.quantity), x, this.lineY);
+		style.sizes.forEach(size => {
+			let x = this.gridX + this.gridStep * (size.id - min);
+			// this.doc.text(String(size.quantity), x, this.lineY);
+			this.centerInGrid(String(size.quantity), x);
 		});
+		// this.doc.text(String(style.getTotalQuantity()), (this.gridX + ((max - min + 1) * this.gridStep)), this.lineY);
+		this.centerInGrid(String(style.getTotalQuantity()), (this.gridX + ((max - min + 1) * this.gridStep)));
+	}
+	
+	centerInGrid(txt, x) {
+		let txtWdth = this.doc.getTextWidth(txt);
+		x += ((this.gridStep - txtWdth) / 2);
+		this.doc.text(txt, x, this.lineY);
 	}
 }
 
@@ -155,6 +169,16 @@ class InvoicePage {
 		const w = .9 * (this.colsX[3] - this.colsX[1]);
 		const h = this.lineStep * 3;
 		this.doc.rect(this.alignX - 1, this.lineY + 1, w, h);
+	}
+	
+	addShirts(styles) {
+		styles.forEach(style => {
+			style.sizes.forEach(shirt => {
+				let item = getItemByStyleIDSizeChar(style.id, shirt.charName);
+				console.log(style.id, shirt.charName);
+				this.cell(item.getInvoiceName(), 1)
+			});
+		});
 	}
 }
 
@@ -273,8 +297,10 @@ class EventSiteDivision {
    constructor({ id, eventSiteID, division, schoolOrders = [] }) {
       this.id = id;
       this.eventSiteID = eventSiteID;
-      this.division = division instanceof Division ? division : Division.fromJSON(division);
-      this.schoolOrders = schoolOrders.map(so => so instanceof SchoolOrder ? so : SchoolOrder.fromJSON(so));
+      this.division = division instanceof Division ? division : division != null ? Division.fromJSON(division) : null;
+      this.schoolOrders = Array.isArray(schoolOrders)
+         ? schoolOrders.map(so => so instanceof SchoolOrder ? so : so != null ? SchoolOrder.fromJSON(so) : null).filter(Boolean)
+         : [];
    }
 
    static fromValues(id, eventSiteID, division, schoolOrders = []) {
@@ -304,44 +330,44 @@ class Division {
 }
 
 class SchoolOrder {
-   constructor({ id, eshdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders = [], shirts = [], 
-					division, site, sport }) {
+   constructor({ id, eshdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders = [], shirts = [], site, sport }) {
       this.id = id;
       this.eshdID = eshdID;
-      this.school = school instanceof School ? school : School.fromJSON(school);
+      this.school = school instanceof School ? school : school != null ? School.fromJSON(school) : null;
       this.completeness = completeness;
       this.due = due;
       this.paid = paid;
       this.schoolOrderNote = schoolOrderNote;
       this.invoiceSent = invoiceSent;
-      this.messageOrders = messageOrders;
-      this.shirts = shirts.map(style => style instanceof Style ? style : Style.fromJSON(style));
-      this.division = division;
+      this.messageOrders = Array.isArray(messageOrders) ? messageOrders : [];
+      this.shirtsByStyle = Array.isArray(shirts)
+         ? shirts.map(style => style instanceof Style ? style : style != null ? Style.fromJSON(style) : null).filter(Boolean)
+         : [];
       this.site = site;
       this.sport = sport;
    }
 
-   static fromValues(id, eShdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders, shirts, division, 
+   static fromValues(id, eShdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders, shirts, 
 							site, sport) {
       return new SchoolOrder({ id, eShdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders, shirts, 
-										division, site, sport });
+										site, sport });
    }
 
    static fromJSON(json) {
       return new SchoolOrder(json);
    }
 	
-	getTeamSizes() {
-		return this.shirts.find(shirt => shirt.shortName === 'Dairy Hoods').sizes;
+	getTeamStyle() {
+		return this.shirtsByStyle.find(shirt => shirt.shortName === 'Dairy Hoods');
 	}
 	
 	getAddedStyles() {
-		
+		return this.shirtsByStyle.filter(style => style.shortName !== 'Dairy Hoods')
 	}
 	
 	getMinSize() {
 		let min = Infinity;
-		this.shirts.forEach(style => {
+		this.shirtsByStyle.forEach(style => {
 			style.sizes.forEach(size => {
 				if (size.id < min) min = size.id;
 			});
@@ -351,7 +377,7 @@ class SchoolOrder {
 	
 	getMaxSize() {
 		let max = 0;
-		this.shirts.forEach(style => {
+		this.shirtsByStyle.forEach(style => {
 			style.sizes.forEach(size => {
 				if (size.id > max) max = size.id;
 			});
@@ -361,15 +387,15 @@ class SchoolOrder {
 }
 
 class School {
-   constructor({ id, name, shortName, addressPhysical, addressMailing, addressLine2, district, division }) {
+   constructor({ id, name, shortName, addressPhysical, addressMailing, addressLine2, ad, district, division }) {
       this.id = id;
       this.name = name;
       this.shortName = shortName;
-		this.addressPhysical = addressPhysical;
-		this.addressMailing = addressMailing;
-		this.addressLine2 = addressLine2
-      this.division = division instanceof Division ? division : Division.fromJSON(division);
-      this.division = division;
+      this.addressPhysical = addressPhysical;
+      this.addressMailing = addressMailing;
+      this.addressLine2 = addressLine2;
+      this.ad = ad instanceof Person ? ad : ad != null ? Person.fromJSON(ad) : null;
+      this.division = division instanceof Division ? division : division != null ? Division.fromJSON(division) : null;
    }
 
    static fromValues(id, name, shortName, addressPhysical, addressMailing, addressLine2, district, division) {
@@ -384,7 +410,6 @@ class School {
 		return this.name.slice(0, 3).toUpperCase() + String(this.id);
 	}
 }
-
 
 class MessageOrder {
    constructor({id, schoolOrderID, genderID, orderedBy, mOrderComment, mOrderCommentHandled, orderText, fileName, orderDate}) {
@@ -408,20 +433,43 @@ class MessageOrder {
    }
 }
 
+class Item {
+   constructor({ id, price, stock, color, size, style }) {
+      this.id = id;
+      this.price = price;
+      this.stock = stock;
+      this.color = color instanceof Color ? color : color != null ? Color.fromJSON(color) : null;
+      this.size = size instanceof Size ? size : size != null ? Size.fromJSON(size) : null;
+      this.style = style instanceof Style ? style : style != null ? Style.fromJSON(style) : null;
+   }
+
+   static fromValues(id, price, stock, color, size, style) {
+      return new Item({ id, price, stock, color, size, style });
+   }
+
+   static fromJSON(json) {
+      return new Item(json);
+   }
+	
+	getInvoiceName() {
+		return this.style.brand.shortName + " " + this.style.vShortName + " " + this.size.name + "-" + this.color.name;
+	}
+}
+
 class Style {
-   constructor({ id, name, shortName, vShortName, brandID, code, sizes = [] }) {
+   constructor({ id, name, shortName, vShortName, brand, code, sizes = [] }) {
       this.id = id;
       this.name = name;
       this.shortName = shortName;
       this.vShortName = vShortName;
-      this.brandID = brandID;
+      this.brand = brand instanceof Brand ? brand : brand != null ? Brand.fromJSON(brand) : null;
       this.code = code;
-      this.sizes = sizes.map(size => size instanceof Size ? size : Size.fromJSON(size));
-			
+      this.sizes = Array.isArray(sizes) ? sizes.map(size => size) : [];
+
       this.sizeMap = {};
       for (const size of this.sizes) {
-         this.sizeMap[size.charName] = size;
-		}
+         if (size && size.charName) this.sizeMap[size.charName] = size;
+      }
    }
 
    static fromValues(id, name, shortName, vShortName, brandID, code, sizes = []) {
@@ -431,6 +479,14 @@ class Style {
    static fromJSON(json) {
       return new Style(json);
    }
+	
+	getTotalQuantity() {
+		let total = 0;
+		this.sizes.forEach(size => {
+			total += size.quantity;
+		});
+		return total;
+	}
 }
 
 class Size {
@@ -450,6 +506,58 @@ class Size {
    }
 }
 
+class Person {
+   constructor({ id, name, email, phone, extension, fax }) {
+      this.id = id;
+      this.name = name;
+      this.email = email;
+      this.phone = phone;
+      this.extension = extension;
+      this.fax = fax;
+   }
+
+   static fromValues(id, name, email, phone, extension, fax) {
+      return new Person({ id, name, email, phone, extension, fax });
+   }
+
+   static fromJSON(json) {
+      return new Person(json);
+   }
+}
+
+class Color {
+   constructor({ id, name }) {
+      this.id = id;
+      this.name = name;
+   }
+
+   static fromValues(id, name) {
+      return new Color({ id, name });
+   }
+
+   static fromJSON(json) {
+      return new Color(json);
+   }
+}
+
+class Brand {
+   constructor({ id, name, shortName }) {
+      this.id = id;
+      this.name = name;
+      this.shortName = shortName;
+   }
+
+   static fromValues(id, name, shortName) {
+      return new Brand({ id, name, shortName });
+   }
+
+   static fromJSON(json) {
+      return new Brand(json);
+   }
+}
+
+
+
 
 
 const teamStyle = "Dairy Hoods";
@@ -457,6 +565,8 @@ const currentYear = 24;
 
 	// this list is used to match sizes when reading the email string
 const sizeList = ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'];
+	// this is used to provide shorter names for labels. indexes need to match sizeList
+const sizeListShort = ['S', 'M', 'L', 'XL', '2X', '3X', '4X', '5X'];
 
 const labelPage4 = {
 	labels : 4,
@@ -468,7 +578,7 @@ const labelPage4 = {
 	labelHeight : 127,
 	xCenter : 108,
 	yCenter : 140,
-	origins : [ new Coord(4, 14), new Coord(107.4, 14), new Coord(4, 140), new Coord(107.4, 140) ],
+	origins : [ new Coord(2, 14), new Coord(107.4, 14), new Coord(2, 140), new Coord(107.4, 140) ],
 	padding : 6
 }
 
@@ -526,6 +636,12 @@ async function init() {
 	let request = new ActionRequest('loadSizeCodesByStyle', 'Item')
 	let sizeData = await myFetch(request);
 	sizeCodesByStyles = sizeData.data.map(styleData => Style.fromJSON(styleData));
+	styleMap = mapObjsByID(sizeCodesByStyles);
+	
+	request = new ActionRequest('getAllFromDB', 'Item')
+	let itemData = await myFetch(request);
+	let i = Object.values(itemData.data).map(itemData => Item.fromJSON(itemData));
+	allItems = mapObjsByID(i);
 	
 		// Get modal elements
 	modal = document.getElementById("myModal");
@@ -631,7 +747,7 @@ async function goToEventPage(sport) {
 	activeMode = null;
 	
 	///// ATTACH EVENT LISTENERS /////////////////////////////////////////////////////////
-	const container = document.getElementById('eventContainer');
+	const container = document.getElementById('ordersContainer');
 		// first the in table action buttons
 		// this is one listener that handles clicks for all the buttons in the table
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -685,6 +801,15 @@ async function goToEventPage(sport) {
 		// box label button
 	const undoneBLButton = document.querySelector('[data-btnType="genBoxLabels"]');
 	undoneBLButton.addEventListener('click', () => {printBoxLabels(); });
+		// comment table checkboxes
+	const commentsContainer = document.getElementById('commentsTable');
+	if (commentsContainer) {
+		commentsTable.addEventListener('change', function(event) {
+			if (event.target.matches('input[type="checkbox"]')) {
+				changeCommentHandled(event.target);
+			}
+		});
+	}
 }
 
 
@@ -1211,6 +1336,19 @@ async function changeOrderCompleteness(box, order) {
 	}
 }
 
+	// toggles an order as done / not done
+async function changeCommentHandled(box) {
+	const data = {'id': box.dataset.orderId, 'handled': box.checked};
+	let request = new ActionRequest('changeCommentHandled', 'MessageOrder', data);
+	let responseJSON = await myFetch(request);
+	
+	if (responseJSON) {
+		// order.handled = box.checked;
+			// remove the comment
+		box.closest('tr').remove();
+	}
+}
+
 
 function printBoxLabel(order) {
 	console.log(order);
@@ -1270,20 +1408,18 @@ function genBoxLabel(doc, order, origin) {
    doc.text("Team Hoods:", lbl.alignX, lbl.lineY);
 	
 		// put in the team quantities
-	lbl.addGridQuantities(order.getTeamSizes(), order.getMinSize());
+	lbl.addGridQuantities(order.getTeamStyle(), order.getMinSize(), order.getMaxSize());
 	
-		// only do this if there are additional styles in order.shirts
-	if (order.shirts.length > 1) {
+		// only do this if there are additional styles in order.shirtsByStyle
+	if (order.shirtsByStyle.length > 1) {
 		lbl.lineY += 8;
 		doc.setTextColor('666666');
 		doc.text("Additional", lbl.indentX, lbl.lineY);
 			// omit Dairy Hoods
-		order.shirts
-		.filter(style => style.shortName !== 'Dairy Hoods')
-		.forEach(style => {
+		order.getAddedStyles().forEach(style => {
 			lbl.lineY += 6;
 			doc.text(style.shortName, lbl.alignX, lbl.lineY);
-			lbl.addGridQuantities(style.sizes, order.getMinSize());
+			lbl.addGridQuantities(style, order.getMinSize(), order.getMaxSize());
 		});
 		doc.setFontSize(14);
 		lbl.lineY += 9;
@@ -1305,70 +1441,6 @@ function genBoxLabel(doc, order, origin) {
 	
 	addReturnWarning(doc, lbl);
 }
-
-// function genBoxLabel(doc, order, origin) {
-	// drawLabelRects(doc);	
-	
-		// // origin, padding, indentLeft, lineSpaces, offsetX, offsetY
-	// const lbl = new Label(doc, origin);	
-		
-		// // this one is rotated to be vertical along the left edge
-	// lbl.addSiteDivision(order.site, order.division);
-	
-		// // start the horizontal rows
-	// lbl.centerTextInLabel(order.sport);
-	// lbl.lineY += 9;
-	// doc.setFontSize(18);
-   // // doc.text(order.school.shortName, (lbl.lineX - 1), lbl.lineY);
-		// // box the school name
-	// lbl.rectText(order.school.shortName);
-	// // txtWdth = doc.getTextWidth(order.school.shortName);
-	// // let txtHt = doc.getFontSize() / doc.internal.scaleFactor;
-	// // doc.rect((lbl.lineX - 2), (lbl.lineY + 1), (txtWdth + 3), -(txtHt + 1.5));
-	// // doc.line((lbl.lineX - 1), lbl.lineY + 1, (lbl.lineX - 1 + txtWdth), lbl.lineY + 1);
-
-	
-	// doc.setFontSize(11);
-	// lbl.lineY += 8;
-   // doc.text("Team Hoods:", lbl.indentX, (lbl.oY + 27));
-	// lbl.lineY += 4.5;
-	
-		// // ?s for safety. only reads the property if it exists, rather than erroring if it doesn't it returns undefined
-	// const teamSizes = order.shirts?.find(shirt => shirt.shortName === 'Dairy Hoods').sizes;
-	// if (hasItems(teamSizes)) {
-		// doc.text(genBLSizesString(teamSizes), lbl.lineX, lbl.lineY);
-	// }
-	
-		// // only do this if there are additional styles in order.shirts
-	// if (order.shirts.length > 1) {
-			// // omit Dairy Hoods
-		// order.shirts
-		// .filter(style => style.shortName !== 'Dairy Hoods')
-		// .forEach(style => {
-			// lbl.lineY += 6;
-			// doc.text("Additional " + style.shortName + ":", lbl.indentX, lbl.lineY);
-			// lbl.lineY += 4.5;
-			// doc.text(genBLSizesString(style.sizes), lbl.lineX, lbl.lineY);
-		// });
-		// doc.setFontSize(14);
-		// lbl.lineY += 9;
-		// txt = "Due: $" + order.due;
-		// if (!order.paid) {
-			// txtWdth = doc.getTextWidth(txt);
-			// doc.setFillColor('#ffff00');
-			// doc.rect((lbl.lineX - 1), (lbl.lineY + 1), (txtWdth + 2), -7, "F");
-		// }
-		// doc.text(txt, lbl.lineX, lbl.lineY);
-		// if (order.paid) {
-			// doc.setTextColor('#ff0000'); // red
-			// txtWdth = doc.getTextWidth(txt);
-			// doc.text(" PAID", lbl.lineX + txtWdth, lbl.lineY);
-			// doc.setTextColor('#000000'); // Black
-		// }
-	// }
-	
-	// addReturnWarning(doc, lbl);
-// }
 
 function addReturnWarning(doc, lbl) {
 	lbl.lineX = lbl.alignX;
@@ -1435,7 +1507,7 @@ function genBLSizesString(sizes) {
 
 function genSoSPDF() {
 	const btn = event.currentTarget;
-	const eventSiteID = btn.dataset.eventSiteID;
+	const eventSiteID = btn.dataset.eventSiteId;
 	// const sport = btn.closest('h1');
 	const siteName = btn.closest('h2').firstChild.textContent.trim();
 	const division = "";
@@ -1482,6 +1554,26 @@ function updateObject(obj, newObj) {
 function hasItems(arr) {
    return (Array.isArray(arr) && arr.length > 0);
 }
+
+function mapObjsByID(objs) {
+   const result = {};
+   for (let i = 0; i < objs.length; i++) {
+      const obj = objs[i];
+      result[obj.id] = obj;
+   }
+   return result;
+}
+
+function getItemByStyleIDSizeChar(styleID, sizeChar) {
+   for (const key in allItems) {
+      const item = allItems[key];
+      if (item.style.id === styleID && item.size.charName === sizeChar) {
+         return item;
+      }
+   }
+   return null; // or undefined, if you want to be explicit
+}
+
 
 
 
@@ -1554,10 +1646,10 @@ async function testInvoicePDF() {
 	invP.lineDown();
 	invP.lineDown();
 	doc.text("CONFIRM TO:", invP.colsX[1], invP.lineY);
-	invP.cell("SOLD TO:", 2);
+	invP.cell(order.school.ad.name, 2);
 	invP.lineDown();
 	doc.text("COMMENT: PH#", invP.colsX[1], invP.lineY);
-	invP.cell("", 2);
+	invP.cell(order.school.ad.phone, 2);
 	invP.lineDown();
 	doc.text("PAYMENT:", invP.colsX[1], invP.lineY);
 	doc.text("check / card", invP.colsX[2], invP.lineY);
@@ -1572,7 +1664,8 @@ async function testInvoicePDF() {
 	
 	invP.lineDown();
 	invP.lineDown();
-	invP.cell("item", 1);
+	invP.addShirts(order.shirtsByStyle);
+	
 	invP.lineDown();
 	invP.lineDown();
 	doc.text("Total Ordered", invP.colsX[3], invP.lineY);

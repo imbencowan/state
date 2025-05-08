@@ -55,12 +55,32 @@ class Event extends BasicTableModel {
 		return $organized;
 	}
 	
+	public function getUnhandledComments() {
+		$unhandled = [];
+		foreach($this->eventSites as $eventSite) {
+			foreach ($eventSite->divisions as $division) {
+				foreach ($division->schoolOrders as $schoolOrder) {
+					foreach ($schoolOrder->getMessageOrders() as $order) {
+						if ($order->commentHandled == 0) {
+							$o = new stdClass();
+							$o->id = $order->id;
+							$o->school = $schoolOrder->school->shortName;
+							$o->division = $division->name;
+							$o->comment = $order->comment;
+							$unhandled[] = $o;
+						}
+					}
+				}
+			}
+		}
+		return $unhandled;
+	}
+	
 	
 		//////////////////////////////////////////////////
 		// Database functions	
 	public static function getOrdersBySportAndYear(int $sportID, int $year): ?static {
 		$query = static::buildSelect() . " WHERE events.sportID = :id AND events.eventYear = :year";
-		Test::logX($query);
 		$rows = static::getFromDB($query, [':id' => $sportID, ':year' => $year]);
 			// returns an array of events, but we only want one
 // try changing these last two lines like Sport::getByName() to just return one instance
@@ -119,7 +139,6 @@ class Event extends BasicTableModel {
 		$sportID = $data['sportID'];
 		
 		$event = Event::getOrdersBySportAndYear($sportID, $year);
-		// $event = Event::getAllFromDB();
 		
 		include 'view/addOrdersDiv.php';
 		include 'view/yearDiv.php';

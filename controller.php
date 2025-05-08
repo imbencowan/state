@@ -34,7 +34,8 @@
 				try {
 					$result = call_user_func([$class, $action], $data);
 						// merge assoc array results, assign others
-					if (is_array($result) && array_keys($result) !== range(0, count($result) - 1)) {
+					// Test::logX(gettype($result));
+					if (is_array($result) && isset($result['data'])) {
 						echo json_encode(array_merge(['success' => true], $result));
 					} else {
 						echo json_encode(['success' => true, 'data' => $result]);

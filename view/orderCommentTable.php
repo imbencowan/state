@@ -1,6 +1,6 @@
 <br />
 <h2>Comments</h2>
-<table>
+<table id="commentsTable">
 	<thead>
 		<tr>
 			<th>School</th>
@@ -10,12 +10,12 @@
 		</tr>
 	</thead>
 	<tbody>
-<?php foreach ($commentOrders as $order) : ?>
+<?php foreach ($unhandled as $order) : ?>
 		<tr>
-			<td><?= $order->school; ?></td>
+			<td title="<?= $order->id; ?>"><?= $order->school; ?></td>
 			<td><?= $order->division; ?></td>
 			<td><?= $order->comment; ?></td>
-			<td><input type="checkbox" /></td>
+			<td><input data-order-id="<?= $order->id; ?>" type="checkbox" /></td>
 		</tr>
 <?php endforeach; ?>
 	</tbody>
