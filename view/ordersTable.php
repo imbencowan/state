@@ -54,6 +54,7 @@
 							<span class="material-icons clickable order-action editSizes" title="edit the sizes">edit</span>
 							<span class="material-icons clickable order-action showMessage" title="view the original message">article</span>
 							<span class="material-icons clickable order-action printLabel" title="print box label">print</span>
+							<span class="material-icons clickable order-action dlInvoice" title="download invoice">request_quote</span>
 							<input type="checkbox" id="<?= $checkID; ?>" name="<?= $checkID; ?>" value="<?= $orderID; ?>" 
 									title="mark order complete" <?php if ($completeness == 1) echo "checked"; ?>/>
 						</td>

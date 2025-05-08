@@ -36,7 +36,8 @@
 <span class="material-icons">check</span>
 <span class="material-icons">print</span>
 <span class="material-icons">preview</span>
-<span class="material-icons">article</span>
+<span class="material-icons">article</span>							
+<span class="material-icons">request_quote</span>
 <br />
 <button onclick="testFetch()">Test DB</button>
 <button onclick="testBoxLabelPDF()">Test Box Label</button>

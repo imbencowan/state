@@ -144,8 +144,8 @@ class InvoicePage {
 		this.doc.setFontSize(10);
 	}
 	
-	lineDown(step) {
-		this.lineY += this.lineStep;
+	lineDown(n = 1) {
+		this.lineY += (n * this.lineStep);
 	}
 	
 	centerTextInPage(txt) {
@@ -155,9 +155,9 @@ class InvoicePage {
 	}
 		
 		// centers text in a box based off column values
-	cell(txt, col) {
+	cell(txt, col, colSpan = 1) {
 			// draw the box
-		let bxWdth = this.colsX[col + 1] - this.colsX[col];
+		let bxWdth = this.colsX[col + colSpan] - this.colsX[col];
 		this.doc.rect(this.colsX[col], (this.lineY + .85), bxWdth, -this.lineStep);
 			// insert the text
 		let txtWdth = this.doc.getTextWidth(String(txt));
@@ -170,16 +170,6 @@ class InvoicePage {
 		const h = this.lineStep * 3;
 		this.doc.rect(this.alignX - 1, this.lineY + 1, w, h);
 	}
-	
-	addShirts(styles) {
-		styles.forEach(style => {
-			style.sizes.forEach(shirt => {
-				let item = getItemByStyleIDSizeChar(style.id, shirt.charName);
-				console.log(style.id, shirt.charName);
-				this.cell(item.getInvoiceName(), 1)
-			});
-		});
-	}
 }
 
 
@@ -190,8 +180,8 @@ class StateEvent {
    constructor({ id, sport, startDate, endDate, year, eventSites = [] }) {
       this.id = id;
       this.sport = sport;
-      this.startDate = startDate;
-      this.endDate = endDate;
+      this.startDate = safeParseDate(startDate.date);
+      this.endDate = safeParseDate(endDate.date);
       this.year = year;
       this.eventSites = eventSites.map(site => site instanceof EventSite ? site : EventSite.fromJSON(site));
    }
@@ -763,6 +753,8 @@ async function goToEventPage(sport) {
 			  showOMessage(order);
 			} else if (target.matches('span.printLabel')) {
 				printBoxLabel(order);
+			} else if (target.matches('span.dlInvoice')) {
+				genInvoicePDF(order);
 			} else if (target.matches('span.addAddOns')) {
 					// don't do this if some thing else is active
 				if (activeMode === null || activeMode === 'add') showAddOnInputs(order);
@@ -1073,9 +1065,7 @@ async function submitAddOns(target, order) {
 	let responseJSON = await myFetch(request);
 	
 	if (responseJSON.success) {
-		console.log(order);
-		updateObject(order, responseJSON.newOrder);
-		console.log(order);
+		updateObject(order, responseJSON.data.newOrder);
 		cleanInputRows(rows);
 			// exit 'add' mode
 		activeMode = null;
@@ -1294,8 +1284,7 @@ async function submitSizeEdit(target, order) {
 	let responseJSON = await myFetch(request);
 
 	if (responseJSON.success) {
-		updateObject(order, responseJSON.newOrder);
-		console.log(order);
+		updateObject(order, responseJSON.data.newOrder);
 		cleanInputRows(rows);
 			// exit edit mode
 		activeMode = null;
@@ -1336,7 +1325,7 @@ async function changeOrderCompleteness(box, order) {
 	}
 }
 
-	// toggles an order as done / not done
+	// marks a comment as handled
 async function changeCommentHandled(box) {
 	const data = {'id': box.dataset.orderId, 'handled': box.checked};
 	let request = new ActionRequest('changeCommentHandled', 'MessageOrder', data);
@@ -1351,7 +1340,6 @@ async function changeCommentHandled(box) {
 
 
 function printBoxLabel(order) {
-	console.log(order);
 		// Access jsPDF from the global object
 	const { jsPDF } = window.jspdf; 
    const doc = new jsPDF('p', 'mm', 'letter');
@@ -1517,6 +1505,118 @@ function genSoSPDF() {
 
 
 
+async function genInvoicePDF(order) {
+		// if there are no add ons, don't do any thing
+	if (order.getAddedStyles().length === 0) return;
+	
+	const { jsPDF } = window.jspdf; 
+   const doc = new jsPDF('p', 'mm', 'letter');
+	
+	let invP = new InvoicePage(doc);
+	
+	const date = new Date();
+	const strDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+	
+	invP.centerTextInPage("****** INVOICE ******")
+	invP.lineY += (2 * invP.lineStep);
+	
+	doc.text("McU SPORTS", invP.alignX, invP.lineY);
+	doc.text("INVOICE NUMBER:", invP.colsX[3], invP.lineY);
+		// puts text in a cell. position is determined by provided column, and current lineY. arguments are (text, colsX[])
+	invP.cell(order.id, 4);
+	invP.lineDown();
+	doc.text("822 W JEFFERSON", invP.alignX, invP.lineY);
+	doc.text("INVOICE DATE:", invP.colsX[3], invP.lineY);
+	invP.cell(strDate, 4);
+	invP.lineDown();
+	doc.text("BOISE, ID 83702", invP.alignX, invP.lineY);
+	
+	invP.lineDown(2);
+	doc.text("ORDER NUMBER:", invP.colsX[3], invP.lineY);
+	invP.cell(order.id, 4);
+	invP.lineDown();
+	doc.text("ORDER DATE:", invP.colsX[3], invP.lineY);
+	invP.cell(strDate, 4);
+	invP.lineDown();
+	doc.text("SALESPERSON:", invP.colsX[3], invP.lineY);
+	invP.cell("Ben", 4);
+	invP.lineDown();
+	doc.text("CUSTOMER #:", invP.colsX[3], invP.lineY);
+	invP.cell(order.school.getSchoolCode(), 4);
+	
+	invP.lineDown(3);
+	doc.text("SOLD TO:", invP.colsX[1], invP.lineY);
+	doc.text("SHIP TO:", invP.colsX[3], invP.lineY);
+	
+	invP.drawAddressBox();
+	
+	invP.lineDown();
+	doc.text(order.school.name, invP.colsX[1], invP.lineY);
+	doc.text(order.school.name, invP.colsX[3], invP.lineY);
+	invP.lineDown();
+	doc.text(order.school.addressPhysical, invP.colsX[1], invP.lineY);
+	doc.text(order.school.addressPhysical, invP.colsX[3], invP.lineY);
+	invP.lineDown();
+	doc.text(order.school.addressLine2, invP.colsX[1], invP.lineY);
+	doc.text(order.school.addressLine2, invP.colsX[3], invP.lineY);
+	
+	invP.lineDown(3);
+	doc.text("CONFIRM TO:", invP.colsX[1], invP.lineY);
+	invP.cell(order.school.ad.name, 2);
+	invP.lineDown();
+	doc.text("COMMENT: PH#", invP.colsX[1], invP.lineY);
+	invP.cell(order.school.ad.phone, 2);
+	invP.lineDown();
+	doc.text("PAYMENT:", invP.colsX[1], invP.lineY);
+	doc.text("check / card", invP.colsX[2], invP.lineY);
+	
+	invP.lineDown(3);
+	doc.text("ITEM", invP.colsX[1], invP.lineY);
+	doc.text("ORDERED", invP.colsX[3], invP.lineY);
+	doc.text("PRICE", invP.colsX[4], invP.lineY);
+	doc.text("AMOUNT", invP.colsX[5], invP.lineY);
+	
+	let totalShirts = 0;
+	let totalDollars = 0;
+	
+	invP.lineDown(2);
+	order.shirtsByStyle.forEach(style => {
+		if (style.shortName != 'Dairy Hoods') {
+			console.log(style.shortName);
+			style.sizes.forEach(shirt => {
+				let item = getItemByStyleIDSizeChar(style.id, shirt.charName);
+				invP.cell(item.getInvoiceName(), 1, 2);
+				invP.cell(String(shirt.quantity), 3);
+				invP.cell(`$${item.price}`, 4);
+				invP.cell(`$${shirt.quantity * item.price}`, 5);
+				invP.lineDown();
+				totalShirts += shirt.quantity;
+				totalDollars += (shirt.quantity * item.price);
+			});
+		}
+	});
+	
+	
+	
+	
+	invP.lineDown(2);
+	doc.text(`Total Ordered:   ${totalShirts}`, invP.colsX[3], invP.lineY);
+	
+	invP.lineDown();
+	doc.line(invP.colsX[3], invP.lineY, invP.colsX[4], invP.lineY);
+	invP.lineDown();
+	doc.text("INVOICE TOTAL:", invP.colsX[3], invP.lineY);
+	doc.text(`$${totalDollars}`, invP.colsX[5], invP.lineY);
+	
+	invP.lineDown(2);
+	invP.centerTextInPage(`${stateEvent.sport.name} ${stateEvent.startDate.getFullYear()}`);
+	
+		// Generate a Blob URL and open it in a new tab
+	const pdfBlob = doc.output("blob");
+	const url = URL.createObjectURL(pdfBlob);
+	window.open(url, "_blank", "noopener");
+}
+
 
 
 
@@ -1574,6 +1674,13 @@ function getItemByStyleIDSizeChar(styleID, sizeChar) {
    return null; // or undefined, if you want to be explicit
 }
 
+function safeParseDate(input) {
+   if (!input || typeof input !== 'string') return null;
+
+   const date = new Date(input.replace(' ', 'T'));
+   return isNaN(date.getTime()) ? null : date;
+}
+
 
 
 
@@ -1592,7 +1699,7 @@ async function testInvoicePDF() {
 	const date = new Date();
 	const strDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 
-	let request = new ActionRequest('getByID', 'SchoolOrder', 568);
+	let request = new ActionRequest('getByID', 'SchoolOrder', 213);
 	let responseJSON = await myFetch(request);
 	order = SchoolOrder.fromJSON(responseJSON.data);
 	
@@ -1610,8 +1717,7 @@ async function testInvoicePDF() {
 	invP.lineDown();
 	doc.text("BOISE, ID 83702", invP.alignX, invP.lineY);
 	
-	invP.lineDown();
-	invP.lineDown();
+	invP.lineDown(2);
 	doc.text("ORDER NUMBER:", invP.colsX[3], invP.lineY);
 	invP.cell(order.id, 4);
 	invP.lineDown();
@@ -1624,9 +1730,7 @@ async function testInvoicePDF() {
 	doc.text("CUSTOMER #:", invP.colsX[3], invP.lineY);
 	invP.cell(order.school.getSchoolCode(), 4);
 	
-	invP.lineDown();
-	invP.lineDown();
-	invP.lineDown();
+	invP.lineDown(3);
 	doc.text("SOLD TO:", invP.colsX[1], invP.lineY);
 	doc.text("SHIP TO:", invP.colsX[3], invP.lineY);
 	
@@ -1642,9 +1746,7 @@ async function testInvoicePDF() {
 	doc.text(order.school.addressLine2, invP.colsX[1], invP.lineY);
 	doc.text(order.school.addressLine2, invP.colsX[3], invP.lineY);
 	
-	invP.lineDown();
-	invP.lineDown();
-	invP.lineDown();
+	invP.lineDown(3);
 	doc.text("CONFIRM TO:", invP.colsX[1], invP.lineY);
 	invP.cell(order.school.ad.name, 2);
 	invP.lineDown();
@@ -1654,35 +1756,47 @@ async function testInvoicePDF() {
 	doc.text("PAYMENT:", invP.colsX[1], invP.lineY);
 	doc.text("check / card", invP.colsX[2], invP.lineY);
 	
-	invP.lineDown();
-	invP.lineDown();
-	invP.lineDown();
+	invP.lineDown(3);
 	doc.text("ITEM:", invP.colsX[1], invP.lineY);
 	doc.text("ORDERED:", invP.colsX[3], invP.lineY);
 	doc.text("PRICE:", invP.colsX[4], invP.lineY);
 	doc.text("AMOUNT:", invP.colsX[5], invP.lineY);
 	
-	invP.lineDown();
-	invP.lineDown();
-	invP.addShirts(order.shirtsByStyle);
+	let totalShirts = 0;
+	let totalDollars = 0;
+	
+	invP.lineDown(2);
+	order.shirtsByStyle.forEach(style => {
+		if (style.shortName != 'Dairy Hoods') {
+			console.log(style.shortName);
+			style.sizes.forEach(shirt => {
+				let item = getItemByStyleIDSizeChar(style.id, shirt.charName);
+				invP.cell(item.getInvoiceName(), 1, 2);
+				invP.cell(String(shirt.quantity), 3);
+				invP.cell(`$${item.price}`, 4);
+				invP.cell(`$${shirt.quantity * item.price}`, 5);
+				invP.lineDown();
+				totalShirts += shirt.quantity;
+				totalDollars += (shirt.quantity * item.price);
+			});
+		}
+	});
+	
+	
+	
+	
+	invP.lineDown(2);
+	doc.text("Total Ordered", invP.colsX[3], invP.lineY);
+	doc.text(String(totalShirts), invP.colsX[4], invP.lineY);
 	
 	invP.lineDown();
-	invP.lineDown();
-	doc.text("Total Ordered", invP.colsX[3], invP.lineY);
-	doc.text("", invP.colsX[4], invP.lineY);
-	invP.lineDown();
-	// doc.line(10, 10, 100, 100);
+	doc.line(invP.colsX[3], invP.lineY, invP.colsX[4], invP.lineY);
 	invP.lineDown();
 	doc.text("INVOICE TOTAL:", invP.colsX[3], invP.lineY);
-	doc.text("$", invP.colsX[5], invP.lineY);
+	doc.text(`$${totalDollars}`, invP.colsX[5], invP.lineY);
 	
-	invP.lineDown();
-	invP.lineDown();
-	invP.centerTextInPage("Sport Year");
-	
-	
-	
-	
+	invP.lineDown(2);
+	invP.centerTextInPage(`${stateEvent.sport.name} ${stateEvent.startDate.getFullYear()}`);
 	
 		// Generate a Blob URL and open it in a new tab
 	const pdfBlob = doc.output("blob");
@@ -1701,10 +1815,6 @@ function testBoxLabelPDF() {
 	drawLabelRects(doc);
 	const halfLabelX = lbl.oX + lbl.width / 2;
 	const halfLabelY = lbl.oY + lbl.height / 2;
-	// doc.line(halfLabelX, lbl.oY, halfLabelX, lbl.oY + lbl.height);
-	// doc.line(lbl.oX, halfLabelY, lbl.oX + lbl.width, halfLabelY);
-	// doc.line(lbl.oX, lbl.oY, lbl.oX + lbl.width, lbl.oY + lbl.height);
-	// doc.line(lbl.oX, lbl.oY + lbl.height, lbl.oX + lbl.width, lbl.oY);
 	
 		// variables
 	const division = "6A";
