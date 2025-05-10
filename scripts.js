@@ -138,7 +138,6 @@ class InvoicePage {
 		this.alignX = 20;
 		this.colsX = [0, 20, 60, 105, 140, 160, 175, 200];
 		this.lineStep = 4;
-		this.lineX = this.alignX;
 		this.lineY = 30;
 		
 		this.doc.setFontSize(10);
@@ -172,6 +171,49 @@ class InvoicePage {
 	}
 }
 
+class SoSPage {
+	constructor(doc) {
+		this.doc = doc;
+		this.width = 215.9;
+		this.height = 280;
+		this.alignX = 20;
+		this.rMargin = this.width - this.alignX;
+		this.sizeColW = 11;
+		this.colsX = [0, 20, 30, 114, 125, 136, 147, 158, 169, 180, 191, 202];
+		this.col = 1;
+		this.numColWidth = 10;
+		this.lineStep = 6.5;
+		this.cursor = new Coord(this.alignX, 30);
+		
+		this.doc.setFontSize(10);
+	}
+	
+	lineDown(n = 1) {
+		this.cursor.y += (n * this.lineStep);
+	}
+	
+	newLine(n = 1) {
+		this.col = 1;
+		this.cursor.x = this.alignX;
+		this.cursor.y += (n * this.lineStep);
+	}
+	
+	textToCell(txt, align = 'center') {
+		if (typeof txt === 'number') txt = String(txt);
+		if (!txt) txt = '';
+		
+		const colWidth = this.colsX[this.col + 1] - this.colsX[this.col];
+		let x = this.colsX[this.col];
+		let offset = ((colWidth - this.doc.getTextWidth(txt)) / 2);
+		
+		if (align == 'left') offset = 2;
+		if (align == 'right') offset = (colWidth - 2 - this.doc.getTextWidth(txt));
+		
+		this.doc.text(String(txt), (x + offset), this.cursor.y);
+		++this.col;
+	}
+}
+
 
 ////////////////////////////////////////////////////////////
 // db classes
@@ -193,6 +235,18 @@ class StateEvent {
    static fromJSON(json) {
       return new StateEvent(json);
    }
+	
+	getEventSiteByID(id) {
+		return this.eventSites.find(es => es.id === Number(id));
+	}
+	
+	getDivisionByID(id) {
+   for (const es of this.eventSites) {
+      const match = es.divisions.find(div => div.id === Number(id));
+      if (match) return match;
+   }
+   return null; // Not found
+}
 	
 	getUndoneOrders() {
 		let orders = [];
@@ -288,7 +342,7 @@ class EventSiteDivision {
       this.id = id;
       this.eventSiteID = eventSiteID;
       this.division = division instanceof Division ? division : division != null ? Division.fromJSON(division) : null;
-      this.schoolOrders = Array.isArray(schoolOrders)
+      this.schoolOrders = (Array.isArray(schoolOrders))
          ? schoolOrders.map(so => so instanceof SchoolOrder ? so : so != null ? SchoolOrder.fromJSON(so) : null).filter(Boolean)
          : [];
    }
@@ -300,6 +354,12 @@ class EventSiteDivision {
    static fromJSON(json) {
       return new EventSiteDivision(json);
    }
+	
+	getTeamsWithAddOns() {
+		return this.schoolOrders.filter(order =>
+			order.shirtsByStyle.some(style => style.shortName !== 'Dairy Hoods')
+		);
+	}
 }
 
 class Division {
@@ -347,8 +407,35 @@ class SchoolOrder {
       return new SchoolOrder(json);
    }
 	
+	updateFromJSON(json) {
+		this.id = json.id;
+		this.eshdID = json.eshdID;
+		this.school = json.school instanceof School
+			? json.school
+			: json.school != null
+				? School.fromJSON(json.school)
+				: null;
+		this.completeness = json.completeness;
+		this.due = json.due;
+		this.paid = json.paid;
+		this.schoolOrderNote = json.schoolOrderNote;
+		this.invoiceSent = json.invoiceSent;
+		this.messageOrders = Array.isArray(json.messageOrders) ? json.messageOrders : [];
+		this.shirtsByStyle = Array.isArray(json.shirts)
+			? json.shirts.map(style =>
+				style instanceof Style ? style : style != null ? Style.fromJSON(style) : null
+			).filter(Boolean)
+			: [];
+		this.site = json.site;
+		this.sport = json.sport;
+	}
+	
+	hasAddOns() {
+		return this.shirtsByStyle.some(style => style.shortName !== 'Dairy Hoods');
+	}
+	
 	getTeamStyle() {
-		return this.shirtsByStyle.find(shirt => shirt.shortName === 'Dairy Hoods');
+		return this.shirtsByStyle.find(style => style.shortName === 'Dairy Hoods');
 	}
 	
 	getAddedStyles() {
@@ -471,6 +558,7 @@ class Style {
    }
 	
 	getTotalQuantity() {
+		if (!this.sizes) return 0;
 		let total = 0;
 		this.sizes.forEach(size => {
 			total += size.quantity;
@@ -655,9 +743,6 @@ function buildNavList() {
 	});
 }
 
-
-
-
 function buildNavList2() {
 		// get the nav bar
 	let navList = document.getElementById("nav2List");
@@ -677,6 +762,7 @@ function buildNavList2() {
 		navList.appendChild(newLI);
 	});
 }
+
 
 
 	// all fetch requests go to controller.php
@@ -714,6 +800,8 @@ async function myFetch(request) {
 	}
 }
 
+
+
 async function goToEventPage(sport) {
 		//we'll want to swap year statements once this is out of test
 	let year = currentYear;
@@ -737,9 +825,9 @@ async function goToEventPage(sport) {
 	activeMode = null;
 	
 	///// ATTACH EVENT LISTENERS /////////////////////////////////////////////////////////
-	const container = document.getElementById('ordersContainer');
-		// first the in table action buttons
+	const container = document.getElementById('eventContainer');
 		// this is one listener that handles clicks for all the buttons in the table
+		// and some out side the table
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// buttons for: AddOns, Editing, ShowingMessage, PrintingLabel. also Submitting and Canceling those actions
 	container.addEventListener('click', function(event) {
@@ -766,42 +854,41 @@ async function goToEventPage(sport) {
 			} else if (target.matches('button.submitEdit')) {
 				submitSizeEdit(target, order);
 			}
+			
+			// top level buttons
+		} else if (target.matches('button.genUndoneBoxLabelsBtn')) {
+			printUndoneBoxLabels();
+		} else if (target.matches('button.newOrderBtn')) {
+			makeBlankOrder();
+		} else if (target.matches('button.printAllSoSPDF')) {
+			printAllSoSPDF();
+		} else if (target.matches('button.printSoSPDF')) {
+			printSoSPDF(stateEvent.getDivisionByID(target.dataset.eshdid));
+				// a couple occasional cancel buttons
 		} else if (target.matches('button.cancelAddOns')) {
 			cancelAddOns(target);
 		} else if (target.matches('button.cancelEdit')) {
 			cancelSizeEdit(target);
+		} else if (target.matches('button.cancelEdit')) {
+			cancelSizeEdit(target);
 		}
 	});
+	
 		// next a listener for the inputs to ensure integer values
 	container.addEventListener("input", (e) => {
 		if (e.target.matches('input[type="number"]')) {
 			e.target.value = e.target.value.replace(/[^\d-]/g, '');
 		}
 	});
+	
 		// changeOrderCompleteness listeners
 	container.addEventListener('change', function(event) {
-		if (event.target.matches('input[type="checkbox"]')) {
+		if (event.target.matches('input.orderChckBx')) {
 			changeOrderCompleteness(event.target, getOrderFromTableButton(event.target));
+		} else if (event.target.matches('input.commentChckBx')) {
+			changeCommentHandled(event.target);
 		}
 	});
-		// next the PDF buttons
-			// sign off sheet buttons
-	const siteSoSButtons = document.querySelectorAll('[data-btnType="genSoSPDF"]');
-	siteSoSButtons.forEach(btn => {
-		btn.addEventListener('click', () => {genSoSPDF(); });
-	});
-		// box label button
-	const undoneBLButton = document.querySelector('[data-btnType="genBoxLabels"]');
-	undoneBLButton.addEventListener('click', () => {printBoxLabels(); });
-		// comment table checkboxes
-	const commentsContainer = document.getElementById('commentsTable');
-	if (commentsContainer) {
-		commentsTable.addEventListener('change', function(event) {
-			if (event.target.matches('input[type="checkbox"]')) {
-				changeCommentHandled(event.target);
-			}
-		});
-	}
 }
 
 
@@ -818,6 +905,16 @@ async function submitOrderFiles() {
 	// constructor(action, actionClass, data)
 	let responseJSON = await myFetch(request);
 	document.getElementById("display").innerHTML = responseJSON.html;
+		// add event listener for comment table checkboxes
+	const commentsContainer = document.getElementById('commentsTable');
+	if (commentsContainer) {
+		commentsTable.addEventListener('change', function(event) {
+			if (event.target.matches('input[type="checkbox"]')) {
+				changeCommentHandled(event.target);
+			}
+		});
+	}
+	
 }	
 
 	// this came from gpt, because i'm still fuzzy on how to work with promises. and map.
@@ -1065,7 +1162,8 @@ async function submitAddOns(target, order) {
 	let responseJSON = await myFetch(request);
 	
 	if (responseJSON.success) {
-		updateObject(order, responseJSON.data.newOrder);
+		// updateObject(order, responseJSON.data.newOrder);
+		order.updateFromJSON(responseJSON.data.newOrder);
 		cleanInputRows(rows);
 			// exit 'add' mode
 		activeMode = null;
@@ -1284,7 +1382,8 @@ async function submitSizeEdit(target, order) {
 	let responseJSON = await myFetch(request);
 
 	if (responseJSON.success) {
-		updateObject(order, responseJSON.data.newOrder);
+		// updateObject(order, responseJSON.data.newOrder);
+		order.updateFromJSON(responseJSON.data.newOrder);
 		cleanInputRows(rows);
 			// exit edit mode
 		activeMode = null;
@@ -1295,12 +1394,16 @@ async function submitSizeEdit(target, order) {
 
 	// shows the original message
 function showOMessage(order) {
-	mText = order.messageOrders[0].orderText;
-	console.log(order);
-		// if there is a second messageOrder, append it's text
-	if (order.messageOrders[1]) mText += "\n\n" + order.messageOrders[1].orderText;
-		// display it
-	openModal(mText);
+	if (!order.messageOrders[0]) {
+		openModal("No order message");
+	} else {
+		let mText = order.messageOrders[0].orderText;
+		console.log(order);
+			// if there is a second messageOrder, append it's text
+		if (order.messageOrders[1]) mText += "\n\n" + order.messageOrders[1].orderText;
+			// display it
+		openModal(mText);
+	}
 }
 
 
@@ -1340,6 +1443,10 @@ async function changeCommentHandled(box) {
 
 
 function printBoxLabel(order) {
+	if (!order.sizes) {
+		openModal("This order is empty");
+		return;
+	}
 		// Access jsPDF from the global object
 	const { jsPDF } = window.jspdf; 
    const doc = new jsPDF('p', 'mm', 'letter');
@@ -1351,7 +1458,7 @@ function printBoxLabel(order) {
 	window.open(url, "_blank", "noopener");
 }
 
-function printBoxLabels() {
+function printUndoneBoxLabels() {
 		// get all incomplete orders
 	let orders = stateEvent.getUndoneOrders();
 	
@@ -1493,16 +1600,199 @@ function genBLSizesString(sizes) {
 }
 
 
-function genSoSPDF() {
-	const btn = event.currentTarget;
-	const eventSiteID = btn.dataset.eventSiteId;
-	// const sport = btn.closest('h1');
-	const siteName = btn.closest('h2').firstChild.textContent.trim();
-	const division = "";
-	console.log(siteName);
+
+function printAllSoSPDF() {
+	if (!statEvent) return;
+	stateEvent.eventSites.forEach(es => {
+		printSoSPDF(es);
+	});
 }
 
 
+function printSoSPDF(eventSite) {
+	console.log(eventSite);
+	if (!eventSite) return;
+	
+	
+		// Access jsPDF from the global object
+	const { jsPDF } = window.jspdf; 
+   const doc = new jsPDF('p', 'mm', 'letter');
+	genSoS(doc, eventSite);
+	
+		// Generate a Blob URL and open it in a new tab
+	const pdfBlob = doc.output("blob");
+	const url = URL.createObjectURL(pdfBlob);
+	window.open(url, "_blank", "noopener");
+}
+
+function genSoS(doc, div) {
+	const sos = new SoSPage(doc);
+	const cursor = sos.cursor;
+	const sosSizeList = sizeList.slice(0, 6);
+	const addOnOrders = [];
+	
+		// makes an object to hold totals for each line
+	const sizeTotals = Object.fromEntries(sosSizeList.map(k => [k, 0]));
+	const red = '#ff0000';
+	const blue = '#0000ff';
+	const black = '#000000';
+	
+	doc.setTextColor(red);
+	doc.setFontSize(14);
+	let sportTxt = stateEvent.sport.name.toUpperCase()
+	doc.text(stateEvent.sport.name.toUpperCase(), cursor.x, cursor.y);
+	
+	doc.setTextColor(blue);
+	let x = cursor.x + doc.getTextWidth(sportTxt) + 10;
+	doc.text(div.division.name, x, cursor.y);
+	
+	
+	doc.setTextColor(black);
+	doc.setFontSize(11);
+	
+	let topLineY = cursor.y + 1;
+	doc.line(sos.colsX[4], topLineY, sos.colsX[sos.colsX.length -2], topLineY);
+	
+	sos.newLine();
+	sos.col = 3;
+	sos.textToCell('total');
+	sosSizeList.forEach(s => {
+		sos.textToCell(s);
+	})
+	
+		// makes each team's line. a line number, school name, total shirts, and quantity for each size
+	let i = 1;
+	div.schoolOrders.forEach(order => {
+		doc.line(sos.alignX, (sos.cursor.y + 1), sos.colsX[sos.colsX.length - 2], (sos.cursor.y + 1));
+		sos.newLine();
+		sos.textToCell(i, 'right');
+		const name = order.school.shortName;
+		sos.textToCell(name, 'left');
+		if (order.hasAddOns()) {
+			addOnOrders.push(order);
+			doc.setTextColor(red);
+			let redText;
+			nameWidth = doc.getTextWidth(name);
+			if (!order.paid) {
+				redText = `(due $${order.due})`;
+			} else {
+				redText = 'PAID';
+			}
+			doc.text(redText, (sos.colsX[2] + nameWidth + 4), cursor.y);
+			doc.setTextColor(black);
+		}
+		let total = (order.getTeamStyle()) ? order.getTeamStyle().getTotalQuantity() : 0;
+		sos.textToCell(total);
+		let teamStyle = order.getTeamStyle();
+		if (teamStyle) {
+			let shirts = teamStyle.sizeMap;
+			sosSizeList.forEach(size => {
+				let q = '-';
+				if (shirts[size]) {
+					q = shirts[size].quantity;
+					sizeTotals[size] += shirts[size].quantity;
+				}
+				sos.textToCell(q);
+			});
+		}
+		++i;
+	});
+		// the last line
+	doc.line(sos.alignX, (sos.cursor.y + 1), sos.colsX[sos.colsX.length - 2], (sos.cursor.y + 1));
+	
+		// vertical grid lines
+	for (let i = 4; i < (sos.colsX.length - 1); ++i) {
+		doc.line(sos.colsX[i], topLineY, sos.colsX[i], (cursor.y + 1));
+	}
+		// totals line
+	sos.newLine();
+	doc.setTextColor(red);
+	sos.col = 2;
+	sos.textToCell('total', 'right');
+	const totalSum = Object.values(sizeTotals).reduce((sum, val) => sum + val, 0);
+	sos.col = 10;
+	console.log(totalSum);
+	sos.textToCell(totalSum);
+	doc.setTextColor(blue);
+	sos.col = 3;
+	sos.textToCell(totalSum);
+	sosSizeList.forEach(size => {
+		sos.textToCell(sizeTotals[size]);
+	});
+	
+		// add ons
+	sos.newLine(2);
+	sos.lineStep = 5.5;
+	doc.setTextColor(black);
+	doc.text("add ons:", sos.alignX, cursor.y);
+	sos.col = 4;
+	sosSizeList.forEach(s => {
+		sos.textToCell(s);
+	});
+	addOnOrders.forEach(order => {
+		sos.newLine();
+		const name = order.school.shortName;
+		sos.textToCell(name, 'left');
+		if (order.hasAddOns()) {
+			addOnOrders.push(order);
+			doc.setTextColor(red);
+			let redText;
+			nameWidth = doc.getTextWidth(name);
+			if (!order.paid) {
+				redText = `(due $${order.due})`;
+			} else {
+				redText = 'PAID';
+			}
+			doc.text(redText, (sos.alignX + nameWidth + 4), cursor.y);
+			doc.setTextColor(black);
+		}
+		order.getAddedStyles().forEach(style => {
+			sos.col = 4;
+			let shirts = style.sizeMap;
+			sosSizeList.forEach(size => {
+				let q = '';
+				if (shirts[size]) {
+					q = shirts[size].quantity;
+					sizeTotals[size] += shirts[size].quantity;
+				}
+				sos.textToCell(q);
+			});
+		});
+	});
+}
+
+
+async function makeBlankOrder() {
+	injectSchoolSelector();
+	modal.display = "block";
+}
+
+function injectSchoolSelector() {
+   const schoolSelectorHTML = `
+      <label for="schoolInput">Select School:</label>
+      <input list="schoolList" id="schoolInput" name="schoolInput" />
+      <datalist id="schoolList">
+         <option value="Lincoln High">
+         <option value="Jefferson Prep">
+         <option value="Roosevelt Academy">
+      </datalist>
+      <p id="schoolIDDisplay">Selected School ID: <span id="schoolID"></span></p>
+   `;
+
+   modalText.innerHTML = schoolSelectorHTML;
+
+   const schoolMap = {
+      "Lincoln High": 101,
+      "Jefferson Prep": 102,
+      "Roosevelt Academy": 103
+   };
+
+   document.getElementById("schoolInput").addEventListener("change", (e) => {
+      const schoolName = e.target.value;
+      const schoolID = schoolMap[schoolName] || "Not found";
+      document.getElementById("schoolID").textContent = schoolID;
+   });
+}
 
 
 async function genInvoicePDF(order) {
@@ -1566,9 +1856,6 @@ async function genInvoicePDF(order) {
 	invP.lineDown();
 	doc.text("COMMENT: PH#", invP.colsX[1], invP.lineY);
 	invP.cell(order.school.ad.phone, 2);
-	invP.lineDown();
-	doc.text("PAYMENT:", invP.colsX[1], invP.lineY);
-	doc.text("check / card", invP.colsX[2], invP.lineY);
 	
 	invP.lineDown(3);
 	doc.text("ITEM", invP.colsX[1], invP.lineY);
@@ -1623,8 +1910,13 @@ async function genInvoicePDF(order) {
 	// Modal functions ////////////////////////////////////////////////////////
 	// Function to open the modal
 function openModal(content) {
-  modalText.textContent = content; // Set the modal's text
-  modal.style.display = "block"; // Show the modal
+  modalText.innerHTML = "";
+  if (typeof content === "string") {
+    modalText.textContent = content;
+  } else {
+    modalText.appendChild(content);
+  }
+  modal.style.display = "block";
 }
 
 	// Function to close the modal
@@ -1647,9 +1939,18 @@ window.addEventListener("click", (event) => {
 
 	// delete all properties from an object, and assign properties from a new object. wanted to update a nested object
 function updateObject(obj, newObj) {
-    Object.keys(obj).forEach(key => delete obj[key]);
-    Object.assign(obj, newObj);
+   if (obj === newObj) throw new Error("Cannot update object with itself.");
+   Object.keys(obj).forEach(key => delete obj[key]);
+   Object.assign(obj, newObj);
+
+   if ('school' in obj) {
+		console.log('has school property');
+      const s = obj.school;
+      obj.school = s instanceof School ? s : s != null ? School.fromJSON(s) : null;
+		console.log(stateEvent);
+   }
 }
+
 
 function hasItems(arr) {
    return (Array.isArray(arr) && arr.length > 0);

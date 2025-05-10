@@ -10,12 +10,12 @@
 		</tr>
 	</thead>
 	<tbody>
-<?php foreach ($unhandled as $order) : ?>
+<?php foreach ($commentOrders as $order) : ?>
 		<tr>
 			<td title="<?= $order->id; ?>"><?= $order->school; ?></td>
 			<td><?= $order->division; ?></td>
 			<td><?= $order->comment; ?></td>
-			<td><input data-order-id="<?= $order->id; ?>" type="checkbox" /></td>
+			<td><input class="commentChckBx" data-order-id="<?= $order->id; ?>" type="checkbox" /></td>
 		</tr>
 <?php endforeach; ?>
 	</tbody>

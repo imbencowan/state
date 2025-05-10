@@ -52,7 +52,7 @@ class School extends BasicTableModel {
 			$shortSchoolName = 'Idaho School for the Deaf & the Blind';
 		} else {
 				// order matters here, we have to do ' High School' after these oddballs, or they won't get caught this way
-			$remove = [" Jr/Sr High School", " Junior/Senior High School", " High School", "Academy", "School"];
+			$remove = [" Lamanna High School", " Jr/Sr High School", " Junior/Senior High School", " High School", "Academy", "School"];
 			$shortSchoolName = str_replace($remove, "", $longSchoolName);
 		}
 		return $shortSchoolName;

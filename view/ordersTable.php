@@ -29,6 +29,8 @@
 		$trClass = 'doneRow';
 	} elseif ($completeness == 2) {
 		$trClass = 'partDoneRow';
+	} elseif ($completeness == 3) {
+		$trClass = 'overRow';
 	}
 	$hasAddOns = false;
 	$orderID = $order->id;
@@ -38,7 +40,8 @@
 	$teamShirts = !empty($order->shirts['Dairy Hoods'] ?? null) ? $order->shirts['Dairy Hoods']->getSizes() : null;
 ?>
 				<tbody id="row<?= $orderID; ?>" class="<?= $trClass;?>" data-school-order-id="<?= $orderID; ?>">
-					<tr data-style-id="<?= $order->shirts['Dairy Hoods']->id; ?>">
+						<?php // set style-id to 9 for empty orders ?>
+					<tr data-style-id="<?= isset($order->shirts['Dairy Hoods']) ? $order->shirts['Dairy Hoods']->id : 9; ?>">
 						<td title="<?= $orderID . ' / ' . $order->getMessageFileNames(); ?>"><?= $schoolName; ?></td>
 						<td title="S"><?= isset($teamShirts['S']) ? $teamShirts['S']->getQuantity() : '-'; ?></td>
 						<td title="M"><?= isset($teamShirts['M']) ? $teamShirts['M']->getQuantity() : '-'; ?></td>
@@ -46,20 +49,21 @@
 						<td title="XL"><?= isset($teamShirts['XL']) ? $teamShirts['XL']->getQuantity() : '-'; ?></td>
 						<td title="2XL"><?= isset($teamShirts['2XL']) ? $teamShirts['2XL']->getQuantity() : '-'; ?></td>
 						<td title="3XL"><?= isset($teamShirts['3XL']) ? $teamShirts['3XL']->getQuantity() : '-'; ?></td>
-						<td title="total"><?= $order->getStyleTotal('Dairy Hoods'); ?></td>
+						<td title="total"><?= isset($order->shirts['Dairy Hoods']) ? $order->getStyleTotal('Dairy Hoods') : '-'; ?></td>
 							<?php // a cell to hold action buttons ?>
-
 						<td>
 							<span class="material-icons clickable order-action addAddOns" title="add add ons">add</span>
 							<span class="material-icons clickable order-action editSizes" title="edit the sizes">edit</span>
 							<span class="material-icons clickable order-action showMessage" title="view the original message">article</span>
 							<span class="material-icons clickable order-action printLabel" title="print box label">print</span>
 							<span class="material-icons clickable order-action dlInvoice" title="download invoice">request_quote</span>
-							<input type="checkbox" id="<?= $checkID; ?>" name="<?= $checkID; ?>" value="<?= $orderID; ?>" 
-									title="mark order complete" <?php if ($completeness == 1) echo "checked"; ?>/>
+							<input class="orderChckBx" type="checkbox" id="<?= $checkID; ?>" name="<?= $checkID; ?>" 
+								value="<?= $orderID; ?>" title="mark order complete" <?php if ($completeness == 1) echo "checked"; ?>/>
 						</td>
 					</tr>
-		<?php if (!empty($order->shirts)) : 
+		<?php
+				// $order->shirts now holds team shirts as well as add ons. should we in stead check count() > 1 rather than !empty()?
+			if (!empty($order->shirts)) : 
 			foreach ($order->getAddedShirts() as $addedStyle) :
 				$aStyle = $addedStyle->getSizes();
 		?>

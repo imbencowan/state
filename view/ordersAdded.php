@@ -53,31 +53,8 @@
 <?php	endforeach; ?>
 			</tbody>
 		</table>
-<?php if ($commentOrders) : ?>
-		<br />
-		<h2>Comments</h2>
-		<table>
-			<thead>
-				<tr>
-					<th>Sport</th>
-					<th>School</th>
-					<th>Comment</th>
-					<th>Handled</th>
-				</tr>
-			</thead>
-			<tbody>
-<?php foreach ($commentOrders as $order) : ?>
-				<tr>
-					<td><?= $order['sport']; ?></td>
-					<td><?= $order['shortSchool']; ?></td>
-					<td><?= $order['comment']; ?></td>
-					<td><input type="checkbox" /></td>
-				</tr>
-<?php endforeach; ?>
-			</tbody>
-		</table>
 <?php 
-		endif;
+		if ($commentOrders) include 'orderCommentTable.php';
 	endif;
 		
 		// show which orders were already in the db

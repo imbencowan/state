@@ -185,6 +185,10 @@ table {
 	background-color: #ecf;
 }
 
+.overRow {
+	background-color: #f00;
+}
+
 tr.addOnRow {
 	color: #666;
 	font-size: 88%;
