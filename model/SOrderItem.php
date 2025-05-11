@@ -28,9 +28,7 @@ class SOrderItem extends BasicTableModel {
 
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		// // Database Functions
-	public static function addAddOns($data) {
-		$orderID = $data['schoolOrderID'];
-		$addItems = $data['addItems'];
+	public static function addAddOns($orderID, $addItems) {
 		$query = "SELECT itemID FROM sorderitems WHERE schoolOrderID = :schoolOrderID";
 			// use the parent method to get existing itemIDs for the order
 		$priorItems = SOrderItem::getFromDB($query, [':schoolOrderID' => $orderID]);

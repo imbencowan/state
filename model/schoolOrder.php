@@ -125,12 +125,13 @@ class SchoolOrder extends BasicTableModel {
 
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		// // Database Functions
-	static function uploadOrders($data) {
+	// static function uploadOrders($data) {
+	static function uploadOrders($orders) {
 		
 		ob_start();
 		
 			// simplify the naming, bring in the input
-		$orders = $data['orders'];
+		// $orders = $data['orders'];
 		if (!empty($orders)) {
 				// set arrays for new orders, and ones that already exist
 			$addedOrders = [];
@@ -302,12 +303,12 @@ class SchoolOrder extends BasicTableModel {
 	//////////////////////////////////////////////////
    // user actions
 	
-	static function changeOrderCompleteness($data) {
+	static function changeOrderCompleteness($id, $completeness) {
 		$db = Database::getDB();
 		
 		$statement = $db->prepare('UPDATE schoolOrders SET completeness = :completeness WHERE schoolOrderID = :orderID');
-		$statement->bindValue(":orderID", $data['id']);
-		$statement->bindValue(":completeness", $data['completeness']);
+		$statement->bindValue(":orderID", $id);
+		$statement->bindValue(":completeness", $completeness);
 		$statement->execute();
 		$affectedRows = $statement->rowCount();
 		$statement->closeCursor();
@@ -315,11 +316,11 @@ class SchoolOrder extends BasicTableModel {
 		return ['rowsAffected' => $affectedRows];
 	}
 	
-	public static function editSizes($data) {
-		return Database::withDB(function($db) use ($data) {
+	public static function editSizes($items, $orderID) {
+		return Database::withDB(function($db) use ($items, $orderID) {
 				// bring in the data
-			$items = $data['items'];
-			$orderID = $data['schoolOrderID'];
+			// $items = $data['items'];
+			// $orderID = $data['schoolOrderID'];
 			
 				// this will UPDATE records for existing sizes, and create new records for nonexisting
 			$stmt = $db->prepare("INSERT INTO sorderitems (schoolOrderID, itemID, sOrderItemsQuantity)

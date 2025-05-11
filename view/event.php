@@ -7,9 +7,9 @@
 	</h1>
 	<div id="ordersContainer">
 <?php	foreach ($event->eventSites as $eventSite) : ?>
-			<h2><?= $eventSite->site->name; ?></h2>
+			<h2 data-event-site-id="<?= $eventSite->id; ?>"><?= $eventSite->site->name; ?></h2>
 <?php		foreach ($eventSite->divisions as $division) : ?>
-				<h3><?= $division->name; ?>
+				<h3 data-event-site-division-id="<?= $division->id; ?>"><?= $division->name; ?>
 					<button class="genPDFButton clickable printSoSPDF" data-btnType="printSoSPDF" 
 						data-eshdid="<?= $division->id; ?>">Get SoS</button>
 				</h3>

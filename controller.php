@@ -32,7 +32,11 @@
 		if (!empty($action)) {
 			if (!empty($class) && method_exists($class, $action)) {
 				try {
-					$result = call_user_func([$class, $action], $data);
+					if (is_array($data)) {
+						$result = call_user_func_array([$class, $action], $data);
+					} else {
+						$result = call_user_func([$class, $action], $data);
+					}
 						// merge assoc array results, assign others
 					// Test::logX(gettype($result));
 					if (is_array($result) && isset($result['data'])) {

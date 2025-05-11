@@ -72,12 +72,12 @@ class MessageOrder extends BasicTableModel {
 	
 	//////////////////////////////////////////////////////////
 	// user actions
-	static function changeCommentHandled($data) {
+	static function changeCommentHandled($id, $handled) {
 		$db = Database::getDB();
 		
 		$statement = $db->prepare('UPDATE messageOrders SET mOrderCommentHandled = :handled WHERE messageOrderID = :orderID');
-		$statement->bindValue(":orderID", $data['id']);
-		$statement->bindValue(":handled", $data['handled']);
+		$statement->bindValue(":orderID", $id);
+		$statement->bindValue(":handled", $handled);
 		$statement->execute();
 		$affectedRows = $statement->rowCount();
 		$statement->closeCursor();

@@ -131,12 +131,10 @@ class Event extends BasicTableModel {
 	//////////////////////////////////////////////////
    // user actions
 		// takes us to the Items page, displaying all items
-	static function showEvent($data) {
+	static function showEvent($year, $sportID) {
 			// output has to be placed between ob_start() and ob_get_clean() as below
 		ob_start(); 
 			// we might be able to take the $year assignment out, but i can't test that right now
-		$year = $data['year'];
-		$sportID = $data['sportID'];
 		
 		$event = Event::getOrdersBySportAndYear($sportID, $year);
 		
