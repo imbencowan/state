@@ -47,25 +47,37 @@ class Event extends BasicTableModel {
 	
 		// returns the sent array keyed and sorted
 	private static function organizeEventSites($eventSites) {
+			// First, build an array with max division IDs as sort keys
 		$organized = [];
 		foreach ($eventSites as $eSite) {
-			$organized[$eSite->site->name] = $eSite;
+			$maxDivisionId = 0;
+			foreach ($eSite->esDivisions as $esd) {
+				if ($esd->division->id > $maxDivisionId) {
+					$maxDivisionId = $esd->division->id;
+				}
+			}
+			$organized[$eSite->site->name] = ['eSite' => $eSite, 'maxId' => $maxDivisionId];
 		}
-		ksort($organized);
-		return $organized;
+			// Sort by max division ID descending
+		uasort($organized, function ($a, $b) {
+			return $b['maxId'] <=> $a['maxId'];
+		});
+			// Strip back down to just the eventSites
+		return array_map(fn($entry) => $entry['eSite'], $organized);
 	}
+
 	
 	public function getUnhandledComments() {
 		$unhandled = [];
-		foreach($this->eventSites as $eventSite) {
-			foreach ($eventSite->divisions as $division) {
-				foreach ($division->schoolOrders as $schoolOrder) {
+		foreach ($this->eventSites as $eventSite) {
+			foreach ($eventSite->esDivisions as $esd) {
+				foreach ($esd->schoolOrders as $schoolOrder) {
 					foreach ($schoolOrder->getMessageOrders() as $order) {
 						if ($order->commentHandled == 0) {
 							$o = new stdClass();
 							$o->id = $order->id;
 							$o->school = $schoolOrder->school->shortName;
-							$o->division = $division->name;
+							$o->esd = $esd->name;
 							$o->comment = $order->comment;
 							$unhandled[] = $o;
 						}
@@ -74,6 +86,35 @@ class Event extends BasicTableModel {
 			}
 		}
 		return $unhandled;
+	}
+	
+	public function getIncompleteOrders() {
+		$incompleteOrders = [];
+		foreach ($this->eventSites as $eventSite) {
+			foreach ($eventSite->esDivisions as $esd) {
+				foreach ($esd->schoolOrders as $order) {
+					if ($order->completeness == 0) {
+						$incompleteOrders[] = $order;
+					}
+				}
+			}
+		}
+		return $incompleteOrders;
+	}
+	
+	public function getNeededSizes($incompleteOrders) {
+		$neededSizes = ['S' => 0, 'M' => 0, 'L' => 0, 'XL' => 0, '2XL' => 0, '3XL' => 0];
+		foreach ($incompleteOrders as $order) {
+			foreach ($order->shirtsByStyle as $style) {
+				if ($style->shortName == "Dairy Hoods") {
+					foreach ($style->getSizes() as $size) {
+						$neededSizes[$size->charName] += $size->getQuantity();
+					}
+				}
+			}
+		}
+		Test::logX($neededSizes);
+		return $neededSizes;
 	}
 	
 	
@@ -124,6 +165,7 @@ class Event extends BasicTableModel {
 			// return the id or null
 		return $closest['eventID'] ?? null;
 	}
+	
 	
 	
 	

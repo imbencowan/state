@@ -204,6 +204,19 @@ tr.addOnRow {
 }
 
 
+.needTable {
+	table-layout: fixed;
+	width: 100%;
+	border: 3px solid black;
+	color: black;
+	background-color: white;	
+}
+
+.needTable td {
+	text-align: center;
+}
+
+
 .eventsTable {
 	border: 3px solid black;
 }

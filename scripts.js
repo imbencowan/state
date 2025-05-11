@@ -256,7 +256,7 @@ class StateEvent {
 	
 	getDivisionByID(id) {
 		for (const es of this.eventSites) {
-			const match = es.divisions.find(div => div.id === Number(id));
+			const match = es.esDivisions.find(div => div.id === Number(id));
 			if (match) return match;
 		}
 		return null; // Not found
@@ -265,7 +265,7 @@ class StateEvent {
 	getEsdByDivID(id) {
 		if (id < this.sport.minDiv) id = this.sport.minDiv;
 		for (const es of this.eventSites) {
-			for (const esd of es.divisions) {
+			for (const esd of es.esDivisions) {
 				if (esd.division.id === Number(id)) return esd;
 			}
 		}
@@ -275,7 +275,7 @@ class StateEvent {
 	getUndoneOrders() {
 		let orders = [];
 		this.eventSites.forEach(eventSite => {
-			eventSite.divisions.forEach(eshd => {
+			eventSite.esDivisions.forEach(eshd => {
 				eshd.schoolOrders.forEach(order => {
 						// check completeness. 0 == incomplete.
 					if (!order.completeness) {
@@ -311,18 +311,17 @@ class Sport {
 }
 
 class EventSite {
-   constructor({ id, eventID, site, managerName, vehicle, divisions = [] }) {
+   constructor({ id, eventID, site, managerName, vehicle, esDivisions = [] }) {
 		this.id = id;
 		this.eventID = eventID;
 		this.site = parseToInstance(site, Site);
 		this.managerName = managerName;
 		this.vehicle = parseToInstance(vehicle, Vehicle);
-		// this.divisions = divisions.map(div => div instanceof EventSiteDivision ? div : EventSiteDivision.fromJSON(div));
-		this.divisions = parseToInstancesArr(divisions, EventSiteDivision);
+		this.esDivisions = parseToInstancesArr(esDivisions, EventSiteDivision);
 	}
 
-   static fromValues(id, eventID, site, managerName, vehicle, divisions = []) {
-      return new EventSite({ id, eventID, site, managerName, vehicle, divisions });
+   static fromValues(id, eventID, site, managerName, vehicle, esDivisions = []) {
+      return new EventSite({ id, eventID, site, managerName, vehicle, esDivisions });
    }
 
    static fromJSON(json) {
@@ -408,7 +407,8 @@ class Division {
 }
 
 class SchoolOrder {
-   constructor({ id, eshdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders = [], shirts = [], site, sport }) {
+   constructor({ id, eshdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders = [], shirtsByStyle = [], 
+					site, sport }) {
       this.id = id;
       this.eshdID = eshdID;
       this.school = parseToInstance(school, School);
@@ -418,16 +418,16 @@ class SchoolOrder {
       this.schoolOrderNote = schoolOrderNote;
       this.invoiceSent = invoiceSent;
       this.messageOrders = Array.isArray(messageOrders) ? messageOrders : [];
-      this.shirtsByStyle = Array.isArray(shirts)
-         ? shirts.map(style => style instanceof Style ? style : style != null ? Style.fromJSON(style) : null).filter(Boolean)
+      this.shirtsByStyle = Array.isArray(shirtsByStyle)
+         ? shirtsByStyle.map(style => style instanceof Style ? style : style != null ? Style.fromJSON(style) : null).filter(Boolean)
          : [];
       this.site = site;
       this.sport = sport;
    }
 
-   static fromValues(id, eShdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders, shirts, 
+   static fromValues(id, eShdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders, shirtsByStyle, 
 							site, sport) {
-      return new SchoolOrder({ id, eShdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders, shirts, 
+      return new SchoolOrder({ id, eShdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders, shirtsByStyle, 
 										site, sport });
    }
 
@@ -1080,7 +1080,7 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 		const eventSite = stateEvent.eventSites.find(eSite => eSite.id === eventSiteID);
 		if (!eventSite) return null;
 		
-		const division = eventSite.divisions.find(div => div.id === divID);
+		const division = eventSite.esDivisions.find(div => div.id === divID);
 		if (!division) return null;
 
 		const order = division.schoolOrders.find(order => order.id === orderID);
@@ -1448,11 +1448,31 @@ async function changeOrderCompleteness(box, order) {
 		if (completeness) {
 			tbody.classList.remove("unDoneRow", "partDoneRow");
 			tbody.classList.add("doneRow");
+			updateNeeded(order);
 		} else {
 			tbody.classList.remove("doneRow", "partDoneRow");
 			tbody.classList.add("unDoneRow");
+			updateNeeded(order, false);
 		}
 	}
+}
+
+function updateNeeded(order, add = true) {
+	const tds = document.querySelectorAll('.needTable tbody tr td');
+	order.getTeamStyle().sizes.forEach(size => {
+		const match = Array.from(tds).find(td => td.title === size.charName);
+      if (match) {
+         let current = parseInt(match.textContent.trim(), 10);
+         if (isNaN(current)) current = 0;
+         const delta = add ? -size.quantity : size.quantity;
+         match.textContent = current + delta;
+			
+			const totalCell = Array.from(tds).find(td => td.title === "total");
+         let currentTotal = parseInt(totalCell.textContent.trim(), 10);
+         if (isNaN(currentTotal)) currentTotal = 0;
+         totalCell.textContent = currentTotal + delta;
+      }
+	});
 }
 
 	// marks a comment as handled
@@ -1641,9 +1661,9 @@ function printAllSoSPDF() {
 	
 	for (let i = 0; i < stateEvent.eventSites.length; ++i) {
 		let es = stateEvent.eventSites[i];
-		for (let j = 0; j < es.divisions.length; ++j) {
-			genSoS(doc, es.divisions[j]);
-			if ((i < stateEvent.eventSites.length - 1) || (j < es.divisions.length - 1)) {
+		for (let j = 0; j < es.esDivisions.length; ++j) {
+			genSoS(doc, es.esDivisions[j]);
+			if ((i < stateEvent.eventSites.length - 1) || (j < es.esDivisions.length - 1)) {
 				doc.addPage();
 				console.log('page added');
 			}

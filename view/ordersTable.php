@@ -4,7 +4,7 @@
 
 <div class="table-container">
 	<table class="orderTable" data-event-id="<?= $event->id; ?>" data-event-site-id="<?= $eventSite->id; ?>"
-	data-event-site-division-id="<?= $division->id; ?>">
+	data-event-site-division-id="<?= $esd->id; ?>">
 		<thead>
 			<tr>
 				<th>School</th>
@@ -36,11 +36,11 @@
 	$checkID = "check" . $orderID;
 	$schoolName = $order->school->shortName;
 		// the if shouldn't be necessary
-	$teamShirts = !empty($order->shirts['Dairy Hoods'] ?? null) ? $order->shirts['Dairy Hoods']->getSizes() : null;
+	$teamShirts = !empty($order->shirtsByStyle['Dairy Hoods'] ?? null) ? $order->shirtsByStyle['Dairy Hoods']->getSizes() : null;
 ?>
 			<tbody id="row<?= $orderID; ?>" class="<?= $trClass;?>" data-school-order-id="<?= $orderID; ?>">
 					<?php // set style-id to 9 for empty orders ?>
-				<tr data-style-id="<?= isset($order->shirts['Dairy Hoods']) ? $order->shirts['Dairy Hoods']->id : 9; ?>">
+				<tr data-style-id="<?= isset($order->shirtsByStyle['Dairy Hoods']) ? $order->shirtsByStyle['Dairy Hoods']->id : 9; ?>">
 					<td title="<?= $orderID . ' / ' . $order->getMessageFileNames(); ?>"><?= $schoolName; ?></td>
 					<td title="S"><?= isset($teamShirts['S']) ? $teamShirts['S']->getQuantity() : '-'; ?></td>
 					<td title="M"><?= isset($teamShirts['M']) ? $teamShirts['M']->getQuantity() : '-'; ?></td>
@@ -48,7 +48,7 @@
 					<td title="XL"><?= isset($teamShirts['XL']) ? $teamShirts['XL']->getQuantity() : '-'; ?></td>
 					<td title="2XL"><?= isset($teamShirts['2XL']) ? $teamShirts['2XL']->getQuantity() : '-'; ?></td>
 					<td title="3XL"><?= isset($teamShirts['3XL']) ? $teamShirts['3XL']->getQuantity() : '-'; ?></td>
-					<td title="total"><?= isset($order->shirts['Dairy Hoods']) ? $order->getStyleTotal('Dairy Hoods') : '-'; ?></td>
+					<td title="total"><?= isset($order->shirtsByStyle['Dairy Hoods']) ? $order->getStyleTotal('Dairy Hoods') : '-'; ?></td>
 						<?php // a cell to hold action buttons ?>
 					<td>
 						<span class="material-icons clickable order-action addAddOns" title="add add ons">add</span>
@@ -61,8 +61,8 @@
 					</td>
 				</tr>
 		<?php
-				// $order->shirts now holds team shirts as well as add ons. should we in stead check count() > 1 rather than !empty()?
-			if (!empty($order->shirts)) : 
+				// $order->shirtsByStyle now holds team shirts as well as add ons. should we in stead check count() > 1 rather than !empty()?
+			if (!empty($order->shirtsByStyle)) : 
 			foreach ($order->getAddedShirts() as $addedStyle) :
 				$aStyle = $addedStyle->getSizes();
 		?>

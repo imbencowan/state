@@ -18,11 +18,11 @@ class SchoolOrder extends BasicTableModel {
 	protected static function getRelations(): array {
       return [ // new Relation('division', 'Division', 'divisionID', false), 
 					new Relation('school', 'School', 'schoolID', 'schoolID', false), 
-					new Relation('shirts', 'SOrderItem', 'schoolOrderID', 'schoolOrderID', true), 
+					new Relation('shirtsByStyle', 'SOrderItem', 'schoolOrderID', 'schoolOrderID', true), 
 					new Relation('messageOrders', 'MessageOrder', 'schoolOrderID', 'schoolOrderID', true)];
    }
 	
-	public readonly array $shirts;
+	public readonly array $shirtsByStyle;
 	
 	public function __construct(
       public readonly ?int $id,
@@ -34,9 +34,9 @@ class SchoolOrder extends BasicTableModel {
       public readonly ?string $note = '',
       public readonly ?bool $invoiceSent = false,
 		private array $messageOrders = [],
-		array $shirts = [],
+		array $shirtsByStyle = [],
    ) {
-		$this->shirts = self::organizeOrderItems($shirts);
+		$this->shirtsByStyle = self::organizeOrderItems($shirtsByStyle);
 	}
 	
 	public function jsonSerialize(): mixed {
@@ -50,7 +50,7 @@ class SchoolOrder extends BasicTableModel {
          'schoolOrderNote' => $this->note,
          'invoiceSent' => $this->invoiceSent,
 			'messageOrders' => $this->messageOrders,
-			'shirts' => array_values($this->shirts),
+			'shirtsByStyle' => array_values($this->shirtsByStyle),
       ];
    }
 		
@@ -60,12 +60,12 @@ class SchoolOrder extends BasicTableModel {
 	public function pushMessageOrders($value) { $this->messageOrders[$value->id] = $value; }
 	
 		// return shirts without the Dairy Hoods
-	public function getAddedShirts() { return array_diff_key($this->shirts, ['Dairy Hoods' => true]); }
+	public function getAddedShirts() { return array_diff_key($this->shirtsByStyle, ['Dairy Hoods' => true]); }
 	
 	
 	public function getStyleTotal($style) {
 		$total = 0;
-		foreach($this->shirts[$style]->getSizes() as $addedSize) {
+		foreach($this->shirtsByStyle[$style]->getSizes() as $addedSize) {
 			$total += $addedSize->getQuantity();
 		}
 		return $total;

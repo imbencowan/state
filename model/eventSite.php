@@ -15,11 +15,11 @@ class EventSite extends BasicTableModel {
 	protected static function getRelations(): array {
       return [new Relation('site', 'Site', 'siteID', 'siteID', false),
 					new Relation('vehicle', 'Vehicle', 'vehicleID', 'vehicleID', false), 
-					new Relation('divisions', 'EventSiteDivision', 'eventSiteID', 'eventSiteID', true),
+					new Relation('esDivisions', 'EventSiteDivision', 'eventSiteID', 'eventSiteID', true),
 					new Relation('employees', 'Employee', 'eventSiteID', 'employeeID', true, 'eventSiteHasEmployee')];
    }
 	
-	public readonly array $divisions;
+	public readonly array $esDivisions;
 	
 	public function __construct(
       public readonly ?int $id,
@@ -27,10 +27,10 @@ class EventSite extends BasicTableModel {
       public readonly ?Site $site,
       public readonly ?string $managerName,
       public readonly ?Vehicle $vehicle,
-		array $divisions = [],
+		array $esDivisions = [],
 		public readonly array $employees = []
    ) {
-		$this->divisions = self::organizeDivisions($divisions);
+		$this->esDivisions = self::organizeDivisions($esDivisions);
 	}
 	
 	public function jsonSerialize(): mixed {
@@ -40,15 +40,15 @@ class EventSite extends BasicTableModel {
 			'site' => $this->site,
 			'managerName' => $this->managerName,
 			'vehicle' => $this->vehicle,
-			'divisions' => array_values($this->divisions),
+			'esDivisions' => array_values($this->esDivisions),
 			'employees' => $this->employees
 		];
 	}
 	
 		// returns the sent array keyed and sorted
-	private static function organizeDivisions($divisions) {
+	private static function organizeDivisions($esDivisions) {
 		$organized = [];
-		foreach ($divisions as $division) {
+		foreach ($esDivisions as $division) {
 			$organized[$division->name] = $division;
 		}
 		krsort($organized);
@@ -61,13 +61,13 @@ class EventSite extends BasicTableModel {
 	
 	// public function getDivisionsDisplay() {
 			// // get all the division IDs in an array
-		// if (!empty($this->divisions)) {
+		// if (!empty($this->esDivisions)) {
 			// $divIDs = [];
-			// foreach ($this->divisions as $div) { $divIDs[] = $div->id; }
+			// foreach ($this->esDivisions as $div) { $divIDs[] = $div->id; }
 				// // if there is only one division return it's name
 			// if (count($divIDs) == 1) {
 					// // reset() works for this because there is only one id in the array
-				// return $this->divisions[reset($divIDs)]->name;
+				// return $this->esDivisions[reset($divIDs)]->name;
 			// } else {
 					// // get the min and max
 				// $minDiv = min($divIDs);
@@ -75,17 +75,17 @@ class EventSite extends BasicTableModel {
 				
 					// // i'm like pretty sure this correctly checks that the range of ids is continuous
 				// if (($maxDiv - $minDiv) == (count($divIDs) - 1)) {
-					// return $this->divisions[$minDiv]->name . '-' . $this->divisions[$maxDiv]->name;
+					// return $this->esDivisions[$minDiv]->name . '-' . $this->esDivisions[$maxDiv]->name;
 				// } else {
-						// // this is for sites like football that might not have a continuous range of divisions
+						// // this is for sites like football that might not have a continuous range of esDivisions
 					// $divNames = [];
-					// foreach ($divIDs as $id) { $divNames[] = $this->divisions[$id]->name; }
+					// foreach ($divIDs as $id) { $divNames[] = $this->esDivisions[$id]->name; }
 					// sort($divNames);
 					// return implode(', ', $divNames);
 				// }
 			// }
 		// } else {
-				// // return '' or 'TBD' for no divisions?
+				// // return '' or 'TBD' for no esDivisions?
 			// return '';
 		// }
 	// }
