@@ -49,24 +49,27 @@ class Coord{
 
 	// used in pdf functions
 class Label {
-	constructor(doc, origin) {
+	constructor(doc, originI, totalShirts, lblN = 1) {
 		this.doc = doc;
-		this.origin = origin;
-		this.oX = origin.x;
-		this.oY = origin.y;
+		this.origin = labelPage.origins[originI];
+		this.oX = this.origin.x;
+		this.oY = this.origin.y;
 		this.padding = 6;
 		this.height = labelPage.labelHeight;
 		this.width = labelPage.labelWidth;
 		this.lineSpaces = [4.5, 7, 9];
 		this.offsetX = 14;
 		this.offsetY = 10;
-		this.indentX = origin.x + this.offsetX + 3;
-		this.alignX = origin.x + this.offsetX;
-		this.gridX = origin.x + 40;
+		this.indentX = this.origin.x + this.offsetX + 3;
+		this.alignX = this.origin.x + this.offsetX;
+		this.gridX = this.origin.x + 40;
 		this.gridStep = 8.5;
 			// define where the cursor starts
-		this.lineX = origin.x + this.offsetX;
-		this.lineY = origin.y + this.offsetY;
+		this.lineX = this.origin.x + this.offsetX;
+		this.lineY = this.origin.y + this.offsetY;
+		this.totalShirts = totalShirts;
+		this.lblN = lblN;
+		this.totalLabels = Math.ceil(totalShirts / 25);
 	}
 	
 	lineDown(step) {
@@ -128,6 +131,40 @@ class Label {
 		let txtWdth = this.doc.getTextWidth(txt);
 		x += ((this.gridStep - txtWdth) / 2);
 		this.doc.text(txt, x, this.lineY);
+	}
+	
+	addBoxX() {
+		this.doc.setFontSize(14);
+		this.lineX = this.alignX + 64;
+		this.lineY = this.origin.y + 72;
+		this.rectText(`Box ${this.lblN}/${this.totalLabels}`, '#ff5844', 'F');
+		this.lineX -= 64;
+	}
+	
+	addBoxSymbol() {
+		let boxTotal = this.totalShirts;
+		if (this.lblN === this.totalLabels) boxTotal %= 25;
+		const boxX = this.origin.x + 88;
+		const boxY = this.origin.y + this.offsetY + 2;
+		const boxW = 7;
+		const boxH = 7;
+		if (boxTotal < 3) {
+			this.doc.line(boxX, boxY, boxX, (boxY - boxH));
+			if (boxTotal > 1) this.doc.line((boxX + 1.5), boxY, (boxX + 1.5), (boxY - boxH));
+		} else if (boxTotal < 20) {
+			boxRect(this.doc, boxW, (boxH / 3));
+			if (boxTotal > 6) boxRect(this.doc, boxW, (boxH * 2 / 3));
+			if (boxTotal > 13) boxRect(this.doc, boxW, boxH);
+		} else {
+			const w = boxW * 1.3;
+			boxRect(this.doc, w, boxH);
+			this.doc.line(boxX, boxY, (boxX + w), (boxY - boxH));
+			this.doc.line(boxX, (boxY - boxH), (boxX + w), boxY);
+		}
+		
+		function boxRect(doc, w, h) {
+			doc.rect(boxX, boxY, w, -h);
+		}
 	}
 }
 
@@ -456,6 +493,17 @@ class SchoolOrder {
 			: [];
 		this.site = json.site;
 		this.sport = json.sport;
+	}
+	
+	getBoxTotal() {
+		let boxTotal = 0;
+		this.shirtsByStyle.forEach(style => {
+			style.sizes.forEach(size => {
+				boxTotal += size.quantity;
+			});
+		});
+		console.log(boxTotal);
+		return boxTotal;
 	}
 	
 	hasAddOns() {
@@ -1515,9 +1563,12 @@ function printUndoneBoxLabels() {
    const doc = new jsPDF('p', 'mm', 'letter');
 	
 		// add a page as necessary
+	let totalPageLabels = 0;
 	for (let i = 0; i < orders.length; i++) {
-		genBoxLabel(doc, orders[i], labelPage.origins[(i % 4)]);
-		if ((i % 4 === 3) && (i < orders.length - 1)) doc.addPage();
+		const count = genBoxLabel(doc, orders[i], (totalPageLabels % 4));
+		totalPageLabels += count;
+		
+		if (((totalPageLabels % 4) === 0) && (i < orders.length - 1)) doc.addPage();
 	}
 		// Generate a Blob URL and open it in a new tab
 	const pdfBlob = doc.output("blob");
@@ -1527,10 +1578,10 @@ function printUndoneBoxLabels() {
 
 
 
-function genBoxLabel(doc, order, origin) {
-	// drawLabelRects(doc);	
+function genBoxLabel(doc, order, originI, lblN = 1) {
+	drawLabelRects(doc);
 	
-	const lbl = new Label(doc, origin);	
+	const lbl = new Label(doc, originI, order.getBoxTotal(), lblN);	
 		
 		// this one is rotated to be vertical along the left edge
 	lbl.addSiteDivision(order.site, order.division);
@@ -1585,6 +1636,21 @@ function genBoxLabel(doc, order, origin) {
 	}
 	
 	addReturnWarning(doc, lbl);
+	
+	lbl.addBoxSymbol();
+		
+		// handle box size and multiple boxes
+	if (lbl.totalShirts > 26) {
+		lbl.addBoxX();
+		if (lbl.totalLabels > lbl.lblN) {
+			const nextOrigin = (++originI % 4);
+			if (nextOrigin == 0) doc.addPage(); 
+			genBoxLabel(doc, order, nextOrigin, ++lblN);
+		}
+	}
+	
+		// allows printUndoneBoxLabels to know where to position the next label
+	return lbl.totalLabels;
 }
 
 function addReturnWarning(doc, lbl) {
@@ -1640,7 +1706,6 @@ function addReturnWarning(doc, lbl) {
 		y += 5;
 	});
 }
-
 
 function genBLSizesString(sizes) {
    return Object.values(sizes)
