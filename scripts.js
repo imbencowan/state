@@ -62,14 +62,14 @@ class Label {
 		this.offsetY = 10;
 		this.indentX = this.origin.x + this.offsetX + 3;
 		this.alignX = this.origin.x + this.offsetX;
-		this.gridX = this.origin.x + 40;
+		this.gridX = this.origin.x + 38;
 		this.gridStep = 8.5;
 			// define where the cursor starts
 		this.lineX = this.origin.x + this.offsetX;
 		this.lineY = this.origin.y + this.offsetY;
 		this.totalShirts = totalShirts;
 		this.lblN = lblN;
-		this.totalLabels = Math.ceil(totalShirts / 25);
+		this.totalLabels = Math.ceil(totalShirts / 26);
 	}
 	
 	lineDown(step) {
@@ -143,15 +143,17 @@ class Label {
 	
 	addBoxSymbol() {
 		let boxTotal = this.totalShirts;
-		if (this.lblN === this.totalLabels) boxTotal %= 25;
+		if (this.lblN === this.totalLabels) boxTotal %= 26;
 		const boxX = this.origin.x + 88;
 		const boxY = this.origin.y + this.offsetY + 2;
 		const boxW = 7;
 		const boxH = 7;
-		if (boxTotal < 3) {
+		console.log(boxTotal);
+			// && to accomodate modulus assigning 0
+		if (boxTotal < 3 && boxTotal > 0) {
 			this.doc.line(boxX, boxY, boxX, (boxY - boxH));
 			if (boxTotal > 1) this.doc.line((boxX + 1.5), boxY, (boxX + 1.5), (boxY - boxH));
-		} else if (boxTotal < 20) {
+		} else if (boxTotal < 20 && boxTotal > 0) {
 			boxRect(this.doc, boxW, (boxH / 3));
 			if (boxTotal > 6) boxRect(this.doc, boxW, (boxH * 2 / 3));
 			if (boxTotal > 13) boxRect(this.doc, boxW, boxH);
@@ -424,6 +426,18 @@ class EventSiteDivision {
 			order.shirtsByStyle.some(style => style.shortName !== 'Dairy Hoods')
 		);
 	}
+	
+	getMaxSize() {
+		let max = 0;
+		this.schoolOrders.forEach(order => {
+			order.shirtsByStyle.forEach(style => {
+				style.sizes.forEach(size => {
+					if (size.id > max) max = size.id;
+				});
+			});
+		});
+		return max;
+	}
 }
 
 class Division {
@@ -502,7 +516,6 @@ class SchoolOrder {
 				boxTotal += size.quantity;
 			});
 		});
-		console.log(boxTotal);
 		return boxTotal;
 	}
 	
@@ -772,6 +785,7 @@ const sportList = [
    ['B Basketball', 12],
    ['Debate', 13],
    ['Speech', 14],
+	['Esports', 19],
    ['Softball', 15],
    ['Baseball', 16],
    ['Tennis', 17],
@@ -934,6 +948,10 @@ async function goToEventPage(sport) {
 			// top level buttons
 		} else if (target.matches('button.genUndoneBoxLabelsBtn')) {
 			printUndoneBoxLabels();
+		} else if (target.matches('button.genTotalsBtn')) {
+			genIHSAATotals();
+		} else if (target.matches('button.printMessagesBtn')) {
+			printOMessages();
 		} else if (target.matches('button.newOrderBtn')) {
 			makeBlankOrder();
 		} else if (target.matches('button.printAllSoSPDF')) {
@@ -1136,7 +1154,7 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 			// hacky
 				// but may be not in a bad way? how else would i transmit all this? sending div, site, and sport args also?
 				// this is actually kind of clean considering the alternatives for getting this info where it needs to be.
-		order.division = division.name;
+		order.division = division.division.name;
 		order.site = eventSite.site.name;
 		order.sport = stateEvent.sport.name;
 		
@@ -1335,7 +1353,7 @@ function cleanInputRows(rows) {
 		cells[cells.length - 2].textContent = total;
 		// cells[cells.length - 1].textContent = '';
 			// remove the row if the row if it was empty
-		if (total === 0) row.remove();
+		if ((total === 0) && (row !== row.parentElement.firstElementChild)) row.remove();
 	});
 }
 
@@ -1537,6 +1555,7 @@ async function changeCommentHandled(box) {
 }
 
 
+
 function printBoxLabel(order) {
 	console.log(order);
 	if (!order.shirtsByStyle) {
@@ -1546,7 +1565,7 @@ function printBoxLabel(order) {
 		// Access jsPDF from the global object
 	const { jsPDF } = window.jspdf; 
    const doc = new jsPDF('p', 'mm', 'letter');
-	genBoxLabel(doc, order, labelPage.origins[0]);
+	genBoxLabel(doc, order, 0);
 	
 		// Generate a Blob URL and open it in a new tab
 	const pdfBlob = doc.output("blob");
@@ -1577,9 +1596,10 @@ function printUndoneBoxLabels() {
 }
 
 
-
 function genBoxLabel(doc, order, originI, lblN = 1) {
-	drawLabelRects(doc);
+	
+	console.log(order);
+	// drawLabelRects(doc);
 	
 	const lbl = new Label(doc, originI, order.getBoxTotal(), lblN);	
 		
@@ -1593,6 +1613,10 @@ function genBoxLabel(doc, order, originI, lblN = 1) {
 	doc.setFontSize(18);
 		// box the school name
 	lbl.rectText(order.school.shortName, '#cfcfff', 'F');
+
+	let minSize = order.getMinSize();
+	let maxSize = order.getMaxSize();
+	if ((maxSize - minSize) > 5) lbl.gridStep = 7.8;
 
 	
 	lbl.lineY += 8;
@@ -1716,6 +1740,7 @@ function genBLSizesString(sizes) {
 
 
 
+
 function printAllSoSPDF() {
 	if (!stateEvent) return;
 	
@@ -1730,7 +1755,6 @@ function printAllSoSPDF() {
 			genSoS(doc, es.esDivisions[j]);
 			if ((i < stateEvent.eventSites.length - 1) || (j < es.esDivisions.length - 1)) {
 				doc.addPage();
-				console.log('page added');
 			}
 		}
 	}
@@ -1740,7 +1764,6 @@ function printAllSoSPDF() {
 	const url = URL.createObjectURL(pdfBlob);
 	window.open(url, "_blank", "noopener");
 }
-
 
 function printSoSPDF(div) {
 	if (!div) return;
@@ -1759,6 +1782,9 @@ function printSoSPDF(div) {
 function genSoS(doc, div) {
 	const sos = new SoSPage(doc);
 	const cursor = sos.cursor;
+	
+	console.log(div.getMaxSize());
+	
 	const sosSizeList = sizeList.slice(0, 6);
 	const addOnOrders = [];
 	
@@ -2169,6 +2195,45 @@ async function genInvoicePDF(order) {
 	a.click();
 	document.body.removeChild(a);
 	URL.revokeObjectURL(url); // Clean up
+}
+
+
+function printOMessages() {
+	if (!stateEvent) return;
+	
+		// Access jsPDF from the global object
+	const { jsPDF } = window.jspdf; 
+   const doc = new jsPDF('p', 'mm', 'letter');
+	
+	doc.setFontSize(13);
+	doc.setFont('Times');
+	
+	const maxWidth = 180;
+	const x = 18;
+	const y = 23;
+	
+	stateEvent.eventSites.forEach(es => {
+		es.esDivisions.forEach(esd => {
+			esd.schoolOrders.forEach(so => {
+				so.messageOrders.forEach(mo => {
+					let lines = doc.splitTextToSize(mo.orderText, maxWidth);
+					doc.text(lines, x, y);
+					doc.addPage();
+				})
+			});
+		});
+	});
+	
+	
+		// Generate a Blob URL and open it in a new tab
+	const pdfBlob = doc.output("blob");
+	const url = URL.createObjectURL(pdfBlob);
+	window.open(url, "_blank", "noopener");
+}
+
+
+function genIHSAATotals() {
+	console.log('IHSAA totals');
 }
 
 

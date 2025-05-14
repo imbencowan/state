@@ -3,6 +3,8 @@
 		<?= $event->sport->name . ' ' . $event->startDate->format('Y'); ?>
 		<button class="genPDFButton clickable printAllSoSPDF" data-btnType="printAllSoSPDF">Get All SoS</button>
 		<button class="genPDFButton clickable genUndoneBoxLabelsBtn" data-btnType="genBoxLabels">Print Undone Labels</button>
+		<button class="genPDFButton clickable genTotalsBtn" data-btnType="print Messages">Get IHSAA Totals</button>
+		<button class="genPDFButton clickable printMessagesBtn" data-btnType="print Messages">Print Messages</button>
 		<button class="genPDFButton clickable newOrderBtn" data-btnType="newOrder">+ Order</button>
 	</h1>
 	<div id="needContainer">

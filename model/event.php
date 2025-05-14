@@ -103,7 +103,7 @@ class Event extends BasicTableModel {
 	}
 	
 	public function getNeededSizes($incompleteOrders) {
-		$neededSizes = ['S' => 0, 'M' => 0, 'L' => 0, 'XL' => 0, '2XL' => 0, '3XL' => 0];
+		$neededSizes = ['S' => 0, 'M' => 0, 'L' => 0, 'XL' => 0, '2XL' => 0, '3XL' => 0, '4XL' => 0];
 		foreach ($incompleteOrders as $order) {
 			foreach ($order->shirtsByStyle as $style) {
 				if ($style->shortName == "Dairy Hoods") {
@@ -113,7 +113,6 @@ class Event extends BasicTableModel {
 				}
 			}
 		}
-		Test::logX($neededSizes);
 		return $neededSizes;
 	}
 	
@@ -181,7 +180,6 @@ class Event extends BasicTableModel {
 		$event = Event::getOrdersBySportAndYear($sportID, $year);
 		
 		include 'view/addOrdersDiv.php';
-		include 'view/yearDiv.php';
 		include 'view/event.php';
 			// Get the buffered content as a string
 		$htmlContent = ob_get_clean(); 

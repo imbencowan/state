@@ -10,10 +10,13 @@
 		</tr>
 	</thead>
 	<tbody>
-<?php foreach ($commentOrders as $order) : ?>
+<?php foreach ($commentOrders as $order) : 
+		Test::logX($order);
+?>
+
 		<tr>
 			<td title="<?= $order->id; ?>"><?= $order->school; ?></td>
-			<td><?= $order->division; ?></td>
+			<td><?= $order->esd; ?></td>
 			<td><?= $order->comment; ?></td>
 			<td><input class="commentChckBx" data-order-id="<?= $order->id; ?>" type="checkbox" /></td>
 		</tr>

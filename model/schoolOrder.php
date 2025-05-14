@@ -217,11 +217,6 @@ class SchoolOrder extends BasicTableModel {
 					if (!$schoolOrderID) {
 						$schoolOrderID = self::addNewOrder($eshdID, $schoolID);
 					} else {
-							// here we make sure completeness is set correctly
-								// if the existing SchoolOrder is already marked complete, and a second MessageOrder comes in,
-									// it needs to change to partial complete
-										// we could make a general function in BasicTableModel to UPDATE x to y if z 
-						self::updateCompletenessIf($schoolOrderID, 1, 2);
 					}
 						// check if a messageOrder exists using the schoolOrderID and genderID
 					$messageOrderID = MessageOrder::getIDBySchoolOrderIDAndGenderID($schoolOrderID, $genderID);
@@ -237,6 +232,12 @@ class SchoolOrder extends BasicTableModel {
 						
 							// add the team items
 						SOrderItem::addTeamItems($schoolOrderID, $hoods);
+						
+							// here we make sure completeness is set correctly
+								// if the existing SchoolOrder is already marked complete, and a second MessageOrder is added,
+									// it needs to change to partial complete
+										// we could make a general function in BasicTableModel to UPDATE x to y if z 
+						self::updateCompletenessIf($schoolOrderID, 1, 2);
 
 						$addedOrders[] = $order;
 					} else {
@@ -250,10 +251,9 @@ class SchoolOrder extends BasicTableModel {
 		} else {
 			echo "no orders were submitted";
 		}
-			// make the html, with the weird output buffer stuff
 		
+			// make the html, with the weird output buffer stuff
 		include 'view/addOrdersDiv.php';
-		include 'view/yearDiv.php';
 		include 'view/ordersAdded.php';
 		$htmlContent = ob_get_clean();
 		
@@ -266,6 +266,8 @@ class SchoolOrder extends BasicTableModel {
 	
 	public static function updateCompletenessIf($orderID, $oldValue, $newValue) {
 		$db = Database::getDB();
+			// $oldValue should be 1 for complete, and $newValue should be 2 for partial, though other options are possible
+				// so calling this can change an order previously marked complete to marked partial
 		$stmt = $db->prepare("UPDATE schoolorders
 									SET completeness = :newValue
 									WHERE schoolOrderID = :id AND completeness = :oldValue");

@@ -17,7 +17,7 @@
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<script src="scripts.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+	<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.mini.min.js"></script>
 </head>
 <body onload="init()">
 <main>
@@ -42,6 +42,7 @@
 <button onclick="testFetch()">Test DB</button>
 <button onclick="testBoxLabelPDF()">Test Box Label</button>
 <button onclick="testInvoicePDF()">Test Invoice</button>
+<button onclick="testExcel()">Test Excel</button>
 		<?php
 			include 'view/addOrdersDiv.php';
 			include 'view/yearDiv.php';
