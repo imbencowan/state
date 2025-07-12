@@ -171,16 +171,19 @@ class Event extends BasicTableModel {
 		
 	//////////////////////////////////////////////////
    // user actions
-		// takes us to the Items page, displaying all items
+		// takes us to the specified Event page
 	static function showEvent($year, $sportID) {
-			// output has to be placed between ob_start() and ob_get_clean() as below
-		ob_start(); 
-			// we might be able to take the $year assignment out, but i can't test that right now
-		
 		$event = Event::getOrdersBySportAndYear($sportID, $year);
 		
-		include 'view/addOrdersDiv.php';
-		include 'view/event.php';
+			// output has to be placed between ob_start() and ob_get_clean() as below
+		ob_start(); 
+		
+		if($event) {
+			include 'view/addOrdersDiv.php';
+			include 'view/event.php';
+		} else {
+			include 'view/noevent.php';
+		}
 			// Get the buffered content as a string
 		$htmlContent = ob_get_clean(); 
 		

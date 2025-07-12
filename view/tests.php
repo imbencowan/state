@@ -1,3 +1,16 @@
+<span class="material-icons">more_horiz</span>
+<span class="material-icons">add</span>
+<span class="material-icons">edit</span>
+<span class="material-icons">check</span>
+<span class="material-icons">print</span>
+<span class="material-icons">preview</span>
+<span class="material-icons">article</span>							
+<span class="material-icons">request_quote</span>
+<br />
+<button onclick="testFetch()">Test DB</button>
+<button onclick="testBoxLabelPDF()">Test Box Label</button>
+<button onclick="testInvoicePDF()">Test Invoice</button>
+<button onclick="testExcel()">Test Excel</button>
 <!--
 <label>This button simply logs that it was clicked in the `tests` table of the DB.</label>
 <button onclick="testFetch()">Test DB</button>

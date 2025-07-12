@@ -121,17 +121,22 @@ table {
 	border: 3px solid black;
 	color: black;
 	background-color: white;	
+	position: relative;
 }
 
 .orderTable thead { 
 	background-color: white;
-	position: sticky; 
-	top: 0; 
 	font-size: 115%;
 }
 
 .orderTable thead th {
+}
+
+.orderTable th {
 	padding: 2px 8px;
+	position: sticky; 
+	top: 0;
+	background-color: white;
 }
 
 .orderTable tr {
