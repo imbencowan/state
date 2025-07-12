@@ -14,8 +14,11 @@ let closeBtn;
 
 ////////////////////////////////////////////////////////////////////////////////////
 // IMPORT
+	// db classes
 import { StateEvent, Sport, EventSite, Site, Vehicle, EventSiteDivision, Division, SchoolOrder, School, 
 	MessageOrder, Item, Style, Size, Person, Color, Brand } from './scripts/db-classes.js';
+	// output classes
+import { Label, InvoicePage, SoSPage, labelPage } from './scripts/output-classes.js';
 import * as Utils from './scripts/utilities.js';
 
 
@@ -53,233 +56,6 @@ class ActionRequest {
 	}
 }
 
-class Coord{
-	constructor(x, y) {
-		this.x = x;
-		this.y = y;
-	}
-}
-
-	// used in pdf functions
-class Label {
-	constructor(doc, originI, totalShirts, lblN = 1) {
-		this.doc = doc;
-		this.origin = labelPage.origins[originI];
-		this.oX = this.origin.x;
-		this.oY = this.origin.y;
-		this.padding = 6;
-		this.height = labelPage.labelHeight;
-		this.width = labelPage.labelWidth;
-		this.lineSpaces = [4.5, 7, 9];
-		this.offsetX = 14;
-		this.offsetY = 10;
-		this.indentX = this.origin.x + this.offsetX + 3;
-		this.alignX = this.origin.x + this.offsetX;
-		this.gridX = this.origin.x + 38;
-		this.gridStep = 8.5;
-			// define where the cursor starts
-		this.lineX = this.origin.x + this.offsetX;
-		this.lineY = this.origin.y + this.offsetY;
-		this.totalShirts = totalShirts;
-		this.lblN = lblN;
-		this.totalLabels = Math.ceil(totalShirts / 26);
-	}
-	
-	lineDown(step) {
-		this.lineY += this.lineSpaces[step];
-	}
-	
-	rectText(txt, color = '#000000', style = 'S') {
-		this.doc.setDrawColor(color);
-		this.doc.setFillColor(color);
-		const txtWdth = this.doc.getTextWidth(txt);
-		const txtHt = this.doc.getFontSize() / this.doc.internal.scaleFactor;
-		this.doc.rect((this.lineX - 2), (this.lineY + 2), (txtWdth + 4), -(txtHt + 1.7), style);
-		this.doc.text(txt, this.lineX, this.lineY);
-		
-			// unset colors
-		this.doc.setDrawColor('#000000');
-		this.doc.setFillColor('#000000');
-	}
-	
-	centerTextInLabel(txt) {
-		let txtWdth = this.doc.getTextWidth(txt);
-		let x = this.origin.x + ((this.width - txtWdth) / 2);
-		this.doc.text(txt, x, this.lineY);
-	}
-	
-	addSiteDivision(site, div) {
-		this.doc.setFontSize(14);
-		const txt = site + " - " + div;
-		const txtWdth = this.doc.getTextWidth(txt);
-		const y = this.origin.y + (this.height / 2) + (txtWdth / 2);
-			// rotate this first line
-		this.doc.text(txt, (this.origin.x + this.padding + 2), y, {angle: 90});
-	}
-	
-	addGridSizes(min, max) {
-		this.doc.setFontSize(12);
-		let x = this.gridX;
-		for (let i = min - 1; i < max; ++i) {
-			// this.doc.text(sizeListShort[i], x, this.lineY);
-			this.centerInGrid(sizeListShort[i], x);
-			x += this.gridStep;
-		}
-		// this.doc.text("Total", x, this.lineY);
-		this.centerInGrid("Total", x);
-	}
-	
-	addGridQuantities(style, min, max) {
-		this.doc.setFontSize(11);
-		style.sizes.forEach(size => {
-			let x = this.gridX + this.gridStep * (size.id - min);
-			// this.doc.text(String(size.quantity), x, this.lineY);
-			this.centerInGrid(String(size.quantity), x);
-		});
-		// this.doc.text(String(style.getTotalQuantity()), (this.gridX + ((max - min + 1) * this.gridStep)), this.lineY);
-		this.centerInGrid(String(style.getTotalQuantity()), (this.gridX + ((max - min + 1) * this.gridStep)));
-	}
-	
-	centerInGrid(txt, x) {
-		let txtWdth = this.doc.getTextWidth(txt);
-		x += ((this.gridStep - txtWdth) / 2);
-		this.doc.text(txt, x, this.lineY);
-	}
-	
-	addBoxX() {
-		this.doc.setFontSize(14);
-		this.lineX = this.alignX + 64;
-		this.lineY = this.origin.y + 72;
-		this.rectText(`Box ${this.lblN}/${this.totalLabels}`, '#ff5844', 'F');
-		this.lineX -= 64;
-	}
-	
-	addBoxSymbol() {
-		let boxTotal = this.totalShirts;
-		if (this.lblN === this.totalLabels) boxTotal %= 26;
-		const boxX = this.origin.x + 88;
-		const boxY = this.origin.y + this.offsetY + 2;
-		const boxW = 7;
-		const boxH = 7;
-		console.log(boxTotal);
-			// && to accomodate modulus assigning 0
-		if (boxTotal < 3 && boxTotal > 0) {
-			this.doc.line(boxX, boxY, boxX, (boxY - boxH));
-			if (boxTotal > 1) this.doc.line((boxX + 1.5), boxY, (boxX + 1.5), (boxY - boxH));
-		} else if (boxTotal < 20 && boxTotal > 0) {
-			boxRect(this.doc, boxW, (boxH / 3));
-			if (boxTotal > 6) boxRect(this.doc, boxW, (boxH * 2 / 3));
-			if (boxTotal > 13) boxRect(this.doc, boxW, boxH);
-		} else {
-			const w = boxW * 1.3;
-			boxRect(this.doc, w, boxH);
-			this.doc.line(boxX, boxY, (boxX + w), (boxY - boxH));
-			this.doc.line(boxX, (boxY - boxH), (boxX + w), boxY);
-		}
-		
-		function boxRect(doc, w, h) {
-			doc.rect(boxX, boxY, w, -h);
-		}
-	}
-}
-
-class InvoicePage {
-	constructor(doc) {
-		this.doc = doc;
-		this.width = 215.9;
-		this.height = 280;
-		this.alignX = 20;
-		this.colsX = [0, 20, 60, 105, 140, 160, 175, 200];
-		this.lineStep = 4;
-		this.lineY = 30;
-		
-		this.doc.setFontSize(10);
-	}
-	
-	lineDown(n = 1) {
-		this.lineY += (n * this.lineStep);
-	}
-	
-	centerTextInPage(txt) {
-		let txtWdth = this.doc.getTextWidth(txt);
-		let x = ((this.width - txtWdth) / 2);
-		this.doc.text(txt, x, this.lineY);
-	}
-		
-		// centers text in a box based off column values
-	cell(txt, col, colSpan = 1) {
-			// draw the box
-		let bxWdth = this.colsX[col + colSpan] - this.colsX[col];
-		this.doc.rect(this.colsX[col], (this.lineY + .85), bxWdth, -this.lineStep);
-			// insert the text
-		let txtWdth = this.doc.getTextWidth(String(txt));
-		let x = this.colsX[col] + ((bxWdth - txtWdth) / 2);
-		this.doc.text(String(txt), x, this.lineY);
-	}
-	
-	drawAddressBox() {
-		const w = .9 * (this.colsX[3] - this.colsX[1]);
-		const h = this.lineStep * 3;
-		this.doc.rect(this.alignX - 1, this.lineY + 1, w, h);
-	}
-}
-
-class SoSPage {
-	constructor(doc) {
-		this.doc = doc;
-		this.width = 215.9;
-		this.height = 280;
-		this.alignX = 20;
-		this.startY = 28;
-		this.rMargin = this.width - this.alignX;
-			// number columns have this width. school names do not.
-		this.sizeColW = 11;
-			// the start of each column
-		this.colsX = [0, 20, 28, 114, 125, 136, 147, 158, 169, 180, 191, 202];
-			// which column we're on.
-		this.col = 1;
-		this.numColWidth = 10;
-		this.lineStep = 6.5;
-		this.cursor = new Coord(this.alignX, this.startY);
-		this.pageBreakY = this.height - 28;
-		
-		this.doc.setFontSize(10);
-	}
-	
-	newLine(n = 1) {
-		this.col = 1;
-		this.cursor.x = this.alignX;
-		this.cursor.y += (n * this.lineStep);
-	}
-	
-	addPage() {
-		this.doc.addPage();
-		this.col = 1;
-		this.cursor.x = this.alignX;
-		this.cursor.y = this.startY;
-	}
-	
-	textToCell(txt, align = 'center') {
-		if (typeof txt === 'number') txt = String(txt);
-		if (!txt) txt = '';
-		
-		const colWidth = this.colsX[this.col + 1] - this.colsX[this.col];
-		let x = this.colsX[this.col];
-		let offset = ((colWidth - this.doc.getTextWidth(txt)) / 2);
-		
-		if (align == 'left') offset = 2;
-		if (align == 'right') offset = (colWidth - 2 - this.doc.getTextWidth(txt));
-		
-		this.doc.text(String(txt), (x + offset), this.cursor.y);
-		++this.col;
-	}
-}
-
-
-
-
-
-
 
 
 const teamStyle = "Dairy Hoods";
@@ -287,40 +63,6 @@ const currentYear = 24;
 
 	// this list is used to match sizes when reading the email string
 const sizeList = ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'];
-	// this is used to provide shorter names for labels. indexes need to match sizeList
-const sizeListShort = ['S', 'M', 'L', 'XL', '2X', '3X', '4X', '5X'];
-
-const labelPage4 = {
-	labels : 4,
-	width : 215,
-	height : 279,
-	xMargin : 4,
-	yMargin : 13,
-	labelWidth : 101.6,
-	labelHeight : 127,
-	xCenter : 108,
-	yCenter : 140,
-	origins : [ new Coord(2, 14), new Coord(107.4, 14), new Coord(2, 140), new Coord(107.4, 140) ],
-	padding : 6
-}
-
-const labelPage6 = {
-	labels : 6,
-	width : 215,
-	height : 279,
-	xMargin : 4,
-	yMargin : 13,
-	labelWidth : 103,
-	labelHeight : 85,
-	xCenter : 108,
-	yCenter : 140,
-	origins : [
-		new Coord(4, 13), new Coord(109, 13), new Coord(4, 98), new Coord(109, 98), new Coord(4, 183), new Coord(109, 183)
-	],
-	padding : 6
-}
-
-const labelPage = labelPage4;
 
 
 	// this list is used to build the nav bar.
@@ -1081,6 +823,7 @@ async function changeOrderCompleteness(box, order) {
 	}
 }
 
+	// updates a one row table at the top of the page displaying how many more of each size are needed
 function updateNeeded(order, add = true) {
 	const tds = document.querySelectorAll('.needTable tbody tr td');
 	order.getTeamStyle().sizes.forEach(size => {
@@ -1113,7 +856,7 @@ async function changeCommentHandled(box) {
 }
 
 
-
+	// prints a single order's label
 function printBoxLabel(order) {
 	console.log(order);
 	if (!order.shirtsByStyle) {
@@ -1131,6 +874,7 @@ function printBoxLabel(order) {
 	window.open(url, "_blank", "noopener");
 }
 
+	// prints labels for all orders not marked complete
 function printUndoneBoxLabels() {
 		// get all incomplete orders
 	let orders = stateEvent.getUndoneOrders();
@@ -1153,7 +897,7 @@ function printUndoneBoxLabels() {
 	window.open(url, "_blank", "noopener");
 }
 
-
+	// actual lable generation
 function genBoxLabel(doc, order, originI, lblN = 1) {
 	
 	console.log(order);
@@ -1235,6 +979,7 @@ function genBoxLabel(doc, order, originI, lblN = 1) {
 	return lbl.totalLabels;
 }
 
+	// pdf addendum in it's own function for readability
 function addReturnWarning(doc, lbl) {
 	lbl.lineX = lbl.alignX;
 	lbl.lineY = lbl.origin.y + 75;
@@ -1289,6 +1034,7 @@ function addReturnWarning(doc, lbl) {
 	});
 }
 
+	// helper for generating labels
 function genBLSizesString(sizes) {
    return Object.values(sizes)
         .sort((a, b) => sizeList.indexOf(a.charName) - sizeList.indexOf(b.charName)) // Sort based on the sizeList
@@ -1298,7 +1044,7 @@ function genBLSizesString(sizes) {
 
 
 
-
+	// print all sign off sheets
 function printAllSoSPDF() {
 	if (!stateEvent) return;
 	
@@ -1323,6 +1069,7 @@ function printAllSoSPDF() {
 	window.open(url, "_blank", "noopener");
 }
 
+	// print a single sign off sheet
 function printSoSPDF(div) {
 	if (!div) return;
 	
@@ -1337,6 +1084,7 @@ function printSoSPDF(div) {
 	window.open(url, "_blank", "noopener");
 }
 
+	// actually generate each sign off sheet
 function genSoS(doc, div) {
 	const sos = new SoSPage(doc);
 	const cursor = sos.cursor;
@@ -1639,7 +1387,7 @@ async function makeBlankOrder() {
 }
 
 
-
+	// as named
 async function downloadInvoicePDF(order) {
 		// if there are no add ons, don't do any thing
 	if (order.getAddedStyles().length === 0) return;
@@ -1664,11 +1412,14 @@ async function downloadInvoicePDF(order) {
 
 async function genInvoicePDF(doc, order) {
 	let invP = new InvoicePage(doc);
+	const currentFont = doc.getFont().fontName;
 	
 	const date = new Date();
 	const strDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 	
+	doc.setFont(currentFont, 'bold');
 	invP.centerTextInPage("****** INVOICE ******")
+	doc.setFont(currentFont, 'normal');
 	invP.lineY += (2 * invP.lineStep);
 	
 	doc.text("McU SPORTS", invP.alignX, invP.lineY);
@@ -1696,8 +1447,10 @@ async function genInvoicePDF(doc, order) {
 	invP.cell(order.school.getSchoolCode(), 4);
 	
 	invP.lineDown(3);
+	doc.setFont(currentFont, 'bold');
 	doc.text("SOLD TO:", invP.colsX[1], invP.lineY);
 	doc.text("SHIP TO:", invP.colsX[3], invP.lineY);
+	doc.setFont(currentFont, 'normal');
 	
 	invP.drawAddressBox();
 	
@@ -1719,23 +1472,25 @@ async function genInvoicePDF(doc, order) {
 	invP.cell(order.school.ad.phone, 2);
 	
 	invP.lineDown(3);
+	doc.setFont(currentFont, 'bold');
 	doc.text("ITEM", invP.colsX[1], invP.lineY);
 	doc.text("ORDERED", invP.colsX[3], invP.lineY);
 	doc.text("PRICE", invP.colsX[4], invP.lineY);
 	doc.text("AMOUNT", invP.colsX[5], invP.lineY);
+	doc.setFont(currentFont, 'normal');
 	
 	let totalShirts = 0;
 	let totalDollars = 0;
 	
-	invP.lineDown(2);
+	invP.lineDown();
 	order.shirtsByStyle.forEach(style => {
 		if (style.shortName != 'Dairy Hoods') {
 			style.sizes.forEach(shirt => {
 				let item = getItemByStyleIDSizeChar(style.id, shirt.charName);
-				invP.cell(item.getInvoiceName(), 1, 2);
+				invP.cell(item.getInvoiceName(), 1, 2, 'left');
 				invP.cell(String(shirt.quantity), 3);
 				invP.cell(`$${item.price}`, 4);
-				invP.cell(`$${shirt.quantity * item.price}`, 5);
+				invP.cell(`$${shirt.quantity * item.price}`, 5, 1, 'right');
 				invP.lineDown();
 				totalShirts += shirt.quantity;
 				totalDollars += (shirt.quantity * item.price);
@@ -1744,16 +1499,16 @@ async function genInvoicePDF(doc, order) {
 	});
 	
 	
-	
-	
 	invP.lineDown(2);
 	doc.text(`Total Ordered:   ${totalShirts}`, invP.colsX[3], invP.lineY);
 	
 	invP.lineDown();
 	doc.line(invP.colsX[3], invP.lineY, invP.colsX[4], invP.lineY);
 	invP.lineDown();
+	doc.setFont(currentFont, 'bold');
 	doc.text("INVOICE TOTAL:", invP.colsX[3], invP.lineY);
 	doc.text(`$${totalDollars}`, invP.colsX[5], invP.lineY);
+	doc.setFont(currentFont, 'normal');
 	
 	invP.lineDown(2);
 	invP.centerTextInPage(`${stateEvent.sport.name} ${stateEvent.startDate.getFullYear()}`);

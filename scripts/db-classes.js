@@ -1,7 +1,9 @@
 //////////////////////////////////////////////////////////////
 // db classes
+// these represent data from the db
 //////////////////////////////////////////////////////////////
-// helpers
+
+// import helper functions
 import * as Utils from './utilities.js';
 
 
@@ -357,7 +359,7 @@ export class Item {
    }
 	
 	getInvoiceName() {
-		return this.style.brand.shortName + " " + this.style.vShortName + " " + this.size.name + "-" + this.color.name;
+		return this.style.brand.shortName + " " + this.style.vShortName + " - " + this.color.name + " - " + this.size.name;
 	}
 }
 
