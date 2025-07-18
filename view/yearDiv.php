@@ -12,7 +12,7 @@
 ?>
 
 <div id="yearDiv">
-	<label>Year: </label>
+	<label>View Year: </label>
 	<select id="selectYear">
 		<option value=23 <?php if ($year == 23) echo'selected'?>>23-24</option>
 		<option value=24 <?php if ($year == 24) echo'selected'?>>24-25</option>
@@ -20,4 +20,4 @@
 	</select>
 </div>
 
-<div class="clear"></div>
+<!-- <div class="clear"></div> -->

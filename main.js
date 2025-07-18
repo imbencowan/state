@@ -97,6 +97,9 @@ async function init() {
 		// build the nav bar i guess
 	buildNavList();
 	buildNavList2();
+
+		// add the file submit listenter
+	document.getElementById('fileSubmit').addEventListener('click', submitOrderFiles);
 	
 	let request = new ActionRequest('loadSizeCodesByStyle', 'Item');
 	let sizeData = await myFetch(request);
@@ -107,8 +110,23 @@ async function init() {
 	let itemData = await myFetch(request);
 	let i = Object.values(itemData.data).map(itemData => Item.fromJSON(itemData));
 	allItems = mapObjsByID(i);
+
+
+	// let testDate = '2025-11-14';
+
+
+		// display next event
+	request = new ActionRequest('showEventByDate', 'Event');
 	
-		// Get modal elements
+	let responseJSON = await myFetch(request);
+	// if (responseJSON.data !== null) {
+	// 	stateEvent = StateEvent.fromJSON(responseJSON.data);
+	// }
+	
+	document.getElementById("display").innerHTML = responseJSON.html;
+
+	
+		// assign global modal elements
 	modal = document.getElementById("myModal");
 	modalText = document.getElementById("modalText");
 	closeBtn = document.querySelector(".close");
@@ -196,13 +214,12 @@ async function goToEventPage(sport) {
 		year = document.getElementById("selectYear").value;
 	}
 	let sportID = sport[1];
-	// const data = {'sportID': sportID, 'year': year}
-	const data = [year, sportID];
-	let request = new ActionRequest('showEvent', 'Event', { 'year': year, 'sportID': sportID })
+
+	let request = new ActionRequest('showEventBySportAndYear', 'Event', { 'year': year, 'sportID': sportID });
 
 	let responseJSON = await myFetch(request);
 	// console.log(responseJSON.data);
-	if (responseJSON.data.data !== null) {
+	if (responseJSON.data !== null) {
 		stateEvent = StateEvent.fromJSON(responseJSON.data);
 	}
 
@@ -295,9 +312,11 @@ async function submitOrderFiles() {
     }
 		// read the files and build orders from them
 	let orders = await readFiles(files);
+	
+		// constructor(action, actionClass, data)
 	let request = new ActionRequest('uploadOrders', 'SchoolOrder', { 'orders': orders });
-	// constructor(action, actionClass, data)
 	let responseJSON = await myFetch(request);
+
 	document.getElementById("display").innerHTML = responseJSON.html;
 		// add event listener for comment table checkboxes
 	const commentsContainer = document.getElementById('commentsTable');

@@ -125,7 +125,6 @@ class SchoolOrder extends BasicTableModel {
 
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		// // Database Functions
-	// static function uploadOrders($data) {
 	static function uploadOrders($orders) {
 		
 		ob_start();
@@ -144,7 +143,8 @@ class SchoolOrder extends BasicTableModel {
 					// get the whole sport, we need sport->minDiv later
 				$sport = Sport::getByName($order['sport']);
 					// get the school year. an event in january - may of the 24-25 school year will be represented by 24
-				$year = Year::convertDateToSchoolYear(new DateTime());
+// $year = Year::convertDateToSchoolYear(new DateTime());
+$year = 24;
 				$eventID = Event::getIDBySportIDAndYear($sport->id, $year);
 				$divisionID = Division::getIDByName($order['division']);	
 
@@ -153,6 +153,7 @@ class SchoolOrder extends BasicTableModel {
 				if ($divisionID < $sport->minDiv) $divisionID = $sport->minDiv;
 
 				$eshdID = EventSiteDivision::getIDByEventAndDivision($eventID, $divisionID);
+Test::logX('eshdID is ' . $eshdID, 'eventID is ' . $eventID, 'divisionID is ' . $divisionID);
 				
 					// need to add logic for if $school is not in the db
 				$schoolID = School::getIDByName($order['school']);
@@ -252,9 +253,8 @@ class SchoolOrder extends BasicTableModel {
 			echo "no orders were submitted";
 		}
 		
-			// make the html, with the weird output buffer stuff
-		include 'view/addOrdersDiv.php';
 		include 'view/ordersAdded.php';
+			// make the html, with the weird output buffer stuff
 		$htmlContent = ob_get_clean();
 		
 		return [ 'html' => $htmlContent, 'data' => $orders ];

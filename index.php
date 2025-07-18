@@ -1,8 +1,8 @@
 <?php	
 ////////////////////////////////////// WHAT THIS PAGE DOES /////////////////////////////////////////////
-// this page acts as the display for the controller. javascript events make fetch calls to controller.php, 
-// which controls appropriate views being inserted in to the "display". it does not, and should not, do 
-// any thing else. it does start with a tiny amount of initial content displayed that will be overwritten
+// this page acts as the display for views provided by the controller. javascript events make fetch calls 
+// to controller.php, which controls appropriate views being inserted in to the "display". it does not, 
+// and should not, do any thing else. it does include initial controls to handle user actions
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ?>
 
@@ -12,7 +12,7 @@
 <html>
 <head>
 	<title>State</title>
-	<link rel="stylesheet" href="../everycss.css">
+	<link rel="stylesheet" href="everycss.css">
 	<link rel="stylesheet" href="styles.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<script type="module" src="main.js"></script>
@@ -21,7 +21,15 @@
 </head>
 <body>
 	<main>
-	<header>State Stuff</header>
+	<header id="pageHeader">
+		<h1 id="pageHeaderText">State Stuff</h1>
+		<div id="pageHeaderRight">
+			<?php
+				include 'view/yearDiv.php';
+				include 'view/addOrdersDiv.php';
+			?>
+		</div>
+	</header>
 	<nav id="stateNav"><ul id="stateNavList">
 		<!-- nav list built in js to attach click listeners -->
 
@@ -30,12 +38,6 @@
 			<!-- nav list built in js to attach click listeners -->
 	</ul></nav>
 	<section id="display">
-
-			<?php
-				include 'view/addOrdersDiv.php';
-				include 'view/yearDiv.php';
-			?>
-		<div class="clear"></div>
 	</section>
 	<div id="myModal" class="modal">
 		<div class="modal-content">

@@ -40,8 +40,6 @@ class Item extends BasicTableModel {
 			$gItems[$styleKey][] = $item;
 		}
 		ob_start();
-		include 'view/addOrdersDiv.php';
-		include 'view/yearDiv.php';
 		include 'view/items.php';
 		$htmlContent = ob_get_clean();
 		

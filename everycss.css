@@ -1,0 +1,83 @@
+html {
+	height: 100%;
+}
+
+body {
+	color: #000;
+	font-size: 100%;
+	font-family: Georgia, serif;
+	height: 100%;
+	overflow: auto;
+	cursor: default;
+}
+
+header {
+	padding: 14px;
+	text-align: center;
+	font-size: 300%;
+}
+
+main {
+	box-sizing: border-box;
+	width: 80%;
+	margin: auto;
+	padding: 24px;
+	font-size: 150%;
+}
+
+table {
+	border: 1px solid black;
+	border-collapse: collapse;
+	width: 100%;
+	overflow: auto;
+}
+
+td {
+   word-break: break-word;
+}
+
+button {
+	border-radius: 8px;
+	font-size: 95%;
+}
+
+fieldset {
+	border: none;
+	margin: 0;
+}
+
+a:link {
+	text-decoration: none;
+}
+
+
+
+.nowrap {
+	white-space: nowrap;
+}
+.bold {
+	font-weight: bold;
+}
+.clear {
+	clear: both;
+}
+
+.inline {
+	display: inline;
+}
+
+.overflowAuto {
+	overflow: auto;
+}
+
+.hidden {
+	display: hidden;
+}
+
+.left {
+	text-align: left;
+}
+
+.right {
+	text-align: right;
+}

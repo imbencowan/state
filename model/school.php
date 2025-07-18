@@ -64,8 +64,6 @@ class School extends BasicTableModel {
 	static function showSchools($input) {
 		$schools = School::getAllFromDB();
 		ob_start();
-		include 'view/addOrdersDiv.php';
-		include 'view/yearDiv.php';
 		include 'view/schools.php';
 		$htmlContent = ob_get_clean();
 		

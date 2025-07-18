@@ -1,17 +1,60 @@
 body {
-	background: fixed linear-gradient(67deg, #2a2a2a, #080808);
+	background-color: #080808;
 	color: #fff;
 	font-family: Grown, serif; 
 }
 
 main {
 	width: 100%;
+	padding-top: 0;
 }
 
-header {
-	font-size: 250%;
-		/* this was causing the header to overflow and i didn't want to take the time to work it out */
-	/* transform: scale(2,1); */
+#pageHeader {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 0;
+}
+
+#pageHeaderText {
+	flex: 1;
+	margin-bottom: 0;
+	text-align: center;
+	font-size: 100%;
+	font-weight: normal;
+
+	letter-spacing: .05em;
+	
+	/* display: inline-block;
+	transform: scaleX(1.6); 
+	transform-origin: center; */
+}
+
+#pageHeaderRight {
+   display: flex;
+   flex-direction: column;
+   font-size: 25%;
+   text-align: right;
+   gap: 0.5em;
+   margin-left: 1em;
+
+}
+
+#yearDiv {
+	/* float: right; */
+	/* display: inline-block; */
+	/* text-align: right; */
+	/* font-size: 115%; */
+	/* margin-right: 35px;	 */
+}
+
+#addOrdersDiv {
+	border: 1px solid #ff3;
+	border-radius: 4px;
+	background-color: #181818;
+	margin: .25rem 0;
+	padding: .25rem;
+	text-align: left;
 }
 
 #stateNav {
@@ -67,19 +110,6 @@ header {
 
 #nav2 ul li a:visited {
 	color: black;
-}
-
-#yearDiv {
-	float: right;
-	display: inline-block;
-	text-align: right;
-	font-size: 115%;
-	margin-right: 35px;	
-}
-
-#addOrdersDiv {
-	float: right;
-	display: inline-block;
 }
 
 section {

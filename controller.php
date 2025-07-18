@@ -37,9 +37,8 @@
 					} else {
 						$result = call_user_func([$class, $action], $data);
 					}
-						// merge assoc array results, assign others
-					// Test::logX(gettype($result));
-					if (is_array($result) && isset($result['data'])) {
+						// merge array results that already contain a 'data' key, assign others directly
+					if (is_array($result) && array_key_exists('data', $result)) {
 						echo json_encode(array_merge(['success' => true], $result));
 					} else {
 						echo json_encode(['success' => true, 'data' => $result]);

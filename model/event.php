@@ -120,33 +120,45 @@ class Event extends BasicTableModel {
 		//////////////////////////////////////////////////
 		// Database functions	
 	public static function getOrdersBySportAndYear(int $sportID, int $year): ?static {
-		$query = static::buildSelect() . " WHERE events.sportID = :id AND events.eventYear = :year";
-		$rows = static::getFromDB($query, [':id' => $sportID, ':year' => $year]);
-			// returns an array of events, but we only want one
-// try changing these last two lines like Sport::getByName() to just return one instance
-		$events = static::groupAndBuild($rows);
-		if (empty($events)) {
-			return null;
-		}
-		
-			// this if logic is specifically to handle golf, which has two events in the year
-				// it sets $event to which ever is closer by date
-		if (count($events) > 0) {
-			usort($events, function($a, $b) {
-				$now = new DateTime();
-				$diffA = abs($now->getTimestamp() - $a->startDate->getTimestamp());
-				$diffB = abs($now->getTimestamp() - $b->startDate->getTimestamp());
-				return $diffA <=> $diffB;
-			});
+		$eventID = static::getIDBySportIDAndYear($sportID, $year);
+		if (!$eventID) return null;
+		// Test::logX($eventID);
+		$event = self::getByID($eventID);
+		return $event ?? null;
 
-			$event = $events[0];
-		} else {
-			$event = reset($events);
-		}
-			// send back the *first* element
-		return !empty($events) ? $event : null;
+
+		////////////////////////////////////////////////////////////////////////////////////
+
+		// $query = static::buildSelect() . " WHERE events.sportID = :id AND events.eventYear = :year";
+		// $rows = static::getFromDB($query, [':id' => $sportID, ':year' => $year]);
+ 		// 	// returns an array of events, but we only want one
+		// 		// try changing these last two lines like Sport::getByName() to just return one instance
+		// $events = static::groupAndBuild($rows);
+		// if (empty($events)) {
+		// 	return null;
+		// }
+		
+		// 	// this if logic is specifically to handle golf, which has two events in the year
+		// 		// it sets $event to which ever is closer by date
+		// if (count($events) > 0) {
+		// 	usort($events, function($a, $b) {
+		// 		$now = new DateTime();
+		// 		$diffA = abs($now->getTimestamp() - $a->startDate->getTimestamp());
+		// 		$diffB = abs($now->getTimestamp() - $b->startDate->getTimestamp());
+		// 		return $diffA <=> $diffB;
+		// 	});
+
+		// 	$event = $events[0];
+		// } else {
+		// 	$event = reset($events);
+		// }
+		// 	// send back the *first* element
+		// return !empty($events) ? $event : null;
 	}
 	
+
+
+
 	public static function getIDBySportIDAndYear($sportID, $year) {
 		$db = Database::getDB();
 		$query = 'SELECT eventID, startDate FROM events 
@@ -164,7 +176,35 @@ class Event extends BasicTableModel {
 			// return the id or null
 		return $closest['eventID'] ?? null;
 	}
-	
+
+
+		// returns the ID of the next event by $date, OR the most recent event if there are none beyond $date
+	public static function getNextIDByDate($date) {
+		$db = Database::getDB();
+		$query = 'SELECT eventID FROM events 
+					WHERE startDate >= :date 
+					ORDER BY startDate ASC
+					LIMIT 1';
+
+		$statement = $db->prepare($query);
+		$statement->execute([':date' => $date]);
+		$row = $statement->fetch(PDO::FETCH_ASSOC);
+			
+			// if an id was found, return it
+		if ($row) return $row['eventID'];
+
+
+			// if no events exist beyond $date, get the last event
+		$query = 'SELECT eventID FROM events 
+					ORDER BY startDate DESC, eventID DESC
+					LIMIT 1';
+
+		$statement = $db->prepare($query);
+		$statement->execute();
+		$row = $statement->fetch(PDO::FETCH_ASSOC);
+			// will return null if there are no events at all
+		return $row['eventID'] ?? null;
+	}
 	
 	
 	
@@ -172,22 +212,36 @@ class Event extends BasicTableModel {
 	//////////////////////////////////////////////////
    // user actions
 		// takes us to the specified Event page
-	static function showEvent($year, $sportID) {
-		$event = Event::getOrdersBySportAndYear($sportID, $year);
-		
-			// output has to be placed between ob_start() and ob_get_clean() as below
+	static function showEvent($event) {
 		ob_start(); 
 		
 		if($event) {
-			include 'view/addOrdersDiv.php';
 			include 'view/event.php';
 		} else {
 			include 'view/noevent.php';
 		}
-			// Get the buffered content as a string
-		$htmlContent = ob_get_clean(); 
 		
-		return [ 'html' => $htmlContent, 'data' => $event ];
+			// Get the buffered content as a string
+		$html = ob_get_clean(); 
+
+		// return $htmlContent;
+		return [ 'html' => $html, 'data' => $event ];
+	}
+
+
+	static function showEventBySportAndYear($year, $sportID) {
+		$event = self::getOrdersBySportAndYear($sportID, $year);
+		
+		return self::showEvent($event);
+	}
+
+
+	static function showEventByDate(?string $date = null) {
+		if ($date == null) $date = date('Y-m-d');
+		$id = self::getNextIDByDate($date);
+		$event = self::getByID($id);
+
+		return self::showEvent($event);
 	}
 	
 	
