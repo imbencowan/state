@@ -1,24 +1,5 @@
-	// hold some stuff that will be used in runtime to be widely available
-const runtime = {
-		// global containers
-	stateEvent: undefined,
-	sizeCodesByStyles: undefined,
-	styleMap: undefined,
-	allItems: undefined,
-	allSchools: undefined,
-		// this one prevents different actions being called while others are still open
-	activeMode: undefined
-};
-	// make runtime available in console
-window.__runtime = runtime;
 
-// let stateEvent;
-// let sizeCodesByStyles;
-// let styleMap;
-// let allItems;
-// let allSchools;
-// 	// this one prevents different actions being called while others are still open
-// let activeMode;
+
 	// modal stuff
 let modal;
 let modalText;
@@ -27,15 +8,24 @@ let closeBtn;
 
 ////////////////////////////////////////////////////////////////////////////////////
 // IMPORT
+	// runtime container. holds some stuff to be made widely available through the code
+import { runtime } from './scripts/runtime.js';
+	// make runtime available in console
+window.__runtime = runtime;
 	// db classes
 import { StateEvent, Sport, EventSite, Site, Vehicle, EventSiteDivision, Division, SchoolOrder, School, 
-	MessageOrder, Item, Style, Size, Person, Color, Brand } from './scripts/db-classes.js';
+	MessageOrder, Item, Style, Size, Person, Color, Brand } from './scripts/models/db-classes.js';
 	// output classes
-import { Label, InvoicePage, SoSPage, labelPage } from './scripts/output-classes.js';
+import { Label, InvoicePage, SoSPage, labelPage } from './scripts/models/output-classes.js';
 	// utilities?
 import * as Utils from './scripts/utilities.js';
 	// a couple other classes
-import { InputOrder, ActionRequest } from './scripts/other-classes.js';
+import { InputOrder, ActionRequest } from './scripts/models/other-classes.js';
+
+
+
+
+import { init as modalInit, openModal, closeModal } from './scripts/modal.js';
 
 
 
@@ -115,12 +105,13 @@ async function init() {
 	attachEventPageListeners();
 
 	
-		// assign global modal elements
-	modal = document.getElementById("myModal");
-	modalText = document.getElementById("modalText");
-	closeBtn = document.querySelector(".close");
-		// Close modal when the "x" is clicked
-	closeBtn.addEventListener("click", closeModal);
+	modalInit();
+	// 	// assign global modal elements
+	// modal = document.getElementById("myModal");
+	// modalText = document.getElementById("modalText");
+	// closeBtn = document.querySelector(".close");
+	// 	// Close modal when the "x" is clicked
+	// closeBtn.addEventListener("click", closeModal);
 }
 
 function buildNavList() {
@@ -871,7 +862,7 @@ async function changeCommentHandled(box) {
 	// prints a single order's label
 function printBoxLabel(order) {
 	console.log(order);
-	if (!order.shirtsByStyle) {
+	if (!order.shirtsByStyle || order.shirtsByStyle.length === 0) {
 		openModal("This order is empty");
 		return;
 	}
@@ -1264,25 +1255,24 @@ function genSoS(doc, div) {
 
 
 async function makeBlankOrder() {
-		// fill the runtime.allSchools array if it's not already
 	if (!runtime.allSchools) runtime.allSchools = await getAllSchools();
-	
-	const schoolSelectorHTML = `
+
+	// Create content as a DOM fragment or wrapper
+	const wrapper = document.createElement('div');
+	wrapper.innerHTML = `
 		<label for="schoolInput">Select School:</label>
 		<input list="schoolList" id="schoolInput" name="schoolInput" />
-		<datalist id="schoolList">
-		</datalist>
+		<datalist id="schoolList"></datalist>
 		<p id="schoolIDDisplay">Selected School ID: <span id="schoolID"></span></p>
 		<button id="addSchoolBtn">Add School</button>
 	`;
 
-	modalText.innerHTML = schoolSelectorHTML;
 	setTimeout(() => {
-		document.getElementById('schoolInput')?.focus();
+		wrapper.querySelector('#schoolInput')?.focus();
 	}, 0);
 
 	const schoolMap = {};
-	let dl = document.getElementById('schoolList');
+	const dl = wrapper.querySelector('#schoolList');
 	runtime.allSchools.forEach(school => {
 		const optn = document.createElement('option');
 		optn.value = school.shortName;
@@ -1290,113 +1280,253 @@ async function makeBlankOrder() {
 		schoolMap[school.shortName] = school;
 	});
 
-	document.getElementById("schoolInput").addEventListener("change", (e) => {
+	wrapper.querySelector("#schoolInput").addEventListener("change", (e) => {
 		const schoolName = e.target.value;
 		const school = schoolMap[schoolName] || "Not found";
-		document.getElementById("schoolID").textContent = school.id;
+		wrapper.querySelector("#schoolID").textContent = school.id;
 	});
-	
-	document.getElementById("addSchoolBtn").addEventListener("click", async (e) => {
-		const schoolName = document.getElementById("schoolInput").value;
-    	const school = schoolMap[schoolName];
-		console.log(school.division.id);
+
+	wrapper.querySelector("#addSchoolBtn").addEventListener("click", async () => {
+		const schoolName = wrapper.querySelector("#schoolInput").value;
+		const school = schoolMap[schoolName];
 		if (!school) {
-			document.getElementById("schoolID").textContent = "School not found";
+			wrapper.querySelector("#schoolID").textContent = "School not found";
+			return;
+		}
+
+		closeModal();  // still from modal.js
+
+		
+		const esd = runtime.stateEvent.getEsdByDivID(school.division.id);
+			// check if this school already has an order
+		if (esd.hasSchoolByID(school.id)) {
+				// if so, reopen modal just to show a message
+			openModal("This school is already in this event.");
 		} else {
-			closeModal();
+				// if not, add it
+			const request = new ActionRequest('addNewOrder', 'SchoolOrder', [esd.id, school.id]);
+			const responseJSON = await myFetch(request);
+			const orderID = responseJSON.data;
+			console.log(responseJSON);
+			let table = document.querySelector(`table.orderTable[data-event-site-division-id='${esd.id}']`);
+			if (!table) {
+				table = document.createElement('table');
+				table.innerHTML = `<thead><tr>
+									<th>School</th>
+									<th>S</th><th>M</th><th>L</th><th>XL</th><th>2X</th><th>3X</th><th>Total</th>
+									<th><span class="material-icons">more_horiz</span></th>
+									</tr></thead>`;
+				table.className = "orderTable";
+				table.dataset.eventId = runtime.stateEvent.id;
+				table.dataset.eventSiteDivisionId = esd.id;
+				
+					// Find the h3 with the matching division id
+				const h3 = document.querySelector(`h3[data-event-site-division-id='${esd.id}']`);
+				if (!h3) {
+					console.error(`Could not find h3 for division id ${esd.id}`);
+					return;
+				}
+
+					// Traverse upward to find the previous h2 so we can get a data-attribute
+				let current = h3.previousElementSibling;
+				while (current && current.tagName !== 'H2') {
+					current = current.previousElementSibling;
+				}
+
+				if (current && current.dataset.eventSiteId) {
+					table.dataset.eventSiteId = current.dataset.eventSiteId;
+				} else {
+					console.error(`Could not find corresponding h2 for division id ${esd.id}`);
+					return;
+				}
+
+					// Insert the table after the h3
+				h3.insertAdjacentElement('afterend', table);
+			}
 			
-			const esd = runtime.stateEvent.getEsdByDivID(school.division.id);
-			if (!esd.hasSchoolByID(school.id)) {
-				const request = new ActionRequest('addNewOrder', 'SchoolOrder', [esd.id, school.id]);
-				const responseJSON = await myFetch(request);
-				const orderID = responseJSON.data;
-				console.log(responseJSON);
-				let table = document.querySelector(`table.orderTable[data-event-site-division-id='${esd.id}']`);
-				if (!table) {
-					table = document.createElement('table');
-					table.innerHTML = `<thead><tr>
-										<th>School</th>
-										<th>S</th><th>M</th><th>L</th><th>XL</th><th>2X</th><th>3X</th><th>Total</th>
-										<th><span class="material-icons">more_horiz</span></th>
-										</tr></thead>`;
-					table.className = "orderTable";
-					table.dataset.eventId = runtime.stateEvent.id;
-					table.dataset.eventSiteDivisionId = esd.id;
-					
-						// Find the h3 with the matching division id
-					const h3 = document.querySelector(`h3[data-event-site-division-id='${esd.id}']`);
-					if (!h3) {
-						console.error(`Could not find h3 for division id ${esd.id}`);
-						return;
-					}
+			const rowContent = `<tr data-style-id="9">
+					<td title="${orderID} / ">${schoolName}</td>
+					<td title="S">-</td>
+					<td title="M">-</td>
+					<td title="L">-</td>
+					<td title="XL">-</td>
+					<td title="2XL">-</td>
+					<td title="3XL">-</td>
+					<td title="total">-</td>
+					<td>
+						<span class="material-icons clickable order-action addAddOns" title="add add ons">add</span><span class="material-icons clickable order-action editSizes" title="edit the sizes">edit</span>
+						<span class="material-icons clickable order-action showMessage" title="view the original message">article</span>
+						<span class="material-icons clickable order-action printLabel" title="print box label">print</span>
+						<span class="material-icons clickable order-action dlInvoice" title="download invoice">request_quote</span>
+						<input class="orderChckBx" type="checkbox" id="" name="" 
+							value="${orderID}" title="mark order complete" />
+					</td>
+				</tr>`;
+			const newTbody = document.createElement('tbody');
+			newTbody.innerHTML = rowContent;
+			newTbody.id = 'row' + orderID;
+			newTbody.className = 'unDoneRow';
+			newTbody.dataset.schoolOrderId = orderID;
+			
+			const tbodies = Array.from(table.querySelectorAll("tbody"));
+			let inserted = false;
 
-						// Traverse upward to find the previous h2 so we can get a data-attribute
-					let current = h3.previousElementSibling;
-					while (current && current.tagName !== 'H2') {
-						current = current.previousElementSibling;
-					}
-
-					if (current && current.dataset.eventSiteId) {
-						table.dataset.eventSiteId = current.dataset.eventSiteId;
-					} else {
-						console.error(`Could not find corresponding h2 for division id ${esd.id}`);
-						return;
-					}
-
-						// Insert the table after the h3
-					h3.insertAdjacentElement('afterend', table);
+			for (const tbody of tbodies) {
+				const row = tbody.querySelector("tr");
+				const cellText = row?.querySelector("td")?.textContent?.trim();
+				console.log(cellText);
+				if (cellText && schoolName.localeCompare(cellText, undefined, { sensitivity: 'base' }) < 0) {
+					tbody.before(newTbody);  // newTbody should be a full <tbody> with a <tr> inside
+					inserted = true;
+					break;
 				}
-				
-				const rowContent = `<tr data-style-id="9">
-						<td title="${orderID} / ">${schoolName}</td>
-						<td title="S">-</td>
-						<td title="M">-</td>
-						<td title="L">-</td>
-						<td title="XL">-</td>
-						<td title="2XL">-</td>
-						<td title="3XL">-</td>
-						<td title="total">-</td>
-						<td>
-							<span class="material-icons clickable order-action addAddOns" title="add add ons">add</span><span class="material-icons clickable order-action editSizes" title="edit the sizes">edit</span>
-							<span class="material-icons clickable order-action showMessage" title="view the original message">article</span>
-							<span class="material-icons clickable order-action printLabel" title="print box label">print</span>
-							<span class="material-icons clickable order-action dlInvoice" title="download invoice">request_quote</span>
-							<input class="orderChckBx" type="checkbox" id="" name="" 
-								value="${orderID}" title="mark order complete" />
-						</td>
-					</tr>`;
-				const newTbody = document.createElement('tbody');
-				newTbody.innerHTML = rowContent;
-				newTbody.id = 'row' + orderID;
-				newTbody.className = 'unDoneRow';
-				newTbody.dataset.schoolOrderId = orderID;
-				
-				const tbodies = Array.from(table.querySelectorAll("tbody"));
-				let inserted = false;
+			}
 
-				for (const tbody of tbodies) {
-					const row = tbody.querySelector("tr");
-					const cellText = row?.querySelector("td")?.textContent?.trim();
-					console.log(cellText);
-					if (cellText && schoolName.localeCompare(cellText, undefined, { sensitivity: 'base' }) < 0) {
-						tbody.before(newTbody);  // newTbody should be a full <tbody> with a <tr> inside
-						inserted = true;
-						break;
-					}
-				}
-
-				if (!inserted) {
-					table.appendChild(newTbody);  // fallback to end
-				}
-
-			} else {
-				modalText.innerHTML += `<p>This school is already in this event</p>`;
+			if (!inserted) {
+				table.appendChild(newTbody);  // fallback to end
 			}
 		}
 	});
-	
-	modal.style.display = "block";
+
+   openModal(wrapper); // finally attach everything
 }
+
+
+
+// async function makeBlankOrder() {
+// 		// fill the runtime.allSchools array if it's not already
+// 	if (!runtime.allSchools) runtime.allSchools = await getAllSchools();
+	
+// 	const schoolSelectorHTML = `
+// 		<label for="schoolInput">Select School:</label>
+// 		<input list="schoolList" id="schoolInput" name="schoolInput" />
+// 		<datalist id="schoolList">
+// 		</datalist>
+// 		<p id="schoolIDDisplay">Selected School ID: <span id="schoolID"></span></p>
+// 		<button id="addSchoolBtn">Add School</button>
+// 	`;
+
+// 	modalText.innerHTML = schoolSelectorHTML;
+// 	setTimeout(() => {
+// 		document.getElementById('schoolInput')?.focus();
+// 	}, 0);
+
+// 	const schoolMap = {};
+// 	let dl = document.getElementById('schoolList');
+// 	runtime.allSchools.forEach(school => {
+// 		const optn = document.createElement('option');
+// 		optn.value = school.shortName;
+// 		dl.appendChild(optn);
+// 		schoolMap[school.shortName] = school;
+// 	});
+
+// 	document.getElementById("schoolInput").addEventListener("change", (e) => {
+// 		const schoolName = e.target.value;
+// 		const school = schoolMap[schoolName] || "Not found";
+// 		document.getElementById("schoolID").textContent = school.id;
+// 	});
+	
+// 	document.getElementById("addSchoolBtn").addEventListener("click", async (e) => {
+// 		const schoolName = document.getElementById("schoolInput").value;
+//     	const school = schoolMap[schoolName];
+// 		console.log(school.division.id);
+// 		if (!school) {
+// 			document.getElementById("schoolID").textContent = "School not found";
+// 		} else {
+// 			closeModal();
+			
+// 			const esd = runtime.stateEvent.getEsdByDivID(school.division.id);
+// 			if (!esd.hasSchoolByID(school.id)) {
+// 				const request = new ActionRequest('addNewOrder', 'SchoolOrder', [esd.id, school.id]);
+// 				const responseJSON = await myFetch(request);
+// 				const orderID = responseJSON.data;
+// 				console.log(responseJSON);
+// 				let table = document.querySelector(`table.orderTable[data-event-site-division-id='${esd.id}']`);
+// 				if (!table) {
+// 					table = document.createElement('table');
+// 					table.innerHTML = `<thead><tr>
+// 										<th>School</th>
+// 										<th>S</th><th>M</th><th>L</th><th>XL</th><th>2X</th><th>3X</th><th>Total</th>
+// 										<th><span class="material-icons">more_horiz</span></th>
+// 										</tr></thead>`;
+// 					table.className = "orderTable";
+// 					table.dataset.eventId = runtime.stateEvent.id;
+// 					table.dataset.eventSiteDivisionId = esd.id;
+					
+// 						// Find the h3 with the matching division id
+// 					const h3 = document.querySelector(`h3[data-event-site-division-id='${esd.id}']`);
+// 					if (!h3) {
+// 						console.error(`Could not find h3 for division id ${esd.id}`);
+// 						return;
+// 					}
+
+// 						// Traverse upward to find the previous h2 so we can get a data-attribute
+// 					let current = h3.previousElementSibling;
+// 					while (current && current.tagName !== 'H2') {
+// 						current = current.previousElementSibling;
+// 					}
+
+// 					if (current && current.dataset.eventSiteId) {
+// 						table.dataset.eventSiteId = current.dataset.eventSiteId;
+// 					} else {
+// 						console.error(`Could not find corresponding h2 for division id ${esd.id}`);
+// 						return;
+// 					}
+
+// 						// Insert the table after the h3
+// 					h3.insertAdjacentElement('afterend', table);
+// 				}
+				
+// 				const rowContent = `<tr data-style-id="9">
+// 						<td title="${orderID} / ">${schoolName}</td>
+// 						<td title="S">-</td>
+// 						<td title="M">-</td>
+// 						<td title="L">-</td>
+// 						<td title="XL">-</td>
+// 						<td title="2XL">-</td>
+// 						<td title="3XL">-</td>
+// 						<td title="total">-</td>
+// 						<td>
+// 							<span class="material-icons clickable order-action addAddOns" title="add add ons">add</span><span class="material-icons clickable order-action editSizes" title="edit the sizes">edit</span>
+// 							<span class="material-icons clickable order-action showMessage" title="view the original message">article</span>
+// 							<span class="material-icons clickable order-action printLabel" title="print box label">print</span>
+// 							<span class="material-icons clickable order-action dlInvoice" title="download invoice">request_quote</span>
+// 							<input class="orderChckBx" type="checkbox" id="" name="" 
+// 								value="${orderID}" title="mark order complete" />
+// 						</td>
+// 					</tr>`;
+// 				const newTbody = document.createElement('tbody');
+// 				newTbody.innerHTML = rowContent;
+// 				newTbody.id = 'row' + orderID;
+// 				newTbody.className = 'unDoneRow';
+// 				newTbody.dataset.schoolOrderId = orderID;
+				
+// 				const tbodies = Array.from(table.querySelectorAll("tbody"));
+// 				let inserted = false;
+
+// 				for (const tbody of tbodies) {
+// 					const row = tbody.querySelector("tr");
+// 					const cellText = row?.querySelector("td")?.textContent?.trim();
+// 					console.log(cellText);
+// 					if (cellText && schoolName.localeCompare(cellText, undefined, { sensitivity: 'base' }) < 0) {
+// 						tbody.before(newTbody);  // newTbody should be a full <tbody> with a <tr> inside
+// 						inserted = true;
+// 						break;
+// 					}
+// 				}
+
+// 				if (!inserted) {
+// 					table.appendChild(newTbody);  // fallback to end
+// 				}
+
+// 			} else {
+// 				modalText.innerHTML += `<p>This school is already in this event</p>`;
+// 			}
+// 		}
+// 	});
+	
+// 	modal.style.display = "block";
+// }
 
 
 	// as named
@@ -1532,7 +1662,7 @@ function printOMessages() {
 	
 		// Access jsPDF from the global object
 	const { jsPDF } = window.jspdf; 
-   const doc = new jsPDF('p', 'mm', 'letter');
+	const doc = new jsPDF('p', 'mm', 'letter');
 	
 	doc.setFontSize(13);
 	doc.setFont('Times');
@@ -1596,27 +1726,27 @@ function genIHSAATotals() {
 
 	// Modal functions ////////////////////////////////////////////////////////
 	// Function to open the modal
-function openModal(content) {
-  modalText.innerHTML = "";
-  if (typeof content === "string") {
-    modalText.textContent = content;
-  } else {
-    modalText.appendChild(content);
-  }
-  modal.style.display = "block";
-}
+// function openModal(content) {
+//   modalText.innerHTML = "";
+//   if (typeof content === "string") {
+//     modalText.textContent = content;
+//   } else {
+//     modalText.appendChild(content);
+//   }
+//   modal.style.display = "block";
+// }
 
-	// Function to close the modal
-function closeModal() {
-  modal.style.display = "none"; // Hide the modal
-}
+// 	// Function to close the modal
+// function closeModal() {
+//   modal.style.display = "none"; // Hide the modal
+// }
 
-	// Close modal when clicking outside the modal content
-window.addEventListener("click", (event) => {
-  if (event.target === modal) {
-    closeModal();
-  }
-});
+// 	// Close modal when clicking outside the modal content
+// window.addEventListener("click", (event) => {
+//   if (event.target === modal) {
+//     closeModal();
+//   }
+// });
 
 
 
@@ -1632,16 +1762,12 @@ function updateObject(obj, newObj) {
 
    if ('school' in obj) {
 		console.log('has school property');
-      const s = obj.school;
-      obj.school = s instanceof School ? s : s != null ? School.fromJSON(s) : null;
+    	const s = obj.school;
+    	obj.school = s instanceof School ? s : s != null ? School.fromJSON(s) : null;
 		console.log(runtime.stateEvent);
    }
 }
 
-
-// function hasItems(arr) {
-//    return (Array.isArray(arr) && arr.length > 0);
-// }
 
 function mapObjsByID(objs) {
    const result = {};

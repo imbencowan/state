@@ -4,7 +4,7 @@
 //////////////////////////////////////////////////////////////
 
 // import helper functions
-import * as Utils from './utilities.js';
+import * as Utils from '../utilities.js';
 
 
 	// define how an event works from json

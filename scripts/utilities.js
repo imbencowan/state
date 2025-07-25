@@ -66,6 +66,10 @@ export function distributeElementsToRows(containerSelector, minItemWidth = 100) 
   container.style.gap = '10px';
 }
 
+// function hasItems(arr) {
+//    return (Array.isArray(arr) && arr.length > 0);
+// }
+
 // window.addEventListener('resize', () => {
 //   distributeElementsToRows('#yourNavId');
 // });
