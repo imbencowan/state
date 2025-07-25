@@ -1,11 +1,24 @@
-	// global containers
-let stateEvent;
-let sizeCodesByStyles;
-let styleMap;
-let allItems;
-let allSchools;
-	// this one prevents different actions being called while others are still open
-let activeMode;
+	// hold some stuff that will be used in runtime to be widely available
+const runtime = {
+		// global containers
+	stateEvent: undefined,
+	sizeCodesByStyles: undefined,
+	styleMap: undefined,
+	allItems: undefined,
+	allSchools: undefined,
+		// this one prevents different actions being called while others are still open
+	activeMode: undefined
+};
+	// make runtime available in console
+window.__runtime = runtime;
+
+// let stateEvent;
+// let sizeCodesByStyles;
+// let styleMap;
+// let allItems;
+// let allSchools;
+// 	// this one prevents different actions being called while others are still open
+// let activeMode;
 	// modal stuff
 let modal;
 let modalText;
@@ -19,42 +32,16 @@ import { StateEvent, Sport, EventSite, Site, Vehicle, EventSiteDivision, Divisio
 	MessageOrder, Item, Style, Size, Person, Color, Brand } from './scripts/db-classes.js';
 	// output classes
 import { Label, InvoicePage, SoSPage, labelPage } from './scripts/output-classes.js';
+	// utilities?
 import * as Utils from './scripts/utilities.js';
-
+	// a couple other classes
+import { InputOrder, ActionRequest } from './scripts/other-classes.js';
 
 
 
 	// call init onload
 document.addEventListener('DOMContentLoaded', init);
 
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// CLASSES	
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class InputOrder {
-		//we're using 'sport' in place of 'event' because event is a key word
-	constructor(orderedBy, school, division, sport, gender, sizes, fileName, orderText, comment) {
-		this.sport = sport;
-		this.division = division;
-		this.school = school;
-		this.gender = gender;
-		this.sizes = sizes;
-		this.fileName = fileName;
-		this.orderedBy = orderedBy;
-		this.orderText = orderText;
-		this.comment = comment;
-	}
-}
-
-
-class ActionRequest {
-	constructor(action, actionClass, data) {
-		this.action = action;
-		this.actionClass = actionClass;
-		this.data = data;
-	}
-}
 
 
 
@@ -68,25 +55,25 @@ const sizeList = ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'];
 	// this list is used to build the nav bar.
 		// this is no longer necessary, since each sport now has one associated id in the db
 const sportList = [
-   ['Golf', 1],
-   ['Soccer', 2],
-   ['Volleyball', 3],
-   ['X-Country', 4],
-   ['Swimming', 5],
-   ['Football', 6],
-   ['Drama', 7],
-   ['G Basketball', 8],
-   ['Wrestling', 9],
-   ['Dance', 10],
-   ['Cheer', 11],
-   ['B Basketball', 12],
-   ['Debate', 13],
-   ['Speech', 14],
+	['Golf', 1],
+	['Soccer', 2],
+	['Volleyball', 3],
+	['X-Country', 4],
+	['Swimming', 5],
+	['Football', 6],
+	['Drama', 7],
+	['G Basketball', 8],
+	['Wrestling', 9],
+	['Dance', 10],
+	['Cheer', 11],
+	['B Basketball', 12],
+	['Debate', 13],
+	['Speech', 14],
 	['Esports', 19],
-   ['Softball', 15],
-   ['Baseball', 16],
-   ['Tennis', 17],
-   ['Track', 18]
+	['Softball', 15],
+	['Baseball', 16],
+	['Tennis', 17],
+	['Track', 18]
 ];
 
 
@@ -103,13 +90,14 @@ async function init() {
 	
 	let request = new ActionRequest('loadSizeCodesByStyle', 'Item');
 	let sizeData = await myFetch(request);
-	sizeCodesByStyles = sizeData.data.map(styleData => Style.fromJSON(styleData));
-	styleMap = mapObjsByID(sizeCodesByStyles);
+	runtime.sizeCodesByStyles = sizeData.data.map(styleData => Style.fromJSON(styleData));
+	runtime.styleMap = mapObjsByID(runtime.sizeCodesByStyles);
 	
 	request = new ActionRequest('getAllFromDB', 'Item');
 	let itemData = await myFetch(request);
 	let i = Object.values(itemData.data).map(itemData => Item.fromJSON(itemData));
-	allItems = mapObjsByID(i);
+	runtime.allItems = mapObjsByID(i);
+	console.log(runtime.allItems);
 
 
 	// let testDate = '2025-11-14';
@@ -119,11 +107,12 @@ async function init() {
 	request = new ActionRequest('showEventByDate', 'Event');
 	
 	let responseJSON = await myFetch(request);
-	// if (responseJSON.data !== null) {
-	// 	stateEvent = StateEvent.fromJSON(responseJSON.data);
-	// }
+	if (responseJSON.data !== null) {
+		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
+	}
 	
 	document.getElementById("display").innerHTML = responseJSON.html;
+	attachEventPageListeners();
 
 	
 		// assign global modal elements
@@ -220,16 +209,20 @@ async function goToEventPage(sport) {
 	let responseJSON = await myFetch(request);
 	// console.log(responseJSON.data);
 	if (responseJSON.data !== null) {
-		stateEvent = StateEvent.fromJSON(responseJSON.data);
+		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
 	}
 
-	// console.log(stateEvent);
+	// console.log(runtime.stateEvent);
 	document.getElementById("display").innerHTML = responseJSON.html;
 	
 		// reset mode on load
-	activeMode = null;
+	runtime.activeMode = null;
 	
-	///// ATTACH EVENT LISTENERS /////////////////////////////////////////////////////////
+		// ATTACH EVENT LISTENERS 
+	attachEventPageListeners();
+}
+
+function attachEventPageListeners() {
 	const container = document.getElementById('eventContainer');
 		// this is one listener that handles clicks for all the buttons in the table
 		// and some out side the table
@@ -250,10 +243,10 @@ async function goToEventPage(sport) {
 				downloadInvoicePDF(order);
 			} else if (target.matches('span.addAddOns')) {
 					// don't do this if some thing else is active
-				if (activeMode === null || activeMode === 'add') showAddOnInputs(order);
+				if (runtime.activeMode === null || runtime.activeMode === 'add') showAddOnInputs(order);
 			} else if (target.matches('span.editSizes')) {
 					// don't allow this if we're already active
-				if (!activeMode) showEditSizeInputs(order);
+				if (!runtime.activeMode) showEditSizeInputs(order);
 			} else if (target.matches('button.submitAddOns')) {
 				submitAddOns(target, order);
 			} else if (target.matches('button.submitEdit')) {
@@ -274,7 +267,7 @@ async function goToEventPage(sport) {
 		} else if (target.matches('button.printAllSoSPDF')) {
 			printAllSoSPDF();
 		} else if (target.matches('button.printSoSPDF')) {
-			printSoSPDF(stateEvent.getDivisionByID(target.dataset.eshdid));
+			printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid));
 				// a couple occasional cancel buttons
 		} else if (target.matches('button.cancelAddOns')) {
 			cancelAddOns(target);
@@ -447,9 +440,9 @@ async function showPage(action, actionClass, data) {
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	// js functions
-		// get an order from the big ol stateEvent object
+		// get an order from the big ol runtime.stateEvent object
 function getOrderFromTableButton(target) {
-	if (stateEvent) {
+	if (runtime.stateEvent) {
 			// get ids from data-attributes
 		const orderID = Number(target.closest('tbody').getAttribute('data-school-order-id'));
 		const divID = Number(target.closest('table').getAttribute('data-event-site-division-id'));
@@ -460,9 +453,9 @@ function getOrderFromTableButton(target) {
 }
 		
 function getOrderByIDs(eventSiteID, divID, orderID) {
-	if (stateEvent) {
+	if (runtime.stateEvent) {
 			// get the site, then division, then order. return null if not found
-		const eventSite = stateEvent.eventSites.find(eSite => eSite.id === eventSiteID);
+		const eventSite = runtime.stateEvent.eventSites.find(eSite => eSite.id === eventSiteID);
 		if (!eventSite) return null;
 		
 		const division = eventSite.esDivisions.find(div => div.id === divID);
@@ -475,7 +468,7 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 				// this is actually kind of clean considering the alternatives for getting this info where it needs to be.
 		order.division = division.division.name;
 		order.site = eventSite.site.name;
-		order.sport = stateEvent.sport.name;
+		order.sport = runtime.stateEvent.sport.name;
 		
 		return order || null;
 	}
@@ -485,7 +478,7 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 
 function showAddOnInputs(order) {
 		// set mode. prevents edit being called while this is open
-	activeMode = 'add';
+	runtime.activeMode = 'add';
 		// get the parent element with the specified data attribute
 	const prnt = document.querySelector(`[data-school-order-id="${order.id}"]`);
 	if (prnt) {
@@ -546,7 +539,7 @@ async function submitAddOns(target, order) {
 	rows.forEach((row) => {
 			// get the itemID
 		let styleID = Number(row.querySelector('select').value);
-		let style = sizeCodesByStyles.find(style => style.id === styleID);
+		let style = runtime.sizeCodesByStyles.find(style => style.id === styleID);
 			// get the inputs
 		const inputs = Array.from(row.querySelectorAll('input[type="number"]'))
 			.filter(input => parseInt(input.value, 10) > 0);
@@ -578,7 +571,7 @@ async function submitAddOns(target, order) {
 		order.updateFromJSON(responseJSON.data.newOrder);
 		cleanInputRows(rows);
 			// exit 'add' mode
-		activeMode = null;
+		runtime.activeMode = null;
 	}
 }
 
@@ -592,7 +585,7 @@ function cancelAddOns(target) {
       }
    });
 		// exit add on mode
-	activeMode = null;
+	runtime.activeMode = null;
 }
 
 function makeSubmitCancelButtons(td, action) {
@@ -615,7 +608,7 @@ function buildAddOnSelect(prnt) {
 	const preStyleIDs = rows.map(tr => Number(tr.getAttribute('data-style-id')));
 	
 	const newSlct = document.createElement('select');
-	sizeCodesByStyles.forEach((style) => {
+	runtime.sizeCodesByStyles.forEach((style) => {
 			// exclude the preexisting styles
 		if (!preStyleIDs.includes(style.id)) {
 			const newOptn = document.createElement('option');
@@ -704,7 +697,7 @@ function makeInput(i) {
 
 function showEditSizeInputs(order) {
 		// set mode. prevents addOns being activated while edit is in progress
-	activeMode = 'edit';
+	runtime.activeMode = 'edit';
 		// get the parent element with the specified data attribute
 	const prnt = document.querySelector(`[data-school-order-id="${order.id}"]`);
 	if (prnt) {
@@ -750,7 +743,7 @@ function cancelSizeEdit(target) {
 		}
    });
 		// exit edit mode
-	activeMode = null;
+	runtime.activeMode = null;
 }
 
 async function submitSizeEdit(target, order) {
@@ -763,7 +756,7 @@ async function submitSizeEdit(target, order) {
 	rows.forEach((row) => {
 			// get the style
 		let styleID = Number(row.dataset.styleId);
-		let style = sizeCodesByStyles.find(style => style.id === styleID);
+		let style = runtime.sizeCodesByStyles.find(style => style.id === styleID);
 			// get the inputs
 		let inputs = Array.from(row.querySelectorAll('input[type="number"]'));
 		inputs.forEach(input => {
@@ -798,7 +791,7 @@ async function submitSizeEdit(target, order) {
 		order.updateFromJSON(responseJSON.data.newOrder);
 		cleanInputRows(rows);
 			// exit edit mode
-		activeMode = null;
+		runtime.activeMode = null;
 	}
 }
 
@@ -896,7 +889,7 @@ function printBoxLabel(order) {
 	// prints labels for all orders not marked complete
 function printUndoneBoxLabels() {
 		// get all incomplete orders
-	let orders = stateEvent.getUndoneOrders();
+	let orders = runtime.stateEvent.getUndoneOrders();
 	
 		// format is jsPDF(orientation, unit, format); 'p' = portrait
 	const { jsPDF } = window.jspdf; 
@@ -1065,18 +1058,18 @@ function genBLSizesString(sizes) {
 
 	// print all sign off sheets
 function printAllSoSPDF() {
-	if (!stateEvent) return;
+	if (!runtime.stateEvent) return;
 	
 		// Access jsPDF from the global object
 	const { jsPDF } = window.jspdf; 
    const doc = new jsPDF('p', 'mm', 'letter');
 	
 	
-	for (let i = 0; i < stateEvent.eventSites.length; ++i) {
-		let es = stateEvent.eventSites[i];
+	for (let i = 0; i < runtime.stateEvent.eventSites.length; ++i) {
+		let es = runtime.stateEvent.eventSites[i];
 		for (let j = 0; j < es.esDivisions.length; ++j) {
 			genSoS(doc, es.esDivisions[j]);
-			if ((i < stateEvent.eventSites.length - 1) || (j < es.esDivisions.length - 1)) {
+			if ((i < runtime.stateEvent.eventSites.length - 1) || (j < es.esDivisions.length - 1)) {
 				doc.addPage();
 			}
 		}
@@ -1133,8 +1126,8 @@ function genSoS(doc, div) {
 	
 	doc.setTextColor(red);
 	doc.setFontSize(14);
-	let sportTxt = stateEvent.sport.name.toUpperCase()
-	doc.text(stateEvent.sport.name.toUpperCase(), cursor.x, cursor.y);
+	let sportTxt = runtime.stateEvent.sport.name.toUpperCase()
+	doc.text(runtime.stateEvent.sport.name.toUpperCase(), cursor.x, cursor.y);
 	
 	doc.setTextColor(blue);
 	let x = cursor.x + doc.getTextWidth(sportTxt) + 10;
@@ -1181,7 +1174,7 @@ function genSoS(doc, div) {
 			addOnOrders.push(order);
 			doc.setTextColor(red);
 			let redText;
-			nameWidth = doc.getTextWidth(name);
+			let nameWidth = doc.getTextWidth(name);
 			if (!order.paid) {
 				redText = `(due $${order.due})`;
 			} else {
@@ -1245,7 +1238,7 @@ function genSoS(doc, div) {
 			addOnOrders.push(order);
 			doc.setTextColor(red);
 			let redText;
-			nameWidth = doc.getTextWidth(name);
+			let nameWidth = doc.getTextWidth(name);
 			if (!order.paid) {
 				redText = `(due $${order.due})`;
 			} else {
@@ -1271,48 +1264,48 @@ function genSoS(doc, div) {
 
 
 async function makeBlankOrder() {
-		// fill the allSchools array if it's not already
-	if (!allSchools) allSchools = await getAllSchools();
+		// fill the runtime.allSchools array if it's not already
+	if (!runtime.allSchools) runtime.allSchools = await getAllSchools();
 	
-   const schoolSelectorHTML = `
-      <label for="schoolInput">Select School:</label>
-      <input list="schoolList" id="schoolInput" name="schoolInput" />
-      <datalist id="schoolList">
-      </datalist>
-      <p id="schoolIDDisplay">Selected School ID: <span id="schoolID"></span></p>
+	const schoolSelectorHTML = `
+		<label for="schoolInput">Select School:</label>
+		<input list="schoolList" id="schoolInput" name="schoolInput" />
+		<datalist id="schoolList">
+		</datalist>
+		<p id="schoolIDDisplay">Selected School ID: <span id="schoolID"></span></p>
 		<button id="addSchoolBtn">Add School</button>
-   `;
+	`;
 
-   modalText.innerHTML = schoolSelectorHTML;
+	modalText.innerHTML = schoolSelectorHTML;
 	setTimeout(() => {
 		document.getElementById('schoolInput')?.focus();
 	}, 0);
 
-   const schoolMap = {};
+	const schoolMap = {};
 	let dl = document.getElementById('schoolList');
-	allSchools.forEach(school => {
+	runtime.allSchools.forEach(school => {
 		const optn = document.createElement('option');
 		optn.value = school.shortName;
 		dl.appendChild(optn);
 		schoolMap[school.shortName] = school;
 	});
 
-   document.getElementById("schoolInput").addEventListener("change", (e) => {
-      const schoolName = e.target.value;
-      const school = schoolMap[schoolName] || "Not found";
-      document.getElementById("schoolID").textContent = school.id;
-   });
+	document.getElementById("schoolInput").addEventListener("change", (e) => {
+		const schoolName = e.target.value;
+		const school = schoolMap[schoolName] || "Not found";
+		document.getElementById("schoolID").textContent = school.id;
+	});
 	
 	document.getElementById("addSchoolBtn").addEventListener("click", async (e) => {
 		const schoolName = document.getElementById("schoolInput").value;
-      const school = schoolMap[schoolName];
+    	const school = schoolMap[schoolName];
 		console.log(school.division.id);
 		if (!school) {
 			document.getElementById("schoolID").textContent = "School not found";
 		} else {
 			closeModal();
 			
-			const esd = stateEvent.getEsdByDivID(school.division.id);
+			const esd = runtime.stateEvent.getEsdByDivID(school.division.id);
 			if (!esd.hasSchoolByID(school.id)) {
 				const request = new ActionRequest('addNewOrder', 'SchoolOrder', [esd.id, school.id]);
 				const responseJSON = await myFetch(request);
@@ -1322,12 +1315,12 @@ async function makeBlankOrder() {
 				if (!table) {
 					table = document.createElement('table');
 					table.innerHTML = `<thead><tr>
-												<th>School</th>
-												<th>S</th><th>M</th><th>L</th><th>XL</th><th>2X</th><th>3X</th><th>Total</th>
-												<th><span class="material-icons">more_horiz</span></th>
-											</tr></thead>`;
+										<th>School</th>
+										<th>S</th><th>M</th><th>L</th><th>XL</th><th>2X</th><th>3X</th><th>Total</th>
+										<th><span class="material-icons">more_horiz</span></th>
+										</tr></thead>`;
 					table.className = "orderTable";
-					table.dataset.eventId = stateEvent.id;
+					table.dataset.eventId = runtime.stateEvent.id;
 					table.dataset.eventSiteDivisionId = esd.id;
 					
 						// Find the h3 with the matching division id
@@ -1422,7 +1415,7 @@ async function downloadInvoicePDF(order) {
 
 	const a = document.createElement("a");
 	a.href = url;
-	a.download = `${order.school.shortName} ${stateEvent.sport.name} ${stateEvent.getRealYear()} Add Ons`;
+	a.download = `${order.school.shortName} ${runtime.stateEvent.sport.name} ${runtime.stateEvent.getRealYear()} Add Ons`;
 	document.body.appendChild(a); // Required for Firefox
 	a.click();
 	document.body.removeChild(a);
@@ -1530,12 +1523,12 @@ async function genInvoicePDF(doc, order) {
 	doc.setFont(currentFont, 'normal');
 	
 	invP.lineDown(2);
-	invP.centerTextInPage(`${stateEvent.sport.name} ${stateEvent.startDate.getFullYear()}`);
+	invP.centerTextInPage(`${runtime.stateEvent.sport.name} ${runtime.stateEvent.startDate.getFullYear()}`);
 }
 
 
 function printOMessages() {
-	if (!stateEvent) return;
+	if (!runtime.stateEvent) return;
 	
 		// Access jsPDF from the global object
 	const { jsPDF } = window.jspdf; 
@@ -1548,7 +1541,7 @@ function printOMessages() {
 	const x = 18;
 	const y = 23;
 	
-	stateEvent.eventSites.forEach(es => {
+	runtime.stateEvent.eventSites.forEach(es => {
 		es.esDivisions.forEach(esd => {
 			esd.schoolOrders.forEach(so => {
 				so.messageOrders.forEach(mo => {
@@ -1569,13 +1562,13 @@ function printOMessages() {
 
 
 function printAllInvoices() {
-	if (!stateEvent) return;
+	if (!runtime.stateEvent) return;
 	
 		// Access jsPDF from the global object
 	const { jsPDF } = window.jspdf; 
    const doc = new jsPDF('p', 'mm', 'letter');
 	
-	stateEvent.eventSites.forEach(es => {
+	runtime.stateEvent.eventSites.forEach(es => {
 		es.esDivisions.forEach(esd => {
 			esd.schoolOrders.forEach(so => {
 				if (so.getAddedStyles().length !== 0) {
@@ -1641,7 +1634,7 @@ function updateObject(obj, newObj) {
 		console.log('has school property');
       const s = obj.school;
       obj.school = s instanceof School ? s : s != null ? School.fromJSON(s) : null;
-		console.log(stateEvent);
+		console.log(runtime.stateEvent);
    }
 }
 
@@ -1660,8 +1653,8 @@ function mapObjsByID(objs) {
 }
 
 function getItemByStyleIDSizeChar(styleID, sizeChar) {
-   for (const key in allItems) {
-      const item = allItems[key];
+   for (const key in runtime.allItems) {
+      const item = runtime.allItems[key];
       if (item.style.id === styleID && item.size.charName === sizeChar) {
          return item;
       }
@@ -2049,11 +2042,15 @@ function testBoxLabelPDF() {
 	window.open(url, "_blank", "noopener");
 }
 
+
 function drawLabelRects(doc) {
 	labelPage.origins.forEach(coord => {
 		doc.rect(coord.x, coord.y, labelPage.labelWidth, labelPage.labelHeight);
 	});
 }
+
+
+
 
 function changeSelectedTable(tableSelect) {
 	console.log('Selected ' + tableSelect.value);

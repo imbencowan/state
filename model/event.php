@@ -22,11 +22,11 @@ class Event extends BasicTableModel {
 	public readonly array $eventSites;
 	
 	public function __construct(
-      public readonly ?int $id,
+		public readonly ?int $id,
 		public readonly Sport $sport,
-      string|DateTime $startDate, 
-      string|DateTime $endDate, 
-      public readonly int $year,
+		string|DateTime $startDate, 
+		string|DateTime $endDate, 
+		public readonly int $year,
 		array $eventSites
    ) {
 		$this->startDate = is_string($startDate) ? new DateTime($startDate) : $startDate;
@@ -154,6 +154,8 @@ class Event extends BasicTableModel {
 		// }
 		// 	// send back the *first* element
 		// return !empty($events) ? $event : null;
+		// 509 209 3056
+		// 070980021D
 	}
 	
 
