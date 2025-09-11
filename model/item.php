@@ -29,10 +29,10 @@ class Item extends BasicTableModel {
    ) {}
 	
 	
-	//////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////
    // user actions
 		// takes us to the Items page, showing all Items
-	static function showItems($input) {
+	static function showItems() {
 		$items = Item::getAllFromDB();
 		$gItems = [];
 		foreach ($items as $item) {

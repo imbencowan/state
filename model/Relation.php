@@ -13,7 +13,11 @@ class Relation {
 			// true if $property is an array intended hold multiple related objects, ie an Event has many EventSites
 		public readonly bool $isMany = false,
 			// names an intermediate hasTable for many to many relationships. // if null should be ignored
-		public readonly ?string $interTable = null
+		public readonly ?string $interTable = null,
+
+			// an array of values that can be passed in callers to signal the relation should be ignored
+				// basically a depth limiter for nested relations, so we don't JOIN tables we don't need.
+		public readonly array $stopContexts = []
    ) {}
 }
 ?>

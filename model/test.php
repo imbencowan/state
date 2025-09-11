@@ -50,7 +50,7 @@ class Test implements JsonSerializable {
 		// $districts = District::getAllFromDB();
 		// $divisions = Division::getAllFromDB();
 		// $employees = Employee::getAllFromDB();
-		$events = Event::getAllFromDB();
+		// $events = Event::getAllFromDB();
 		// $eventSites = EventSite::getAllFromDB();
 		// $items = Item::getAllFromDB();
 		// $messageOrders = MessageOrder::getAllFromDB();
@@ -75,12 +75,12 @@ class Test implements JsonSerializable {
 		include 'view/table.php';
 		$htmlContent = ob_get_clean(); // Get the buffered content as a string
 		
-		echo json_encode([
+		return [
 			'html' => $htmlContent,
 			'data' => [	
 			// 'colors' => $colors, 
 			// 'districts' => $districts, 'divisions' => $divisions, 'employees' => $employees, 
-			'events' => $events,
+			// 'events' => $events,
 			// 'eventSites' => $eventSites,
 			// 'items' => $items, 
 			// 'mOrderItems' => $mOrderItems, 
@@ -92,7 +92,7 @@ class Test implements JsonSerializable {
 			// 'sports' => $sports, 'styles' => $styles, 'vehicles' => $vehicles, 
 			// 'oneSchool' => $oneSchool
 			]
-		]);
+		];
 	}
 	
 	static function showTable($data) {

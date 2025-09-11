@@ -207,6 +207,37 @@ class Event extends BasicTableModel {
 			// will return null if there are no events at all
 		return $row['eventID'] ?? null;
 	}
+
+	
+	public function getDateRangeString() {
+		$start = $this->startDate->format('F j');
+			// check if it is a one day event
+		if ($this->startDate == $this->endDate) {
+			return $start;
+		} else {
+				// check if the event starts and ends within the same month to format correctly
+			if ($this->startDate->format('Y-m') === $this->endDate->format('Y-m')) {
+				$end = $this->endDate->format('j');
+				$conjunction = '-';
+			} else {
+				$end = $this->endDate->format('F j');
+				$conjunction = ' - ';
+			}
+			return $start . $conjunction . $end;	
+		}
+	}
+
+
+	public function getSeason() {
+		if ($this->startDate->format('m') < 5) return 1;
+		elseif ($this->startDate->format('m') == 5) return 2;
+		elseif ($this->startDate->format('m') > 5) return 3;
+	}
+
+
+	public static function getEventsByDates($start, $end, $context) {
+		
+	}
 	
 	
 	
@@ -262,26 +293,6 @@ class Event extends BasicTableModel {
 	}
 		
 }
-
-
-	
-	// public function getDateRangeString() {
-		// $start = $this->startDate->format('F j');
-			// // check if it is a one day event
-		// if ($this->startDate == $this->endDate) {
-			// return $start;
-		// } else {
-				// // check if the event starts and ends within the same month to format correctly
-			// if ($this->startDate->format('Y-m') === $this->endDate->format('Y-m')) {
-				// $end = $this->endDate->format('j');
-				// $conjunction = '-';
-			// } else {
-				// $end = $this->endDate->format('F j');
-				// $conjunction = ' - ';
-			// }
-			// return $start . $conjunction . $end;	
-		// }
-	// }
 	
 	
 

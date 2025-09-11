@@ -15,9 +15,9 @@ class EventSite extends BasicTableModel {
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 	protected static function getRelations(): array {
       return [new Relation('site', 'Site', 'siteID', 'siteID', false),
-					// new Relation('vehicle', 'Vehicle', 'vehicleID', 'vehicleID', false), 
-					new Relation('esDivisions', 'EventSiteDivision', 'eventSiteID', 'eventSiteID', true),
-					new Relation('employees', 'Employee', 'eventSiteID', 'employeeID', true, 'eventSiteHasEmployee')];
+				new Relation('esDivisions', 'EventSiteDivision', 'eventSiteID', 'eventSiteID', true),
+				new Relation('vehicles', 'Vehicle', 'eventSiteID', 'vehicleID', true, 'eventSiteHasVehicle'), 
+				new Relation('employees', 'Employee', 'eventSiteID', 'employeeID', true, 'eventSiteHasEmployee')];
    }
 	
 	public readonly array $esDivisions;
@@ -29,7 +29,7 @@ class EventSite extends BasicTableModel {
 		public readonly ?string $managerName,
 		string|DateTime|null $startDate, 
 		string|DateTime|null $endDate, 
-    //   public readonly ?Vehicle $vehicle,
+    	public readonly array $vehicles = [],
 		array $esDivisions = [],
 		public readonly array $employees = []
    ) {
@@ -42,7 +42,7 @@ class EventSite extends BasicTableModel {
 			'eventID' => $this->eventID,
 			'site' => $this->site,
 			'managerName' => $this->managerName,
-			// 'vehicle' => $this->vehicle,
+			'vehicles' => $this->vehicles,
 			'esDivisions' => array_values($this->esDivisions),
 			'employees' => $this->employees
 		];

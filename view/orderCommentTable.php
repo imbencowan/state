@@ -11,7 +11,7 @@
 	</thead>
 	<tbody>
 <?php foreach ($commentOrders as $order) : 
-		Test::logX($order);
+		// Test::logX($order);
 ?>
 
 		<tr>

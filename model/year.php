@@ -9,14 +9,14 @@ class Year implements JsonSerializable {
 	private $defaultEndDay = 15;
 		// $year represents the school year. 23 would represent the 23-24 school year. 
 			// an integer representation of a date range
-   private int $year;
-   private $startDate;
-   private $endDate;
-   public $events; // Initialized as an empty array
+	private int $year;
+	private $startDate;
+	private $endDate;
+	public $events; // Initialized as an empty array
 
 		// both parameters can be null. this allows calling the function with either or neither.
 			// if both are used, $year will be prioritized. if neither, the current date will be used
-   public function __construct(?int $year = null, DateTime $date = null) {
+	public function __construct(?int $year = null, DateTime $date = null) {
 			// if no $year was given, we'll use the date
 		if (is_null($year)) {
 				// if no date was given use now
@@ -34,8 +34,9 @@ class Year implements JsonSerializable {
 		$endYear = $year + 1;
 		$this->startDate = new DateTime("$year-$this->defaultMonth-$this->defaultStartDay");
 		$this->endDate = new DateTime("$endYear-$this->defaultMonth-$this->defaultEndDay");
-      $this->events = []; // Initialize as an empty array
-		$this->events = $this->getEventsForYear($year);
+		$this->events = []; // Initialize as an empty array
+		// $this->events = $this->getEventsForYear($year);
+		$this->events = Event::getAllFromDB();
    }
 
    public function jsonSerialize() {
@@ -49,17 +50,17 @@ class Year implements JsonSerializable {
 	
 
 		// Getters and setters
-   public function getYear() { return $this->year; }
-   public function setYear($value) { $this->year = $value; }
+	public function getYear() { return $this->year; }
+	public function setYear($value) { $this->year = $value; }
 
-   public function getStartDate() { return $this->startDate; }
-   public function setStartDate($value) { $this->startDate = new DateTime($value); }
+	public function getStartDate() { return $this->startDate; }
+	public function setStartDate($value) { $this->startDate = new DateTime($value); }
 
-   public function getEndDate() { return $this->endDate; }
-   public function setEndDate($value) { $this->endDate = new DateTime($value); }
+	public function getEndDate() { return $this->endDate; }
+	public function setEndDate($value) { $this->endDate = new DateTime($value); }
 
-   public function getEvents() { return $this->events; }
-   // public function setEvent($value) { $this->events = $value; }
+	public function getEvents() { return $this->events; }
+	// public function setEvent($value) { $this->events = $value; }
 	public function pushEvent($value) { $this->events[$value->getEventID()] = $value; }
 	
 	static function convertDateToSchoolYear(DateTime $date) {
@@ -95,7 +96,8 @@ class Year implements JsonSerializable {
 					LEFT JOIN eventSiteHasDivision ON eventSites.eventSiteID = eventSiteHasDivision.eventSiteID
 					LEFT JOIN divisions ON eventSiteHasDivision.divisionID = divisions.divisionID
 					LEFT JOIN sites ON eventSites.siteID = sites.siteID
-					LEFT JOIN vehicles ON eventSites.vehicleID = vehicles.vehicleID
+					LEFT JOIN eventSiteHasVehicle ON eventSiteHasVehicle.eventSiteID = eventSites.eventSiteID
+					LEFT JOIN vehicles ON eventSiteHasVehicle.vehicleID = vehicles.vehicleID
 					LEFT JOIN eventSiteHasEmployee ON eventSites.eventSiteID = eventSiteHasEmployee.eventSiteID
 					LEFT JOIN employees ON eventSiteHasEmployee.employeeID = employees.employeeID
 					WHERE events.eventYear = :eventYear';
@@ -107,6 +109,8 @@ class Year implements JsonSerializable {
 		$statement->closeCursor();
 		
 		$events = [];
+		Test::logX($query);
+		Test::logX($rows);
 		
 		foreach ($rows as $row) {
 			$eventID = $row['eventID'];
@@ -114,7 +118,7 @@ class Year implements JsonSerializable {
 					// also make sure every event has all it's sports
 			if (!isset($events[$eventID])) {
 					// Create a Sport object
-				$sport = Sport::buildFromRow($row);
+				$sport = Sport::buildFromRow($rows);
 					// Initialize the Event object
 				$events[$eventID] = new Event(
 					$eventID,
@@ -180,19 +184,22 @@ class Year implements JsonSerializable {
 	
 	//////////////////////////////////////////////////
    // user actions
-		// takes us to the Items page, displaying all items
+		// takes us to the Year page, displaying all events for a given year
 	static function showYear($input) {
 			// we already have a variable called $year
-		$yearsEvents = new Year(null, new DateTime());
+		// $yearsEvents = new Year(null, new DateTime());
+			// test on the previous year
+		$yearsEvents = new Year(24, new DateTime());
 		ob_start();
-		include 'view/addOrdersDiv.php';
-		include 'view/yearDiv.php';
+		// include 'view/addOrdersDiv.php';
+		// include 'view/yearDiv.php';
 		include 'view/year.php';
 		$htmlContent = ob_get_clean(); // Get the buffered content as a string
-		
-		echo json_encode([
+		Test::logX([
 			'html' => $htmlContent,
 			'data' => [	'year' => $yearsEvents ]
 		]);
+		
+		return [ 'html' => $htmlContent, 'data' => [ 'year' => $yearsEvents ] ];
 	}
 }

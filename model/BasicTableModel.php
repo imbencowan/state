@@ -10,30 +10,46 @@
 abstract class BasicTableModel implements JsonSerializable {
 	
 		// Each subclass must define its table, columns, and dependent tales
-   abstract protected static function getTableName(): string;
+	abstract protected static function getTableName(): string;
 	abstract protected static function getPrimaryKey(): string;
 		// format as: return [propName1 => colName1, propName2 => colName2]
 	abstract protected static function getColumns(): array;
-		// defined as: new Relation($property, $class, $matchKey, $isMany)
-   protected static function getRelations(): array { return []; }	
+		
+		//this function returns all of a class's (table's) relations.
+		// it is overridden in subclasses with relations. if a subclass has no relations, the default works
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
+  	protected static function getRelations(): array { return []; }
+		// get relations filtered by $context
+	protected static function getContextRelations(?string $context = null): array {
+		$allRelations = static::getRelations();
+
+		if ($context === null) return $allRelations;
+
+			// use the callback to filter relations
+		return array_filter($allRelations, function (Relation $relation) use ($context) {
+				// if $context is included in stopContexts, return false, excluding the element from the filtered array
+			return !in_array($context, $relation->stopContexts);
+		});
+	}
 	
 		// basic constructor. every child will have an $id and $name
 	public function __construct(public readonly ?int $id, public readonly ?string $name) {}
 
 		// get_object_vars() here will serializes all public properties.
 			// over ride as needed, eg for private properties, or formatted data
-   public function jsonSerialize(): mixed {
-      return get_object_vars($this);
-   }
+	public function jsonSerialize(): mixed {
+		return get_object_vars($this);
+	}
 	
+
 		// builds a new object from $rows returned from a db call
 			// we have to screw with prefixes to deconstruct unique column aliases in $row['keys']
-	public static function buildFromRow(array $rows, string $colPrefix = ''): mixed { // ?static {
+	public static function buildFromRow(array $rows, string $colPrefix = '', ?string $context = null): mixed { // ?static {
 		if (empty($rows)) return null;
 	
 		$firstRow = $rows[0]; // Use first row for parent data
-		$columns = static::getColumns();
-		$relations = static::getRelations();
+		$columns = static::getColumns(); // an array [propertyName => columnName]
+		$relations = static::getContextRelations($context);
 			// we have to screw with prefixes to deconstruct unique column aliases in $row['keys']
 		$colPrefix .= static::getTableName() . '_';
 		
@@ -60,7 +76,7 @@ abstract class BasicTableModel implements JsonSerializable {
 				foreach ($relatedGrouped as $relatedRows) {
 						// if the id for the foreign key is null, don't try to instantiate an object
 					if ($firstRow[$relColPrefix . $relationPK] == null) continue;
-					$relatedObjects[] = $relation->rClass::buildFromRow($relatedRows, $colPrefix);
+					$relatedObjects[] = $relation->rClass::buildFromRow($relatedRows, $colPrefix, $context);
 				}
 					// Store as an array if it's a one-to-many relation, otherwise store a single object
 				$mappedRow[$relation->property] = $relation->isMany ? $relatedObjects : ($relatedObjects[0] ?? null);
@@ -71,10 +87,17 @@ abstract class BasicTableModel implements JsonSerializable {
 
 	
 		// Helper function to group rows by primary key before passing to buildFromRow
-	protected static function groupAndBuild(array $rows): array {	
+	protected static function groupAndBuild(array $rows, ?string $context = null): array {	
 			// ($rows, $rowKey)
 		$groupedRows = self::groupRowsByKey($rows, static::getTableName() . '_' . static::getPrimaryKey());
-		return array_map([static::class, 'buildFromRow'], $groupedRows);
+
+
+			// i need to send buildFromRow $context from here?
+			// done?
+		return array_map(function ($row) use ($context) {
+			return static::buildFromRow($row, context: $context);
+		}, $groupedRows);
+
 	}
 	
 		// helper to group fetched rows by a key. // $keyPrefix is used for aliased column names
@@ -124,7 +147,7 @@ abstract class BasicTableModel implements JsonSerializable {
 			// Build substrings for the query
 		$columns = implode(', ', array_keys($insertArray));
 		$placeholders = implode(', ', array_map(fn($col) => ":$col", array_keys($insertArray)));
-
+			// build the query
 		$query = "INSERT INTO " . static::getTableName() . " ($columns) VALUES ($placeholders)";		
 		
 		$statement = $db->prepare($query);
@@ -150,13 +173,13 @@ abstract class BasicTableModel implements JsonSerializable {
 
 		return $statement->rowCount() > 0; // return true if rows were affected
 	}
-	
+
+		// SELECTs ////////////////////////////////////////////////////////////////////////////////////////////////////
 		// getAll and getByID both implement a pair of helper functions (buildSelect() and buildJoins()) that do the heavy lifting
-	public static function getAllFromDB(): array {
-		$query = static::buildSelect();
-		// return $query;
+	public static function getAllFromDB(?string $context = null, ?WhereCondition $where = null): array {
+		$query = static::buildSelect($context, $where);
 		$rows = static::getFromDB($query);
-		return static::groupAndBuild($rows);
+		return static::groupAndBuild($rows, $context);
 	}
 
 		// see above
@@ -180,10 +203,11 @@ abstract class BasicTableModel implements JsonSerializable {
 	}
 
 	
-		// a helper for various get()s. takes a $query and $params, and makes the actual call
+		// a helper for various get...()s. takes a $query and $params, and makes the actual call
 	protected static function getFromDB(string $query, array $params = []): array {
 		$db = Database::getDB();
 		$statement = $db->prepare($query);
+// Test::logX($query);
 		foreach ($params as $key => $value) {
 			$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
 		}
@@ -194,19 +218,21 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $rows;
 	}
 	
-		// builds the SELECT statement for get...FromDB() functions. includes helpers to build JOINs and column selections
+		// builds the SELECT statement for get...FromDB() functions. uses helpers to build JOINs and column selections
 			// this and buildJoins() got a little messy in needing to build a query with unique table aliases for JOINs, and
 				// unique column aliases. this is so we can join the same table to different tables, and have the returned
 				// associative array know what is what. those constructed aliases are deconstructed in buildFromRow()
-	protected static function buildSelect(): string {
+	protected static function buildSelect(?string $context = null, ?WhereCondition $where = null): string {
 		$table = static::getTableName();
 		$columns = static::getColumns();
-		$relations = static::getRelations();
+		$relations = static::getContextRelations($context);
 	
 		$selectColumns = [];
 		self::buildSelects($selectColumns, $table, $columns);
 			// Call recursive function to handle relations and their relations. returns array of JOIN statements
 		$joins = self::buildJoins($table, $relations, $selectColumns);
+			// get optional WHERE clause
+		$whereClause = 
 			// Build the final SELECT query
 		$query = "SELECT " . implode(", ", $selectColumns) . " FROM $table " . implode(" ", $joins);
 		return $query;
@@ -219,40 +245,87 @@ abstract class BasicTableModel implements JsonSerializable {
 	}
 	
 		// Recursive helper function to handle deep relations (relations of relations) for query builder
-	protected static function buildJoins($currentTable, $currentRelations, &$selectColumns, $joins = [], $prefix = '') {
-		$oldAlias = $prefix . $currentTable;
-		$prefix .= $currentTable . '_';
+	protected static function buildJoins($currentTable, $currentRelations, &$selectColumns, $joins = [], 
+							$path = [], ?string $context = null) {
+			//get the oldAlias to use in the JOIN, and update the path with the new table
+		$oldAlias = BasicTableModel::buildAlias([...$path, $currentTable]);
+		$path[] = $currentTable;
 		
 		foreach ($currentRelations as $currentRelation) {
 			$relatedClass = $currentRelation->rClass;
 	
 			if (!class_exists($relatedClass)) continue;
 	
+				// make short names to make the code readable
 			$relatedTable = $relatedClass::getTableName();
 			$relatedColumns = $relatedClass::getColumns();
 			$leftKey = $currentRelation->leftKey;
 			$rightKey = $currentRelation->rightKey;
 			
-			$tableAlias = $prefix . $relatedTable;
+			$tableAlias = BasicTableModel::buildAlias([...$path, $relatedTable]);
 				// Add columns of the related table to the SELECT clause
 			self::buildSelects($selectColumns, $tableAlias, $relatedColumns);
 			
 				// build joins with an intermediate table, or without
 			if ($currentRelation->interTable) {
 				$interTable = $currentRelation->interTable;
-				$tableAlias = $prefix . $interTable;
+				$tableAlias = BasicTableModel::buildAlias([...$path, $interTable]);
 				$joins[] = self::writeJoin($interTable, $tableAlias, $oldAlias, $leftKey, $leftKey);
 				$priorAlias = $tableAlias;
-				$tableAlias = $prefix . $relatedTable;
+				$tableAlias = BasicTableModel::buildAlias([...$path, $relatedTable]);
 				$joins[] = self::writeJoin($relatedTable, $tableAlias, $priorAlias, $rightKey, $rightKey);
 			} else {
-				$tableAlias = $prefix . $relatedTable;
+				$tableAlias = BasicTableModel::buildAlias([...$path, $relatedTable]);
 				$joins[] = self::writeJoin($relatedTable, $tableAlias, $oldAlias, $leftKey, $rightKey);
 			}
 				// Recursively handle relations of the related class (i.e., relations of relations)
-			$joins = self::buildJoins($relatedTable, $relatedClass::getRelations(), $selectColumns, $joins, $prefix);
+			$joins = self::buildJoins($relatedTable, $relatedClass::getContextRelations($context), $selectColumns, $joins, $path);
 		}
 		return $joins;
+	}
+	
+	// 	// Recursive helper function to handle deep relations (relations of relations) for query builder
+	// protected static function buildJoins($currentTable, $currentRelations, &$selectColumns, $joins = [], 
+	// 						$prefix = '', ?string $context = null) {
+	// 	$oldAlias = $prefix . $currentTable;
+	// 	$prefix .= $currentTable . '_';
+		
+	// 	foreach ($currentRelations as $currentRelation) {
+	// 		$relatedClass = $currentRelation->rClass;
+	
+	// 		if (!class_exists($relatedClass)) continue;
+	
+	// 			// make short names to make the code readable
+	// 		$relatedTable = $relatedClass::getTableName();
+	// 		$relatedColumns = $relatedClass::getColumns();
+	// 		$leftKey = $currentRelation->leftKey;
+	// 		$rightKey = $currentRelation->rightKey;
+			
+	// 		$tableAlias = $prefix . $relatedTable;
+	// 			// Add columns of the related table to the SELECT clause
+	// 		self::buildSelects($selectColumns, $tableAlias, $relatedColumns);
+			
+	// 			// build joins with an intermediate table, or without
+	// 		if ($currentRelation->interTable) {
+	// 			$interTable = $currentRelation->interTable;
+	// 			$tableAlias = $prefix . $interTable;
+	// 			$joins[] = self::writeJoin($interTable, $tableAlias, $oldAlias, $leftKey, $leftKey);
+	// 			$priorAlias = $tableAlias;
+	// 			$tableAlias = $prefix . $relatedTable;
+	// 			$joins[] = self::writeJoin($relatedTable, $tableAlias, $priorAlias, $rightKey, $rightKey);
+	// 		} else {
+	// 			$tableAlias = $prefix . $relatedTable;
+	// 			$joins[] = self::writeJoin($relatedTable, $tableAlias, $oldAlias, $leftKey, $rightKey);
+	// 		}
+	// 			// Recursively handle relations of the related class (i.e., relations of relations)
+	// 		$joins = self::buildJoins($relatedTable, $relatedClass::getContextRelations($context), $selectColumns, $joins, $prefix);
+	// 	}
+	// 	return $joins;
+	// }
+
+		// build a string with an underscore between each string element in $path
+	public static function buildAlias(array $path): string {
+		return implode('_', $path);
 	}
 	
 	private static function writeJoin($relatedTable, $tableAlias, $oldAlias, $leftKey, $rightKey) {

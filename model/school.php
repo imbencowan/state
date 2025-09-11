@@ -12,29 +12,30 @@ class School extends BasicTableModel {
 					'addressPhysical' => 'schoolAddressPhysical',
 					'addressMailing' => 'schoolAddressMailing',
 					'addressLine2' => 'schoolAddressLine2',
-					'ad' => 'activitiesDirectorID']; 
+					'adID' => 'activitiesDirectorID']; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 	protected static function getRelations(): array {
       return [
-			new Relation('division', 'Division', 'divisionID', 'divisionID', false), 
-			new Relation('district', 'District', 'districtID', 'districtID', false),
+			new Relation('division', 'Division', 'divisionID', 'divisionID'), 
+			new Relation('district', 'District', 'districtID', 'districtID'),
 				// right now we're only joining the ad, no need for principal, superintendent, etc
-			new Relation('ad', 'Person', 'activitiesDirectorID', 'personID', false)
+			new Relation('ad', 'Person', 'activitiesDirectorID', 'personID', stopContexts: ['test'])
 		];
    }
 	
 	public readonly string $shortName;
 	
 	public function __construct(
-      public readonly ?int $id,
-      public readonly ?string $name,
-      public readonly ?string $addressPhysical,
-      public readonly ?string $addressMailing,
-      public readonly ?string $addressLine2,
-      public readonly ?Division $division,
-      public readonly ?District $district,
-		public readonly ?Person $ad
+		public readonly ?int $id,
+		public readonly ?string $name,
+		public readonly ?string $addressPhysical,
+		public readonly ?string $addressMailing,
+		public readonly ?string $addressLine2,
+		public readonly ?Division $division,
+		public readonly ?District $district,
+		public readonly ?int $adID,
+		public readonly ?Person $ad = null
    ) {
 		$this->shortName = self::shortenSchoolName($name);
 	}
@@ -52,6 +53,7 @@ class School extends BasicTableModel {
 			$shortSchoolName = 'Idaho School for the Deaf & the Blind';
 		} else {
 				// order matters here, we have to do ' High School' after these oddballs, or they won't get caught this way
+					// do not remove "Charter" from the names
 			$remove = [" Lamanna High School", " Jr/Sr High School", " Junior/Senior High School", " High School", "Academy", "School"];
 			$shortSchoolName = str_replace($remove, "", $longSchoolName);
 		}
@@ -61,8 +63,9 @@ class School extends BasicTableModel {
 	//////////////////////////////////////////////////
    // user actions
 		// takes us to the Schools page, displaying all schools
-	static function showSchools($input) {
-		$schools = School::getAllFromDB();
+	static function showSchools() {
+		$schools = School::getAllFromDB(context: '');
+		// $schools = School::getAllFromDB(context: 'test');
 		ob_start();
 		include 'view/schools.php';
 		$htmlContent = ob_get_clean();
