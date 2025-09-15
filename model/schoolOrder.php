@@ -16,7 +16,7 @@ class SchoolOrder extends BasicTableModel {
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 	protected static function getRelations(): array {
-      return [ // new Relation('division', 'Division', 'divisionID', false), 
+    	return [ // new Relation('division', 'Division', 'divisionID', false), 
 					new Relation('school', 'School', 'schoolID', 'schoolID', false), 
 					new Relation('shirtsByStyle', 'SOrderItem', 'schoolOrderID', 'schoolOrderID', true), 
 					new Relation('messageOrders', 'MessageOrder', 'schoolOrderID', 'schoolOrderID', true)];
@@ -25,14 +25,14 @@ class SchoolOrder extends BasicTableModel {
 	public readonly array $shirtsByStyle;
 	
 	public function __construct(
-      public readonly ?int $id,
+		public readonly ?int $id,
 		public readonly int $eshdID, 
-      public readonly School $school,
-      public readonly int $completeness = 0,
-      public readonly ?int $due = 0,
-      public readonly ?bool $paid = false,
-      public readonly ?string $note = '',
-      public readonly ?bool $invoiceSent = false,
+		public readonly School $school,
+		public readonly int $completeness = 0,
+		public readonly ?int $due = 0,
+		public readonly ?bool $paid = false,
+		public readonly ?string $note = '',
+		public readonly ?bool $invoiceSent = false,
 		private array $messageOrders = [],
 		array $shirtsByStyle = [],
    ) {
@@ -40,18 +40,18 @@ class SchoolOrder extends BasicTableModel {
 	}
 	
 	public function jsonSerialize(): mixed {
-      return [
-         'id' => $this->id,
-         'eshdID' => $this->eshdID,
-         'school' => $this->school,
-         'completeness' => $this->completeness,
-         'due' => $this->due,
-         'paid' => $this->paid,
-         'schoolOrderNote' => $this->note,
-         'invoiceSent' => $this->invoiceSent,
+		return [
+			'id' => $this->id,
+			'eshdID' => $this->eshdID,
+			'school' => $this->school,
+			'completeness' => $this->completeness,
+			'due' => $this->due,
+			'paid' => $this->paid,
+			'schoolOrderNote' => $this->note,
+			'invoiceSent' => $this->invoiceSent,
 			'messageOrders' => $this->messageOrders,
 			'shirtsByStyle' => array_values($this->shirtsByStyle),
-      ];
+		];
    }
 		
 		// // Getters and Setters

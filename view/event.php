@@ -20,8 +20,10 @@
 	<div id="ordersContainer">
 <?php	foreach ($event->eventSites as $eventSite) : ?>
 			<h2 data-event-site-id="<?= $eventSite->id; ?>"><?= $eventSite->site->name; ?></h2>
-<?php		foreach ($eventSite->esDivisions as $esd) : ?>
-				<h3 data-event-site-division-id="<?= $esd->id; ?>"><?= $esd->name; ?>
+<?php		foreach ($eventSite->esDivisions as $esd) : 
+				$gender = $eventSite->gender?->name ? ' ' . $eventSite->gender->name : '';
+?>
+				<h3 data-event-site-division-id="<?= $esd->id; ?>"><?= $esd->name . $gender; ?>
 					<button class="genPDFButton clickable printSoSPDF" data-btnType="printSoSPDF" 
 						data-eshdid="<?= $esd->id; ?>">Get SoS</button>
 				</h3>

@@ -223,7 +223,9 @@ class Event extends BasicTableModel {
 				$end = $this->endDate->format('F j');
 				$conjunction = ' - ';
 			}
-			return $start . $conjunction . $end;	
+			$rangeStr = $start . $conjunction . $end;
+			$rangeStr = preg_replace('/ (\S+)$/', '&nbsp;$1', $rangeStr);
+			return $rangeStr;
 		}
 	}
 
@@ -233,11 +235,6 @@ class Event extends BasicTableModel {
 		elseif ($this->startDate->format('m') == 5) return 2;
 		elseif ($this->startDate->format('m') > 5) return 3;
 	}
-
-
-	public static function getEventsByDates($start, $end, $context) {
-		
-	}
 	
 	
 	
@@ -245,7 +242,7 @@ class Event extends BasicTableModel {
 	//////////////////////////////////////////////////
    // user actions
 		// takes us to the specified Event page
-	static function showEvent($event) {
+	static function showEvent($event, $year = null, $sportID = null) {
 		ob_start(); 
 		
 		if($event) {
@@ -253,19 +250,16 @@ class Event extends BasicTableModel {
 		} else {
 			include 'view/noevent.php';
 		}
-		
 			// Get the buffered content as a string
 		$html = ob_get_clean(); 
 
-		// return $htmlContent;
 		return [ 'html' => $html, 'data' => $event ];
 	}
 
 
 	static function showEventBySportAndYear($year, $sportID) {
 		$event = self::getOrdersBySportAndYear($sportID, $year);
-		
-		return self::showEvent($event);
+		return self::showEvent($event, $year, $sportID);
 	}
 
 

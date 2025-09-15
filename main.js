@@ -31,31 +31,6 @@ const currentYear = 24;
 const sizeList = ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'];
 
 
-	// this list is used to build the nav bar.
-		// this is no longer necessary, since each sport now has one associated id in the db
-const sportList = [
-	['Golf', 1],
-	['Soccer', 2],
-	['Volleyball', 3],
-	['X-Country', 4],
-	['Swimming', 5],
-	['Football', 6],
-	['Drama', 7],
-	['G Basketball', 8],
-	['Wrestling', 9],
-	['Dance', 10],
-	['Cheer', 11],
-	['B Basketball', 12],
-	['Debate', 13],
-	['Speech', 14],
-	['Esports', 19],
-	['Softball', 15],
-	['Baseball', 16],
-	['Tennis', 17],
-	['Track', 18]
-];
-
-
 
 	// init is called onload() and does stuff after the script and html is in place
 		// importantly it adds event listeners after the elements exist
@@ -86,18 +61,41 @@ async function init() {
 	request = new ActionRequest('showEventByDate', 'Event');
 	
 	let responseJSON = await myFetch(request);
-	if (responseJSON.data !== null) {
-		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
-	}
 	
 	document.getElementById("display").innerHTML = responseJSON.html;
-	attachEventPageListeners();
+	if (responseJSON.data !== null) {
+			// put the event in working memory
+		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
+			// attach event listeners to the html in "display"
+		attachEventPageListeners();
+	}
 
 	
 	modalInit();
 }
 
 function buildNavList() {
+	const sportList = [
+		['Golf', 1],
+		['Soccer', 2],
+		['Volleyball', 3],
+		['X-Country', 4],
+		['Swimming', 5],
+		['Football', 6],
+		['Drama', 7],
+		['G Basketball', 8],
+		['Wrestling', 9],
+		['Dance', 10],
+		['Cheer', 11],
+		['B Basketball', 12],
+		['Debate', 13],
+		['Speech', 14],
+		['Esports', 19],
+		['Softball', 15],
+		['Baseball', 16],
+		['Tennis', 17],
+		['Track', 18]
+	];
 		// get the nav bar
 	let navList = document.getElementById("stateNavList");
 	sportList.forEach((sport) => {
@@ -125,7 +123,15 @@ function buildNavList2() {
 		let newLI = document.createElement("li");
 		newLI.innerHTML = item[0];
 			// add a listener to load the appropriate content when clicked
-		newLI.addEventListener('click', function(){ showPage(item[1], item[2], item[3]); });
+		newLI.addEventListener('click', async function() {
+            	// await the main content load
+            await showPage(item[1], item[2], item[3]);
+
+        		// additional behavior after content is loaded
+            if (item[1] === 'showYear') {
+               addShowYearFunctionality();
+            }
+        });
 			// add it to the page
 		navList.appendChild(newLI);
 	});
@@ -407,8 +413,12 @@ async function showPage(action, actionClass, data) {
 	// }
 	const request = new ActionRequest(action, actionClass, data);
 	let responseJSON = await myFetch(request);
-	// console.log(responseJSON.data);
 	document.getElementById("display").innerHTML = responseJSON.html;
+}
+
+
+function addShowYearFunctionality() {
+	
 }
 
 
@@ -436,13 +446,22 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 		if (!division) return null;
 
 		const order = division.schoolOrders.find(order => order.id === orderID);
+
+			// make add on gender strings if necessary
+		let divGenderStr = '';
+		if (eventSite.gender) divGenderStr += ' ' + eventSite.gender.name;
+		let sportGenderStr = '';
+		if (runtime.stateEvent.sport.name === "Soccer") {
+			if (order.messageOrders[0].genderID === 1) sportGenderStr += ' - Boys';
+			if (order.messageOrders[0].genderID === 2) sportGenderStr += ' - Girls';
+		}
 		
 			// hacky
 				// but may be not in a bad way? how else would i transmit all this? sending div, site, and sport args also?
 				// this is actually kind of clean considering the alternatives for getting this info where it needs to be.
-		order.division = division.division.name;
+		order.division = division.division.name + divGenderStr;
 		order.site = eventSite.site.name;
-		order.sport = runtime.stateEvent.sport.name;
+		order.sport = runtime.stateEvent.sport.name + sportGenderStr;
 		
 		return order || null;
 	}
@@ -851,7 +870,7 @@ function printBoxLabel(order) {
 	}
 		// Access jsPDF from the global object
 	const { jsPDF } = window.jspdf; 
-   const doc = new jsPDF('p', 'mm', 'letter');
+	const doc = new jsPDF('p', 'mm', 'letter');
 	genBoxLabel(doc, order, 0);
 	
 		// Generate a Blob URL and open it in a new tab
@@ -867,7 +886,7 @@ function printUndoneBoxLabels() {
 	
 		// format is jsPDF(orientation, unit, format); 'p' = portrait
 	const { jsPDF } = window.jspdf; 
-   const doc = new jsPDF('p', 'mm', 'letter');
+	const doc = new jsPDF('p', 'mm', 'letter');
 	
 		// add a page as necessary
 	let totalPageLabels = 0;
@@ -883,7 +902,7 @@ function printUndoneBoxLabels() {
 	window.open(url, "_blank", "noopener");
 }
 
-	// actual lable generation
+	// actual label generation
 function genBoxLabel(doc, order, originI, lblN = 1) {
 	
 	console.log(order);
@@ -911,7 +930,7 @@ function genBoxLabel(doc, order, originI, lblN = 1) {
 	lbl.addGridSizes(order.getMinSize(), order.getMaxSize());
 	lbl.lineY += 4.5;
 	doc.setFontSize(11);
-   doc.text("Team Hoods:", lbl.alignX, lbl.lineY);
+	doc.text("Team Hoods:", lbl.alignX, lbl.lineY);
 	
 		// put in the team quantities
 	if (order.getTeamStyle()) {
@@ -932,16 +951,16 @@ function genBoxLabel(doc, order, originI, lblN = 1) {
 		doc.setFontSize(14);
 		lbl.lineY += 9;
 		doc.setTextColor('#000000');
-		txt = "Due: $" + order.due;
+		let txt = "Due: $" + order.due;
 		if (!order.paid) {
-			txtWdth = doc.getTextWidth(txt);
+			let txtWdth = doc.getTextWidth(txt);
 			doc.setFillColor('#ffff00');
 			doc.rect((lbl.lineX - 1), (lbl.lineY + 1), (txtWdth + 2), -7, "F");
 		}
 		doc.text(txt, lbl.lineX, lbl.lineY);
 		if (order.paid) {
 			doc.setTextColor('#ff0000'); // red
-			txtWdth = doc.getTextWidth(txt);
+			let txtWdth = doc.getTextWidth(txt);
 			doc.text(" PAID", lbl.lineX + txtWdth, lbl.lineY);
 			doc.setTextColor('#000000'); // Black
 		}

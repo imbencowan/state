@@ -91,9 +91,7 @@ abstract class BasicTableModel implements JsonSerializable {
 			// ($rows, $rowKey)
 		$groupedRows = self::groupRowsByKey($rows, static::getTableName() . '_' . static::getPrimaryKey());
 
-
-			// i need to send buildFromRow $context from here?
-			// done?
+			// make sure to transfer $context to buildFromRow()
 		return array_map(function ($row) use ($context) {
 			return static::buildFromRow($row, context: $context);
 		}, $groupedRows);
@@ -102,13 +100,15 @@ abstract class BasicTableModel implements JsonSerializable {
 	
 		// helper to group fetched rows by a key. // $keyPrefix is used for aliased column names
 	protected static function groupRowsByKey(array $rows, string $rowKey): array {
-		 $grouped = [];
-		 foreach ($rows as $row) {
-			  if (!isset($row[$rowKey])) continue;
-			  $key = $row[$rowKey];
-			  $grouped[$key][] = $row;
-		 }
-		 return $grouped;
+		$grouped = [];
+
+		foreach ($rows as $row) {
+			if (!isset($row[$rowKey])) continue;
+			$key = $row[$rowKey];
+			$grouped[$key][] = $row;
+		}
+
+		return $grouped;
 	}
 	
 		// returns the sent array keyed by element's name property and sorted
@@ -188,6 +188,10 @@ abstract class BasicTableModel implements JsonSerializable {
 		$idCol = static::getColumns()['id'];
 		$query = static::buildSelect() . " WHERE $table.$idCol  = :id";
 		$rows = static::getFromDB($query, [':id' => $id]);
+		// foreach ($rows as $row) {
+		// 	Test::logX($row);
+		// }
+		// Test::logX(implode(', ', array_keys($rows[0])));
 		$instance = !empty($rows) ? static::groupAndBuild($rows)[$id] : null;
 		return $instance;
 	}
@@ -207,7 +211,7 @@ abstract class BasicTableModel implements JsonSerializable {
 	protected static function getFromDB(string $query, array $params = []): array {
 		$db = Database::getDB();
 		$statement = $db->prepare($query);
-// Test::logX($query);
+		// Test::logX($query);
 		foreach ($params as $key => $value) {
 			$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
 		}

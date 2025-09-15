@@ -11,24 +11,30 @@ class EventSiteDivision extends BasicTableModel {
    protected static function getColumns(): array { 
 		return ['id' => 'eventSiteHasDivisionID', 'eventSiteID' => 'eventSiteID', 'division' => 'divisionID']; 
 	}
-		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
+			// $interTable = null, $stopContexts = [])
 	protected static function getRelations(): array { 
-		return [new Relation('division', 'Division', 'divisionID', 'divisionID'), 
-					new Relation('schoolOrders', 'SchoolOrder', 'eventSiteHasDivisionID', 'eventSiteHasDivisionID', true)
-		];}
+		return [
+			new Relation('division', 'Division', 'divisionID', 'divisionID'), 
+			new Relation('schoolOrders', 'SchoolOrder', 'eventSiteHasDivisionID', 'eventSiteHasDivisionID', 
+						true, null, ["year"])
+		];
+	}
 		
 	public readonly ?string $name;
 	public readonly array $schoolOrders;
 	
 	public function __construct(
-      public readonly ?int $id,
-      public readonly int $eventSiteID,
-      public readonly Division $division,
+		public readonly ?int $id,
+		public readonly int $eventSiteID,
+		public readonly Division $division,
 			// default empty array
 		array $schoolOrders = []
-   ) {
+	) {
 		$this->name = $division->name;
-		$this->schoolOrders = self::organizeSchoolOrders($schoolOrders);
+		// $this->schoolOrders = self::organizeSchoolOrders($schoolOrders);
+		usort($schoolOrders, fn($a, $b) => strcmp($a->school->shortName, $b->school->shortName));
+		$this->schoolOrders = $schoolOrders;
 	}
 	
 	public function jsonSerialize(): mixed {
@@ -40,22 +46,22 @@ class EventSiteDivision extends BasicTableModel {
 			'schoolOrders' => array_values($this->schoolOrders)
 		];
 	}
-		
-		// // over ride base class method to include private properties
-   // public function jsonSerialize(): array {
-      // return [
-         // 'id' => $this->id,
-         // 'eventSiteID' => $this->eventSiteID,
-         // 'division' => $this->division,
-         // 'schoolOrders' => $this->schoolOrders
-      // ];
-   // }
 
-	// 	// returns the sent array keyed and sorted
+	//  	// returns the sent array keyed and sorted
+	// private static function organizeSchoolOrders($orders) {
+	// 	$organized = [];
+	// 	foreach ($orders as $order) {
+	// 		$organized[$order->school->shortName] = $order;
+	// 	}
+	// 	ksort($organized);
+	// 	return $organized;
+	// }
+
+		 	// returns the sent array keyed and sorted
 	private static function organizeSchoolOrders($orders) {
 		$organized = [];
 		foreach ($orders as $order) {
-			$organized[$order->school->shortName] = $order;
+			$organized[$order->id] = $order;
 		}
 		ksort($organized);
 		return $organized;

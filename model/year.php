@@ -36,7 +36,11 @@ class Year implements JsonSerializable {
 		$this->endDate = new DateTime("$endYear-$this->defaultMonth-$this->defaultEndDay");
 		$this->events = []; // Initialize as an empty array
 		// $this->events = $this->getEventsForYear($year);
-		$this->events = Event::getAllFromDB();
+			// "year" context stops JOINing of the schoolorders table via the Relation class
+				// this prevents the db call returning an unnecessarily huge result
+		$this->events = Event::getAllFromDB(context: "year");
+			// sort the events by date
+		usort($this->events, function($a, $b) { return $a->startDate <=> $b->startDate; });
    }
 
    public function jsonSerialize() {
@@ -76,111 +80,9 @@ class Year implements JsonSerializable {
 		}
 		return $year;
 	}
-	
-	
-	
-	
-	
-	//////////////////////////////////////////////////
-   // DB Functions
-	
-	static function getEventsForYear($year) {
-		$db = Database::getDB();
 
-		$query = 'SELECT events.*, sports.*, eventSites.eventSiteID, eventSites.managerName, divisions.*,
-								sites.*, vehicles.*, employees.*
-					FROM events
-					INNER JOIN eventhassport ON events.eventID = eventhassport.eventID
-					INNER JOIN sports ON eventhassport.sportID = sports.sportID
-					LEFT JOIN eventSites ON events.eventID = eventSites.eventID
-					LEFT JOIN eventSiteHasDivision ON eventSites.eventSiteID = eventSiteHasDivision.eventSiteID
-					LEFT JOIN divisions ON eventSiteHasDivision.divisionID = divisions.divisionID
-					LEFT JOIN sites ON eventSites.siteID = sites.siteID
-					LEFT JOIN eventSiteHasVehicle ON eventSiteHasVehicle.eventSiteID = eventSites.eventSiteID
-					LEFT JOIN vehicles ON eventSiteHasVehicle.vehicleID = vehicles.vehicleID
-					LEFT JOIN eventSiteHasEmployee ON eventSites.eventSiteID = eventSiteHasEmployee.eventSiteID
-					LEFT JOIN employees ON eventSiteHasEmployee.employeeID = employees.employeeID
-					WHERE events.eventYear = :eventYear';
+			
 
-		$statement = $db->prepare($query);
-		$statement->bindValue(":eventYear", $year);
-		$statement->execute();
-		$rows = $statement->fetchAll(PDO::FETCH_ASSOC);
-		$statement->closeCursor();
-		
-		$events = [];
-		Test::logX($query);
-		Test::logX($rows);
-		
-		foreach ($rows as $row) {
-			$eventID = $row['eventID'];
-				// add event to the events array, if it is not already there
-					// also make sure every event has all it's sports
-			if (!isset($events[$eventID])) {
-					// Create a Sport object
-				$sport = Sport::buildFromRow($rows);
-					// Initialize the Event object
-				$events[$eventID] = new Event(
-					$eventID,
-					$sport,
-					$row['eventYear'],
-					$row['startDate'],
-					$row['endDate']
-				);
-					// check if the event already has the sport specific to this row. necessary for Dance & Cheer
-			} elseif ($events[$eventID]->getSports()[0]->id != $row['sportID']) {
-					// Create and push a Sport object
-				$sport = Sport::buildFromRow($row);
-				$events[$eventID]->pushSports($sport);
-			}
-				
-			$event = $events[$eventID];
-			$eventSites = $event->getEventSites();	  
-			
-				// Add each event site to the event's eventSites array if site data exists
-			if ($row['eventSiteID'] !== null) {
-					// don't add the same site multiple times. check if the site has already been added
-				if (!array_key_exists($row['eventSiteID'], $eventSites)) {
-						// vehicle and site are handled here, because each eventSite has only one of each
-							// divisions and employees are handled after, as there can be multiple
-					$vehicle = isset($row['vehicleID']) ? Vehicle::buildFromRow($row) : null;
-					$site = Site::buildFromRow($row);
-					//////////////////////////////////////////////////////////////////////////////////////////
-					//////////////////////////////////////////////////////////////////////////////////////////
-					//////////////////////////////////////////////////////////////////////////////////////////
-					// take a look at making a buildFromRow() for EventSite also.
-					// probably have it check if there is a vehicleID and siteID before calling their respective 
-					// buildFromRow()s
-					// this file was previously at 191 lines
-					$eventSite = new EventSite(
-						 $row['eventSiteID'],
-						 $eventID,
-						 $site,
-						 $row['managerName'],
-						 $vehicle
-					);
-					$events[$eventID]->pushEventSites($eventSite);
-				}
-			}
-			
-				//look at the right eventSite for this $row
-			$eventSite = $event->getEventSites()[$row['eventSiteID']];
-			$eventSiteDivs = $eventSite->getDivisions();
-			$eventSiteEmps = $eventSite->getEmployees();
-			
-				// if a new division, add to a site
-			if ($row['divisionID'] !== null && !array_key_exists($row['divisionID'], $eventSiteDivs)) {
-				$eventSite->pushDivisions(Division::buildFromRow($row));
-			}
-				// add employees to a site
-			if ($row['employeeID'] !== null && !array_key_exists($row['employeeID'], $eventSiteEmps)) {
-				$eventSite->pushEmployees(Employee::buildFromRow($row));
-			}
-		}
-
-		return $events;
-		// return $rows;
-	}
 	
 	//////////////////////////////////////////////////
    // user actions
@@ -191,14 +93,8 @@ class Year implements JsonSerializable {
 			// test on the previous year
 		$yearsEvents = new Year(24, new DateTime());
 		ob_start();
-		// include 'view/addOrdersDiv.php';
-		// include 'view/yearDiv.php';
 		include 'view/year.php';
 		$htmlContent = ob_get_clean(); // Get the buffered content as a string
-		Test::logX([
-			'html' => $htmlContent,
-			'data' => [	'year' => $yearsEvents ]
-		]);
 		
 		return [ 'html' => $htmlContent, 'data' => [ 'year' => $yearsEvents ] ];
 	}

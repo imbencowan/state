@@ -54,14 +54,24 @@ export class StateEvent {
 	
 	getUndoneOrders() {
 		let orders = [];
+
 		this.eventSites.forEach(eventSite => {
+         let divGenderStr = '';
+         if (eventSite.gender) divGenderStr += ' ' + eventSite.gender.name;
+
 			eventSite.esDivisions.forEach(eshd => {
 				eshd.schoolOrders.forEach(order => {
 						// check completeness. 0 == incomplete.
 					if (!order.completeness) {
-						order.division = eshd.division.name;
+                  let sportGenderStr = '';
+                  if (this.sport.name === "Soccer") {
+                     if (order.messageOrders[0].genderID === 1) sportGenderStr += ' - Boys';
+                     if (order.messageOrders[0].genderID === 2) sportGenderStr += ' - Girls';
+                  }
+                  
+						order.division = eshd.division.name +divGenderStr;
 						order.site = eventSite.site.name;
-						order.sport = this.sport.name;
+						order.sport = this.sport.name + sportGenderStr;
 						orders.push(order);
 					}
 				});
@@ -91,11 +101,12 @@ export class Sport {
 }
 
 export class EventSite {
-   constructor({ id, eventID, site, managerName, vehicle, esDivisions = [] }) {
+   constructor({ id, eventID, site, managerName, gender, vehicle, esDivisions = [] }) {
 		this.id = id;
 		this.eventID = eventID;
 		this.site = Utils.parseToInstance(site, Site);
 		this.managerName = managerName;
+      this.gender = gender;
 		this.vehicle = Utils.parseToInstance(vehicle, Vehicle);
 		this.esDivisions = Utils.parseToInstancesArr(esDivisions, EventSiteDivision);
 	}

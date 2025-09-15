@@ -267,8 +267,21 @@ tr.addOnRow {
 }
 
 .eventsTable td {
+	vertical-align: top;
 	padding: 10px;
 	font-size: 90%;
+    white-space: normal;       /* allow wrapping at spaces */
+    word-break: normal;        /* do not break words */
+    overflow-wrap: normal;     /* prevent word splitting */
+}
+
+.eventsTable h2 {
+	margin-top: 0;
+	margin-bottom: 10px;
+}
+
+.eventsTable button .material-icons {
+	font-size: 80%;
 }
 
 .darkOrangeRow {
