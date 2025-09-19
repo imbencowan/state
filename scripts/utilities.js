@@ -33,6 +33,16 @@ export function safeParseDate(input) {
    return isNaN(date.getTime()) ? null : date;
 }
 
+  // assumes objs is an array of objects that all have a unique id property
+export function mapObjsByID(objs) {
+   const result = {};
+   for (let i = 0; i < objs.length; i++) {
+      const obj = objs[i];
+      result[obj.id] = obj;
+   }
+   return result;
+}
+
 
 export function distributeElementsToRows(containerSelector, minItemWidth = 100) {
   const container = document.querySelector(containerSelector);

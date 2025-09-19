@@ -10,11 +10,6 @@ function init() {
    closeBtn = document.querySelector(".close");
 
    closeBtn.addEventListener("click", closeModal);
-   window.addEventListener("click", (event) => {
-      if (event.target === modal) {
-         closeModal();
-      }
-   });
 }
 
 function openModal(content) {
@@ -24,10 +19,24 @@ function openModal(content) {
    } else {
       modalText.appendChild(content);
    }
+
+   document.addEventListener('keydown', escListener);
+   document.addEventListener('click', windowListener);
+
    modal.style.display = "block";
 }
 
+function escListener(e) {
+   if (e.key === 'Escape') closeModal();
+}
+
+function windowListener(e) {
+   if (e.target === modal) closeModal();
+}
+
 function closeModal() {
+   document.removeEventListener('keydown', escListener);
+   document.removeEventListener('click', windowListener);
    modal.style.display = "none";
 }
 

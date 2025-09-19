@@ -167,6 +167,14 @@ export class EventSiteDivision {
    static fromJSON(json) {
       return new EventSiteDivision(json);
    }
+
+   sortSchoolOrders() {
+      this.schoolOrders.sort((a, b) => {
+         const nameA = a.school?.shortName?.toLowerCase() || '';
+         const nameB = b.school?.shortName?.toLowerCase() || '';
+         return nameA.localeCompare(nameB);
+      });
+   }
 	
 	hasSchoolByID(id) {
 		return this.schoolOrders.some(order => order.school?.id === id);
@@ -210,8 +218,8 @@ export class Division {
 }
 
 export class SchoolOrder {
-   constructor({ id, eshdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders = [], shirtsByStyle = [], 
-					site, sport }) {
+   constructor({ id, eshdID, school, completeness = 0, due = null, paid = null, schoolOrderNote = null, 
+               invoiceSent = null, messageOrders = [], shirtsByStyle = [], site = undefined, sport = undefined }) {
       this.id = id;
       this.eshdID = eshdID;
       this.school = Utils.parseToInstance(school, School);
@@ -252,8 +260,8 @@ export class SchoolOrder {
 		this.schoolOrderNote = json.schoolOrderNote;
 		this.invoiceSent = json.invoiceSent;
 		this.messageOrders = Array.isArray(json.messageOrders) ? json.messageOrders : [];
-		this.shirtsByStyle = Array.isArray(json.shirts)
-			? json.shirts.map(style =>
+		this.shirtsByStyle = Array.isArray(json.shirtsByStyle)
+			? json.shirtsByStyle.map(style =>
 				style instanceof Style ? style : style != null ? Style.fromJSON(style) : null
 			).filter(Boolean)
 			: [];

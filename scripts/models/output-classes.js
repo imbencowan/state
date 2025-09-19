@@ -69,7 +69,8 @@ export class Label {
         this.lineY = this.origin.y + this.offsetY;
         this.totalShirts = totalShirts;
         this.lblN = lblN;
-        this.totalLabels = Math.ceil(totalShirts / 26);
+            // use Math.max(1, ...) to make sure always = at least 1 label
+        this.totalLabels = Math.max(1, Math.ceil(totalShirts / 26));
     }
     
     lineDown(step) {
@@ -143,17 +144,21 @@ export class Label {
     
     addBoxSymbol() {
         let boxTotal = this.totalShirts;
+            // if this is the final label for an order
         if (this.lblN === this.totalLabels) boxTotal %= 26;
         const boxX = this.origin.x + 88;
         const boxY = this.origin.y + this.offsetY + 2;
         const boxW = 7;
         const boxH = 7;
-        console.log(boxTotal);
             // && to accomodate modulus assigning 0
-        if (boxTotal < 3 && boxTotal > 0) {
+        if (boxTotal === 0) {
+                // don't add a symbol to a blank order
+            return;
+        } else if (boxTotal < 3 && boxTotal > 0) {
             this.doc.line(boxX, boxY, boxX, (boxY - boxH));
             if (boxTotal > 1) this.doc.line((boxX + 1.5), boxY, (boxX + 1.5), (boxY - boxH));
         } else if (boxTotal < 20 && boxTotal > 0) {
+                // mid size boxes, drawn sequentially as needed to represent s, m, l
             boxRect(this.doc, boxW, (boxH / 3));
             if (boxTotal > 6) boxRect(this.doc, boxW, (boxH * 2 / 3));
             if (boxTotal > 13) boxRect(this.doc, boxW, boxH);

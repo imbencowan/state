@@ -1,3 +1,5 @@
+	//////////////////// a container to hold data at runtime
+	// holds page data, made available to the console
 export const runtime = {
 		// global containers
 	stateEvent: undefined,
