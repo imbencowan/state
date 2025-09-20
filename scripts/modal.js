@@ -1,4 +1,4 @@
-// modal.js
+// pop up container with a little logic
 
 let modal;
 let modalText;

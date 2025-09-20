@@ -10,6 +10,8 @@ import * as Utils from './utilities.js';
 import { init as modalInit } from './modal.js';
     // function for a listener
 import { goToEventPage, attachEventPageListeners } from './pages/event.js';
+import { showPage } from './pages/page-handling.js';
+import { addShowYearFunctionality } from './pages/year.js';
 
 
 
@@ -22,20 +24,17 @@ export async function init() {
 
 		// add the file submit listenter
 	document.getElementById('fileSubmit').addEventListener('click', submitOrderFiles);
-	
+
+		// load size codes
 	let request = new ActionRequest('loadSizeCodesByStyle', 'Item');
 	let sizeData = await myFetch(request);
 	runtime.sizeCodesByStyles = sizeData.data.map(styleData => Style.fromJSON(styleData));
-	runtime.styleMap = Utils.mapObjsByID(runtime.sizeCodesByStyles);
-	
+	runtime.styleMap = Utils.mapObjsBy(runtime.sizeCodesByStyles);
+		// get all Items
 	request = new ActionRequest('getAllFromDB', 'Item');
 	let itemData = await myFetch(request);
 	let i = Object.values(itemData.data).map(itemData => Item.fromJSON(itemData));
-	runtime.allItems = Utils.mapObjsByID(i);
-	console.log(runtime.allItems);
-
-
-	// let testDate = '2025-11-14';
+	runtime.allItems = Utils.mapObjsBy(i);
 
 
 		// display next event
@@ -54,6 +53,12 @@ export async function init() {
 
 	
 	modalInit();
+
+
+
+	// a test
+	let e = await runtime.allEmployees.load();
+	console.log(e);
 }
 
 function buildNavList() {
@@ -111,7 +116,7 @@ function buildNavList2() {
 
         		// additional behavior after content is loaded
             if (item[1] === 'showYear') {
-               // addShowYearFunctionality();
+               addShowYearFunctionality();
             }
         });
 			// add it to the page

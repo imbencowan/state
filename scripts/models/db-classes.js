@@ -3,8 +3,9 @@
 // these represent data from the db
 //////////////////////////////////////////////////////////////
 
-// import helper functions
+   // import helper functions
 import * as Utils from '../utilities.js';
+// do not import runtime, no circular dependencies
 
 
 	// define how an event works from json
@@ -441,6 +442,24 @@ export class Person {
       this.phone = phone;
       this.extension = extension;
       this.fax = fax;
+   }
+
+   static fromValues(id, name, email, phone, extension, fax) {
+      return new Person({ id, name, email, phone, extension, fax });
+   }
+
+   static fromJSON(json) {
+      return new Person(json);
+   }
+}
+
+export class Employee {
+   constructor({ id, name, shortName, phone, email }) {
+      this.id = id;
+      this.name = name;
+      this.shortName = shortName;
+      this.phone = phone;
+      this.email = email;
    }
 
    static fromValues(id, name, email, phone, extension, fax) {

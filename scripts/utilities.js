@@ -1,3 +1,6 @@
+import { myFetch } from "./fetch.js";
+import { ActionRequest } from "./models/other-classes.js";
+
 export function parseToInstancesArr(data, ClassRef) {
         // takes data, and returns an array of object of the class given by ClassRef
             // expects data to be an array of objects, or an object where each property is an object
@@ -33,56 +36,97 @@ export function safeParseDate(input) {
    return isNaN(date.getTime()) ? null : date;
 }
 
-  // assumes objs is an array of objects that all have a unique id property
-export function mapObjsByID(objs) {
-   const result = {};
-   for (let i = 0; i < objs.length; i++) {
-      const obj = objs[i];
-      result[obj.id] = obj;
-   }
-   return result;
+    // assumes objs is an array of objects that all have a unique id property
+export function mapObjsBy(objs, key = 'id') {
+    const result = {};
+        // {} in case objs is null, etc
+    for (const obj of Object.values(objs || {})) {
+        result[obj[key]] = obj;
+    }
+    return result;
 }
 
 
 export function distributeElementsToRows(containerSelector, minItemWidth = 100) {
-  const container = document.querySelector(containerSelector);
-  if (!container) return;
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
 
-  const itemCount = container.children.length;
-  if (itemCount === 0) return;
+    const itemCount = container.children.length;
+    if (itemCount === 0) return;
 
-  // Get container width in pixels
-  const containerWidth = container.clientWidth;
+    // Get container width in pixels
+    const containerWidth = container.clientWidth;
 
-  // Calculate max columns that fit by minItemWidth
-  let columnsByWidth = Math.floor(containerWidth / minItemWidth);
-  columnsByWidth = Math.min(columnsByWidth, itemCount); // can't have more columns than items
-  columnsByWidth = Math.max(columnsByWidth, 1);         // at least 1 column
+    // Calculate max columns that fit by minItemWidth
+    let columnsByWidth = Math.floor(containerWidth / minItemWidth);
+    columnsByWidth = Math.min(columnsByWidth, itemCount); // can't have more columns than items
+    columnsByWidth = Math.max(columnsByWidth, 1);         // at least 1 column
 
-  // Now find the divisor of itemCount closest to columnsByWidth for balanced rows
-  let bestColumns = 1;
-  let bestDiff = Infinity;
+    // Now find the divisor of itemCount closest to columnsByWidth for balanced rows
+    let bestColumns = 1;
+    let bestDiff = Infinity;
 
-  for (let c = 1; c <= columnsByWidth; c++) {
-    let diff = Math.abs(itemCount / c - Math.round(itemCount / c));
-    if (diff < bestDiff) {
-      bestDiff = diff;
-      bestColumns = c;
+    for (let c = 1; c <= columnsByWidth; c++) {
+        let diff = Math.abs(itemCount / c - Math.round(itemCount / c));
+        if (diff < bestDiff) {
+        bestDiff = diff;
+        bestColumns = c;
+        }
     }
-  }
 
-  container.style.display = 'grid';
-  container.style.gridTemplateColumns = `repeat(${bestColumns}, 1fr)`;
-  container.style.gap = '10px';
+    container.style.display = 'grid';
+    container.style.gridTemplateColumns = `repeat(${bestColumns}, 1fr)`;
+    container.style.gap = '10px';
 }
+
+
+    // makes an object with methods to access the database
+        // intended for use with the runtime object
+export function makeDataLoader(dbClassName, jsClass = null) {
+        // cache is held *private* in side the closure
+    let cache = null;
+
+        // private helper to fetch and map data
+    async function fetchAndMap() {
+            // fetch the appropriate data
+        const req = new ActionRequest("getAllFromDB", dbClassName);
+        const res = await myFetch(req);
+            // extract from the response  // empty object if no response data
+        const raw = res.data || {};
+
+            // first map by id
+        let mapped = mapObjsBy(raw); // produces { id1: obj1, id2: obj2, ... }
+
+            // if a jsClass is specified, turn each property object into an instance
+        if (jsClass) {
+            for (const o in mapped) {
+                mapped[o] = new jsClass(mapped[o]);
+            }
+        }
+        return mapped;
+    }
+
+    return {
+            // if no cache, fetch
+        async load() {
+            if (!cache)  cache = await fetchAndMap();
+            return cache;
+        },
+
+            // fetch, and set cache
+        async refresh() {
+            cache = await fetchAndMap();
+            return cache;
+        },
+
+        clear() {
+            cache = null;
+        }
+    };
+}
+
+
 
 // function hasItems(arr) {
 //    return (Array.isArray(arr) && arr.length > 0);
 // }
-
-// window.addEventListener('resize', () => {
-//   distributeElementsToRows('#yourNavId');
-// });
-
-// // Call on initial load too
-// distributeElementsToRows('#yourNavId');
