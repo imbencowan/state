@@ -13,6 +13,7 @@
 			<!-- <th>Manager</th> -->
 			<th>Employees</th>
 			<th>Vehicle</th>
+			<th><span class="material-icons">edit</span></th><!-- button column -->
 		</tr>
 	</thead>
 	<tbody>
@@ -31,11 +32,15 @@
 				$site = $eventSite->site;
 				$siteName = $site->name;
 				$divisionDisplay = $eventSite->getDivisionsDisplay();
+				$divIDsArr = $eventSite->getDivisionsIDs();
 				$managerName = $eventSite->managerName;
 				$employeesStr = implode(', ', $eventSite->getEmployeeShortNames());
+				$empIDsArr = $eventSite->getChildIDs('employees');
 				$vehiclesStr = implode(', ', $eventSite->getVehicleNames());
+				$vhclIDsArr = $eventSite->getChildIDs('vehicles');
 		?>
-				<tr data-event-id="<?= $event->id; ?>" class="<?= $rowClass; ?>">
+				<tr data-event-id="<?= $event->id; ?>" data-eventSite-id="<?= $eventSite->id; ?>" 
+					class="<?= $rowClass; ?>">
 					<!-- Only first row gets the rowspan cells -->
 					<?php if ($i === 0): ?>
 						<td rowspan="<?= $rowspan; ?>">
@@ -43,16 +48,14 @@
 							<?= $eventDates; ?>
 						</td>
 					<?php endif; ?>
-					<td><?= $siteName; ?></td>
-					<td><?= $divisionDisplay; ?></td>
-					<!-- <td><?= $managerName; ?></td> -->
-					<td>
-						<?= $employeesStr; ?> 
-						<button><span class="material-icons" title="edit employees">edit</span></button>
-					</td>
-					<td><?= $vehiclesStr; ?> 
-						<button><span class="material-icons" title="edit vehicle">edit</span></button>
-					</td>
+					<td data-column="site" data-oValue="<?= $site->id; ?>"><?= $siteName; ?></td>
+					<td data-column="divisions" data-oValue="<?= json_encode($divIDsArr); ?>"><?= $divisionDisplay; ?></td>
+					<!-- <td data-field="manager"><?= $managerName; ?></td> -->
+					<td data-column="employees" data-oValue="<?= json_encode($empIDsArr); ?>"><?= $employeesStr; ?></td>
+					<td data-column="vehicles" data-oValue="<?= json_encode($vhclIDsArr); ?>"><?= $vehiclesStr; ?></td>
+					<td data-column="buttons"><button>
+						<span class="material-icons edit-row-button" title="edit row">edit</span>
+					</button></td>
 				</tr>
 				<?php 
 					++$i;

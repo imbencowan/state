@@ -41,7 +41,7 @@ abstract class BasicTableModel implements JsonSerializable {
 		return get_object_vars($this);
 	}
 	
-
+		////////////////////////////////////////// MAKING NESTED OBJECTS FROM DB SELECTS //////////////////
 		// builds a new object from $rows returned from a db call
 			// we have to screw with prefixes to deconstruct unique column aliases in $row['keys']
 	public static function buildFromRow(array $rows, string $colPrefix = '', ?string $context = null): mixed { // ?static {
@@ -120,6 +120,7 @@ abstract class BasicTableModel implements JsonSerializable {
 		ksort($organized);
 		return $organized;
 	}
+
 
 	
 
@@ -335,5 +336,30 @@ abstract class BasicTableModel implements JsonSerializable {
 	private static function writeJoin($relatedTable, $tableAlias, $oldAlias, $leftKey, $rightKey) {
 		return "LEFT JOIN $relatedTable AS $tableAlias ON $oldAlias.$leftKey = $tableAlias.$rightKey";
 	}
+
+
+
+		// HELPERS /////////////////////////////////////////
+			// returns ids of an array of objects held in a $property. applicable to any class with such properties
+	public function getChildIDs(string $property): array {
+			// check that this function will work. 
+		if (!property_exists($this, $property)) {
+			throw new InvalidArgumentException("Property '$property' does not exist on " . static::class);
+		}
+
+		if (!is_array($this->$property)) {
+			throw new UnexpectedValueException("Property '$property' is not an array");
+		}
+
+		// foreach ($children as $child) {
+		// 	if (!isset($child->id)) {
+		// 			throw new UnexpectedValueException("One of the children in '$property' does not have an 'id' property");
+		// 	}
+		// }
+
+		return array_map(fn($child) => $child->id, $this->$property);
+}
+
+
 }
 ?>

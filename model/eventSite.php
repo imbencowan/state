@@ -98,6 +98,11 @@ class EventSite extends BasicTableModel {
 		return $divStr;
 	}
 
+		// return a numerical array, using array_values(), so client side receives an array, not an object
+	public function getDivisionsIDs(): array {
+		return array_map(fn($esd) => $esd->division->id, array_values($this->esDivisions));
+	}
+
 	public function getEmployeeShortNames(): array {
 		return array_map(fn($e) => $e->shortName, $this->employees);
 	}

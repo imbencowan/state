@@ -38,12 +38,12 @@ export function safeParseDate(input) {
 
     // assumes objs is an array of objects that all have a unique id property
 export function mapObjsBy(objs, key = 'id') {
-    const result = {};
-        // {} in case objs is null, etc
-    for (const obj of Object.values(objs || {})) {
-        result[obj[key]] = obj;
-    }
-    return result;
+	const result = {};
+		// {} in case objs is null, etc
+	for (const obj of Object.values(objs || {})) {
+		result[obj[key]] = obj;
+	}
+	return result;
 }
 
 
@@ -83,46 +83,46 @@ export function distributeElementsToRows(containerSelector, minItemWidth = 100) 
     // makes an object with methods to access the database
         // intended for use with the runtime object
 export function makeDataLoader(dbClassName, jsClass = null) {
-        // cache is held *private* in side the closure
-    let cache = null;
+		// cache is held *private* in side the closure
+	let cache = null;
 
-        // private helper to fetch and map data
-    async function fetchAndMap() {
-            // fetch the appropriate data
-        const req = new ActionRequest("getAllFromDB", dbClassName);
-        const res = await myFetch(req);
-            // extract from the response  // empty object if no response data
-        const raw = res.data || {};
+		// private helper to fetch and map data
+	async function fetchAndMap() {
+			// fetch the appropriate data
+		const req = new ActionRequest("getAllFromDB", dbClassName);
+		const res = await myFetch(req);
+			// extract from the response  // empty object if no response data
+		const raw = res.data || {};
 
-            // first map by id
-        let mapped = mapObjsBy(raw); // produces { id1: obj1, id2: obj2, ... }
+			// first map by id
+		let mapped = mapObjsBy(raw); // produces { id1: obj1, id2: obj2, ... }
 
-            // if a jsClass is specified, turn each property object into an instance
-        if (jsClass) {
-            for (const o in mapped) {
-                mapped[o] = new jsClass(mapped[o]);
-            }
-        }
-        return mapped;
-    }
+			// if a jsClass is specified, turn each property object into an instance
+		if (jsClass) {
+			for (const o in mapped) {
+					mapped[o] = new jsClass(mapped[o]);
+			}
+		}
+		return mapped;
+	}
 
-    return {
-            // if no cache, fetch
-        async load() {
-            if (!cache)  cache = await fetchAndMap();
-            return cache;
-        },
+	return {
+			// if no cache, fetch
+		async load() {
+			if (!cache)  cache = await fetchAndMap();
+			return cache;
+		},
 
-            // fetch, and set cache
-        async refresh() {
-            cache = await fetchAndMap();
-            return cache;
-        },
+			// fetch, and set cache
+		async refresh() {
+			cache = await fetchAndMap();
+			return cache;
+		},
 
-        clear() {
-            cache = null;
-        }
-    };
+		clear() {
+			cache = null;
+		}
+	};
 }
 
 

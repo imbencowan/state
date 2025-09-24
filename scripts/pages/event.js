@@ -12,106 +12,105 @@ import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoic
 
 
 export async function goToEventPage(sport) {
-        // get the current school year
-    const sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-    let year = sixMonthsAgo.getFullYear() % 100;
-        // but reset it based off the select. the previous year calculation is really a fall back
-    if (document.getElementById("selectYear")) {
-        year = document.getElementById("selectYear").value;
-    }
-    let sportID = sport[1];
+		// get the current school year
+	const sixMonthsAgo = new Date();
+	sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+	let year = sixMonthsAgo.getFullYear() % 100;
+		// but reset it based off the select. the previous year calculation is really a fall back
+	if (document.getElementById("selectYear")) {
+		year = document.getElementById("selectYear").value;
+	}
+	let sportID = sport[1];
 
-    let request = new ActionRequest('showEventBySportAndYear', 'Event', { 'year': year, 'sportID': sportID });
+	let request = new ActionRequest('showEventBySportAndYear', 'Event', { 'year': year, 'sportID': sportID });
 
-    let responseJSON = await myFetch(request);
-    // console.log(responseJSON.data);
-    if (responseJSON.data !== null) {
-        runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
-    }
+	let responseJSON = await myFetch(request);
+	
+	document.getElementById("display").innerHTML = responseJSON.html;
+	
+		// reset mode on load
+	runtime.activeMode = null;
+	
 
-    // console.log(runtime.stateEvent);
-    document.getElementById("display").innerHTML = responseJSON.html;
-    
-        // reset mode on load
-    runtime.activeMode = null;
-    
-        // ATTACH EVENT LISTENERS 
-    attachEventPageListeners();
+	if (responseJSON.data !== null) {
+		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
+			// ATTACH EVENT LISTENERS 
+		attachEventPageListeners();
+	}	
 }
 
 export function attachEventPageListeners() {
-    const container = document.getElementById('eventContainer');
-        // this is one listener that handles clicks for all the buttons in the table
-        // and some out side the table
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // buttons for: AddOns, Editing, ShowingMessage, PrintingLabel. also Submitting and Canceling those actions
-    container.addEventListener('click', function(event) {
-        const target = event.target
-            // call the correct function, send the order and may be the event target
-        if (target.classList.contains('order-action')) {
-                // get the order for these actions
-            const order = getOrderFromTableButton(target);
-            
-            if (target.matches('span.showMessage')) {
-            	showOMessage(order);
-            } else if (target.matches('span.printLabel')) {
-                printBoxLabel(order);
-            } else if (target.matches('span.dlInvoice')) {
-                downloadInvoicePDF(order);
-            } else if (target.matches('span.addAddOns')) {
-                    // don't do this if some thing else is active
-                if (runtime.activeMode === null || runtime.activeMode === 'add') showAddOnInputs(order);
-            } else if (target.matches('span.editSizes')) {
-                    // don't allow this if we're already active
-                if (!runtime.activeMode) showEditSizeInputs(order);
-            } else if (target.matches('button.submitAddOns')) {
-                submitAddOns(target, order);
-            } else if (target.matches('button.submitEdit')) {
-                submitSizeEdit(target, order);
-            }
-            
-            // top level buttons
-        } else if (target.matches('button.genUndoneBoxLabelsBtn')) {
-            printUndoneBoxLabels();
-        } else if (target.matches('button.genTotalsBtn')) {
-            genIHSAATotals();
-        } else if (target.matches('button.printInvoicesBtn')) {
-            printAllInvoices();
-        } else if (target.matches('button.printMessagesBtn')) {
-            printOMessages();
-        } else if (target.matches('button.newOrderBtn')) {
-            makeBlankOrder();
-        } else if (target.matches('button.printAllSoSPDF')) {
-            printAllSoSPDF();
-        } else if (target.matches('button.printSoSPDF')) {
-            printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid));
-                
-                // a couple occasional cancel buttons
-        } else if (target.matches('button.cancelAddOns')) {
-            cancelAddOns(target);
-        } else if (target.matches('button.cancelEdit')) {
-            cancelSizeEdit(target);
-        } else if (target.matches('button.cancelEdit')) {
-            cancelSizeEdit(target);
-        }
-    });
-    
-        // next a listener for the inputs to ensure integer values
-    container.addEventListener("input", (e) => {
-        if (e.target.matches('input[type="number"]')) {
-            e.target.value = e.target.value.replace(/[^\d-]/g, '');
-        }
-    });
-    
-        // changeOrderCompleteness listeners
-    container.addEventListener('change', function(event) {
-        if (event.target.matches('input.orderChckBx')) {
-            changeOrderCompleteness(event.target, getOrderFromTableButton(event.target));
-        } else if (event.target.matches('input.commentChckBx')) {
-            changeCommentHandled(event.target);
-        }
-    });
+	const container = document.getElementById('eventContainer');
+		// this is one listener that handles clicks for all the buttons in the table
+		// and some out side the table
+			///////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// buttons for: AddOns, Editing, ShowingMessage, PrintingLabel. also Submitting and Canceling those actions
+	container.addEventListener('click', function(event) {
+		const target = event.target
+			// call the correct function, send the order and may be the event target
+		if (target.classList.contains('order-action')) {
+					// get the order for these actions
+			const order = getOrderFromTableButton(target);
+			
+			if (target.matches('span.showMessage')) {
+				showOMessage(order);
+			} else if (target.matches('span.printLabel')) {
+					printBoxLabel(order);
+			} else if (target.matches('span.dlInvoice')) {
+					downloadInvoicePDF(order);
+			} else if (target.matches('span.addAddOns')) {
+						// don't do this if some thing else is active
+					if (runtime.activeMode === null || runtime.activeMode === 'add') showAddOnInputs(order);
+			} else if (target.matches('span.editSizes')) {
+						// don't allow this if we're already active
+					if (!runtime.activeMode) showEditSizeInputs(order);
+			} else if (target.matches('button.submitAddOns')) {
+					submitAddOns(target, order);
+			} else if (target.matches('button.submitEdit')) {
+					submitSizeEdit(target, order);
+			}
+			
+			// top level buttons
+		} else if (target.matches('button.genUndoneBoxLabelsBtn')) {
+			printUndoneBoxLabels();
+		} else if (target.matches('button.genTotalsBtn')) {
+			genIHSAATotals();
+		} else if (target.matches('button.printInvoicesBtn')) {
+			printAllInvoices();
+		} else if (target.matches('button.printMessagesBtn')) {
+			printOMessages();
+		} else if (target.matches('button.newOrderBtn')) {
+			makeBlankOrder();
+		} else if (target.matches('button.printAllSoSPDF')) {
+			printAllSoSPDF();
+		} else if (target.matches('button.printSoSPDF')) {
+			printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid));
+					
+					// a couple occasional cancel buttons
+		} else if (target.matches('button.cancelAddOns')) {
+			cancelAddOns(target);
+		} else if (target.matches('button.cancelEdit')) {
+			cancelSizeEdit(target);
+		} else if (target.matches('button.cancelEdit')) {
+			cancelSizeEdit(target);
+		}
+	});
+	
+		// next a listener for the inputs to ensure integer values
+	container.addEventListener("input", (e) => {
+		if (e.target.matches('input[type="number"]')) {
+			e.target.value = e.target.value.replace(/[^\d-]/g, '');
+		}
+	});
+	
+		// changeOrderCompleteness listeners
+	container.addEventListener('change', function(event) {
+		if (event.target.matches('input.orderChckBx')) {
+			changeOrderCompleteness(event.target, getOrderFromTableButton(event.target));
+		} else if (event.target.matches('input.commentChckBx')) {
+			changeCommentHandled(event.target);
+		}
+	});
 }
 
 /////////////////// functions for acquiring an order from a DOM event. target will have a data-attribute for reference
@@ -452,14 +451,14 @@ function showEditSizeInputs(order) {
 
 function cancelSizeEdit(target) {
 	const tbody = target.closest('tbody');
-    const rows = Array.from(tbody.querySelectorAll('tr'));
+   const rows = Array.from(tbody.querySelectorAll('tr'));
 		// a quick clean. remove the inputs and set the cell values to the oValues we stored in a data attribute
-    rows.forEach(row => {
+   rows.forEach(row => {
 		const cells = Array.from(row.querySelectorAll('td'));
 		for (let i = 1; i < cells.length -1; i++) {
 			cells[i].textContent = cells[i].dataset.oValue;
 		}
-    });
+   });
 		// exit edit mode
 	runtime.activeMode = null;
 }

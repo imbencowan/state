@@ -53,12 +53,6 @@ export async function init() {
 
 	
 	modalInit();
-
-
-
-	// a test
-	let e = await runtime.allEmployees.load();
-	console.log(e);
 }
 
 function buildNavList() {
