@@ -125,41 +125,8 @@ class Event extends BasicTableModel {
 		// Test::logX($eventID);
 		$event = self::getByID($eventID);
 		return $event ?? null;
-
-
-		////////////////////////////////////////////////////////////////////////////////////
-
-		// $query = static::buildSelect() . " WHERE events.sportID = :id AND events.eventYear = :year";
-		// $rows = static::getFromDB($query, [':id' => $sportID, ':year' => $year]);
- 		// 	// returns an array of events, but we only want one
-		// 		// try changing these last two lines like Sport::getByName() to just return one instance
-		// $events = static::groupAndBuild($rows);
-		// if (empty($events)) {
-		// 	return null;
-		// }
-		
-		// 	// this if logic is specifically to handle golf, which has two events in the year
-		// 		// it sets $event to which ever is closer by date
-		// if (count($events) > 0) {
-		// 	usort($events, function($a, $b) {
-		// 		$now = new DateTime();
-		// 		$diffA = abs($now->getTimestamp() - $a->startDate->getTimestamp());
-		// 		$diffB = abs($now->getTimestamp() - $b->startDate->getTimestamp());
-		// 		return $diffA <=> $diffB;
-		// 	});
-
-		// 	$event = $events[0];
-		// } else {
-		// 	$event = reset($events);
-		// }
-		// 	// send back the *first* element
-		// return !empty($events) ? $event : null;
-		// 509 209 3056
-		// 070980021D
 	}
 	
-
-
 
 	public static function getIDBySportIDAndYear($sportID, $year) {
 		$db = Database::getDB();
@@ -284,92 +251,6 @@ class Event extends BasicTableModel {
 		});
 		
 		return $events[0] ?? null;
-	}
-		
+	}	
 }
-	
-	
-
-	// /////////////////////////////////////////////////////////////////////////////////
-	// // db functions
-
-
-	
-	// static function getEventsByYear($year) {
-		// $db = Database::getDB();
-
-		// $query = 'SELECT * FROM events
-				  // INNER JOIN sports ON events.sportID = sports.sportID
-				  // LEFT JOIN eventSites ON events.eventID = eventSites.eventID
-				  // LEFT JOIN vehicles ON eventSites.vehicleID = vehicles.vehicleID
-				  // LEFT JOIN sites ON eventSites.siteID = sites.siteID
-				  // LEFT JOIN eventSiteHasEmployee ON eventSites.eventSiteID = eventSiteHasEmployee.eventSiteID
-				  // LEFT JOIN employees ON eventSiteHasEmployee.employeeID = employees.employeeID
-				  // WHERE events.eventYear = :eventYear';
-
-		// $statement = $db->prepare($query);
-		// $statement->bindValue(":eventYear", $year);
-		// $statement->execute();
-		// $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
-		// $statement->closeCursor();
-
-		// $events = [];
-		// foreach ($rows as $row) {
-		  // $eventID = $row['eventID'];
-
-			// // add event to the events array, if it is not already there
-		  // if (!isset($events[$eventID])) {
-					// // Create a Sport object
-				// $sport = new Sport(
-					 // $row['sportID'],
-					 // $row['sportName'],
-					 // $row['isGendered'],
-					 // $row['isIndividualed'],
-					 // $row['maxTeamSize']
-				// );
-					// // Initialize the Event object
-				// $events[$eventID] = new Event(
-					// $eventID,
-					// $sport,
-					// $row['eventYear'],
-					// $row['startDate'],
-					// $row['endDate']
-				// );
-		  // }
-
-// // we have a problem here i think, if a site has multiple employees, will that site currently be pushed multiple times
-		  
-				// // Add each event site to the event's eventSites array if site data exists
-		  // if ($row['siteID'] !== null) {
-					
-					// // we should check if vehicleID is null, and not create a vehicle in that case
-					
-				// $vehicle = new Vehicle($row['vehicleID'], $row['vehicleName'], $row['isUnique']);
-				// $site = new Site($row['siteID'], $row['siteName'], $row['city']);
-				// $eventSite = new EventSite(
-					 // $row['eventSiteID'],
-					 // $eventID,
-					 // $site,
-					 // $row['managerName'],
-					 // $vehicle
-				// );
-				// if ($row['employeeID'] !== null) {
-					// $eventSite->pushEmployees(new Employee(
-						// $row['employeeID'], 
-						// $row['employeeName'], 
-						// $row['employeeShortName'], 
-						// $row['phone'],
-						// $row['email']
-					// ));
-				// }
-				// $events[$eventID]->pushEventSites($eventSite);
-				
-		  // }
-		// }
-
-		// // Return an indexed array of Event objects
-		// return array_values($events);
-	// }
-
-// }
 ?>

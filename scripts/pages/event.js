@@ -41,63 +41,69 @@ export async function goToEventPage(sport) {
 
 export function attachEventPageListeners() {
 	const container = document.getElementById('eventContainer');
-		// this is one listener that handles clicks for all the buttons in the table
-		// and some out side the table
-			///////////////////////////////////////////////////////////////////////////////////////////////////////////
-			// buttons for: AddOns, Editing, ShowingMessage, PrintingLabel. also Submitting and Canceling those actions
+		// this is one listener that handles clicks for all buttons on the event page
+			//////////////////////////////////////////////////////////////////////////////////////////////////////
 	container.addEventListener('click', function(event) {
-		const target = event.target
-			// call the correct function, send the order and may be the event target
+		const target = event.target;
+
+			////////////////// call the correct function for the click by checking the target ////////////////////
+			
+			// order-action related. buttons for: AddOns, Editing, ShowingMessage, PrintingLabel, DownloadingInvoice 
+				// also Submitting and Canceling those actions
 		if (target.classList.contains('order-action')) {
-					// get the order for these actions
+				// get the order to pass
 			const order = getOrderFromTableButton(target);
-			
-			if (target.matches('span.showMessage')) {
-				showOMessage(order);
-			} else if (target.matches('span.printLabel')) {
-					printBoxLabel(order);
-			} else if (target.matches('span.dlInvoice')) {
-					downloadInvoicePDF(order);
-			} else if (target.matches('span.addAddOns')) {
-						// don't do this if some thing else is active
-					if (runtime.activeMode === null || runtime.activeMode === 'add') showAddOnInputs(order);
-			} else if (target.matches('span.editSizes')) {
-						// don't allow this if we're already active
+
+				// define actions. 'selector': function to call
+			const orderActions = {
+				'span.editSizes': () => {
 					if (!runtime.activeMode) showEditSizeInputs(order);
-			} else if (target.matches('button.submitAddOns')) {
-					submitAddOns(target, order);
-			} else if (target.matches('button.submitEdit')) {
-					submitSizeEdit(target, order);
+				},
+				'span.addAddOns': () => {
+					if (!runtime.activeMode || runtime.activeMode === 'add') showAddOnInputs(order);
+				},
+				'span.showMessage': () => showOMessage(order),
+				'span.printLabel': () => printBoxLabel(order),
+				'span.dlInvoice': () => downloadInvoicePDF(order),
+				'button.submitAddOns': () => submitAddOns(target, order),
+				'button.submitEdit': () => submitSizeEdit(target, order),
+				'button.cancelAddOns': () => cancelAddOns(target),
+				'button.cancelEdit': () => cancelSizeEdit(target)
+			};
+
+
+				// check if the target matches any of the above selectors, call it's function and exit if so
+			for (const sel in orderActions) {
+				if (target.matches(sel)) {
+					orderActions[sel]();
+					return;
+				}
 			}
-			
-			// top level buttons
-		} else if (target.matches('button.genUndoneBoxLabelsBtn')) {
-			printUndoneBoxLabels();
-		} else if (target.matches('button.genTotalsBtn')) {
-			genIHSAATotals();
-		} else if (target.matches('button.printInvoicesBtn')) {
-			printAllInvoices();
-		} else if (target.matches('button.printMessagesBtn')) {
-			printOMessages();
-		} else if (target.matches('button.newOrderBtn')) {
-			makeBlankOrder();
-		} else if (target.matches('button.printAllSoSPDF')) {
-			printAllSoSPDF();
-		} else if (target.matches('button.printSoSPDF')) {
-			printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid));
-					
-					// a couple occasional cancel buttons
-		} else if (target.matches('button.cancelAddOns')) {
-			cancelAddOns(target);
-		} else if (target.matches('button.cancelEdit')) {
-			cancelSizeEdit(target);
-		} else if (target.matches('button.cancelEdit')) {
-			cancelSizeEdit(target);
+			return; // nothing matched, exit. this will skip the rest of the listener
+		}
+
+			// top-level buttons. 'selector': function to call
+		const topLevelActions = {
+			'button.genUndoneBoxLabelsBtn': () => printUndoneBoxLabels(),
+			'button.genTotalsBtn': () => genIHSAATotals(),
+			'button.printInvoicesBtn': () => printAllInvoices(),
+			'button.printMessagesBtn': () => printOMessages(),
+			'button.newOrderBtn': () => makeBlankOrder(),
+			'button.printAllSoSPDF': () => printAllSoSPDF(),
+			'button.printSoSPDF': () => printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid))
+		};
+
+		for (const sel in topLevelActions) {
+			if (target.matches(sel)) {
+				topLevelActions[sel]();
+				return;
+			}
 		}
 	});
+
 	
 		// next a listener for the inputs to ensure integer values
-	container.addEventListener("input", (e) => {
+	container.addEventListener('input', (e) => {
 		if (e.target.matches('input[type="number"]')) {
 			e.target.value = e.target.value.replace(/[^\d-]/g, '');
 		}
@@ -112,6 +118,80 @@ export function attachEventPageListeners() {
 		}
 	});
 }
+
+// export function attachEventPageListeners() {
+// 	const container = document.getElementById('eventContainer');
+// 		// this is one listener that handles clicks for all the buttons in the table
+// 		// and some out side the table
+// 			///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			// buttons for: AddOns, Editing, ShowingMessage, PrintingLabel. also Submitting and Canceling those actions
+// 	container.addEventListener('click', function(event) {
+// 		const target = event.target
+// 			// call the correct function, send the order and may be the event target
+// 		if (target.classList.contains('order-action')) {
+// 					// get the order for these actions
+// 			const order = getOrderFromTableButton(target);
+			
+// 			if (target.matches('span.showMessage')) {
+// 				showOMessage(order);
+// 			} else if (target.matches('span.printLabel')) {
+// 					printBoxLabel(order);
+// 			} else if (target.matches('span.dlInvoice')) {
+// 					downloadInvoicePDF(order);
+// 			} else if (target.matches('span.addAddOns')) {
+// 						// don't do this if some thing else is active
+// 					if (runtime.activeMode === null || runtime.activeMode === 'add') showAddOnInputs(order);
+// 			} else if (target.matches('span.editSizes')) {
+// 						// don't allow this if we're already active
+// 					if (!runtime.activeMode) showEditSizeInputs(order);
+// 			} else if (target.matches('button.submitAddOns')) {
+// 					submitAddOns(target, order);
+// 			} else if (target.matches('button.submitEdit')) {
+// 					submitSizeEdit(target, order);
+// 			}
+			
+// 			// top level buttons
+// 		} else if (target.matches('button.genUndoneBoxLabelsBtn')) {
+// 			printUndoneBoxLabels();
+// 		} else if (target.matches('button.genTotalsBtn')) {
+// 			genIHSAATotals();
+// 		} else if (target.matches('button.printInvoicesBtn')) {
+// 			printAllInvoices();
+// 		} else if (target.matches('button.printMessagesBtn')) {
+// 			printOMessages();
+// 		} else if (target.matches('button.newOrderBtn')) {
+// 			makeBlankOrder();
+// 		} else if (target.matches('button.printAllSoSPDF')) {
+// 			printAllSoSPDF();
+// 		} else if (target.matches('button.printSoSPDF')) {
+// 			printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid));
+					
+// 					// a couple occasional cancel buttons
+// 		} else if (target.matches('button.cancelAddOns')) {
+// 			cancelAddOns(target);
+// 		} else if (target.matches('button.cancelEdit')) {
+// 			cancelSizeEdit(target);
+// 		} else if (target.matches('button.cancelEdit')) {
+// 			cancelSizeEdit(target);
+// 		}
+// 	});
+	
+// 		// next a listener for the inputs to ensure integer values
+// 	container.addEventListener('input', (e) => {
+// 		if (e.target.matches('input[type="number"]')) {
+// 			e.target.value = e.target.value.replace(/[^\d-]/g, '');
+// 		}
+// 	});
+	
+// 		// changeOrderCompleteness listeners
+// 	container.addEventListener('change', function(event) {
+// 		if (event.target.matches('input.orderChckBx')) {
+// 			changeOrderCompleteness(event.target, getOrderFromTableButton(event.target));
+// 		} else if (event.target.matches('input.commentChckBx')) {
+// 			changeCommentHandled(event.target);
+// 		}
+// 	});
+// }
 
 /////////////////// functions for acquiring an order from a DOM event. target will have a data-attribute for reference
 		// get an order from the big ol runtime.stateEvent object
@@ -174,6 +254,7 @@ function showAddOnInputs(order) {
 			const tdCount = firstTr ? firstTr.children.length : 0;
 
 			const newTr = document.createElement('tr');
+			
 			newTr.classList.add('addOnRow');
 				// create the style select
 			const newTd = document.createElement('td');
@@ -197,14 +278,15 @@ function showAddOnInputs(order) {
 			const btnTD = document.createElement('td');
 			newTr.appendChild(btnTD);
 				// put submit and cancel buttons in the btnTD, unless there already is one
-			if (prnt.querySelector('button.submitAddOns') === null) makeSubmitCancelButtons(btnTD, 'AddOns');
+			if (prnt.querySelector('button.submitAddOns') === null) makeSubmitCancelButtons(btnTD, prnt, 'AddOns');
 			
-				// an final empty cell to maintain form
+				// a final empty cell to maintain form
 			const lastTd = document.createElement('td');
 			newTr.appendChild(lastTd);
-			
+
 				// Append the newly created <tr> to the <tbody>
 			prnt.appendChild(newTr);
+			
 				// give focus to the first input
 			firstInput.focus();
 		}
@@ -276,7 +358,7 @@ function cancelAddOns(target) {
 	runtime.activeMode = null;
 }
 
-function makeSubmitCancelButtons(td, action) {
+function makeSubmitCancelButtons(td, tbody, action) {
 	const submitButton = document.createElement('button');
 	submitButton.type = 'button';
 	submitButton.textContent = 'Submit';
@@ -286,31 +368,29 @@ function makeSubmitCancelButtons(td, action) {
 	const cancelButton = document.createElement('button');
 	cancelButton.type = 'button';
 	cancelButton.textContent = 'X';
-	cancelButton.classList.add('addOnButton', 'cancel' + action);
+	cancelButton.classList.add('addOnButton', 'order-action', 'cancel' + action);
 	td.appendChild(cancelButton);
 
-		// get row from td
-	const tbody = td.closest('tbody');
 		// add event listeners for ESC and ENTER
-    if (tbody) {
-        	// define the listener as a named function
-        const keyHandler = function(e) {
-            if (e.key === 'Escape') {
-                cancelButton.click();
-                cleanup();
-            } else if (e.key === 'Enter') {
-                submitButton.click();
-                cleanup();
-            }
-        };
+	if (tbody) {
+		// define the listener as a named function
+		const keyHandler = function(e) {
+			if (e.key === 'Escape') {
+					cancelButton.click();
+					cleanup();
+			} else if (e.key === 'Enter') {
+					submitButton.click();
+					cleanup();
+			}
+		};
 
-        tbody.addEventListener('keydown', keyHandler);
+		tbody.addEventListener('keydown', keyHandler);
 
-        	// define a cleanup helper
-        function cleanup() {
-            tbody.removeEventListener('keydown', keyHandler);
-        }
-    }
+		// define a cleanup helper
+		function cleanup() {
+			tbody.removeEventListener('keydown', keyHandler);
+		}
+	}
 }
 
 function buildAddOnSelect(prnt) {
@@ -441,7 +521,7 @@ function showEditSizeInputs(order) {
 			// put submit and cancel in the right place
 		const firstCells = rows[0].querySelectorAll('td');
 		const btnTD = firstCells[firstCells.length - 2];
-		makeSubmitCancelButtons(btnTD, 'Edit');
+		makeSubmitCancelButtons(btnTD, prnt, 'Edit');
 			// give focus
 		firstInput.focus()
 	} else {

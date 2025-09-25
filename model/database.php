@@ -10,7 +10,14 @@ class Database {
 	public static function getDB () {
 		if (!isset(self::$db)) {
 			try {
-				self::$db = new PDO(self::$dsn, self::$username, self::$password);
+				self::$db = new PDO(self::$dsn, self::$username, self::$password,
+					[
+							// set errormode, default fetch, and some thing for prepares
+						PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+						PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+						PDO::ATTR_EMULATE_PREPARES => false,
+					]
+				);
 			} catch (PDOException $e) {
 				$error_message = $e->getMessage();
 				include('../errors/database_error.php');

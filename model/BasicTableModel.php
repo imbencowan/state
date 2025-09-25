@@ -32,6 +32,7 @@ abstract class BasicTableModel implements JsonSerializable {
 		});
 	}
 	
+
 		// basic constructor. every child will have an $id and $name
 	public function __construct(public readonly ?int $id, public readonly ?string $name) {}
 
@@ -128,6 +129,7 @@ abstract class BasicTableModel implements JsonSerializable {
    ////////////////////////////////////////////////////////////////////////////////////
    // Database functions
 	
+		// basic
 	public function addToDB(): ?int {
 		$db = Database::getDB();
 		
@@ -161,19 +163,34 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $db->lastInsertId();
 	}
 
-	
-	public static function deleteByID(int $id): bool {
+		// accepts an int $id, or an array of $ids. returns true if any rows were deleted, or else false
+	public static function deleteByIDs(int|array $ids): bool {
 		$db = Database::getDB();
 		$idCol = static::getColumns()['id'];
-		$query = "DELETE FROM " . static::getTableName() . " WHERE $idCol = :id";
-		$statement = $db->prepare($query);
-		$statement->bindValue(':id', $id, PDO::PARAM_INT);
+
+		if (is_array($ids)) {
+			// Prepare placeholders for each ID
+			$placeholders = implode(',', array_fill(0, count($ids), '?'));
+			$query = "DELETE FROM " . static::getTableName() . " WHERE $idCol IN ($placeholders)";
+			$statement = $db->prepare($query);
+
+				// Bind each value by position
+			foreach (array_values($ids) as $index => $val) {
+					$statement->bindValue($index + 1, $val, PDO::PARAM_INT);
+			}
+		} else {
+			$query = "DELETE FROM " . static::getTableName() . " WHERE $idCol = :id";
+			$statement = $db->prepare($query);
+			$statement->bindValue(':id', $ids, PDO::PARAM_INT);
+		}
+
 		$statement->execute();
 		$affectedRows = $statement->rowCount();
 		$statement->closeCursor();
 
-		return $statement->rowCount() > 0; // return true if rows were affected
+		return $affectedRows > 0; // return true if rows were affected
 	}
+
 
 		// SELECTs ////////////////////////////////////////////////////////////////////////////////////////////////////
 		// getAll and getByID both implement a pair of helper functions (buildSelect() and buildJoins()) that do the heavy lifting
@@ -189,10 +206,6 @@ abstract class BasicTableModel implements JsonSerializable {
 		$idCol = static::getColumns()['id'];
 		$query = static::buildSelect() . " WHERE $table.$idCol  = :id";
 		$rows = static::getFromDB($query, [':id' => $id]);
-		// foreach ($rows as $row) {
-		// 	Test::logX($row);
-		// }
-		// Test::logX(implode(', ', array_keys($rows[0])));
 		$instance = !empty($rows) ? static::groupAndBuild($rows)[$id] : null;
 		return $instance;
 	}
@@ -289,44 +302,6 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $joins;
 	}
 	
-	// 	// Recursive helper function to handle deep relations (relations of relations) for query builder
-	// protected static function buildJoins($currentTable, $currentRelations, &$selectColumns, $joins = [], 
-	// 						$prefix = '', ?string $context = null) {
-	// 	$oldAlias = $prefix . $currentTable;
-	// 	$prefix .= $currentTable . '_';
-		
-	// 	foreach ($currentRelations as $currentRelation) {
-	// 		$relatedClass = $currentRelation->rClass;
-	
-	// 		if (!class_exists($relatedClass)) continue;
-	
-	// 			// make short names to make the code readable
-	// 		$relatedTable = $relatedClass::getTableName();
-	// 		$relatedColumns = $relatedClass::getColumns();
-	// 		$leftKey = $currentRelation->leftKey;
-	// 		$rightKey = $currentRelation->rightKey;
-			
-	// 		$tableAlias = $prefix . $relatedTable;
-	// 			// Add columns of the related table to the SELECT clause
-	// 		self::buildSelects($selectColumns, $tableAlias, $relatedColumns);
-			
-	// 			// build joins with an intermediate table, or without
-	// 		if ($currentRelation->interTable) {
-	// 			$interTable = $currentRelation->interTable;
-	// 			$tableAlias = $prefix . $interTable;
-	// 			$joins[] = self::writeJoin($interTable, $tableAlias, $oldAlias, $leftKey, $leftKey);
-	// 			$priorAlias = $tableAlias;
-	// 			$tableAlias = $prefix . $relatedTable;
-	// 			$joins[] = self::writeJoin($relatedTable, $tableAlias, $priorAlias, $rightKey, $rightKey);
-	// 		} else {
-	// 			$tableAlias = $prefix . $relatedTable;
-	// 			$joins[] = self::writeJoin($relatedTable, $tableAlias, $oldAlias, $leftKey, $rightKey);
-	// 		}
-	// 			// Recursively handle relations of the related class (i.e., relations of relations)
-	// 		$joins = self::buildJoins($relatedTable, $relatedClass::getContextRelations($context), $selectColumns, $joins, $prefix);
-	// 	}
-	// 	return $joins;
-	// }
 
 		// build a string with an underscore between each string element in $path
 	public static function buildAlias(array $path): string {
@@ -340,6 +315,7 @@ abstract class BasicTableModel implements JsonSerializable {
 
 
 		// HELPERS /////////////////////////////////////////
+// this is currently not being used
 			// returns ids of an array of objects held in a $property. applicable to any class with such properties
 	public function getChildIDs(string $property): array {
 			// check that this function will work. 
@@ -358,7 +334,7 @@ abstract class BasicTableModel implements JsonSerializable {
 		// }
 
 		return array_map(fn($child) => $child->id, $this->$property);
-}
+	}
 
 
 }

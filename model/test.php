@@ -148,7 +148,7 @@ class Test implements JsonSerializable {
 	
 	static function deleteItem($data) {
 		$class = $data['className'];
-		$action = 'deleteByID';
+		$action = 'deleteByIDs';
 		$newID = call_user_func([$class, $action], $data['id']);
 		$html = "The Test::deleteItem() function was called";
 		echo json_encode(['deletedID' => $data['id']]);

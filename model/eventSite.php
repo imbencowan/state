@@ -110,5 +110,12 @@ class EventSite extends BasicTableModel {
 	public function getVehicleNames(): array {
 		return array_map(fn($v) => $v->name, $this->vehicles);
 	}
+
+
+		///////////////////////////////////////////////////////////////////////////////////////////
+		// user actions
+	public static function editEventSiteFromRow($eventSiteID, $updateValues) {
+		return 'made it to the server function';
+	}
 }
 ?>

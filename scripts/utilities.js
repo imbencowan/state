@@ -80,8 +80,8 @@ export function distributeElementsToRows(containerSelector, minItemWidth = 100) 
 }
 
 
-    // makes an object with methods to access the database
-        // intended for use with the runtime object
+   // makes an object with methods to access the database
+      // intended for use with the runtime object
 export function makeDataLoader(dbClassName, jsClass = null) {
 		// cache is held *private* in side the closure
 	let cache = null;
@@ -124,6 +124,23 @@ export function makeDataLoader(dbClassName, jsClass = null) {
 		}
 	};
 }
+
+
+   // compares arrays' elements, disregarding order
+      // returns true/false
+export function arraysEqualIgnoreOrder(a, b) {
+   if (!Array.isArray(a) || !Array.isArray(b)) return false;
+   if (a.length !== b.length) return false;
+
+      // reorder the arrays identically
+   const sortedA = [...a].sort();
+   const sortedB = [...b].sort();
+
+      // checks if every val of sortedA === sortedB at the same idx, using the built in Array.every()
+   return sortedA.every((val, idx) => val === sortedB[idx]);
+}
+
+
 
 
 

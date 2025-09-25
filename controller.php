@@ -9,6 +9,7 @@
 
 		// magically loads required files
 	require 'autoloader.php';
+	require 'functions.php';
 	
 		// set the time zone
 	date_default_timezone_set('America/Boise');

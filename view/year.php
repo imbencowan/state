@@ -4,6 +4,7 @@
 	$displayYear = $year . '-' . $nextYear;
 ?>
 <h2><?= $displayYear . ' Events'; ?></h2>
+<div class="table-container">
 <table id="eventsTable" class = "eventsTable">
 	<thead>
 		<tr>
@@ -39,7 +40,7 @@
 				$vehiclesStr = implode(', ', $eventSite->getVehicleNames());
 				$vhclIDsArr = $eventSite->getChildIDs('vehicles');
 		?>
-				<tr data-event-id="<?= $event->id; ?>" data-eventSite-id="<?= $eventSite->id; ?>" 
+				<tr data-event-i-d="<?= $event->id; ?>" data-event-site-i-d="<?= $eventSite->id; ?>" 
 					class="<?= $rowClass; ?>">
 					<!-- Only first row gets the rowspan cells -->
 					<?php if ($i === 0): ?>
@@ -48,13 +49,13 @@
 							<?= $eventDates; ?>
 						</td>
 					<?php endif; ?>
-					<td data-column="site" data-oValue="<?= $site->id; ?>"><?= $siteName; ?></td>
-					<td data-column="divisions" data-oValue="<?= json_encode($divIDsArr); ?>"><?= $divisionDisplay; ?></td>
+					<td data-column="site" data-o-value="<?= dataAttr($site->id); ?>"><?= $siteName; ?></td>
+					<td data-column="divisions" data-o-value="<?= dataAttr($divIDsArr); ?>"><?= $divisionDisplay; ?></td>
 					<!-- <td data-field="manager"><?= $managerName; ?></td> -->
-					<td data-column="employees" data-oValue="<?= json_encode($empIDsArr); ?>"><?= $employeesStr; ?></td>
-					<td data-column="vehicles" data-oValue="<?= json_encode($vhclIDsArr); ?>"><?= $vehiclesStr; ?></td>
+					<td data-column="employees" data-o-value="<?= dataAttr($empIDsArr); ?>"><?= $employeesStr; ?></td>
+					<td data-column="vehicles" data-o-value="<?= dataAttr($vhclIDsArr); ?>"><?= $vehiclesStr; ?></td>
 					<td data-column="buttons"><button>
-						<span class="material-icons edit-row-button" title="edit row">edit</span>
+						<span class="material-icons" data-action="editRow" title="edit row">edit</span>
 					</button></td>
 				</tr>
 				<?php 
@@ -65,3 +66,4 @@
 		<?php endforeach; ?>
 	</tbody>
 </table>
+</div>
