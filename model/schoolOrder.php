@@ -143,8 +143,8 @@ class SchoolOrder extends BasicTableModel {
 					// get the whole sport, we need sport->minDiv later
 				$sport = Sport::getByName($order['sport']);
 					// get the school year. an event in january - may of the 24-25 school year will be represented by 24
-$year = Year::convertDateToSchoolYear(new DateTime());
-// $year = 24;
+// $year = Year::convertDateToSchoolYear(new DateTime());
+$year = 24;
 				$eventID = Event::getIDBySportIDAndYear($sport->id, $year);
 				$divisionID = Division::getIDByName($order['division']);	
 
@@ -204,7 +204,7 @@ $year = Year::convertDateToSchoolYear(new DateTime());
 							// the new id will be returned
 						$o = new messageOrder(null, $schoolOrderID, $genderID, $orderedBy, $comment, $commentHandled, $orderText, 
 													$fileName, date('Y-m-d H:i:s'));							
-						$messageOrderID = $o->addToDB();
+						$messageOrderID = $o->addInstanceToDB();
 						$addedOrders[] = $order;
 					} else {
 						$preexistingOrders[] = $order;
@@ -229,7 +229,7 @@ $year = Year::convertDateToSchoolYear(new DateTime());
 				
 						$o = new MessageOrder(null, $schoolOrderID, $genderID, $orderedBy, $comment, $commentHandled, $orderText, 
 													$fileName, date('Y-m-d H:i:s'));	
-						$messageOrderID = $o->addToDB();
+						$messageOrderID = $o->addInstanceToDB();
 						
 							// add the team items
 						SOrderItem::addTeamItems($schoolOrderID, $hoods);
@@ -260,10 +260,6 @@ $year = Year::convertDateToSchoolYear(new DateTime());
 		return [ 'html' => $htmlContent, 'data' => $orders ];
 	}
 	
-	// public static function processOrder($order) {
-		
-	// }
-	
 	public static function updateCompletenessIf($orderID, $oldValue, $newValue) {
 		$db = Database::getDB();
 			// $oldValue should be 1 for complete, and $newValue should be 2 for partial, though other options are possible
@@ -279,16 +275,9 @@ $year = Year::convertDateToSchoolYear(new DateTime());
 	}
 	
 	public static function addNewOrder($eshdID, $schoolID) {
-	  $db = Database::getDB();
-	  $query = "INSERT INTO schoolOrders (eventSiteHasDivisionID, schoolID) 
-					VALUES (:eshdID, :schoolID)";
 
-	  $stmt = $db->prepare($query);
-	  $stmt->bindValue(':eshdID', $eshdID);
-	  $stmt->bindValue(':schoolID', $schoolID);
-
-	  $stmt->execute();
-	  return $db->lastInsertId();
+		$data = ['eventSiteHasDivisionID' => $eshdID, 'schoolID' => $schoolID];
+		return self::insert($data);
 	}
 	
 	
@@ -298,6 +287,22 @@ $year = Year::convertDateToSchoolYear(new DateTime());
 		$rows = static::getFromDB($query, [':eshdID' => $eshdID, ':schoolID' => $schoolID]);
 		return !empty($rows) ? $rows[0]['schoolOrderID'] : null;
 	}
+	
+		// this will set due programatically by the sOrderItems currently in the db
+	public static function updateDue($db, $orderID) {
+		$stmt = $db->prepare("UPDATE schoolorders
+					SET due = (
+						SELECT SUM(ii.price * si.sOrderItemsQuantity)
+						FROM sorderitems si
+						JOIN inventoryitems ii ON si.itemID = ii.itemID
+						WHERE si.schoolOrderID = schoolorders.schoolOrderID
+					)
+					WHERE schoolOrderID = :id");
+		$stmt->execute([':id' => $orderID]);
+		
+			// return new due
+		return self::getColForID('due', $orderID);
+	}
 
 
 
@@ -306,23 +311,13 @@ $year = Year::convertDateToSchoolYear(new DateTime());
    // user actions
 	
 	static function changeOrderCompleteness($id, $completeness) {
-		$db = Database::getDB();
-		
-		$statement = $db->prepare('UPDATE schoolOrders SET completeness = :completeness WHERE schoolOrderID = :orderID');
-		$statement->bindValue(":orderID", $id);
-		$statement->bindValue(":completeness", $completeness);
-		$statement->execute();
-		$affectedRows = $statement->rowCount();
-		$statement->closeCursor();
-			
-		return ['rowsAffected' => $affectedRows];
+		$rowsAffected = self::updateByID($id, ['completeness' => $completeness]);
+		return ['rowsAffected' => $rowsAffected];
 	}
 	
 	public static function editSizes($items, $orderID) {
+			// use withDB to avoid some thing like a partial update
 		return Database::withDB(function($db) use ($items, $orderID) {
-				// bring in the data
-			// $items = $data['items'];
-			// $orderID = $data['schoolOrderID'];
 			
 				// this will UPDATE records for existing sizes, and create new records for nonexisting
 			$stmt = $db->prepare("INSERT INTO sorderitems (schoolOrderID, itemID, sOrderItemsQuantity)
@@ -342,28 +337,11 @@ $year = Year::convertDateToSchoolYear(new DateTime());
 			
 				// UPDATE due
 			$due = self::updateDue($db, $orderID);
-				// UPDATE completeness IF currently complete
+				// UPDATE completeness IF currently complete to partial
 			self::updateCompletenessIf($orderID, 1, 2);
 	
 			return [ 'newOrder' => self::getByID($orderID) ];
 		});
-	}
-	
-	public static function updateDue($db, $orderID) {
-		$stmt = $db->prepare("UPDATE schoolorders
-					SET due = (
-						SELECT SUM(ii.price * si.sOrderItemsQuantity)
-						FROM sorderitems si
-						JOIN inventoryitems ii ON si.itemID = ii.itemID
-						WHERE si.schoolOrderID = schoolorders.schoolOrderID
-					)
-					WHERE schoolOrderID = :id");
-		$stmt->execute([':id' => $orderID]);
-		
-			// return new due
-		$stmt = $db->prepare("SELECT due FROM schoolorders WHERE schoolOrderID = :id");
-		$stmt->execute([':id' => $orderID]);
-		return $stmt->fetchColumn();
 	}
 }
 ?>

@@ -26,7 +26,7 @@ class Database {
 		return self::$db;
 	}
 	
-		// a wrapper to catch errors in db functions
+		// a wrapper to manage transactions and catch errors in db functions
 	public static function withDB(callable $callback) {
       try {
          $db = self::getDB();

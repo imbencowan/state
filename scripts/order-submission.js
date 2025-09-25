@@ -2,8 +2,8 @@
 import { sizeList } from './constants.js';
     // fetch
 import { myFetch } from './fetch.js';
-    // a class to organize data to send to the server
-import { InputOrder } from './models/other-classes.js';
+    // classes to organize data to send to the server
+import { ActionRequest, InputOrder } from './models/other-classes.js';
 
 export async function submitOrderFiles() {
 	let files = document.getElementById("fileInput").files;

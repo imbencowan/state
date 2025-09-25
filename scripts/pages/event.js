@@ -631,6 +631,8 @@ async function changeOrderCompleteness(box, order) {
 				tbody.classList.add("unDoneRow");
 				updateNeeded(order, false);
 			}
+		} else {
+			box.checked = !completeness;
 		}
 	}
 }

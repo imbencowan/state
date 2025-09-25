@@ -35,7 +35,7 @@ class SOrderItem extends BasicTableModel {
 			// make arrays of itemIDs
 		$priorItemIDs = array_column($priorItems, 'itemID');
 		$addItemIDs = array_column($addItems, 'itemID');
-			// check for duplicates between the arrays
+			// check for duplicates between the arrays. don't *add* some thing that already exists
 		$duplicates = array_intersect($priorItemIDs, $addItemIDs);
 		
 		if ($duplicates) {
@@ -53,15 +53,12 @@ class SOrderItem extends BasicTableModel {
 				// using a transaction
 			$db->beginTransaction();
 
-			$stmt = $db->prepare("INSERT INTO sorderitems (schoolOrderID, itemID, sOrderItemsQuantity) 
-										VALUES (:orderID, :itemID, :quantity)");
-
+			
 			foreach ($addItems as $item) {
-				$stmt->execute([
-					':orderID' => $orderID,
-					':itemID' => $item['itemID'],
-					':quantity' => $item['quantity']
-				]);
+				$data = ['schoolOrderID' => $orderID, 
+							'itemID' =>$item['itemID'], 
+							'sOrderItemsQuantity' => $item['quantity']];
+				self::insert($data);
 			}
 			
 				// UPDATE due

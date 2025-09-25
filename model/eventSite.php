@@ -115,7 +115,31 @@ class EventSite extends BasicTableModel {
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// user actions
 	public static function editEventSiteFromRow($eventSiteID, $updateValues) {
+		foreach ($updateValues as $key => $value) {
+			switch ($key) {
+					case 'site':
+						self::updateByID($eventSiteID, ['siteID' => $value]);
+						break;
+
+					case 'divisions':
+						// self::updateInterTable(['eventSiteID' => $eventSiteID], []);
+						break;
+
+					case 'employees':
+						self::updateInterTable(['eventSiteID' => $eventSiteID], ['employeeID' => $value]);
+						break;
+
+					case 'vehicles':
+						self::updateInterTable(['eventSiteID' => $eventSiteID], ['vehicleID' => $value]);
+						break;
+
+					default:
+						// optional: handle unknown keys
+						throw new InvalidArgumentException("Invalid column: $key");
+			}
+		}
 		return 'made it to the server function';
 	}
+
 }
 ?>

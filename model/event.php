@@ -134,7 +134,7 @@ class Event extends BasicTableModel {
 					WHERE sportID = :sportID AND eventYear = :year';
 		$statement = $db->prepare($query);
 		$statement->execute([':sportID' => $sportID, ':year' => $year]);
-		$events = $statement->fetchAll(PDO::FETCH_ASSOC);
+		$events = $statement->fetchAll();
 		
 		if (empty($events)) {
 			return null;
@@ -157,7 +157,7 @@ class Event extends BasicTableModel {
 
 		$statement = $db->prepare($query);
 		$statement->execute([':date' => $date]);
-		$row = $statement->fetch(PDO::FETCH_ASSOC);
+		$row = $statement->fetch();
 			
 			// if an id was found, return it
 		if ($row) return $row['eventID'];
@@ -170,7 +170,7 @@ class Event extends BasicTableModel {
 
 		$statement = $db->prepare($query);
 		$statement->execute();
-		$row = $statement->fetch(PDO::FETCH_ASSOC);
+		$row = $statement->fetch();
 			// will return null if there are no events at all
 		return $row['eventID'] ?? null;
 	}

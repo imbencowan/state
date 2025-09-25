@@ -139,7 +139,7 @@ class Test implements JsonSerializable {
 	
 	static function addItem($data) {
 		$class = $data['className'];
-		$action = 'addToDB';
+		$action = 'addInstanceToDB';
 		$name = $data['name'];
 		$newID = call_user_func([$class, $action], $data);
 		$html = "The Test::addItem() function was called";

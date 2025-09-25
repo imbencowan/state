@@ -12,28 +12,27 @@ export async function myFetch(request) {
             headers: {'Content-Type': 'application/json'}, 
             body: JSON.stringify(request)
         });
-            // get the response, convert to json or throw. or what ever.
+            // get the response
         const responseText = await response.text();
         let json;
+            // convert to json or throw
         try {
             // console.log(responseText);
             json = JSON.parse(responseText);
         } catch {
             throw new Error("Invalid JSON returned from server");
         }
-            // handle other error cases
-        if (!response.ok) {
-            if (response.status === 400 && json.error) {
-                openModal(json.error);
-                return null;
-            }
-            throw new Error(`Response status: ${response.status} ${response.statusText}`);
-        }
+
+            // Treat any server-reported error as an exception
+        if (json.success === false) throw new Error(json.eMessage || "Unknown server error");
+            // Throw on HTTP-level errors
+        if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 
         console.log(json);
         return json;
     } catch (error) {
         console.error("Fetch Error:", error.message);
+        openModal("Fetch Error: " + error.message);
         return null;
     }
 }

@@ -129,8 +129,45 @@ abstract class BasicTableModel implements JsonSerializable {
    ////////////////////////////////////////////////////////////////////////////////////
    // Database functions
 	
-		// basic
-	public function addToDB(): ?int {
+		// basic add. insert given properties. $data = {column => value}
+	public static function insert(object|array $data): ?int {
+			// if $data is an object, convert to assoc array
+		if (is_object($data)) $data = (array) $data;
+		if (empty($data)) return null;
+
+			// get columns
+		$columns = static::getColumns();
+
+			// DO NOT allow id in inserts. remove it from column validator
+		unset($columns['id']); 
+
+			// if any $data keys do not match column names, throw
+		$invalidKeys = array_diff(array_keys($data), $columns);
+		if (!empty($invalidKeys)) {
+			throw new InvalidArgumentException(
+					"Invalid column(s): " . implode(', ', array_keys($invalidKeys))
+			);
+		}
+			// build strings for the $query
+		$colNames = implode(', ', array_keys($data));
+		$placeholders = implode(', ', array_map(fn($c) => ":$c", array_keys($data)));
+
+			// make the query
+		$db = Database::getDB();
+		$stmt = $db->prepare("INSERT INTO " . static::getTableName() . " ($colNames) VALUES ($placeholders)");
+
+			// bind values
+		foreach ($data as $col => $val) {
+			$stmt->bindValue(":$col", $val);
+		}
+
+		$stmt->execute();
+			// return the newly generated id
+		return $db->lastInsertId();
+	}
+
+		// inserts the instance to the db
+	public function addInstanceToDB(): ?int {
 		$db = Database::getDB();
 		
 			// get object properties and columns
@@ -191,6 +228,135 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $affectedRows > 0; // return true if rows were affected
 	}
 
+		// updates given of columns with given values, $updateValues is like ['column': value]
+			// can update multiple rows, but all will receive the same values
+	public static function updateByID(int|array $ids, array $updateValues): bool {
+			// check if any thing to update
+		if (empty($updateValues)) return false;
+
+			// get some stuff
+		$db = Database::getDB();
+		$table = static::getTableName();
+		$columns = static::getColumns();
+		$idCol = $columns['id'];
+
+			// Validate column names
+		$invalidKeys = array_diff(array_keys($updateValues), $columns);
+			// throw if bad name
+		if (!empty($invalidKeys)) {
+			throw new InvalidArgumentException("Invalid column(s): " . implode(', ', array_keys($invalidKeys)));
+		}
+
+			// prevent updating ID
+		if (isset($updateValues['id'])) {
+			throw new InvalidArgumentException("Cannot update primary key 'id'");
+		}
+
+			// Build SET clause with named placeholders
+		$setClauses = [];
+		foreach ($updateValues as $col => $val) {
+			$setClauses[] = "$col = :$col";
+		}
+		$setString = implode(', ', $setClauses);
+
+			// Normalize $ids into an array
+		$ids = is_array($ids) ? $ids : [$ids];
+
+			// Build named placeholders for ids
+		$idPlaceholders = [];
+		foreach ($ids as $i => $id) {
+			$idPlaceholders[] = ":id$i";
+		}
+		$placeholdersString = implode(',', $idPlaceholders);
+
+		$query = "UPDATE $table SET $setString WHERE $idCol IN ($placeholdersString)";
+		$stmt = $db->prepare($query);
+
+			// Bind update values
+		foreach ($updateValues as $col => $val) {
+			$stmt->bindValue(":$col", $val);
+		}
+
+			// Bind IDs
+		foreach ($ids as $i => $id) {
+			$stmt->bindValue(":id$i", $id, PDO::PARAM_INT);
+		}
+
+		$stmt->execute();
+		$affectedRows = $stmt->rowCount();
+		$stmt->closeCursor();
+
+		return $affectedRows > 0;
+	}
+
+
+	public static function updateInterTable(array $primaryKey, array $secondaryKey): void {
+		$db = Database::getDB();
+
+			// check keys
+		if (count($primaryKey) !== 1 || count($secondaryKey) !== 1) {
+			throw new InvalidArgumentException("Primary and secondary keys must be single-column arrays like ['col' => value].");
+		}
+
+		$primaryCol = key($primaryKey);
+		$primaryVal = current($primaryKey);
+		$secondaryCol = key($secondaryKey);
+		$secondaryVals = (array) current($secondaryKey); // ensure array
+
+			// Find the relation via getRelations()
+		$relations = static::getRelations();
+		$relation = null;
+		foreach ($relations as $rel) {
+			if (($rel->leftKey === $primaryCol && $rel->rightKey === $secondaryCol)) {
+				$relation = $rel;
+				break;
+			}
+		}
+
+		if (!$relation) {
+			throw new InvalidArgumentException("No relation found for columns $primaryCol and $secondaryCol");
+		}
+
+		$interTable = $relation->interTable;
+		$leftCol = $relation->leftKey;
+		$rightCol = $relation->rightKey;
+
+		try {
+			$db->beginTransaction();
+
+				// 1. Delete rows that are no longer in $secondaryVals
+			$placeholders = implode(',', array_fill(0, count($secondaryVals), '?'));
+			$deleteQuery = "DELETE FROM $interTable WHERE $leftCol = ?"
+								. (count($secondaryVals) ? " AND $rightCol NOT IN ($placeholders)" : "");
+			$stmt = $db->prepare($deleteQuery);
+			$stmt->execute(array_merge([$primaryVal], $secondaryVals));
+
+				// 2. Find which secondary IDs already exist
+			$selectQuery = "SELECT $rightCol FROM $interTable WHERE $leftCol = ?";
+			$stmt = $db->prepare($selectQuery);
+			$stmt->execute([$primaryVal]);
+			$existing = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+
+				// 3. Insert missing secondary IDs
+			$toInsert = array_diff($secondaryVals, $existing);
+			if ($toInsert) {
+					$insertQuery = "INSERT INTO $interTable ($leftCol, $rightCol) VALUES (?, ?)";
+					$stmt = $db->prepare($insertQuery);
+					foreach ($toInsert as $val) {
+						$stmt->execute([$primaryVal, $val]);
+					}
+			}
+
+			$db->commit();
+		} catch (PDOException $e) {
+			$db->rollBack();
+			throw $e;
+		}
+	}
+
+
+
+
 
 		// SELECTs ////////////////////////////////////////////////////////////////////////////////////////////////////
 		// getAll and getByID both implement a pair of helper functions (buildSelect() and buildJoins()) that do the heavy lifting
@@ -220,6 +386,21 @@ abstract class BasicTableModel implements JsonSerializable {
 		return !empty($rows) ? $rows[0][static::getTableName() . "_$idCol"] : null;
 	}
 
+	public static function getColForID(string $column, int $id) {
+		$tableCols = static::getColumns();
+			// check if $column is valid
+		if (!array_key_exists($column, $tableCols)) {
+			throw new InvalidArgumentException("Invalid column requested");
+		}
+
+		$idCol = $tableCols['id'];
+		$table = static::getTableName();
+		$query = "SELECT {$column} FROM {$table} WHERE {$idCol} = :id";
+		$value = static::getFromDB($query, [':id' => $id]);
+		
+		return $value ?: null;
+	}
+
 	
 		// a helper for various get...()s. takes a $query and $params, and makes the actual call
 	protected static function getFromDB(string $query, array $params = []): array {
@@ -230,7 +411,7 @@ abstract class BasicTableModel implements JsonSerializable {
 			$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
 		}
 		$statement->execute();
-		$rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+		$rows = $statement->fetchAll();
 		$statement->closeCursor();
 
 		return $rows;
