@@ -93,27 +93,31 @@ function buildNavList() {
 function buildNavList2() {
 		// get the nav bar
 	let navList = document.getElementById("nav2List");
-	const showYear
+
 	const nav2Items = [
-		['Year', 'showYear', 'Year', null],
-		['Schools', 'showSchools', 'School', null],
-		['Items', 'showItems', 'Item', null],
-		['Tests', 'showTests', 'Test', null]
+		['Year', 'showYear', 'Year'],
+		['Schools', 'showSchools', 'School'],
+		['Items', 'showItems', 'Item'],
+		['Tests', 'showTests', 'Test']
 	];
 	nav2Items.forEach((item) => {
 			// create the element
 		let newLI = document.createElement("li");
 		newLI.innerHTML = item[0];
+
 			// add a listener to load the appropriate content when clicked
 		newLI.addEventListener('click', async function() {
-            	// await the main content load
-            await showPage(item[1], item[2], item[3]);
+			let data = null;
+			if (item[1] == 'showYear') data = { year: document.getElementById('selectYear').value };
 
-        		// additional behavior after content is loaded
-            if (item[1] === 'showYear') {
-               addShowYearFunctionality();
-            }
-        });
+				// await the main content load
+			await showPage(item[1], item[2], data);
+
+				// additional behavior after content is loaded
+			if (item[1] === 'showYear') {
+				addShowYearFunctionality();
+			}
+      });
 			// add it to the page
 		navList.appendChild(newLI);
 	});

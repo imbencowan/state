@@ -362,7 +362,6 @@ function showAddYear() {
    textarea.rows = 10;
    textarea.cols = 50;
    textarea.placeholder = "Paste PDF text here...";
-   textarea.value = schText;
    wrapper.appendChild(textarea);
 
    // submit button
@@ -688,82 +687,3 @@ async function parseYear(txt) {
    }
 }
 
-
-   // export class StateEvent {
-   // constructor({ id, sport, startDate, endDate, year, eventSites = [] })
-
-   // export class EventSite {
-   // constructor({ id, eventID, site, managerName, gender, vehicle, esDivisions = [] }) 
-
-
-const schText = `GOLF Oct. 9-10 (6A), Oct. 10-11 (5A)
-6A RedHawk GC (Mtn View host) Dane Pence
-5A Purple Sage GC (Middleton host) Andy Ankeny
-SOCCER Oct. 23-25
-6A Eagle B/Rocky Mtn G Tony Brulotte/Troy Rice
-5A Columbia B/Middleton G Todd Cady/Andy Ankeny
-4A Owyhee B/Meridian G Dane Roy/Nichole Williamson
-VOLLEYBALL Oct. 30 - Nov. 1
-6A Capital H.S. Jason Willer
-5A Timberline H.S. Tol Gropp
-4A Mountain America Center, Idaho Falls Travis Hobson
-3A Mountain America Center, Idaho Falls Travis Hobson
-2A Post Falls H.S Craig Christensen
-1A Coeur d'Alene H.S. Tony Prka
-CROSS COUNTRY Nov. 1
-LCSC Orchards, Lewiston Doug Henderson
-SWIMMING Nov. 7-8
-Idaho Central Aquatics Center Deb Hill
-FOOTBALL Nov. 21-22
-6A TBD
-5A TBD
-4A TBD
-3A TBD
-2A TBD
-1A TBD
-DRAMA Dec. 5-6
-Thunder Ridge H.S. Shaun Nichols
-GIRLS BASKETBALL Feb. 19-21
-6A Ford Idaho Center Shawnie Ellis
-5A Mountain View H.S. Dane Pence
-4A Skyview H.S. Eric Bonds
-3A Kuna H.S. Luke Wolf
-2A Columbia H.S. Randy Potter/Todd Cady
-1A Owyhee H.S. Dane Roy
-DANCE/CHEER Feb. 27-28
-Mountain America Center, Idaho Falls Julie Hammons/Lisa Hahle
-WRESTLING Feb. 27-28
-Ford Idaho Center Todd Cady
-BOYS BASKETBALL Mar. 5-7
-6A Ford Idaho Center Jason Willer
-5A Rocky Mountain H.S. Troy Rice
-4A Eagle H.S. Tony Brulotte
-3A Meridian H.S. Nichole Williamson
-2A Vallivue H.S. Allen Dade
-1A Caldwell H.S. Jon Hallock
-DEBATE Mar. 13-14
-District III TBD
-SPEECH Apr. 10-11
-Pocatello H.S. TBD
-GOLF May 11-12
-4A District III (Homedale host) Casey Grove
-3A Scotch Pines GC (Rimrock host) Ashley Merrick
-SOFTBALL May 14-16
-6A Coeur d'Alene/Lake City H.S. Tony Prka/Troy Anderson
-5A Post Falls H.S. Craig Christensen
-4A Filer H.S. Brodie Parrott
-3A Timberlake/Lakeland H.S. (Kellogg Host) Scott Miller
-2A Genesee H.S. Kelly Caldwell
-BASEBALL May 14-16
-6A Memorial Stadium Tony Brulotte
-5A Melaleuca Field Nick Birch
-4A College of Southern Idaho Shaun Walker
-3A Northwest Nazarene University Bowe vonBrethorst
-2A Capital H.S./Church Field Allen Hutchens
-TENNIS May 15-16
-6A Appleton Tennis Complex TBD
-5A Boise Racquet Club Pat Coffey
-4A Ridgevue H.S. Conlin Coburn
-TRACK May 15-16
-6A/5A Mountain View H.S. Terry Beck / Dane Pence
-4A/3A/2A Middleton H.S. Gerry Nutt / Andy Ankeny`

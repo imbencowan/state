@@ -17,6 +17,7 @@ class Year implements JsonSerializable {
 		// both parameters can be null. this allows calling the function with either or neither.
 			// if both are used, $year will be prioritized. if neither, the current date will be used
 	public function __construct(?int $year = null, DateTime $date = null) {
+			//make sure we have a year
 			// if no $year was given, we'll use the date
 		if (is_null($year)) {
 				// if no date was given use now
@@ -28,6 +29,7 @@ class Year implements JsonSerializable {
 				$year -= 1;
 			}
 		}
+
 			// now we can set every thing with a correct $year
 		$this->year = $year;
 			// the endDate will be in the following year
@@ -35,10 +37,16 @@ class Year implements JsonSerializable {
 		$this->startDate = new DateTime("$year-$this->defaultMonth-$this->defaultStartDay");
 		$this->endDate = new DateTime("$endYear-$this->defaultMonth-$this->defaultEndDay");
 		$this->events = []; // Initialize as an empty array
+
+			// construct( string $column, mixed $value = null, string $operator = '=', array $path = [] )
+            // $path specifies the table JOIN path the query takes to the target table 
+					// ex: ['events', 'eventsites', 'sites']
+		$where = new Where('eventYear', $year, '=', ['events']);
+
 		// $this->events = $this->getEventsForYear($year);
 			// "year" context stops JOINing of the schoolorders table via the Relation class
 				// this prevents the db call returning an unnecessarily huge result
-		$this->events = Event::getAllFromDB(context: "year");
+		$this->events = Event::getAllFromDB(context: "year", where: $where);
 			// sort the events by date
 		usort($this->events, function($a, $b) { return $a->startDate <=> $b->startDate; });
    }
@@ -87,11 +95,8 @@ class Year implements JsonSerializable {
 	//////////////////////////////////////////////////
    // user actions
 		// takes us to the Year page, displaying all events for a given year
-	static function showYear($input) {
-			// we already have a variable called $year
-		// $yearsEvents = new Year(null, new DateTime());
-			// test on the previous year
-		$yearsEvents = new Year(24, new DateTime());
+	static function showYear($year) {
+		$yearsEvents = new Year($year, new DateTime());
 		ob_start();
 		include 'view/year.php';
 		$htmlContent = ob_get_clean(); // Get the buffered content as a string

@@ -394,9 +394,13 @@ abstract class BasicTableModel implements JsonSerializable {
 
 
 		// SELECTs ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// getAll and getByID both implement a pair of helper functions (buildSelect() and buildJoins()) that do the heavy lifting
-	public static function getAllFromDB(?string $context = null, ?WhereCondition $where = null): array {
-		$query = static::buildSelect($context, $where);
+		// getAll and getByID both implement a pair of helper functions 
+			// (buildSelect() and buildJoins()) that do the heavy lifting
+		// pass $where if needed, a Where instance to build 
+	public static function getAllFromDB(?string $context = null, ?Where $where = null): array {
+		$query = static::buildSelect($context);
+			// if where, append it to the query
+		if ($where) $query .= $where->getWhereString();
 		$rows = static::getFromDB($query);
 		return static::groupAndBuild($rows, $context);
 	}
@@ -456,7 +460,7 @@ abstract class BasicTableModel implements JsonSerializable {
 			// this and buildJoins() got a little messy in needing to build a query with unique table aliases for JOINs, and
 				// unique column aliases. this is so we can join the same table to different tables, and have the returned
 				// associative array know what is what. those constructed aliases are deconstructed in buildFromRow()
-	protected static function buildSelect(?string $context = null, ?WhereCondition $where = null): string {
+	protected static function buildSelect(?string $context = null): string {
 		$table = static::getTableName();
 		$columns = static::getColumns();
 		$relations = static::getContextRelations($context);
