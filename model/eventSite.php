@@ -125,6 +125,10 @@ class EventSite extends BasicTableModel {
 						// self::updateInterTable(['eventSiteID' => $eventSiteID], []);
 						break;
 
+					case 'manager':
+						self::updateByID($eventSiteID, ['managerName' => $value]);
+						break;
+
 					case 'employees':
 						self::updateInterTable(['eventSiteID' => $eventSiteID], ['employeeID' => $value]);
 						break;

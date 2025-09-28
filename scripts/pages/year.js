@@ -4,22 +4,28 @@ import { runtime } from '../runtime.js';
 import { myFetch } from '../fetch.js';
 import { ActionRequest } from '../models/other-classes.js';
 import { arraysEqualIgnoreOrder } from '../utilities.js';
+import { openModal } from '../modal.js';
+import { EventSite, Site } from '../models/db-classes.js';
 
 export function addShowYearFunctionality() {
-   const container = document.getElementById('eventsTable');
+   const container = document.getElementById('yearContainer');
 
+      // click listener will only activate for elements with a data-action
    container.addEventListener('click', function(event) {
-		const target = event.target
+         // get the button
+		const btn = event.target.closest('[data-action]');
+      if (!btn) return; // clicked somewhere irrelevant
 
          // define click actions. 'selector': function()
       const actions = {
-         'editRow': () => { if (!runtime.activeMode) showRowEdit(target); },
-         'cancelRowEdit': () => cancelRowEdit(target),
-         'submitRowEdit': () => submitRowEdit(target)
+         'editRow': () => { if (!runtime.activeMode) showRowEdit(btn); },
+         'cancelRowEdit': () => cancelRowEdit(btn),
+         'submitRowEdit': () => submitRowEdit(btn),
+         'addYear': () => showAddYear()
       };
 
       for (const slct in actions) {
-         if (target.dataset.action == slct) {
+         if (btn.dataset.action == slct) {
             actions[slct]();
             return;
          }
@@ -47,7 +53,16 @@ async function showRowEdit(target) {
             input = await makeSiteSlct(td);
             break;
          case "divisions":
-            input = await makeDvsnSlct(td);
+               // put edit divisions on hold because it doesn't work with BasicTableModel's current update methods
+                  // and i'm not sure i want to be able to edit divisions any way.
+                     // if you remove a division from a site, what happens? it's outside the scope of update
+                        // needs a custom function
+            // input = await makeDvsnSlct(td);
+            break;
+         case "manager":
+            input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = td.dataset.oValue;
             break;
          case "employees":
             input = await makeEmplySlct(td);
@@ -60,9 +75,14 @@ async function showRowEdit(target) {
             input = makeSubmitCancelButtons(row);
       }
 
-      td.textContent = "";
-      if(input) td.appendChild(input);
+      if(input) {
+         td.textContent = "";
+         td.appendChild(input);
+      }
    }
+
+      // give focus to the first select
+   row.querySelector['select'].focus();
 }
 
    // make a select for divisions
@@ -230,8 +250,15 @@ async function submitRowEdit(target) {
          selectedValues[column] = select.multiple ? values : values[0];
             // parse the original value for the column
          oValues[column] = JSON.parse(td.dataset.oValue);
+      } else {
+         const input = td.querySelector('input');
+         if (input) {
+            const inputValue = td.querySelector('input').value;
+            if (String(inputValue) !== String(JSON.parse(td.dataset.oValue))) {
+               updateValues[column] = inputValue;
+            }
+         }
       }
-
    });
 
 
@@ -269,9 +296,13 @@ function updateRow(tds, updateValues) {
       const column = td.dataset.column;
       if (column in updateValues) {
          let slct = td.querySelector('select');
-         const names = Array.from(slct.selectedOptions).map(opt => opt.textContent);
-         td.textContent = names.join(', ');
-         console.log(names);
+         if (slct) {
+            const names = Array.from(slct.selectedOptions).map(opt => opt.textContent);
+            td.textContent = names.join(', ');
+         } else {
+            let input = td.querySelector('input');
+            if (input) td.textContent = input.value
+         }
       } else {
             // if it hasn't changed just replace with the oText
          if (td.dataset.oText !== undefined) td.textContent = td.dataset.oText;
@@ -313,3 +344,426 @@ function replaceEditButton(tds) {
    
    lastTd.appendChild(btn);
 }
+
+
+
+function showAddYear() {
+      // make a wrapper so we don’t pollute the page
+   const wrapper = document.createElement("div");
+   // wrapper.style.margin = "1em 0";
+
+      // header
+   const head = document.createElement("h2");
+   head.textContent = "Paste a year's schedule here, and we'll try to parse it"
+   wrapper.appendChild(head);
+
+      // textarea
+   const textarea = document.createElement("textarea");
+   textarea.rows = 10;
+   textarea.cols = 50;
+   textarea.placeholder = "Paste PDF text here...";
+   textarea.value = schText;
+   wrapper.appendChild(textarea);
+
+   // submit button
+   const submitBtn = document.createElement("button");
+   submitBtn.textContent = "Parse";
+   submitBtn.style.display = "block";
+   submitBtn.style.marginTop = "0.5em";
+   wrapper.appendChild(submitBtn);
+
+      // wire the button
+   submitBtn.addEventListener("click", () => {
+      const txt = textarea.value.trim();
+      if (txt) {
+         parseYear(txt);
+      }
+      // clean up after use
+      // wrapper.remove();
+   });
+
+      // add to page
+   openModal(wrapper);
+   textarea.focus();
+}
+
+   // scan txt until you find a sport
+async function parseYear(txt) {
+      // define existing values
+   const allSports = Object.values(await runtime.allSports.load());
+   const allSites = Object.values(await runtime.allSites.load());
+   const allSchools = Object.values(await runtime.allSchools.load());
+   const allDivs = Object.values(await runtime.allDivisions.load());
+   const allADs = Object.values(await runtime.allADs.load());
+
+   const lastDiv = allDivs[allDivs.length - 1];
+   if (lastDiv.id === 99) allDivs.pop();
+
+      // split txt into lines // Remove extra white space // remove any empty lines
+   let lines = txt.split('\n');
+   lines = lines.map(function(line) { return line.trim(); });
+   lines = lines.filter(function(line) { return line.length > 0; });
+
+   let newEvents = [];
+   let currentEvent = null;
+   let secondEvent = null;
+
+   lines.forEach(line => {
+         // check if the line starts with a known sport name
+      const sport = allSports.find(s => line.toLowerCase().startsWith(s.name.toLowerCase()));
+      if (sport) {
+            // get the dates
+         let remaining = line.slice(sport.name.length).trim();
+         let dates = parseDateRangeStr(remaining);
+
+            // check if dance and cheer are in the same line
+         if (sport.name.toLowerCase() === 'dance' || sport.name.toLowerCase() === 'cheer') { 
+            // look for other sports in the line 
+            const otherSport = allSports.find(s => 
+                  (s.name.toLowerCase() !== sport.name.toLowerCase() 
+                     && remaining.toLowerCase().includes(s.name.toLowerCase()))
+            ); 
+            if (otherSport) { 
+                  // over write date stuff
+               const nameIdx = remaining.toLowerCase().indexOf(otherSport.name.toLowerCase());
+               if (nameIdx !== -1) remaining = remaining.slice(nameIdx + otherSport.name.length).trim();
+            
+               dates = parseDateRangeStr(remaining);
+                  // add the second event
+               secondEvent = {
+                  sport: sport,
+                  startDate: dates[0],
+                  endDate: dates[1] || dates[0],
+                  eventSites: []
+               };
+               newEvents.push(secondEvent);
+            } 
+         }
+
+            // add the event
+         currentEvent = {
+               sport: sport,
+               startDate: dates[0],
+               endDate: dates[1] || dates[0],
+               eventSites: []
+         };
+         newEvents.push(currentEvent);
+      } else if (currentEvent) {    
+            // treat as a site line
+            // expected line format: "6A RedHawk GC (Mtn View host) Dane Pence"
+            
+            // if a site is just TBD, leave sites empty. 
+         if ((line.length < 7) && (line.endsWith("A TBD"))) return;
+        
+            // delete host data
+         line = line.replace(/\([^)]*\)/g, '').trim();
+         let lineParts = parseSiteLineParts(line);
+
+            // parse. // site first, so we know definitively how many there are
+         let eSites = parseSite(lineParts.siteStr, allSites);
+         parseManager(lineParts, eSites, allADs);
+         parseDivs(lineParts.divStr, eSites, currentEvent.sport);
+
+         eSites.forEach(es => {
+            currentEvent.eventSites.push(es);
+         })
+      }
+   });
+
+   let seenSites = [];
+   let newDuplicates = [];
+   newEvents.forEach(e => {
+      e.eventSites.forEach(es => {
+         if (!es.site.id) console.log(es.site);
+         if (!es.site.id && seenSites.includes(es.site.name)) {
+            es.duplicate = true;
+            newDuplicates.push(es.site.name);
+         } else {
+            seenSites.push(es.site.name);
+            es.duplicate = false;
+         }
+      });
+   });
+
+   
+   console.log(newEvents);
+   
+   const request = new ActionRequest('submitYear', 'Year', { events: newEvents });
+	const responseJSON = await myFetch(request);
+
+   
+
+            // helpers // parsers
+   function parseSiteLineParts(str) {
+      let parts = { divStr: null, siteStr: null, mgrStr: null };
+         // get the div part
+         // if str starts with a division, split at the first space followed by a word.
+            // else leave divStr null
+               // test if str starts with a digit followed by 'A'
+      if (/^\dA/.test(str)) {
+            // get the start of the string (^[\s\S]) to the first space followed by a letter (?= [A-Za-z])
+         const match = str.match(/^[\s\S]*?(?= [A-Za-z])/);
+         parts.divStr = match ? match[0] : str;
+         str = str.slice(match[0].length).trim();
+      }
+
+         // get the manager part
+            // if TBD, leave mgrStr null
+      if (str.endsWith('TBD')) {
+            // there is a site in the str, trim the TBD
+         if (str.length > 3) str = str.slice(0, -3);
+      } else {
+            // regex to get the last two words
+               // (\w+) → a word. // \s+ → white space. 
+               // \s*[\W]*$ → optional trailing spaces or punctuation, then end of string.
+         const match = str.match(/(\w+)\s+(\w+)\s*[\W]*$/);
+         if (match) {
+            parts.mgrStr = match[0];
+               // Remove the match from the end of str
+            str = str.slice(0, str.length - match[0].length).trim();
+               // check if there were two managers
+            if (str.endsWith('/')) {
+                  // same regex as above
+               const match = str.match(/(\w+)\s+(\w+)\s*[\W]*$/);
+               if (match) {
+                     // mimic above
+                  parts.mgrStr = match[0] + " " + parts.mgrStr;
+                  str = str.slice(0, str.length - match[0].length).trim();
+               }
+            }
+         }
+      }
+
+         // siteStr should be the remainder
+      parts.siteStr = str;
+      // console.log(parts);
+
+      return parts;
+   }
+
+   function parseDateRangeStr(str) {
+      let dateParts = str.split('-');
+      let dates = dateParts.map(d => d.trim());
+      dates.forEach(d => { d.replace('.', '')});
+
+      let year = new Date().getFullYear();
+      dates[0] = new Date(`${dates[0]} ${year}`);
+
+      let month = dates[0].getMonth()
+
+         // increment the year if it's next year
+      if (month < 7) dates[0].setFullYear(++year);
+
+      
+
+
+      if (!dates[1]) {
+         dates[1] = dates[0];
+      } else if (dates[1].length < 4) {
+         let day = parseInt(dates[1], 10);
+         dates[1] = new Date(year, month, day);
+      } else if (dates[1].length < 10) {
+         dates[1] = new Date(`${dates[1]} ${year}`);
+      } else {
+         dates[1] = new Date("2025-10-11");
+         console.log(dates[1]);
+      }
+
+      return dates;
+   }
+
+   function parseSite(str, allSites) {
+      let sites = [];
+      let eSites = [];
+         // check if there is a slash indicating multiple sites
+      if (str.includes("/")) {
+            // check if Boys / Girls is indicated
+         if (/\bB\b.*?\/.*?\bG\b/.test(str)) {
+               // split at the slash
+            let parts = str.split('/');
+            parts.forEach(part => {
+                  // get gender. B(oys) = 1, G(irls) = 2, neither = 3, but that shouldn't happen here
+               let gender = 3;
+               if (/\bB\b/.test(part)) {
+                  gender = 1;
+               } else if (/\bG\b/.test(part)) {
+                  gender = 2;
+               }
+                  // clean the string. remove 'B' or 'G' and trim()
+                   // use regex to ensure B and G are bounded, not part of a word
+               part = part.replace(/\b[BG]\b/g, '').trim();
+               sites.push(strToSite(part));
+               eSites.push(new EventSite( { site: strToSite(part), gender } ));
+            });
+         } else {
+               // if not B / G, remove the second site, just log the first
+            str = str.split('/')[0];
+            sites.push(strToSite(str));
+         }
+            // if there is no slash
+      } else {
+         sites.push(strToSite(str));
+      }
+
+      if (sites.length === 1) eSites.push(new EventSite( { site: sites[0], gender: null } ))
+
+      // console.log(eSites);
+      return eSites;
+
+
+      function strToSite(str) {
+         str = str.split(',')[0];
+            // use regex to replace all '.' // /g means global, all
+         str = str.replace(/\./g, '').trim();
+
+            // special for Rocky Mountain abbreviation
+         if (str === "Rocky Mtn") str = "Rocky Mountain HS";
+            // if str is a school name missing HS, append HS
+         if (allSchools.find(s => s.shortName === str)) str += " HS";
+
+
+         let site = allSites.find(s => s.name === str);
+         if (!site) site = allSites.find(s => s.name === (str + ' HS')) || new Site({ name: str });
+
+         if (!site.id) console.log(site.name);
+         return site;
+      }
+   }
+
+   function parseManager(lineParts, eSites) {
+      const str = lineParts.mgrStr;
+
+      if (eSites.length === 1) {
+            // if TBD, do no thing
+         if (str === null) return;
+            // if only one name, assign it
+         if (!str.includes("/")) {
+            eSites[0].managerName = str;
+            return;
+         } else {
+            // get the correct name
+         }
+      } else if (eSites.length === 2) {
+
+            // get both names.  // split and trim
+         let names = str.split('/').map(p => p.trim());
+            // make sure we're matching the sites and the managers order
+               // see which eSite was the start of the string
+         let testStr = eSites[0].site.name;
+         if (testStr.endsWith(" HS")) testStr = testStr.replace(/ HS$/, "");
+            // assign accordingly
+         if (lineParts.siteStr.startsWith(testStr)) {
+            eSites[0].managerName = names[0];
+            eSites[1].managerName = names[1];
+         } else {
+            eSites[0].managerName = names[1];
+            eSites[1].managerName = names[0];
+         }
+      }
+   }
+
+   function parseDivs(str, eSites, sport) {
+      let divs = [];
+
+         // if no divs specified, get it from sport
+      if (str === null || str.length === 0) {
+         const minDivID = sport.minDiv;
+         allDivs.forEach(div => {
+            if (div.id >= minDivID && div.id < 98) divs.push(div);
+         });
+            // if only one div, assign
+      } else if (str.length === 2) {
+         divs.push(allDivs.find(d => str.startsWith(d.name)));
+      } else {
+            // if more than one, search the string
+         allDivs.forEach(div => {
+            if (str.includes(div.name)) divs.push(div);
+         });
+      }
+
+         // divs are assumed to be the same for each site in a row.  // assign
+      eSites.forEach(es => {
+         es.esDivisions = divs;
+      });
+   }
+}
+
+
+   // export class StateEvent {
+   // constructor({ id, sport, startDate, endDate, year, eventSites = [] })
+
+   // export class EventSite {
+   // constructor({ id, eventID, site, managerName, gender, vehicle, esDivisions = [] }) 
+
+
+const schText = `GOLF Oct. 9-10 (6A), Oct. 10-11 (5A)
+6A RedHawk GC (Mtn View host) Dane Pence
+5A Purple Sage GC (Middleton host) Andy Ankeny
+SOCCER Oct. 23-25
+6A Eagle B/Rocky Mtn G Tony Brulotte/Troy Rice
+5A Columbia B/Middleton G Todd Cady/Andy Ankeny
+4A Owyhee B/Meridian G Dane Roy/Nichole Williamson
+VOLLEYBALL Oct. 30 - Nov. 1
+6A Capital H.S. Jason Willer
+5A Timberline H.S. Tol Gropp
+4A Mountain America Center, Idaho Falls Travis Hobson
+3A Mountain America Center, Idaho Falls Travis Hobson
+2A Post Falls H.S Craig Christensen
+1A Coeur d'Alene H.S. Tony Prka
+CROSS COUNTRY Nov. 1
+LCSC Orchards, Lewiston Doug Henderson
+SWIMMING Nov. 7-8
+Idaho Central Aquatics Center Deb Hill
+FOOTBALL Nov. 21-22
+6A TBD
+5A TBD
+4A TBD
+3A TBD
+2A TBD
+1A TBD
+DRAMA Dec. 5-6
+Thunder Ridge H.S. Shaun Nichols
+GIRLS BASKETBALL Feb. 19-21
+6A Ford Idaho Center Shawnie Ellis
+5A Mountain View H.S. Dane Pence
+4A Skyview H.S. Eric Bonds
+3A Kuna H.S. Luke Wolf
+2A Columbia H.S. Randy Potter/Todd Cady
+1A Owyhee H.S. Dane Roy
+DANCE/CHEER Feb. 27-28
+Mountain America Center, Idaho Falls Julie Hammons/Lisa Hahle
+WRESTLING Feb. 27-28
+Ford Idaho Center Todd Cady
+BOYS BASKETBALL Mar. 5-7
+6A Ford Idaho Center Jason Willer
+5A Rocky Mountain H.S. Troy Rice
+4A Eagle H.S. Tony Brulotte
+3A Meridian H.S. Nichole Williamson
+2A Vallivue H.S. Allen Dade
+1A Caldwell H.S. Jon Hallock
+DEBATE Mar. 13-14
+District III TBD
+SPEECH Apr. 10-11
+Pocatello H.S. TBD
+GOLF May 11-12
+4A District III (Homedale host) Casey Grove
+3A Scotch Pines GC (Rimrock host) Ashley Merrick
+SOFTBALL May 14-16
+6A Coeur d'Alene/Lake City H.S. Tony Prka/Troy Anderson
+5A Post Falls H.S. Craig Christensen
+4A Filer H.S. Brodie Parrott
+3A Timberlake/Lakeland H.S. (Kellogg Host) Scott Miller
+2A Genesee H.S. Kelly Caldwell
+BASEBALL May 14-16
+6A Memorial Stadium Tony Brulotte
+5A Melaleuca Field Nick Birch
+4A College of Southern Idaho Shaun Walker
+3A Northwest Nazarene University Bowe vonBrethorst
+2A Capital H.S./Church Field Allen Hutchens
+TENNIS May 15-16
+6A Appleton Tennis Complex TBD
+5A Boise Racquet Club Pat Coffey
+4A Ridgevue H.S. Conlin Coburn
+TRACK May 15-16
+6A/5A Mountain View H.S. Terry Beck / Dane Pence
+4A/3A/2A Middleton H.S. Gerry Nutt / Andy Ankeny`

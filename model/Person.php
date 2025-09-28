@@ -27,4 +27,28 @@ class Person extends BasicTableModel {
       public readonly ?string $extension,
       public readonly ?string $fax
    ) {}
+
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////
+   // DB functions
+      // getting all activity directors requires a JOIN
+   public static function getAllADs() {
+         // get the data
+      $query = "SELECT people.* FROM people INNER JOIN schools ON schools.activitiesDirectorID = people.personID";
+      $rows = self::getFromDB($query);
+
+         // have to turn them in to Persons manually cuz BasicTableModel functions expect aliases
+      $columns = self::getColumns();
+      $people = [];
+      foreach($rows as $row) {
+         $mappedRow = [];
+         foreach ($columns as $propName => $colName) {
+            if (!array_key_exists($colName, $row)) return null;
+            $mappedRow[$propName] = $row[$colName];
+         }
+         $people[] = new self(...$mappedRow);
+      }
+
+      return $people;
+   }
 }

@@ -93,6 +93,7 @@ function buildNavList() {
 function buildNavList2() {
 		// get the nav bar
 	let navList = document.getElementById("nav2List");
+	const showYear
 	const nav2Items = [
 		['Year', 'showYear', 'Year', null],
 		['Schools', 'showSchools', 'School', null],

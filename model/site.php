@@ -7,15 +7,18 @@ class Site extends BasicTableModel {
    protected static function getColumns(): array { 
 		return ['id' => 'siteID', 
 					'name' => 'siteName', 
-					'city' => 'siteCity']; 
+					'city' => 'cityID']; 
 	}
-		// no relations
-	protected static function getRelations(): array { return []; }
+		// defined: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
+	protected static function getRelations(): array { 
+		return [ new Relation('city', 'City', 'cityID', 'cityID') ];
+	}
 	
 	public function __construct(
       public readonly ?int $id,
       public readonly ?string $name,
-      public readonly ?string $city
+      // public readonly ?int $city
+      public readonly ?City $city
    ) {}
 }
 ?>

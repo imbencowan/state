@@ -2,12 +2,12 @@
 	<h1><?= $event->sport->name . ' ' . $event->startDate->format('Y'); ?></h1>
 	<div id="buttonContainer">
 		<h1>
-			<button class="genPDFButton clickable printAllSoSPDF" data-btnType="printAllSoSPDF">Get All SoS</button>
-			<button class="genPDFButton clickable genUndoneBoxLabelsBtn" data-btnType="genBoxLabels">Print Undone Labels</button>
-			<button class="genPDFButton clickable genTotalsBtn" data-btnType="print Messages">Get IHSAA Totals</button>
-			<button class="genPDFButton clickable printInvoicesBtn" data-btnType="printInvoices">Print Invoices</button>
-			<button class="genPDFButton clickable printMessagesBtn" data-btnType="printMessages">Print Messages</button>
-			<button class="genPDFButton clickable newOrderBtn" data-btnType="newOrder">+ Order</button>
+			<button class="topLevelButton clickable printAllSoSPDF" data-btnType="printAllSoSPDF">Get All SoS</button>
+			<button class="topLevelButton clickable genUndoneBoxLabelsBtn" data-btnType="genBoxLabels">Print Undone Labels</button>
+			<button class="topLevelButton clickable genTotalsBtn" data-btnType="print Messages">Get IHSAA Totals</button>
+			<button class="topLevelButton clickable printInvoicesBtn" data-btnType="printInvoices">Print Invoices</button>
+			<button class="topLevelButton clickable printMessagesBtn" data-btnType="printMessages">Print Messages</button>
+			<button class="topLevelButton clickable newOrderBtn" data-btnType="newOrder">+ Order</button>
 		</h1>
 	</div>
 
@@ -24,7 +24,7 @@
 				$gender = $eventSite->gender?->name ? ' ' . $eventSite->gender->name : '';
 ?>
 				<h3 data-event-site-division-id="<?= $esd->id; ?>"><?= $esd->name . $gender; ?>
-					<button class="genPDFButton clickable printSoSPDF" data-btnType="printSoSPDF" 
+					<button class="topLevelButton clickable printSoSPDF" data-btnType="printSoSPDF" 
 						data-eshdid="<?= $esd->id; ?>">Get SoS</button>
 				</h3>
 <?php			$schoolOrders = $esd->schoolOrders;

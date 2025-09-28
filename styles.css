@@ -376,7 +376,13 @@ tr.addOnRow {
 	cursor: pointer;
 }
 
-.genPDFButton {
+.topLevelButton {
 	margin-left: 25px;
 	font-size: 60%;
+}
+
+.row { 
+	display: flex; 
+	justify-content: space-between; /* pushes left and right apart */
+	align-items: center;
 }

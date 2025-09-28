@@ -4,6 +4,7 @@
 
 		foreach ($directories as $dir) {
 			$file = __DIR__ . "/$dir/$class.php";
+			// Test::logX($file);
 			if (file_exists($file)) {
 				require_once $file;
 				return;

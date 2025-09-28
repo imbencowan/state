@@ -98,4 +98,64 @@ class Year implements JsonSerializable {
 		
 		return [ 'html' => $htmlContent, 'data' => [ 'year' => $yearsEvents ] ];
 	}
+
+	static function submitYear($events) {
+		ob_start();
+		// var_dump($events);
+
+		$eYear = date('y');
+
+		foreach ($events as $event) {
+				// EventColumns: 'eventID', 'sportID', 'startDate', 'endDate', 'eventYear'
+			$eventInsert = [
+				'sportID'   => $event['sport']['id'] ?? null,
+				'startDate' => $event['startDate'] ?? date('Y-m-d'), // fallback to today
+				'endDate'   => $event['endDate']   ?? date('Y-m-d'), // fallback to today
+				'eventYear' => $eYear
+			];
+			$eventID = Event::insert($eventInsert);
+
+			foreach ($event['eventSites'] as $eSite) {
+					// get the siteID	
+				if (!empty($eSite['site']['id'])) {
+					$siteID = $eSite['site']['id'];
+				} else if (empty($eSite['duplicate'])) {
+					$siteID = Site::insert([ 'siteName' => $eSite['site']['name'] ]);
+				} else {
+						// pull the previously inserted id
+					$siteID = Site::getIDByName($eSite['site']['name']);
+				}
+
+					// 'eventID', 'siteID', 'managerName', 'startDate', 'endDate'
+				$esInsert = [
+					'eventID'     => $eventID,
+					'siteID'      => $siteID,
+					'managerName' => $eSite['managerName'] ?? null
+				];
+				$eSiteID = EventSite::insert($esInsert);
+
+					// if the site has a gender, interTable it
+				if ((int)($eSite['gender'] ?? 0) === 1 || (int)($eSite['gender'] ?? 0) === 2) {
+					$values = [
+						'eventSiteID' => $eSiteID,
+						'genderID'    => $eSite['gender']
+					];
+					EventSite::insertInterTable('gender', [$values]);
+				}
+
+				foreach ($eSite['esDivisions'] ?? [] as $div) {
+						// 'eventSiteID', 'divisionID'
+					EventSiteDivision::insert([
+						'eventSiteID' => $eSiteID,
+						'divisionID'  => $div['id']
+					]);
+				}
+			}
+		}
+
+
+		$html = ob_get_clean(); 
+
+		return [ 'html' => $html, 'data' => $events ];
+	}
 }

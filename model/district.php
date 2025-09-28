@@ -8,15 +8,18 @@ class District extends BasicTableModel {
 		return ['id' => 'districtID', 
 					'name' => 'districtName', 
 					'districtDescription' => 'districtDescription', 
-					'primaryCity' => 'primaryCity']; 
+					'primaryCity' => 'primaryCityID']; 
 	}
-		// no relations
-	protected static function getRelations(): array { return []; }
+			// defined: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
+	protected static function getRelations(): array { 
+		return [ new Relation('primaryCity', 'City', 'primaryCityID', 'cityID') ];
+	}
 	
 	public function __construct(
       public readonly ?int $id,
       public readonly ?string $name,
       public readonly ?string $districtDescription,
-      public readonly ?string $primaryCity
+      // public readonly ?int $primaryCity
+      public readonly ?City $primaryCity
    ) {}
 }

@@ -671,7 +671,8 @@ async function changeCommentHandled(box) {
     // add an itemless schoolOrder to an event. will add it to db, and current display 
         // useful when a school orders add ons before submitting a roster through ihsaa
 async function makeBlankOrder() {
-	if (!runtime.allSchools) runtime.allSchools = await getAllSchools();
+	let allSchools = Object.values(await runtime.allSchools.load());
+	allSchools.sort((a, b) => a.shortName.localeCompare(b.shortName));
 
 	    // Create content as a DOM fragment / wrapper
 	const wrapper = document.createElement('div');
@@ -690,7 +691,7 @@ async function makeBlankOrder() {
         // make a list of schools to select from
 	const schoolMap = {};
 	const dl = wrapper.querySelector('#schoolList');
-	runtime.allSchools.forEach(school => {
+	allSchools.forEach(school => {
 		const optn = document.createElement('option');
 		optn.value = school.shortName;
 		dl.appendChild(optn);

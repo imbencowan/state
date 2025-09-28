@@ -1,6 +1,6 @@
 <?php
 class Database {
-	private static $dsn = 'mysql:host=localhost;dbname=state4';
+	private static $dsn = 'mysql:host=localhost;dbname=state';
 	private static $username = 'root';
 	private static $password = '';
 	private static $db;
@@ -10,17 +10,17 @@ class Database {
 	public static function getDB () {
 		if (!isset(self::$db)) {
 			try {
-				self::$db = new PDO(self::$dsn, self::$username, self::$password,
-					[
-							// set errormode, default fetch, and some thing for prepares
-						PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-						PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-						PDO::ATTR_EMULATE_PREPARES => false,
-					]
-				);
+				// self::$db = new PDO(self::$dsn, self::$username, self::$password,
+				// 	[
+				// 			// set errormode, default fetch, and some thing for prepares
+				// 		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				// 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+				// 		PDO::ATTR_EMULATE_PREPARES => false,
+				// 	]
+				self::$db = new PDO(self::$dsn, self::$username, self::$password);
 			} catch (PDOException $e) {
 				$error_message = $e->getMessage();
-				include('../errors/database_error.php');
+				// include('../errors/database_error.php');
 			}
 		}
 		return self::$db;

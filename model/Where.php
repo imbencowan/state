@@ -1,5 +1,5 @@
 <?php
-    class WhereCondition {
+    class Where {
         public readonly string $tableAlias;
         public readonly string $columnAlias;
 

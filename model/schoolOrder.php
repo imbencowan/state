@@ -143,8 +143,7 @@ class SchoolOrder extends BasicTableModel {
 					// get the whole sport, we need sport->minDiv later
 				$sport = Sport::getByName($order['sport']);
 					// get the school year. an event in january - may of the 24-25 school year will be represented by 24
-// $year = Year::convertDateToSchoolYear(new DateTime());
-$year = 24;
+				$year = Year::convertDateToSchoolYear(new DateTime());
 				$eventID = Event::getIDBySportIDAndYear($sport->id, $year);
 				$divisionID = Division::getIDByName($order['division']);	
 

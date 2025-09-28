@@ -22,8 +22,8 @@ export function parseToInstancesArr(data, ClassRef) {
 
 export function parseToInstance(value, ClassRef) {
         // returns an instance of ClassRef from value if possible
-   return (value instanceof ClassRef)
-      ? value
+   return (value instanceof ClassRef) ? 
+      value
       : (value != null && typeof ClassRef.fromJSON === 'function')
          ? ClassRef.fromJSON(value)
          : null;
@@ -82,14 +82,14 @@ export function distributeElementsToRows(containerSelector, minItemWidth = 100) 
 
    // makes an object with methods to access the database
       // intended for use with the runtime object
-export function makeDataLoader(dbClassName, jsClass = null) {
+export function makeDataLoader(srvrClassName, jsClass = null, srvrFnctn = "getAllFromDB") {
 		// cache is held *private* in side the closure
 	let cache = null;
 
 		// private helper to fetch and map data
 	async function fetchAndMap() {
 			// fetch the appropriate data
-		const req = new ActionRequest("getAllFromDB", dbClassName);
+		const req = new ActionRequest(srvrFnctn, srvrClassName);
 		const res = await myFetch(req);
 			// extract from the response  // empty object if no response data
 		const raw = res.data || {};
@@ -107,13 +107,13 @@ export function makeDataLoader(dbClassName, jsClass = null) {
 	}
 
 	return {
-			// if no cache, fetch
+			// if no cache, fetch. only calls if cache is empty
 		async load() {
 			if (!cache)  cache = await fetchAndMap();
 			return cache;
 		},
 
-			// fetch, and set cache
+			// fetch, and set cache. always calls fresh
 		async refresh() {
 			cache = await fetchAndMap();
 			return cache;

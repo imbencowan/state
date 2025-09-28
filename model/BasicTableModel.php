@@ -83,6 +83,7 @@ abstract class BasicTableModel implements JsonSerializable {
 				$mappedRow[$relation->property] = $relation->isMany ? $relatedObjects : ($relatedObjects[0] ?? null);
 			}
 		}
+
 		return new static(...$mappedRow);
 	}
 
@@ -199,6 +200,40 @@ abstract class BasicTableModel implements JsonSerializable {
 		$statement->execute();
 		return $db->lastInsertId();
 	}
+
+		// insert in an intermediate table. // utilizes a subclasses Relations
+			// matched by property parameter to Relation property
+			// $values expects a keyed array [leftKey: value, rightKey: value]
+				// where leftKey and rightKey should match the values of those properties in the Relation
+	public static function insertInterTable(string $prop, array $values): int {
+        // find the relation
+		$relation = null;
+		foreach (static::getRelations() as $rel) {
+			if ($rel->property === $prop) {
+					$relation = $rel;
+					break;
+			}
+		}
+
+		if (!$relation) throw new Exception("No relation found for property '$prop'");
+		if (!$relation->interTable) throw new Exception("Relation '$prop' has no intermediate table defined");
+
+
+		$db = Database::getDB();
+		$stmt = $db->prepare(
+			"INSERT INTO {$relation->interTable} ({$relation->leftKey}, {$relation->rightKey})
+        	VALUES (:left, :right)"
+		);
+
+		foreach ($values as $row) {
+			$stmt->execute([
+				':left'  => $row[$relation->leftKey],
+				':right' => $row[$relation->rightKey]
+			]);
+		}
+
+		return $db->lastInsertId();
+   }
 
 		// accepts an int $id, or an array of $ids. returns true if any rows were deleted, or else false
 	public static function deleteByIDs(int|array $ids): bool {
