@@ -8,7 +8,9 @@ class SOrderItem extends BasicTableModel {
 		return ['id' => 'sOrderItemsID', 
 					'schoolOrderID' => 'schoolOrderID', 
 					'item' => 'itemID', 
-					'quantity' => 'sOrderItemsQuantity']; 
+					'quantity' => 'sOrderItemsQuantity',
+					'price' => 'orderPrice'
+					]; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 			// Item only, no circular reference
@@ -20,7 +22,8 @@ class SOrderItem extends BasicTableModel {
       public readonly ?int $id,
       public readonly int $schoolOrderID,
       public readonly ?Item $item,
-      public readonly int $quantity
+      public readonly int $quantity,
+		public readonly float $price
    ) {}
 	
 
@@ -57,7 +60,9 @@ class SOrderItem extends BasicTableModel {
 			foreach ($addItems as $item) {
 				$data = ['schoolOrderID' => $orderID, 
 							'itemID' =>$item['itemID'], 
-							'sOrderItemsQuantity' => $item['quantity']];
+							'sOrderItemsQuantity' => $item['quantity'],
+							
+							];
 				self::insert($data);
 			}
 			

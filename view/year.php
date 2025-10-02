@@ -1,5 +1,5 @@
 <?php 
-	$year = 24;
+	// $year comes from the includer
 	$nextYear = $year + 1;
 	$displayYear = $year . '-' . $nextYear;
 ?>

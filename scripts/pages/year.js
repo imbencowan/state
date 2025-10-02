@@ -80,9 +80,10 @@ async function showRowEdit(target) {
          td.appendChild(input);
       }
    }
+   console.log(row);
 
       // give focus to the first select
-   row.querySelector['select'].focus();
+   row.querySelector('select')?.focus();
 }
 
    // make a select for divisions

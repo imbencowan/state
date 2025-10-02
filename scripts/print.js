@@ -7,7 +7,7 @@ import { openModal } from './modal.js';
 // generating box labels
 	// prints a single order's label
 export function printBoxLabel(order) {
-	console.log(order);
+	// console.log(order);
 	if (!order.shirtsByStyle || order.shirtsByStyle.length === 0) {
 		openModal("This order is empty");
 		return;
@@ -53,8 +53,6 @@ export function printUndoneBoxLabels() {
 
 	// actual label generation
 function genBoxLabel(doc, order, originI, lblN = 1) {
-	
-	console.log(order);
 	// drawLabelRects(doc);
 	
 	const lbl = new Label(doc, originI, order.getBoxTotal(), lblN);	
@@ -130,7 +128,7 @@ function genBoxLabel(doc, order, originI, lblN = 1) {
 			genBoxLabel(doc, order, nextOrigin, ++lblN);
 		}
 	}
-	
+
 		// allows printUndoneBoxLabels to know where to position the next label. necessary for multi box orders
 	return lbl.totalLabels;
 }
@@ -536,10 +534,10 @@ async function genInvoicePDF(doc, order) {
 	let totalDollars = 0;
 	
 	invP.lineDown();
-	order.shirtsByStyle.forEach(style => {
+	for (const style of order.shirtsByStyle) {
 		if (style.shortName != 'Dairy Hoods') {
-			style.sizes.forEach(shirt => {
-				let item = getItemByStyleIDSizeChar(style.id, shirt.charName);
+			for (const shirt of style.sizes) {
+				let item = getItemByStyleIDSizeChar(style.id, shirt.displayChar);
 				invP.cell(item.getInvoiceName(), 1, 2, 'left');
 				invP.cell(String(shirt.quantity), 3);
 				invP.cell(`$${item.price}`, 4);
@@ -547,9 +545,9 @@ async function genInvoicePDF(doc, order) {
 				invP.lineDown();
 				totalShirts += shirt.quantity;
 				totalDollars += (shirt.quantity * item.price);
-			});
+			}
 		}
-	});
+	}
 	
 	
 	invP.lineDown(2);
@@ -568,10 +566,11 @@ async function genInvoicePDF(doc, order) {
 }
 
 	// helper for invoice generation
-function getItemByStyleIDSizeChar(styleID, sizeChar) {
-   for (const key in runtime.allItems) {
-	  const item = runtime.allItems[key];
-	  if (item.style.id === styleID && item.size.charName === sizeChar) {
+function getItemByStyleIDSizeChar(styleID, displayChar) {
+	const allItems = runtime.allItems.getSync();
+   for (const key in allItems) {
+	  const item = allItems[key];
+	  if (item.style.id === styleID && item.size.displayChar === displayChar) {
 		 return item;
 	  }
    }

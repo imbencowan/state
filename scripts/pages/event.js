@@ -35,11 +35,16 @@ export async function goToEventPage(sport) {
 	if (responseJSON.data !== null) {
 		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
 			// ATTACH EVENT LISTENERS 
-		attachEventPageListeners();
+		addEventPageFunctionality();
 	}	
 }
 
-export function attachEventPageListeners() {
+export function addEventPageFunctionality() {
+		// PRE LOAD 
+	runtime.allItems.load();
+
+
+
 	const container = document.getElementById('eventContainer');
 		// this is one listener that handles clicks for all buttons on the event page
 			//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,79 +124,6 @@ export function attachEventPageListeners() {
 	});
 }
 
-// export function attachEventPageListeners() {
-// 	const container = document.getElementById('eventContainer');
-// 		// this is one listener that handles clicks for all the buttons in the table
-// 		// and some out side the table
-// 			///////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 			// buttons for: AddOns, Editing, ShowingMessage, PrintingLabel. also Submitting and Canceling those actions
-// 	container.addEventListener('click', function(event) {
-// 		const target = event.target
-// 			// call the correct function, send the order and may be the event target
-// 		if (target.classList.contains('order-action')) {
-// 					// get the order for these actions
-// 			const order = getOrderFromTableButton(target);
-			
-// 			if (target.matches('span.showMessage')) {
-// 				showOMessage(order);
-// 			} else if (target.matches('span.printLabel')) {
-// 					printBoxLabel(order);
-// 			} else if (target.matches('span.dlInvoice')) {
-// 					downloadInvoicePDF(order);
-// 			} else if (target.matches('span.addAddOns')) {
-// 						// don't do this if some thing else is active
-// 					if (runtime.activeMode === null || runtime.activeMode === 'add') showAddOnInputs(order);
-// 			} else if (target.matches('span.editSizes')) {
-// 						// don't allow this if we're already active
-// 					if (!runtime.activeMode) showEditSizeInputs(order);
-// 			} else if (target.matches('button.submitAddOns')) {
-// 					submitAddOns(target, order);
-// 			} else if (target.matches('button.submitEdit')) {
-// 					submitSizeEdit(target, order);
-// 			}
-			
-// 			// top level buttons
-// 		} else if (target.matches('button.genUndoneBoxLabelsBtn')) {
-// 			printUndoneBoxLabels();
-// 		} else if (target.matches('button.genTotalsBtn')) {
-// 			genIHSAATotals();
-// 		} else if (target.matches('button.printInvoicesBtn')) {
-// 			printAllInvoices();
-// 		} else if (target.matches('button.printMessagesBtn')) {
-// 			printOMessages();
-// 		} else if (target.matches('button.newOrderBtn')) {
-// 			makeBlankOrder();
-// 		} else if (target.matches('button.printAllSoSPDF')) {
-// 			printAllSoSPDF();
-// 		} else if (target.matches('button.printSoSPDF')) {
-// 			printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid));
-					
-// 					// a couple occasional cancel buttons
-// 		} else if (target.matches('button.cancelAddOns')) {
-// 			cancelAddOns(target);
-// 		} else if (target.matches('button.cancelEdit')) {
-// 			cancelSizeEdit(target);
-// 		} else if (target.matches('button.cancelEdit')) {
-// 			cancelSizeEdit(target);
-// 		}
-// 	});
-	
-// 		// next a listener for the inputs to ensure integer values
-// 	container.addEventListener('input', (e) => {
-// 		if (e.target.matches('input[type="number"]')) {
-// 			e.target.value = e.target.value.replace(/[^\d-]/g, '');
-// 		}
-// 	});
-	
-// 		// changeOrderCompleteness listeners
-// 	container.addEventListener('change', function(event) {
-// 		if (event.target.matches('input.orderChckBx')) {
-// 			changeOrderCompleteness(event.target, getOrderFromTableButton(event.target));
-// 		} else if (event.target.matches('input.commentChckBx')) {
-// 			changeCommentHandled(event.target);
-// 		}
-// 	});
-// }
 
 /////////////////// functions for acquiring an order from a DOM event. target will have a data-attribute for reference
 		// get an order from the big ol runtime.stateEvent object

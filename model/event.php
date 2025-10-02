@@ -103,12 +103,12 @@ class Event extends BasicTableModel {
 	}
 	
 	public function getNeededSizes($incompleteOrders) {
-		$neededSizes = ['S' => 0, 'M' => 0, 'L' => 0, 'XL' => 0, '2XL' => 0, '3XL' => 0, '4XL' => 0];
+		$neededSizes = ['S' => 0, 'M' => 0, 'L' => 0, 'XL' => 0, '2X' => 0, '3X' => 0, '4X' => 0];
 		foreach ($incompleteOrders as $order) {
 			foreach ($order->shirtsByStyle as $style) {
 				if ($style->shortName == "Dairy Hoods") {
 					foreach ($style->getSizes() as $size) {
-						$neededSizes[$size->charName] += $size->getQuantity();
+						$neededSizes[$size->displayChar] += $size->getQuantity();
 					}
 				}
 			}

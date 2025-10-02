@@ -83,47 +83,60 @@ export function distributeElementsToRows(containerSelector, minItemWidth = 100) 
    // makes an object with methods to access the database
       // intended for use with the runtime object
 export function makeDataLoader(srvrClassName, jsClass = null, srvrFnctn = "getAllFromDB") {
-		// cache is held *private* in side the closure
-	let cache = null;
+   let cache = null;          // resolved data
+   let loadPromise = null;    // promise for first-time load
 
-		// private helper to fetch and map data
-	async function fetchAndMap() {
-			// fetch the appropriate data
-		const req = new ActionRequest(srvrFnctn, srvrClassName);
-		const res = await myFetch(req);
-			// extract from the response  // empty object if no response data
-		const raw = res.data || {};
+      // private helper to fetch and map data
+   async function fetchAndMap() {
+      const req = new ActionRequest(srvrFnctn, srvrClassName);
+      const res = await myFetch(req);
+      const raw = res.data || {};
+      let mapped = mapObjsBy(raw); // { id1: obj1, id2: obj2, ... }
 
-			// first map by id
-		let mapped = mapObjsBy(raw); // produces { id1: obj1, id2: obj2, ... }
+      if (jsClass) {
+         for (const key in mapped) {
+            mapped[key] = new jsClass(mapped[key]);
+         }
+      }
 
-			// if a jsClass is specified, turn each property object into an instance
-		if (jsClass) {
-			for (const o in mapped) {
-					mapped[o] = new jsClass(mapped[o]);
-			}
-		}
-		return mapped;
-	}
+      return mapped;
+   }
 
-	return {
-			// if no cache, fetch. only calls if cache is empty
-		async load() {
-			if (!cache)  cache = await fetchAndMap();
-			return cache;
-		},
+   return {
+         // async load: fetch once, reuse promise if already loading
+      async load() {
+         if (!cache && !loadPromise) {
+            loadPromise = fetchAndMap().then(data => {
+               cache = data;       // store resolved data for sync access
+               return cache;
+            });
+         }
+         return loadPromise;
+      },
 
-			// fetch, and set cache. always calls fresh
-		async refresh() {
-			cache = await fetchAndMap();
-			return cache;
-		},
+         // always fetch fresh and update cache
+      async refresh() {
+         loadPromise = fetchAndMap().then(data => {
+            cache = data;
+            return cache;
+         });
+         return loadPromise;
+      },
 
-		clear() {
-			cache = null;
-		}
-	};
+         // synchronous access to resolved data
+      getSync() {
+         if (!cache) throw new Error("Data not loaded yet");
+         return cache;
+      },
+
+         // clear everything
+      clear() {
+         cache = null;
+         loadPromise = null;
+      }
+   };
 }
+
 
 
    // compares arrays' elements, disregarding order
@@ -138,6 +151,46 @@ export function arraysEqualIgnoreOrder(a, b) {
 
       // checks if every val of sortedA === sortedB at the same idx, using the built in Array.every()
    return sortedA.every((val, idx) => val === sortedB[idx]);
+}
+
+
+export function appndSbmtCnclBtns(prnt, actn) {
+   const btnDiv = document.createElement('div');
+
+	const submitButton = document.createElement('button');
+	submitButton.type = 'button';
+	submitButton.textContent = 'Submit';
+   submitButton.dataset.action = 'submit' + actn;
+	btnDiv.appendChild(submitButton);
+	
+	const cancelButton = document.createElement('button');
+	cancelButton.type = 'button';
+	cancelButton.textContent = 'X';
+   cancelButton.dataset.action = 'cancel' + actn;
+	btnDiv.appendChild(cancelButton);
+
+   	// add event listeners for ESC and ENTER
+   if (prnt) {
+      // define the listener as a named function
+      const keyHandler = function(e) {
+         if (e.key === 'Escape') {
+               cancelButton.click();
+               cleanup();
+         } else if (e.key === 'Enter') {
+               submitButton.click();
+               cleanup();
+         }
+      };
+
+      prnt.addEventListener('keydown', keyHandler);
+
+      // define a cleanup helper
+      function cleanup() {
+         prnt.removeEventListener('keydown', keyHandler);
+      }
+
+      prnt.appendChild(btnDiv);
+   }
 }
 
 

@@ -7,27 +7,35 @@ class Size extends BasicTableModel {
    protected static function getColumns(): array { 
 		return ['id' => 'sizeID', 
 					'name' => 'sizeName', 
-					'charName' => 'charName']; 
+					'charName' => 'charName',
+					'displayChar' => 'displayChar',
+					'sizingCategoryID' => 'sizingCategoryID']; 
 	}
 		// no relations
 	protected static function getRelations(): array { return []; }
 	
 	private int $quantity = 0;
+	private ?float $price = null;
 	
 	public function __construct(
       public readonly ?int $id,
       public readonly ?string $name,
-      public readonly ?string $charName
+      public readonly ?string $charName,
+		public readonly ?string $displayChar,
+		public readonly ?int $sizingCategoryID
    ) {}
-	
+
 	public function jsonSerialize(): array {
 		return [
 			'id' => $this->id,
 			'name' => $this->name,
 			'charName' => $this->charName,
+			'displayChar' => $this->displayChar,
+			'sizingCategoryID' => $this->sizingCategoryID,
 			'quantity' => $this->quantity
 		];
 	}
+	
 	
 	
 	public function getQuantity() { return $this->quantity; }

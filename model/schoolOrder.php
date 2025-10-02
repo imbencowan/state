@@ -12,7 +12,7 @@ class SchoolOrder extends BasicTableModel {
 					'due' => 'due',
 					'paid' => 'paid',
 					'note' => 'schoolOrderNote',
-					'invoiceSent' => 'invoiceSent'];
+					'invoiceDate' => 'invoiceDate'];
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 	protected static function getRelations(): array {
@@ -23,6 +23,7 @@ class SchoolOrder extends BasicTableModel {
    }
 	
 	public readonly array $shirtsByStyle;
+	public readonly string|DateTime|null $invoiceDate;
 	
 	public function __construct(
 		public readonly ?int $id,
@@ -32,14 +33,17 @@ class SchoolOrder extends BasicTableModel {
 		public readonly ?int $due = 0,
 		public readonly ?bool $paid = false,
 		public readonly ?string $note = '',
-		public readonly ?bool $invoiceSent = false,
+		string|DateTime|null $invoiceDate = null,
 		private array $messageOrders = [],
 		array $shirtsByStyle = [],
    ) {
 		$this->shirtsByStyle = self::organizeOrderItems($shirtsByStyle);
+		$this->invoiceDate = is_string($invoiceDate) ? new DateTime($invoiceDate) : $invoiceDate;
 	}
 	
 	public function jsonSerialize(): mixed {
+Test::logX($this->shirtsByStyle);
+
 		return [
 			'id' => $this->id,
 			'eshdID' => $this->eshdID,
@@ -48,7 +52,7 @@ class SchoolOrder extends BasicTableModel {
 			'due' => $this->due,
 			'paid' => $this->paid,
 			'schoolOrderNote' => $this->note,
-			'invoiceSent' => $this->invoiceSent,
+			'invoiceDate' => $this->invoiceDate,
 			'messageOrders' => $this->messageOrders,
 			'shirtsByStyle' => array_values($this->shirtsByStyle),
 		];
@@ -101,24 +105,6 @@ class SchoolOrder extends BasicTableModel {
 		return $styles;
 	}
 	
-	private static function organizeMOrderItems($mOrders): array {
-		$styles = [];
-		foreach ($mOrders as $mOrder) {
-			foreach ($mOrder->teamShirts as $oItem) {
-				$styleName = $oItem->item->style->shortName;
-				if (!isset($styles[$styleName])) $styles[$styleName] = $oItem->item->style;
-				$sizeChars = $oItem->item->size->charName;
-				if (!isset($styles[$styleName]->getSizes()[$sizeChars])) {
-					$oItem->item->size->setQuantity($oItem->quantity);
-					$styles[$styleName]->pushSizes($oItem->item->size);
-				} else {
-					$addedQ = $oItem->quantity + $styles[$styleName]->getSizes()[$sizeChars]->getQuantity();
-					$styles[$styleName]->getSizes()[$sizeChars]->setQuantity($addedQ);
-				}
-			}
-		}
-		return $styles;
-	}
 	
 
 	 

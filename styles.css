@@ -159,9 +159,6 @@ table {
 	font-size: 115%;
 }
 
-.orderTable thead th {
-}
-
 .orderTable th {
 	padding: 2px 8px;
 	position: sticky; 
@@ -319,6 +316,10 @@ tr.addOnRow {
 	text-align: right;
 }
 
+.center {
+	text-align: center;
+}
+
 .hidden {
 	display: none;
 }
@@ -385,4 +386,30 @@ tr.addOnRow {
 	display: flex; 
 	justify-content: space-between; /* pushes left and right apart */
 	align-items: center;
+}
+
+
+.inventoryTable {
+	background-color: white;
+	color: black;
+}
+
+.inventoryTable td {
+	border: 1px solid black;
+}
+
+.inventoryTable th:nth-child(-n+3) {
+   text-align: left;
+}
+
+.inventoryTable th:nth-child(n+4) {
+   text-align: right;
+}
+
+.inventoryTable td:nth-last-child(-n+7) {
+   text-align: right;
+}
+
+.inventoryTable td.center {
+	text-align: center;
 }

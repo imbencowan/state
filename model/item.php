@@ -6,25 +6,29 @@ class Item extends BasicTableModel {
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
 		return ['id' => 'itemID', 
-					'style' => 'styleID', 
-					'size' => 'sizeID', 
-					'color' => 'colorID', 
+					'styleID' => 'styleID', 
+					'sizeID' => 'sizeID', 
+					'colorID' => 'colorID', 
 					'price' => 'price', 
 					'stock' => 'stock']; 
 	}
-		// defined as: new Relation($property, $class, $foreignKey, $isMany)
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
+			// $interTable = null, $stopContexts = [])
 	protected static function getRelations(): array {
-      return [new Relation('style', 'Style', 'styleID', 'styleID', false), 
-				new Relation('size', 'Size', 'sizeID', 'sizeID', false), 
-				new Relation('color', 'Color', 'colorID', 'colorID', false)];
+      return [new Relation('style', 'Style', 'styleID', 'styleID', false, null, ['inventory']), 
+				new Relation('size', 'Size', 'sizeID', 'sizeID'), 
+				new Relation('color', 'Color', 'colorID', 'colorID', false, null, ['inventory'])];
    }
 	
 	public function __construct(
       public readonly ?int $id,
-      public readonly ?Style $style,
-      public readonly ?Size $size,
-      public readonly ?Color $color,
+		public readonly ?int $styleID,
+		public readonly ?int $sizeID,
+		public readonly ?int $colorID,
       public readonly ?int $price,
+      public readonly ?Color $color = null,
+      public readonly ?Style $style = null,
+      public readonly ?Size $size = null,
       public readonly ?int $stock = 0
    ) {}
 	

@@ -272,6 +272,7 @@ export class SchoolOrder {
 	
 	getBoxTotal() {
 		let boxTotal = 0;
+      console.log(this.shirtsByStyle);
 		this.shirtsByStyle.forEach(style => {
 			style.sizes.forEach(size => {
 				boxTotal += size.quantity;
@@ -384,13 +385,18 @@ export class Item {
 }
 
 export class Style {
-   constructor({ id, name, shortName, vShortName, brand, code, sizes = [] }) {
+   constructor({ id, code, name, inventoryName, shortName, vShortName, brand, sizingCategoryID, 
+               minSizeID, maxSizeID, sizes = [] }) {
       this.id = id;
+      this.code = code;
       this.name = name;
+      this.inventoryName = inventoryName,
       this.shortName = shortName;
       this.vShortName = vShortName;
       this.brand = Utils.parseToInstance(brand, Brand);
-      this.code = code;
+      this.sizingCategoryID = sizingCategoryID;
+      this.minSizeID = minSizeID;
+      this.maxSizeID = maxSizeID;
       this.sizes = Array.isArray(sizes) ? sizes.map(size => size) : [];
 
       this.sizeMap = {};
@@ -418,10 +424,12 @@ export class Style {
 }
 
 export class Size {
-   constructor({ id, name, charName, quantity }) {
+   constructor({ id, name, charName, displayChar, sizingCategoryID, quantity }) {
       this.id = id;
       this.name = name;
       this.charName = charName;
+      this.displayChar = displayChar;
+      this.sizingCategoryID = sizingCategoryID;
       this.quantity = quantity;
    }
 

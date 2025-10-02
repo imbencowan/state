@@ -9,9 +9,10 @@ import * as Utils from './utilities.js';
     // modal initializaion
 import { init as modalInit } from './modal.js';
     // function for a listener
-import { goToEventPage, attachEventPageListeners } from './pages/event.js';
+import { goToEventPage, addEventPageFunctionality } from './pages/event.js';
 import { showPage } from './pages/page-handling.js';
 import { addShowYearFunctionality } from './pages/year.js';
+import { showInventories } from './pages/inventories.js';
 
 
 
@@ -30,11 +31,6 @@ export async function init() {
 	let sizeData = await myFetch(request);
 	runtime.sizeCodesByStyles = sizeData.data.map(styleData => Style.fromJSON(styleData));
 	runtime.styleMap = Utils.mapObjsBy(runtime.sizeCodesByStyles);
-		// get all Items
-	request = new ActionRequest('getAllFromDB', 'Item');
-	let itemData = await myFetch(request);
-	let i = Object.values(itemData.data).map(itemData => Item.fromJSON(itemData));
-	runtime.allItems = Utils.mapObjsBy(i);
 
 
 		// display next event
@@ -48,7 +44,7 @@ export async function init() {
 			// put the event in working memory
 		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
 			// attach event listeners to the html in "display"
-		attachEventPageListeners();
+		addEventPageFunctionality();
 	}
 
 	
@@ -94,8 +90,10 @@ function buildNavList2() {
 		// get the nav bar
 	let navList = document.getElementById("nav2List");
 
+		// [<h>, serverFunc, serverClass, jsFunc]
 	const nav2Items = [
 		['Year', 'showYear', 'Year'],
+		['Inventories', 'showInventories', 'EventSite', 'showInventories'],
 		['Schools', 'showSchools', 'School'],
 		['Items', 'showItems', 'Item'],
 		['Tests', 'showTests', 'Test']
@@ -108,10 +106,16 @@ function buildNavList2() {
 			// add a listener to load the appropriate content when clicked
 		newLI.addEventListener('click', async function() {
 			let data = null;
-			if (item[1] == 'showYear') data = { year: document.getElementById('selectYear').value };
+			if (item[1] == 'showYear' || item[1] == 'showInventories') {
+				data = { year: document.getElementById('selectYear').value };
+			}
 
-				// await the main content load
-			await showPage(item[1], item[2], data);
+			if (item[3] == 'showInventories') {
+				showInventories(data);
+			} else {
+					// await the main content load
+				await showPage(item[1], item[2], data);
+			}
 
 				// additional behavior after content is loaded
 			if (item[1] === 'showYear') {

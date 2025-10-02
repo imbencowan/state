@@ -17,7 +17,7 @@ class EventSiteDivision extends BasicTableModel {
 		return [
 			new Relation('division', 'Division', 'divisionID', 'divisionID'), 
 			new Relation('schoolOrders', 'SchoolOrder', 'eventSiteHasDivisionID', 'eventSiteHasDivisionID', 
-						true, null, ["year"])
+						true, null, ['year', 'inventory'])
 		];
 	}
 		
@@ -32,7 +32,6 @@ class EventSiteDivision extends BasicTableModel {
 		array $schoolOrders = []
 	) {
 		$this->name = $division->name;
-		// $this->schoolOrders = self::organizeSchoolOrders($schoolOrders);
 		usort($schoolOrders, fn($a, $b) => strcmp($a->school->shortName, $b->school->shortName));
 		$this->schoolOrders = $schoolOrders;
 	}
@@ -45,26 +44,6 @@ class EventSiteDivision extends BasicTableModel {
 			'division' => $this->division,
 			'schoolOrders' => array_values($this->schoolOrders)
 		];
-	}
-
-	//  	// returns the sent array keyed and sorted
-	// private static function organizeSchoolOrders($orders) {
-	// 	$organized = [];
-	// 	foreach ($orders as $order) {
-	// 		$organized[$order->school->shortName] = $order;
-	// 	}
-	// 	ksort($organized);
-	// 	return $organized;
-	// }
-
-		 	// returns the sent array keyed and sorted
-	private static function organizeSchoolOrders($orders) {
-		$organized = [];
-		foreach ($orders as $order) {
-			$organized[$order->id] = $order;
-		}
-		ksort($organized);
-		return $organized;
 	}
 	
 	

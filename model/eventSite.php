@@ -18,7 +18,8 @@ class EventSite extends BasicTableModel {
 				new Relation('esDivisions', 'EventSiteDivision', 'eventSiteID', 'eventSiteID', true),
 				new Relation('gender', 'Gender', 'eventSiteID', 'genderID', false, 'eventsitehasgender'),
 				new Relation('vehicles', 'Vehicle', 'eventSiteID', 'vehicleID', true, 'eventsitehasvehicle'), 
-				new Relation('employees', 'Employee', 'eventSiteID', 'employeeID', true, 'eventsitehasemployee')];
+				new Relation('employees', 'Employee', 'eventSiteID', 'employeeID', true, 'eventsitehasemployee'), 
+				new Relation('inventory', 'EventSiteInventoryItem', 'eventSiteID', 'eventSiteID', true)];
    }
 	
 	public readonly array $esDivisions;
@@ -33,7 +34,8 @@ class EventSite extends BasicTableModel {
 		public readonly ?Gender $gender, 
     	public readonly array $vehicles = [],
 		array $esDivisions = [],
-		public readonly array $employees = []
+		public readonly array $employees = [],
+		public readonly array $inventory
    ) {
 		$this->esDivisions = self::organizeDivisions($esDivisions);
 	}
@@ -47,7 +49,8 @@ class EventSite extends BasicTableModel {
 			'managerName' => $this->managerName,
 			'vehicles' => $this->vehicles,
 			'esDivisions' => array_values($this->esDivisions),
-			'employees' => $this->employees
+			'employees' => $this->employees,
+			'inventory' => $this->inventory
 		];
 	}
 	
@@ -143,6 +146,57 @@ class EventSite extends BasicTableModel {
 			}
 		}
 		return 'made it to the server function';
+	}
+
+	public static function showInventories($year) {
+			// Where: construct( string $column, mixed $value = null, string $operator = '=', array $path = [] )
+            // $path specifies the table JOIN path the query takes to the target table 
+					// ex: ['events', 'eventsites', 'sites']
+		$where = new Where('eventYear', $year, '=', ['events']);
+			// getAllFromDB(?string $context = null, ?Where $where = null): array
+		$data = Event::getAllFromDB('inventory', $where);
+		return $data;
+	}
+
+	public static function editEventSiteInventory($eventSiteID, $update) {
+		$db = Database::getDB(); // assuming this gives you a PDO instance
+
+		try {
+			$db->beginTransaction();
+
+			// upsert
+			$sql = "
+				INSERT INTO eventsiteinventories (eventSiteID, itemID, startQ, price)
+				VALUES (:eventSiteID, :itemID, :startQ, :price)
+				ON DUPLICATE KEY UPDATE
+					startQ = VALUES(startQ)
+			";
+			$stmt = $db->prepare($sql);
+
+				// bind and run
+			foreach ($update as $row) {
+				$stmt->execute([
+					':eventSiteID' => $eventSiteID,
+					':itemID'      => $row['itemID'],
+					':startQ'      => $row['quantity'],
+					':price'       => $row['price']	
+				]);
+			}
+
+
+				// finish transaction
+			$db->commit();
+
+		} catch (Exception $e) {
+				// rollback if anything goes wrong
+			$db->rollBack();
+			throw $e; // or handle error
+		}
+
+
+		$affected = $stmt->rowCount();
+
+		return $update;
 	}
 
 }
