@@ -119,6 +119,23 @@ export class EventSite {
    static fromJSON(json) {
       return new EventSite(json);
    }
+
+   getDivisionsString() {
+      if (!this.esDivisions || this.esDivisions.length === 0) return '';
+
+      let minDiv = this.esDivisions[0].division;
+      let maxDiv = this.esDivisions[0].division;
+
+      this.esDivisions.forEach(esd => {
+         const div = esd.division;
+         if (div.id < minDiv.id) minDiv = div;
+         if (div.id > maxDiv.id) maxDiv = div;
+      });
+
+      return minDiv.id === maxDiv.id
+         ? minDiv.name
+         : `${minDiv.name}-${maxDiv.name}`;
+   }
 }
 
 export class Site {

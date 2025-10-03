@@ -406,10 +406,14 @@ tr.addOnRow {
    text-align: right;
 }
 
-.inventoryTable td:nth-last-child(-n+7) {
+.inventoryTable .shirtRow td:nth-last-child(-n+7) {
    text-align: right;
 }
 
-.inventoryTable td.center {
+.inventoryTable td:last-child {
+	text-align: right;
+}
+
+.inventoryTable .shirtRow td.center {
 	text-align: center;
 }

@@ -57,6 +57,9 @@ async function readFiles(files) {
 	
 	// this function does the actual reading of the text file submitted, with the help of getSlice()
 function getOrder(orderText, fileName) {
+		// Normalize line endings
+   orderText = orderText.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+
 		// inputString is an invented object, with orderText, subStart, and subEnd properties
 			// this way we can pass the object repeatedly to getSlice() and have it update subStart/End each call
 				// (a function can't return > 1 value, but it can change properties of an object passed to it)
@@ -104,11 +107,37 @@ function getOrder(orderText, fileName) {
 			// it's magic
 				// really it just cuts off at a new line, and relies on the input being formatted as expected
 function getSlice(inputString) {
+		// move to the next stretch of the string
 	inputString.subStart = inputString.subEnd + 1;
+		// find the end of the line
 	inputString.subEnd = inputString.str.indexOf('\n', inputString.subStart);
-	// console.log(inputString.subEnd);
-	return inputString.str.slice(inputString.subStart, inputString.subEnd);
+		// handle end of file with no line break.
+	if (inputString.subEnd === -1) inputString.subEnd = inputString.str.length;
+
+	let slice = inputString.str.slice(inputString.subStart, inputString.subEnd);
+
+   // trim whitespace and remove any \r
+   return slice.replace(/\r/g, '').trim();
 }
+
+
+
+
+function getSlice(inputString) {
+   inputString.subStart = inputString.subEnd + 1; // move past the last slice
+   inputString.subEnd = inputString.str.indexOf('\n', inputString.subStart);
+
+   if (inputString.subEnd === -1) {
+      inputString.subEnd = inputString.str.length; // handle last slice
+   }
+
+   let slice = inputString.str.slice(inputString.subStart, inputString.subEnd);
+
+   // Normalize: trim whitespace and collapse any \r
+   return slice.replace(/\r/g, '').trim();
+}
+
+
 
 	// gets the sizes from the order text
 function getSizes(inputString) {

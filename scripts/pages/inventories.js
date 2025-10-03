@@ -38,7 +38,6 @@ export async function showInventories(data) {
 	runtime.activeMode = null;
 }
 
-
    // build the template
 function buildInventoryTemplate() {
       // get some alls
@@ -49,9 +48,11 @@ function buildInventoryTemplate() {
    const white = allColors.find(c => c.name ==='white');
    const ash = allColors.find(c => c.name ==='ash');
    const atheather = allColors.find(c => c.name ==='athletic heather');
+   const black = allColors.find(c => c.name ==='black');
+   const assorted = allColors.find(c => c.name ==='assorted');
 
       // define an inventories styles, and their colors
-   const stndrdStls = [ 
+   const shirtStyles = [ 
       ['t-shirts', [white, atheather]],
       ['youth t-shirts', [white], {'S': {}, 'M': {}, 'L': {} }],
       ['long sleeves', [white]],
@@ -60,42 +61,97 @@ function buildInventoryTemplate() {
       ['hoods', [ash , atheather]],
       ['youth hoods', [ash ], { 'M': {}, 'L': {}, 'XL': {} }],
       ['zip up hoods', [atheather]],
-      [' dairy west hoods', [ash ]]
+      ['baseball hats', [assorted], {'O': {} }],
+      ['beanies', [black], { 'O': {} }],
+      ['cinch bags', [atheather], { 'O': {} }]
    ];
 
       // make the actual template
-   inventoryTemplate = stndrdStls.map(([name, colors, sizesOverride]) => {
+   // inventoryTemplate = shirtStyles.map(([name, colors, sizesOverride]) => {
+   //       // get the style
+   //    const style = allStyles.find(s => s.inventoryName === name);
+   //    if (!style) return null;
+
+   //       // use the override for youth sizes, default for the others
+   //    const o = sizesOverride || sizesObj;
+   //       // use JSON.parse... to get a copy
+   //    const colorsWithSizes = colors.map(c => ({ ...c, sizes: JSON.parse(JSON.stringify(o)) }));
+
+   //    colorsWithSizes.forEach(color => {
+   //       for (const key in color.sizes) {
+   //          if (color.sizes.hasOwnProperty(key)) {
+   //             color.sizes[key].size = getSize(key, style.sizingCategoryID);
+   //             color.sizes[key].itemID = getItemID(style.id, color.id, color.sizes[key].size.id)
+   //          }
+   //       }
+   //    });
+
+   //    return { ...style, colors: colorsWithSizes };
+   //       // remove unmatched elements
+   // }).filter(Boolean);
+
+
+
+      // items by size by color by style. style, color, and size hold a reference
+      // [{style: style, colors: [{color: color, sizes: [size: size, quantity, itemID]}]}]
+   inventoryTemplate = shirtStyles.map(([name, colors, sizesOverride]) => {
          // get the style
       const style = allStyles.find(s => s.inventoryName === name);
       if (!style) return null;
 
          // use the override for youth sizes, default for the others
       const o = sizesOverride || sizesObj;
-         // use JSON.parse... to get a copy
-      const colorsWithSizes = colors.map(c => ({ ...c, sizes: JSON.parse(JSON.stringify(o)) }));
 
-      colorsWithSizes.forEach(color => {
-         for (const key in color.sizes) {
-            if (color.sizes.hasOwnProperty(key)) {
-               color.sizes[key].size = getSize(key, style.sizingCategoryID);
-               color.sizes[key].itemID = getItemID(style.id, color.id, color.sizes[key].size.id)
+      const colorsWithSizes = colors.map(colorRef => {
+            // build sizes keyed by displayChar
+         const sizes = {};
+         for (const key in o) {
+            if (o.hasOwnProperty(key)) {
+               const sizeRef = getSize(key, style.sizingCategoryID);
+               if (sizeRef) {
+                  sizes[key] = {
+                     size: sizeRef,                    // reference to size object
+                     quantity: null,                      // inventory property
+                     itemID: getItemID(style.id, colorRef.id, sizeRef.id)
+                  };
+               }
             }
          }
+
+         return {
+            color: colorRef,   // reference to color
+            sizes              // object keyed by 'S','M','L', etc.
+         };
       });
 
-      return { ...style, colors: colorsWithSizes };
-         // remove unmatched elements
+      return {
+         style,                // reference to style
+         colors: colorsWithSizes
+      };
    }).filter(Boolean);
 
-   console.log(inventoryTemplate);
 
-   // logger
-   // inventoryTemplate.forEach(style => {
-   //    style.colors.forEach(color => {
-   //       console.log(style.inventoryName, color.name);
-   //       console.log(color.sizes['M'].itemID);
-   //    });
-   // });
+   console.log(inventoryTemplate);
+}
+
+   // returns a copy of the template, so we don't over write the template.
+function buildInventoryInstance(template) {
+   return template.map(entry => ({
+      style: entry.style, // keep reference
+      colors: entry.colors.map(c => ({
+         color: c.color, // keep reference
+         sizes: Object.fromEntries(
+            Object.entries(c.sizes).map(([key, s]) => [
+               key,
+               {
+                  size: s.size,       // keep reference
+                  quantity: 0,        // fresh per-instance
+                  itemID: s.itemID    // copy scalar
+               }
+            ])
+         )
+      }))
+   }));
 }
 
 async function buildPage(events) {
@@ -106,15 +162,30 @@ async function buildPage(events) {
    events.forEach(event => {
       html += `<h2>${event.sport.name}</h2>`;
       event.eventSites.forEach(eSite => {
+console.log(eSite);
+
+         runtime.inventories[eSite.id] = {
+            sport: event.sport.name,
+            divisions: getDivisionsString(eSite),
+            site: eSite.site.name,
+            // city: eSite.site.city.name,
+            employees: eSite.employees
+         }
+
          html += `<div class="invntryCntnr" data-e-site-i-d="${eSite.id}">
          <div class="row">
             <h3>${eSite.site.name}</h3>
-            <button class="topLevelButton" data-action="editInventory" title="edit inventory">
-               <span class="material-icons">edit</span>
-            </button>
+            <div class="top-btn-cntnr">
+               <button class="topLevelButton" data-action="printInventory" title="print inventory">
+                  <span class="material-icons">print</span>
+               </button>
+               <button class="topLevelButton" data-action="editInventory" title="edit inventory">
+                  <span class="material-icons">edit</span>
+               </button>
+            </div>
          </div>`;
 
-         html += buildInventoryTable(eSite.inventory);
+         html += buildInventoryTable(eSite);
          html += `</div>`;
       });
    });
@@ -137,7 +208,8 @@ function addPageFunctionality() {
       const actions = {
          'editInventory': () => { if (!runtime.activeMode) showEdit(btn); },
          'submitEditInventory': () => { submitEdit(btn); },
-         'cancelEditInventory': () => { cancelEdit(btn); }
+         'cancelEditInventory': () => { cancelEdit(btn); },
+         'printInventory': () => { printInventory(btn); }
       };
 
       for (const slct in actions) {
@@ -149,72 +221,78 @@ function addPageFunctionality() {
    });
 }
 
-function buildInventoryTable(inventoryItems) {
+function buildInventoryTable(eSite) {
       // Make a fresh copy so we can attach quantities etc. without mutating the template
-   const inventory = inventoryTemplate.map(style => ({
-      ...style,
-      colors: style.colors.map(c => ({
-         ...c,
-         quantity: 0,
-         sizes: JSON.parse(JSON.stringify(c.sizes)) // deep copy sizes array
-      }))
-   }));
+   const inventory = buildInventoryInstance(inventoryTemplate);
 
       // this just assigns quantities to inventory. that's it.
-   inventoryItems.forEach(inventoryItem => {
+   eSite.inventory.forEach(inventoryItem => {
       const item = inventoryItem.item;
          // find the style in the template
-      const style = inventory.find(s => s.id === item.styleID);
+      const style = inventory.find(s => s.style.id === item.styleID);
       if (!style) return;
          // find the color in that style
-      const color = style.colors.find(c => c.id === item.colorID);
+      const color = style.colors.find(c => c.color.id === item.colorID);
       if (!color) return;
          // check if the size property exists and assign quantity
       if (color.sizes.hasOwnProperty(item.size.displayChar)) {
          color.sizes[item.size.displayChar].quantity = inventoryItem.startQ;
       }
    });
+   
+   // console.log(inventory);
 
       // string some html
    let html = `
-      <div class="table-containter">
+      <div class="table-container">
       <table class="inventoryTable">
          <thead>
             <tr>
                <th>Item</th>
-               <th>Style</th>
+               <!--<th>Style</th>-->
                <th>Color</th>`;
                sizeList.forEach(size => { html += `<th>${size}</th>`; });
                html += `<th>TOTAL</th>
             </tr>
          </thead>
          <tbody>`;
-            inventory.forEach(style => {
-               const youth = (style.sizingCategoryID === 2);
+               // s = {style: style, colors: []}
+            inventory.forEach(s => {
+               const youth = (s.style.sizingCategoryID === 2);
+               const shirt = (s.style.sizingCategoryID !== 4);
                const styleRight = (youth) ? "right" : "";
-               style.colors.forEach((color, colorIndex) => {
+               const rowStyle = (shirt) ? "shirtRow" : "";
+                  // c = {color: color, sizes: []}
+               s.colors.forEach((c, colorIndex) => {
                   const styleTDs = (colorIndex === 0) ? 
-                     (`<td  class="${styleRight}" rowspan="${style.colors.length}">${style.inventoryName}</td>
-                        <td rowspan="${style.colors.length}">${style.code}</td>`) : '';
+                     (`<td  class="${styleRight}" rowspan="${s.colors.length}">${s.style.inventoryName}</td>
+                        <!--<td rowspan="${s.colors.length}">${s.style.code}</td>-->`) : '';
                   let total = 0;
-                  html += `<tr data-style-i-d="${style.id}" data-color-i-d="${color.id}">` 
-                           + styleTDs + `<td>${color.name}</td>`;
-                     sizeList.forEach(char => { 
-                           // only do sizes that exist for the style
-                        if (char in color.sizes) {
-                           const size = color.sizes[char];
-                           const q = size.quantity || 0;
-                           total += q;
-                           const qStr = size.quantity || '';
-                           html += `<td data-column="size" data-item-i-d="${size.itemID}" 
-                                    data-o-value="${qStr}">${qStr}</td>`; 
-                        } else {
-                              // if there isn't a size for this style (youth) 
-                           html += `<td class="center">---</td>`;
-                        }
-                     });
-                     html += `<td>${total}</td>
-                  </tr>`;
+                  html += `<tr class="${rowStyle}" data-style-i-d="${s.style.id}" data-color-i-d=
+                        "${c.color.id}">` + styleTDs + `<td>${c.color.name}</td>`;
+                     if ('O' in c.sizes) {
+                        total = c.sizes['O'].quantity || '';
+                        html += `<td colspan="6"></td>
+                                 <td data-column="size" data-item-i-d="${c.sizes['O'].itemID}" 
+                                       data-o-value="${total}">${total}</td>`;
+                     } else {
+                        sizeList.forEach(char => { 
+                              // only do sizes that exist for the style
+                           if (char in c.sizes) {
+                              const size = c.sizes[char];
+                              const q = size.quantity || 0;
+                              total += q;
+                              const qStr = size.quantity || '';
+                              html += `<td data-column="size" data-item-i-d="${size.itemID}" 
+                                       data-o-value="${qStr}">${qStr}</td>`; 
+                           } else {
+                                 // if there isn't a size for this style (youth) 
+                              html += `<td class="center">---</td>`;
+                           }
+                        });
+                        html += `<td>${total}</td>`
+                     }
+                  html += `</tr>`;
                });
             });
             html += `
@@ -247,11 +325,8 @@ function showEdit(target) {
    }   
 
       // remove the edit button, replace it with submit and cancel
-   const btnDiv = container.querySelector('.row');
-   const editBtn = btnDiv.querySelector('.topLevelButton');
-      // remove it if it exists
-   if (editBtn) editBtn.remove();
-
+   const btnDiv = container.querySelector('.top-btn-cntnr');
+   btnDiv.innerHTML = '';
    appndSbmtCnclBtns(btnDiv, 'EditInventory');
 
       // give focus
@@ -290,7 +365,7 @@ async function submitEdit(btn) {
       let responseJSON = await myFetch(request);
 
       if (responseJSON.success) console.log(responseJSON.data);
-      // if (responseJSON.success) update(tds, update);
+      if (responseJSON.success) updateTable(tds, update);
    } else {
       cancelEdit(target);
    } 
@@ -300,6 +375,12 @@ async function submitEdit(btn) {
    
       // don't forget to reset
    runtime.activeMode = null;
+}
+
+function updateTable(tds) {
+   tds.forEach(td => {
+      td.innerHTML = td.querySelector('input').value;
+   });
 }
 
 function cancelEdit(btn) {
@@ -324,7 +405,11 @@ function replaceEditButton(btn) {
    const btns = btn.parentElement;
    const prnt = btns.parentElement;
    btns.remove();
-   const btnHTML = `<button class="topLevelButton" data-action="editInventory" title="edit inventory">
+   const btnHTML = `
+            <button class="topLevelButton" data-action="printInventory" title="print inventory">
+               <span class="material-icons">print</span>
+            </button>
+            <button class="topLevelButton" data-action="editInventory" title="edit inventory">
                <span class="material-icons">edit</span>
             </button>`;
    prnt.innerHTML += btnHTML;
@@ -346,6 +431,7 @@ function getItemID(styleID, colorID, sizeID) {
 }
 
 function getSize(dispChar, catID) {
+
    const allSizes = Object.values(runtime.allSizes.getSync());
    
    const size = allSizes.find(s => {
@@ -353,5 +439,29 @@ function getSize(dispChar, catID) {
             s.sizingCategoryID === Number(catID);
    });
 
+   if (!size) console.log(allSizes, dispChar, catID);
+
    return size || null; // return null if no match
+}
+
+function getDivisionsString(eSite) {
+   if (!eSite.esDivisions || eSite.esDivisions.length === 0) return '';
+
+   let minDiv = eSite.esDivisions[0].division;
+   let maxDiv = eSite.esDivisions[0].division;
+
+   eSite.esDivisions.forEach(esd => {
+      const div = esd.division;
+      if (div.id < minDiv.id) minDiv = div;
+      if (div.id > maxDiv.id) maxDiv = div;
+   });
+
+   return minDiv.id === maxDiv.id
+      ? minDiv.name
+      : `${minDiv.name}-${maxDiv.name}`;
+}
+
+
+function printInventory(inventory) {
+   
 }

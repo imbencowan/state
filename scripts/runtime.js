@@ -6,6 +6,7 @@ import { Color, Division, Employee, Item, Person, School, Site, Size, Sport, Sty
 
 export const runtime = {
 		// global containers. accessors as well if they utilize 
+	inventories: {},
 	stateEvent: undefined,
 	sizeCodesByStyles: undefined,
 	styleMap: undefined,
