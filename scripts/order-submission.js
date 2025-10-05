@@ -122,23 +122,6 @@ function getSlice(inputString) {
 
 
 
-
-function getSlice(inputString) {
-   inputString.subStart = inputString.subEnd + 1; // move past the last slice
-   inputString.subEnd = inputString.str.indexOf('\n', inputString.subStart);
-
-   if (inputString.subEnd === -1) {
-      inputString.subEnd = inputString.str.length; // handle last slice
-   }
-
-   let slice = inputString.str.slice(inputString.subStart, inputString.subEnd);
-
-   // Normalize: trim whitespace and collapse any \r
-   return slice.replace(/\r/g, '').trim();
-}
-
-
-
 	// gets the sizes from the order text
 function getSizes(inputString) {
 	let sizes = [0, 0, 0, 0, 0, 0];

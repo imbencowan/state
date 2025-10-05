@@ -237,7 +237,8 @@ export class Division {
 
 export class SchoolOrder {
    constructor({ id, eshdID, school, completeness = 0, due = null, paid = null, schoolOrderNote = null, 
-               invoiceSent = null, messageOrders = [], shirtsByStyle = [], site = undefined, sport = undefined }) {
+               invoiceDate = null, invoiceVersion = null, messageOrders = [], shirtsByStyle = [], 
+               site = undefined, sport = undefined }) {
       this.id = id;
       this.eshdID = eshdID;
       this.school = Utils.parseToInstance(school, School);
@@ -245,7 +246,8 @@ export class SchoolOrder {
       this.due = due;
       this.paid = paid;
       this.schoolOrderNote = schoolOrderNote;
-      this.invoiceSent = invoiceSent;
+      this.invoiceDate = Utils.safeParseDate(invoiceDate);
+      this.invoiceVersion = invoiceVersion;
       this.messageOrders = Array.isArray(messageOrders) ? messageOrders : [];
       this.shirtsByStyle = Array.isArray(shirtsByStyle)
          ? shirtsByStyle.map(style => style instanceof Style ? style : style != null ? Style.fromJSON(style) : null).filter(Boolean)

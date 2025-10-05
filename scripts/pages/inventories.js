@@ -240,7 +240,8 @@ function buildInventoryTable(eSite) {
       }
    });
    
-   // console.log(inventory);
+      // this is where we need to add each inventory to runtime
+   
 
       // string some html
    let html = `
@@ -444,6 +445,7 @@ function getSize(dispChar, catID) {
    return size || null; // return null if no match
 }
 
+   // this should be an EventSite method, but i didnt have time to deal with connecting it.
 function getDivisionsString(eSite) {
    if (!eSite.esDivisions || eSite.esDivisions.length === 0) return '';
 
@@ -459,9 +461,4 @@ function getDivisionsString(eSite) {
    return minDiv.id === maxDiv.id
       ? minDiv.name
       : `${minDiv.name}-${maxDiv.name}`;
-}
-
-
-function printInventory(inventory) {
-   
 }

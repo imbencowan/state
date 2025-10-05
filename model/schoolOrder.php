@@ -12,7 +12,8 @@ class SchoolOrder extends BasicTableModel {
 					'due' => 'due',
 					'paid' => 'paid',
 					'note' => 'schoolOrderNote',
-					'invoiceDate' => 'invoiceDate'];
+					'invoiceDate' => 'invoiceDate',
+					'invoiceVersion' => 'invoiceVersion'];
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 	protected static function getRelations(): array {
@@ -34,6 +35,7 @@ class SchoolOrder extends BasicTableModel {
 		public readonly ?bool $paid = false,
 		public readonly ?string $note = '',
 		string|DateTime|null $invoiceDate = null,
+		public readonly ?int $invoiceVersion = null,
 		private array $messageOrders = [],
 		array $shirtsByStyle = [],
    ) {
@@ -42,8 +44,6 @@ class SchoolOrder extends BasicTableModel {
 	}
 	
 	public function jsonSerialize(): mixed {
-Test::logX($this->shirtsByStyle);
-
 		return [
 			'id' => $this->id,
 			'eshdID' => $this->eshdID,
@@ -53,6 +53,7 @@ Test::logX($this->shirtsByStyle);
 			'paid' => $this->paid,
 			'schoolOrderNote' => $this->note,
 			'invoiceDate' => $this->invoiceDate,
+			'invoiceVersion' => $this->invoiceVersion,
 			'messageOrders' => $this->messageOrders,
 			'shirtsByStyle' => array_values($this->shirtsByStyle),
 		];
@@ -138,7 +139,7 @@ Test::logX($this->shirtsByStyle);
 				if ($divisionID < $sport->minDiv) $divisionID = $sport->minDiv;
 
 				$eshdID = EventSiteDivision::getIDByEventAndDivision($eventID, $divisionID);
-// Test::logX('eshdID is ' . $eshdID, 'eventID is ' . $eventID, 'divisionID is ' . $divisionID);
+			// Test::logX('eshdID is ' . $eshdID, 'eventID is ' . $eventID, 'divisionID is ' . $divisionID);
 				
 					// need to add logic for if $school is not in the db
 				$schoolID = School::getIDByName($order['school']);
@@ -245,34 +246,6 @@ Test::logX($this->shirtsByStyle);
 		return [ 'html' => $htmlContent, 'data' => $orders ];
 	}
 	
-	public static function updateCompletenessIf($orderID, $oldValue, $newValue) {
-		$db = Database::getDB();
-			// $oldValue should be 1 for complete, and $newValue should be 2 for partial, though other options are possible
-				// so calling this can change an order previously marked complete to marked partial
-		$stmt = $db->prepare("UPDATE schoolorders
-									SET completeness = :newValue
-									WHERE schoolOrderID = :id AND completeness = :oldValue");
-		$stmt->bindValue(':id', $orderID);
-		$stmt->bindValue(':oldValue', $oldValue);
-		$stmt->bindValue(':newValue', $newValue);
-
-		$stmt->execute();
-	}
-	
-	public static function addNewOrder($eshdID, $schoolID) {
-
-		$data = ['eventSiteHasDivisionID' => $eshdID, 'schoolID' => $schoolID];
-		return self::insert($data);
-	}
-	
-	
-	public static function getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID) {
-		$query = "SELECT schoolOrderID FROM schoolorders 
-					WHERE eventSiteHasDivisionID = :eshdID AND schoolID = :schoolID";
-		$rows = static::getFromDB($query, [':eshdID' => $eshdID, ':schoolID' => $schoolID]);
-		return !empty($rows) ? $rows[0]['schoolOrderID'] : null;
-	}
-	
 		// this will set due programatically by the sOrderItems currently in the db
 	public static function updateDue($db, $orderID) {
 		$stmt = $db->prepare("UPDATE schoolorders
@@ -287,6 +260,64 @@ Test::logX($this->shirtsByStyle);
 		
 			// return new due
 		return self::getColForID('due', $orderID);
+	}
+	
+	public static function updateCompletenessIf($orderID, $oldValue, $newValue) {
+		$db = Database::getDB();
+			// $oldValue should be 1 for complete, and $newValue should be 2 for partial, though other options are possible
+				// so calling this can change an order previously marked complete to marked partial
+		$stmt = $db->prepare("UPDATE " . self::getTableName()
+									 . " SET completeness = :newValue
+									WHERE schoolOrderID = :id AND completeness = :oldValue");
+		$stmt->bindValue(':id', $orderID);
+		$stmt->bindValue(':oldValue', $oldValue);
+		$stmt->bindValue(':newValue', $newValue);
+
+		$stmt->execute();
+	}
+
+	public static function updateInvoiceVersion($orderID) {
+		$db = Database::getDB();
+		$stmt = $db->prepare(
+			"UPDATE " . self::getTableName()
+			 . " SET invoiceVersion = CASE 
+					WHEN invoiceVersion IS NULL THEN 0
+					ELSE invoiceVersion + 1
+				END
+				WHERE schoolOrderID = :id"
+		);
+		$stmt->bindValue(':id', $orderID);
+		$stmt->execute();
+	}
+
+
+	// 	// set invoiceDate on creation
+	// public static function updateInvoiceDate($orderID) {
+	// 	$db = Database::getDB();
+	// 	$stmt = $db->prepare("UPDATE  " . self::getTableName()
+	// 	 . " SET invoiceDate = CASE 
+	// 							WHEN invoiceDate IS NULL THEN NOW()
+	// 							ELSE invoiceDate
+	// 						END
+	// 	WHERE schoolOrderID = :id");
+	// 	$stmt->bindValue(':id', $orderID);
+
+	// 	$stmt->execute();
+	// }
+
+	
+	public static function addNewOrder($eshdID, $schoolID) {
+
+		$data = ['eventSiteHasDivisionID' => $eshdID, 'schoolID' => $schoolID];
+		return self::insert($data);
+	}
+	
+	
+	public static function getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID) {
+		$query = "SELECT schoolOrderID FROM schoolorders 
+					WHERE eventSiteHasDivisionID = :eshdID AND schoolID = :schoolID";
+		$rows = static::getFromDB($query, [':eshdID' => $eshdID, ':schoolID' => $schoolID]);
+		return !empty($rows) ? $rows[0]['schoolOrderID'] : null;
 	}
 
 
@@ -306,8 +337,8 @@ Test::logX($this->shirtsByStyle);
 			
 				// this will UPDATE records for existing sizes, and create new records for nonexisting
 			$stmt = $db->prepare("INSERT INTO sorderitems (schoolOrderID, itemID, sOrderItemsQuantity)
-												VALUES (:orderID, :itemID, :quantity)
-												ON DUPLICATE KEY UPDATE sOrderItemsQuantity = VALUES(sOrderItemsQuantity)");
+									VALUES (:orderID, :itemID, :quantity)
+									ON DUPLICATE KEY UPDATE sOrderItemsQuantity = VALUES(sOrderItemsQuantity)");
 			
 			foreach ($items as $item) {
 				$stmt->execute([
@@ -324,6 +355,8 @@ Test::logX($this->shirtsByStyle);
 			$due = self::updateDue($db, $orderID);
 				// UPDATE completeness IF currently complete to partial
 			self::updateCompletenessIf($orderID, 1, 2);
+				// UPDATE invoiceVersion
+			self::updateInvoiceVersion($orderID);
 	
 			return [ 'newOrder' => self::getByID($orderID) ];
 		});

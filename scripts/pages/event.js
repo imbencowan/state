@@ -7,8 +7,8 @@ import { ActionRequest } from '../models/other-classes.js';
 import { StateEvent, SchoolOrder, School } from '../models/db-classes.js';
 import { openModal, closeModal } from '../modal.js';
 import { parseToInstancesArr } from '../utilities.js';
-import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoices, printSoSPDF, 
-        printAllSoSPDF, printOMessages, genIHSAATotals } from '../print.js';
+import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, downloadQuotePDF, printAllInvoices, 
+			printSoSPDF, printAllSoSPDF, printOMessages, genIHSAATotals } from '../print.js';
 
 
 export async function goToEventPage(sport) {
@@ -47,7 +47,8 @@ export function addEventPageFunctionality() {
 
 	const container = document.getElementById('eventContainer');
 		// this is one listener that handles clicks for all buttons on the event page
-			//////////////////////////////////////////////////////////////////////////////////////////////////////
+			// may be should move top level buttons to a more specific listener
+		//////////////////////////////////////////////////////////////////////////////////////////////////////
 	container.addEventListener('click', function(event) {
 		const target = event.target;
 
@@ -61,15 +62,14 @@ export function addEventPageFunctionality() {
 
 				// define actions. 'selector': function to call
 			const orderActions = {
-				'span.editSizes': () => {
-					if (!runtime.activeMode) showEditSizeInputs(order);
-				},
+				'span.editSizes': () => { if (!runtime.activeMode) showEditSizeInputs(order); },
 				'span.addAddOns': () => {
 					if (!runtime.activeMode || runtime.activeMode === 'add') showAddOnInputs(order);
 				},
 				'span.showMessage': () => showOMessage(order),
-				'span.printLabel': () => printBoxLabel(order),
-				'span.dlInvoice': () => downloadInvoicePDF(order),
+				'span.printLabel': () => { if (!runtime.activeMode) printBoxLabel(order); },
+				'span.dlInvoice': () => { if (!runtime.activeMode) downloadInvoicePDF(order); },
+				'span.showMore' : () => showMoreRowOptions(order),
 				'button.submitAddOns': () => submitAddOns(target, order),
 				'button.submitEdit': () => submitSizeEdit(target, order),
 				'button.cancelAddOns': () => cancelAddOns(target),
@@ -106,6 +106,8 @@ export function addEventPageFunctionality() {
 		}
 	});
 
+
+
 	
 		// next a listener for the inputs to ensure integer values
 	container.addEventListener('input', (e) => {
@@ -120,6 +122,24 @@ export function addEventPageFunctionality() {
 			changeOrderCompleteness(event.target, getOrderFromTableButton(event.target));
 		} else if (event.target.matches('input.commentChckBx')) {
 			changeCommentHandled(event.target);
+		}
+	});
+
+
+	const modal = document.getElementById('myModal');
+	modal.addEventListener('click', function(event) {
+		const target = event.target;
+		const rowOptions = {
+			'button.quote' : () => {
+				downloadQuotePDF();
+			}
+		};
+
+		for (const sel in rowOptions) {
+			if (target.matches(sel)) {
+				rowOptions[sel]();
+				return;
+			}
 		}
 	});
 }
@@ -765,11 +785,15 @@ async function makeBlankOrder() {
    openModal(wrapper); 
 }
 
-    // helper for making a blank order
-        // i swear i should move this and make it generalized
-async function getAllSchools(data) {
-	const request = new ActionRequest('getAllFromDB', 'School');
-	const responseJSON = await myFetch(request);
-	let arr = parseToInstancesArr(responseJSON.data, School);
-	return arr.sort((a, b) => a.shortName.localeCompare(b.shortName));
+
+function showMoreRowOptions(order) {
+		// set so modal function can access
+	runtime.activeOrder = order
+
+	const wrapper = document.createElement('div');
+	let html = `<button class="clickable quote" title="download add on quote">Quote</button>
+					<label>Download the invoice as a quote</label>`;
+
+	wrapper.innerHTML = html;
+	openModal(wrapper);
 }

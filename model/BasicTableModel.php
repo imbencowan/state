@@ -263,7 +263,7 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $affectedRows > 0; // return true if rows were affected
 	}
 
-		// updates given of columns with given values, $updateValues is like ['column': value]
+		// updates given columns with given values, $updateValues is like ['column': value]
 			// can update multiple rows, but all will receive the same values
 	public static function updateByID(int|array $ids, array $updateValues): bool {
 			// check if any thing to update

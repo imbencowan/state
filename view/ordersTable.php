@@ -56,6 +56,7 @@
 						<span class="material-icons clickable order-action showMessage" title="view the original message">article</span>
 						<span class="material-icons clickable order-action printLabel" title="print box label">print</span>
 						<span class="material-icons clickable order-action dlInvoice" title="download invoice">request_quote</span>
+						<span class="material-icons clickable order-action showMore" title="more options">more_horiz</span>
 						<input class="orderChckBx" type="checkbox" id="<?= $checkID; ?>" name="<?= $checkID; ?>" 
 							value="<?= $orderID; ?>" title="mark order complete" <?php if ($completeness == 1) echo "checked"; ?>/>
 					</td>

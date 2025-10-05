@@ -409,14 +409,14 @@ function genSoS(doc, div) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // generating invoices
 	// as named
-export async function downloadInvoicePDF(order) {
+export async function downloadInvoicePDF(order, type = "Invoice") {
 		// if there are no add ons, don't do any thing
 	if (order.getAddedStyles().length === 0) return;
 	
 	const { jsPDF } = window.jspdf; 
-    const doc = new jsPDF('p', 'mm', 'letter');
+   const doc = new jsPDF('p', 'mm', 'letter');
 	
-	genInvoicePDF(doc, order);
+	genInvoicePDF(doc, order, type);
 	
 		// download the pdf
 	const pdfBlob = doc.output("blob");
@@ -429,6 +429,13 @@ export async function downloadInvoicePDF(order) {
 	a.click();
 	document.body.removeChild(a);
 	URL.revokeObjectURL(url); // Clean up
+}
+
+export async function downloadQuotePDF(order) {
+	if (!order) order = runtime.activeOrder;
+
+	console.log(order);
+	downloadInvoicePDF(order, "Quote");	
 }
 
     // as named
@@ -461,32 +468,35 @@ export function printAllInvoices() {
 }
 
     // actual invoice generation
-async function genInvoicePDF(doc, order) {
+async function genInvoicePDF(doc, order, type = "Invoice") {
 	let invP = new InvoicePage(doc);
 	const currentFont = doc.getFont().fontName;
 	
 	const date = new Date();
 	const strDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+	const invTypeU = type.toUpperCase();
+	const ordrNmbrSfx = (order.invoiceVersion) ? '-' + order.invoiceVersion : '';
+	const invNmbr = (String(order.id) + ordrNmbrSfx);
 	
 	doc.setFont(currentFont, 'bold');
-	invP.centerTextInPage("****** INVOICE ******")
+	invP.centerTextInPage("****** " + invTypeU + " ******")
 	doc.setFont(currentFont, 'normal');
 	invP.lineY += (2 * invP.lineStep);
 	
 	doc.text("McU SPORTS", invP.alignX, invP.lineY);
-	doc.text("INVOICE NUMBER:", invP.colsX[3], invP.lineY);
+	doc.text((invTypeU + " NUMBER:"), invP.colsX[3], invP.lineY);
 		// puts text in a cell. position is determined by provided column, and current lineY. arguments are (text, colsX[])
-	invP.cell(order.id, 4);
+	invP.cell(invNmbr, 4);
 	invP.lineDown();
 	doc.text("822 W JEFFERSON", invP.alignX, invP.lineY);
-	doc.text("INVOICE DATE:", invP.colsX[3], invP.lineY);
+	doc.text((invTypeU + " DATE:"), invP.colsX[3], invP.lineY);
 	invP.cell(strDate, 4);
 	invP.lineDown();
 	doc.text("BOISE, ID 83702", invP.alignX, invP.lineY);
 	
 	invP.lineDown(2);
 	doc.text("ORDER NUMBER:", invP.colsX[3], invP.lineY);
-	invP.cell(order.id, 4);
+	invP.cell(invNmbr, 4);
 	invP.lineDown();
 	doc.text("ORDER DATE:", invP.colsX[3], invP.lineY);
 	invP.cell(strDate, 4);

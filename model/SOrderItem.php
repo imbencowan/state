@@ -56,12 +56,11 @@ class SOrderItem extends BasicTableModel {
 				// using a transaction
 			$db->beginTransaction();
 
-			
+				// add the items
 			foreach ($addItems as $item) {
 				$data = ['schoolOrderID' => $orderID, 
-							'itemID' =>$item['itemID'], 
-							'sOrderItemsQuantity' => $item['quantity'],
-							
+							'itemID' => $item['itemID'], 
+							'sOrderItemsQuantity' => $item['quantity']
 							];
 				self::insert($data);
 			}
@@ -70,6 +69,10 @@ class SOrderItem extends BasicTableModel {
 			$due = SchoolOrder::updateDue($db, $orderID);
 				// UPDATE completeness IF currently complete
 			SchoolOrder::updateCompletenessIf($orderID, 1, 2);
+				// UPDATE invoiceDate ($id, ['column': $value])
+			SchoolOrder::updateByID($orderID, ['invoiceDate' => date('Y-m-d')]);
+				// UPDATE invoiceVersion
+			SchoolOrder::updateInvoiceVersion($orderID);
 
 			$db->commit();
 

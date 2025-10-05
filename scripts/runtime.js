@@ -6,9 +6,10 @@ import { Color, Division, Employee, Item, Person, School, Site, Size, Sport, Sty
 
 export const runtime = {
 		// global containers. accessors as well if they utilize 
+	activeOrder: undefined,
 	inventories: {},
-	stateEvent: undefined,
 	sizeCodesByStyles: undefined,
+	stateEvent: undefined,
 	styleMap: undefined,
 		// makeDataLoader(srvrClassName, jsClass = null, srvrFnctn = "getAllFromDB")
 	allADs: makeDataLoader('Person', Person, "getAllADs"),
