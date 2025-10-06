@@ -1,10 +1,12 @@
 import { ActionRequest } from "../models/other-classes.js";
 import { myFetch } from "../fetch.js";
 import { runtime } from "../runtime.js";
+import { StateEvent } from "../models/db-classes.js";
 import { appndSbmtCnclBtns } from "../utilities.js";
+import { printInventory } from "../print.js";
 
    // a 'global' to hold a reusable template
-let inventoryTemplate = [];
+let inventoryTemplate = {};
 
    // global
 const sizeList = ['S', 'M', 'L', 'XL', '2X', '3X'];
@@ -18,7 +20,8 @@ export async function showInventories(data) {
    let events = null;
 	if (responseJSON.data) {
          // make it an array
-      events = Object.values(responseJSON.data);
+      // events = Object.values(responseJSON.data);
+      events = Object.values(responseJSON.data).map(e => StateEvent.fromJSON(e));
 
          // preload
       await runtime.allItems.load();
@@ -52,7 +55,7 @@ function buildInventoryTemplate() {
    const assorted = allColors.find(c => c.name ==='assorted');
 
       // define an inventories styles, and their colors
-   const shirtStyles = [ 
+   const garmentStyles = [ 
       ['t-shirts', [white, atheather]],
       ['youth t-shirts', [white], {'S': {}, 'M': {}, 'L': {} }],
       ['long sleeves', [white]],
@@ -60,41 +63,19 @@ function buildInventoryTemplate() {
       ['youth crew', [ash ], {'S': {}, 'M': {}, 'L': {} }],
       ['hoods', [ash , atheather]],
       ['youth hoods', [ash ], { 'M': {}, 'L': {}, 'XL': {} }],
-      ['zip up hoods', [atheather]],
-      ['baseball hats', [assorted], {'O': {} }],
-      ['beanies', [black], { 'O': {} }],
-      ['cinch bags', [atheather], { 'O': {} }]
+      ['zip up hoods', [atheather]]
    ];
 
-      // make the actual template
-   // inventoryTemplate = shirtStyles.map(([name, colors, sizesOverride]) => {
-   //       // get the style
-   //    const style = allStyles.find(s => s.inventoryName === name);
-   //    if (!style) return null;
-
-   //       // use the override for youth sizes, default for the others
-   //    const o = sizesOverride || sizesObj;
-   //       // use JSON.parse... to get a copy
-   //    const colorsWithSizes = colors.map(c => ({ ...c, sizes: JSON.parse(JSON.stringify(o)) }));
-
-   //    colorsWithSizes.forEach(color => {
-   //       for (const key in color.sizes) {
-   //          if (color.sizes.hasOwnProperty(key)) {
-   //             color.sizes[key].size = getSize(key, style.sizingCategoryID);
-   //             color.sizes[key].itemID = getItemID(style.id, color.id, color.sizes[key].size.id)
-   //          }
-   //       }
-   //    });
-
-   //    return { ...style, colors: colorsWithSizes };
-   //       // remove unmatched elements
-   // }).filter(Boolean);
-
+   const accessoryStyles = [
+      ['baseball hats', assorted],
+      ['beanies', black],
+      ['cinch bags', atheather]
+   ];
 
 
       // items by size by color by style. style, color, and size hold a reference
       // [{style: style, colors: [{color: color, sizes: [size: size, quantity, itemID]}]}]
-   inventoryTemplate = shirtStyles.map(([name, colors, sizesOverride]) => {
+   inventoryTemplate.garments = garmentStyles.map(([name, colors, sizesOverride]) => {
          // get the style
       const style = allStyles.find(s => s.inventoryName === name);
       if (!style) return null;
@@ -130,13 +111,28 @@ function buildInventoryTemplate() {
       };
    }).filter(Boolean);
 
+      // items without sizes
+   inventoryTemplate.accessories = accessoryStyles.map(([name, color]) => {
+      const style = allStyles.find(s => s.inventoryName === name);
+      if (!style) return null;
+
+      return {
+         style, 
+         quantity: null,
+            // hard coded 13 for one-size size
+         itemID: getItemID(style.id, color.id, 13)
+      };
+   });
+
 
    console.log(inventoryTemplate);
 }
 
    // returns a copy of the template, so we don't over write the template.
 function buildInventoryInstance(template) {
-   return template.map(entry => ({
+   // const newTemp = {};
+
+   const garments =  template.garments.map(entry => ({
       style: entry.style, // keep reference
       colors: entry.colors.map(c => ({
          color: c.color, // keep reference
@@ -152,6 +148,14 @@ function buildInventoryInstance(template) {
          )
       }))
    }));
+
+   const accessories = template.accessories.map(entry => ({
+      style: entry.style,
+      quantity: 0,
+      itemID: entry.itemID
+   }));
+
+   return { garments, accessories };
 }
 
 async function buildPage(events) {
@@ -160,17 +164,12 @@ async function buildPage(events) {
    let html = '';
    html += `<h1>${year}-${year+1} Inventories</h1>`;
    events.forEach(event => {
-      html += `<h2>${event.sport.name}</h2>`;
+      html += `<h2 data-sport="${event.sport.name}">${event.sport.name}</h2>`;
       event.eventSites.forEach(eSite => {
-console.log(eSite);
-
-         runtime.inventories[eSite.id] = {
-            sport: event.sport.name,
-            divisions: getDivisionsString(eSite),
-            site: eSite.site.name,
-            // city: eSite.site.city.name,
-            employees: eSite.employees
-         }
+         runtime.inventoriesBySite[eSite.id] = eSite;
+         
+            // attach this for printing
+         eSite.sportName = event.sport.name;
 
          html += `<div class="invntryCntnr" data-e-site-i-d="${eSite.id}">
          <div class="row">
@@ -229,8 +228,16 @@ function buildInventoryTable(eSite) {
    eSite.inventory.forEach(inventoryItem => {
       const item = inventoryItem.item;
          // find the style in the template
-      const style = inventory.find(s => s.style.id === item.styleID);
-      if (!style) return;
+      const style = inventory.garments.find(s => s.style.id === item.styleID);
+      if (!style) {
+            // if no style was found, check the accessories array
+         const style = inventory.accessories.find(s => s.style.id === item.styleID);
+            // if still no style, return
+         if (!style) return;
+            // else set the quantity
+         style.quantity = inventoryItem.startQ;
+         return;
+      }
          // find the color in that style
       const color = style.colors.find(c => c.color.id === item.colorID);
       if (!color) return;
@@ -241,7 +248,7 @@ function buildInventoryTable(eSite) {
    });
    
       // this is where we need to add each inventory to runtime
-   
+   runtime.inventoriesBySite[eSite.id].structuredInventory = inventory;
 
       // string some html
    let html = `
@@ -258,7 +265,7 @@ function buildInventoryTable(eSite) {
          </thead>
          <tbody>`;
                // s = {style: style, colors: []}
-            inventory.forEach(s => {
+            inventory.garments.forEach(s => {
                const youth = (s.style.sizingCategoryID === 2);
                const shirt = (s.style.sizingCategoryID !== 4);
                const styleRight = (youth) ? "right" : "";
@@ -295,6 +302,16 @@ function buildInventoryTable(eSite) {
                      }
                   html += `</tr>`;
                });
+            });
+
+            inventory.accessories.forEach(a => {
+               html += `<tr data-style-i-d="${a.style.id}">
+                  <td>${a.style.name}</td>
+                  <td colspan="7"></td>`;
+               const total = a.quantity || '';
+               html += `<td data-column="size" data-item-i-d="${a.itemID}" 
+                                    data-o-value="${total}">${total}</td>
+                  </tr>`;
             });
             html += `
          </tbody>
@@ -360,25 +377,27 @@ async function submitEdit(btn) {
       update.forEach(u => {
          u.price = allItems[u.itemID].price;
       })      
-   console.log(update);
+
       const data = { 'eventSiteID': container.dataset.eSiteID, 'update': update };
       const request = new ActionRequest('editEventSiteInventory', 'EventSite', data);
       let responseJSON = await myFetch(request);
 
-      if (responseJSON.success) console.log(responseJSON.data);
-      if (responseJSON.success) updateTable(tds, update);
+      if (responseJSON.success) {
+         updateTable(tds, update);
+            // put the edit button back
+         replaceEditButton(btn);
+      }
    } else {
-      cancelEdit(target);
+      cancelEdit(btn);
    } 
 
-      // put the edit button back
-   replaceEditButton(btn);
    
       // don't forget to reset
    runtime.activeMode = null;
 }
 
 function updateTable(tds) {
+   console.log(tds);
    tds.forEach(td => {
       td.innerHTML = td.querySelector('input').value;
    });
@@ -405,6 +424,7 @@ function cancelEdit(btn) {
 function replaceEditButton(btn) {
    const btns = btn.parentElement;
    const prnt = btns.parentElement;
+   console.log(btn, btns, prnt);
    btns.remove();
    const btnHTML = `
             <button class="topLevelButton" data-action="printInventory" title="print inventory">

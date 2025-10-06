@@ -102,13 +102,15 @@ export class Sport {
 }
 
 export class EventSite {
-   constructor({ id, eventID, site, managerName, gender, vehicle, esDivisions = [] }) {
+   constructor({ id, eventID, site, managerName, gender, vehicle, employees, inventory, esDivisions = [] }) {
 		this.id = id;
 		this.eventID = eventID;
 		this.site = Utils.parseToInstance(site, Site);
 		this.managerName = managerName;
       this.gender = gender;
 		this.vehicle = Utils.parseToInstance(vehicle, Vehicle);
+      this.employees = Utils.parseToInstancesArr(employees, Employee);
+      this.inventory = inventory;
 		this.esDivisions = Utils.parseToInstancesArr(esDivisions, EventSiteDivision);
 	}
 
@@ -135,6 +137,13 @@ export class EventSite {
       return minDiv.id === maxDiv.id
          ? minDiv.name
          : `${minDiv.name}-${maxDiv.name}`;
+   }
+
+   getEmployeesString() {
+      console.log(this.employees);
+      if (!this.employees || this.employees.length === 0) return '';
+
+      return this.employees.map(e => e.shortName).join(' / ');
    }
 }
 
@@ -490,11 +499,11 @@ export class Employee {
    }
 
    static fromValues(id, name, email, phone, extension, fax) {
-      return new Person({ id, name, email, phone, extension, fax });
+      return new Employee({ id, name, email, phone, extension, fax });
    }
 
    static fromJSON(json) {
-      return new Person(json);
+      return new Employee(json);
    }
 }
 

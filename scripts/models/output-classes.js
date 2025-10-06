@@ -48,6 +48,68 @@ const sizeListShort = ['S', 'M', 'L', 'XL', '2X', '3X', '4X', '5X'];
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // THE CLASSES
+class MyPDF {
+    constructor(doc) {
+        this.doc = doc;
+        this.width = 215.9;
+        this.height = 280;
+        this.alignX = 20;
+        this.startY = 28;
+        this.rMargin = this.width - this.alignX;
+            // the start of each column. size columns are 11 wide
+        this.colsX = [0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200];
+            // which column we're on.
+        this.col = 1;
+        this.lineStep = 6.5;
+        this.cursor = new Coord(this.alignX, this.startY);
+        this.pageBreakY = this.height - 28;
+        
+        this.doc.setFontSize(10);
+    }
+    
+    newLine(n = 1) {
+        this.col = 1;
+        this.cursor.x = this.alignX;
+        this.cursor.y += (n * this.lineStep);
+    }
+
+    hr(x1, x2) {
+        const y = this.cursor.y + 2;
+        if (x1 === undefined) x1 = this.colsX[1];
+        if (x2 === undefined) x2 = this.colsX[this.colsX.length - 1];
+
+        this.doc.line(x1, y, x2, y);
+    }
+    
+    addPage() {
+        this.doc.addPage();
+        this.col = 1;
+        this.cursor.x = this.alignX;
+        this.cursor.y = this.startY;
+    }
+    
+    textToCell(txt, align = 'center', font = 'normal') {
+        this.doc.setFont(undefined, font);
+
+        if (typeof txt === 'number') txt = String(txt);
+        if (!txt) txt = '';
+        
+        const colWidth = this.colsX[this.col + 1] - this.colsX[this.col];
+        let x = this.colsX[this.col];
+        let offset = ((colWidth - this.doc.getTextWidth(txt)) / 2);
+        
+        if (align == 'left') offset = 2;
+        if (align == 'right') offset = (colWidth - 2 - this.doc.getTextWidth(txt));
+        
+        this.doc.text(String(txt), (x + offset), this.cursor.y);
+        ++this.col;
+
+            // unset font style
+        this.doc.setFont(undefined, 'normal');
+    }
+}
+
+
 export class Label {
     constructor(doc, originI, totalShirts, lblN = 1) {
         this.doc = doc;
@@ -223,53 +285,32 @@ export class InvoicePage {
     }
 }
 
-export class SoSPage {
+export class SoSPage extends MyPDF {
     constructor(doc) {
-        this.doc = doc;
-        this.width = 215.9;
-        this.height = 280;
-        this.alignX = 20;
-        this.startY = 28;
-        this.rMargin = this.width - this.alignX;
-            // number columns have this width. school names do not.
-        this.sizeColW = 11;
-            // the start of each column
+            // call parent constructor
+        super(doc);
+        // use the default page size and margins
+        
+            // the start of each column. size columns are 11 wide
         this.colsX = [0, 20, 28, 114, 125, 136, 147, 158, 169, 180, 191, 202];
-            // which column we're on.
-        this.col = 1;
-        this.numColWidth = 10;
         this.lineStep = 6.5;
-        this.cursor = new Coord(this.alignX, this.startY);
-        this.pageBreakY = this.height - 28;
         
         this.doc.setFontSize(10);
     }
-    
-    newLine(n = 1) {
-        this.col = 1;
-        this.cursor.x = this.alignX;
-        this.cursor.y += (n * this.lineStep);
-    }
-    
-    addPage() {
-        this.doc.addPage();
-        this.col = 1;
-        this.cursor.x = this.alignX;
-        this.cursor.y = this.startY;
-    }
-    
-    textToCell(txt, align = 'center') {
-        if (typeof txt === 'number') txt = String(txt);
-        if (!txt) txt = '';
+}
+
+export class InventoryPage extends MyPDF {
+    constructor(doc) {
+            // call parent constructor
+        super(doc);
+        // use the default page size and margins
         
-        const colWidth = this.colsX[this.col + 1] - this.colsX[this.col];
-        let x = this.colsX[this.col];
-        let offset = ((colWidth - this.doc.getTextWidth(txt)) / 2);
+            // the start of each column. size columns are 15 wide
+            // 0, item, style, color, S, M, L, XL, 2X, 3X, TOTAL, end
+        this.colsX = [0, 20, 55, 71, 97, 112, 127, 142, 157, 172, 187, 202];
+        this.sizelessCols = [1, 2, 10, 11];
+        this.lineStep = 6;
         
-        if (align == 'left') offset = 2;
-        if (align == 'right') offset = (colWidth - 2 - this.doc.getTextWidth(txt));
-        
-        this.doc.text(String(txt), (x + offset), this.cursor.y);
-        ++this.col;
+        this.doc.setFontSize(10);
     }
 }

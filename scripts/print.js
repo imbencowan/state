@@ -1,5 +1,5 @@
 import { runtime } from './runtime.js';
-import { Label, InvoicePage, SoSPage } from './models/output-classes.js';
+import { Label, InvoicePage, SoSPage, InventoryPage } from './models/output-classes.js';
 import { sizeList } from './constants.js';
 import { openModal } from './modal.js';
 
@@ -585,6 +585,161 @@ function getItemByStyleIDSizeChar(styleID, displayChar) {
 	  }
    }
    return null;
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// generating inventories
+export async function printInventory(btn) {
+	if (!btn) return;
+
+		// get the eSite
+	const cntnr = btn.closest('.invntryCntnr');
+	const eSite = runtime.inventoriesBySite[cntnr.dataset.eSiteID];
+	
+		// Access jsPDF from the global object
+	const { jsPDF } = window.jspdf; 
+   const doc = new jsPDF('p', 'mm', 'letter');
+
+		// generate the inventory
+	genInventoryPDF(doc, eSite);
+	
+		// Generate a Blob URL and open it in a new tab
+	const pdfBlob = doc.output("blob");
+	const url = URL.createObjectURL(pdfBlob);
+	window.open(url, "_blank", "noopener");
+}
+
+export async function printAllInventories(eSites) {
+
+}
+
+async function genInventoryPDF(doc, eSite) {
+	const page = new InventoryPage(doc);
+	const cursor = page.cursor;
+	
+	const invSizeList = sizeList.slice(0, 6);
+
+
+		// write Inventory - START, but fancy
+	let txt = 'Inventory - ';
+	page.textToCell(txt, 'left');
+	let w = doc.getTextWidth(txt);
+	doc.setFont(undefined, 'bold');
+	txt = 'START';
+	doc.text('START', (page.alignX + w + 2), cursor.y);
+	w += doc.getTextWidth(txt);
+	doc.setFont(undefined, 'normal');
+	doc.line((cursor.x + 2), (cursor.y + 1), (cursor.x + w + 2), (cursor.y + 1));
+
+		// write sport - divisions / site
+	let siteStr = eSite.sportName.toUpperCase();
+	siteStr += ' ' + eSite.getDivisionsString();
+	siteStr += ' / ' + eSite.site.name;
+
+	page.col = 10;
+	page.textToCell(siteStr, 'right', 'bold');
+	page.newLine();
+	page.col = 10;
+		// write the employees for the site
+	page.textToCell(eSite.getEmployeesString(), 'right');
+	console.log(eSite.getEmployeesString());
+
+	const yGridStart = cursor.y + 2;
+	page.hr();
+	page.newLine();
+
+		// head the table
+	page.textToCell('item');
+	page.textToCell('style');
+	page.textToCell('color');
+	invSizeList.forEach(s => {
+		page.textToCell(s);
+	});
+	page.textToCell('total');
+
+	page.hr();
+		// a small step to divide the head of the table
+	cursor.y += 1.5;
+
+		// garments total
+	let gTotal = 0;
+
+		// make each garment style's row. style name, styleCode, color, sizes, total
+	eSite.structuredInventory.garments.forEach(s => {
+		const youth = (s.style.sizingCategoryID === 2);
+		const align = (youth) ? 'right' : 'left';
+
+		page.hr();
+		page.newLine();
+		page.textToCell(s.style.inventoryName, align);
+		page.textToCell(s.style.code);
+
+		s.colors.forEach((c, i) => {
+			page.textToCell(c.color.name);
+			let total = 0;
+
+				// skip the Small column for youth hoods
+			if (s.style.id === 7) page.textToCell('---');
+
+			Object.values(c.sizes).forEach(z => {
+				page.textToCell(z.quantity);
+				total += z.quantity;
+			});
+
+			if (youth) {
+				for (; page.col < 10;) { page.textToCell('---'); }
+			}
+			
+			page.textToCell(total);
+			gTotal += total;
+
+				// if there are multiple colors, start the next color at column 3
+			if (i < s.colors.length - 1) {
+				page.hr(page.colsX[3]);
+				page.newLine();
+				page.col = 3;
+			}
+		});
+	});
+
+		// close the table
+	page.hr();
+		// vertical grid lines
+	const ySizesBreak = (cursor.y + 2);
+	page.colsX.forEach(x => {
+		doc.line(x, yGridStart, x, ySizesBreak);
+	});
+
+		// row for garments total
+	page.newLine();
+	page.textToCell('total', 'right', 'bold');
+		// move to the last column
+	page.col = 10;
+	page.textToCell(gTotal);
+
+		// put in a separator
+	page.hr();
+	cursor.y += 1.5;
+	page.hr();
+
+		// make each accesory style's row. style name, total. // hats, beanies, etc
+	eSite.structuredInventory.accessories.forEach(a => {
+		page.hr();
+		page.newLine();
+		page.textToCell(a.style.inventoryName, 'left');
+		page.col = 10;
+		page.textToCell(a.quantity);
+	});
+
+		// close the table
+	page.hr();
+		// vertical grid lines
+	page.sizelessCols.forEach(col => {
+		doc.line(page.colsX[col], ySizesBreak, page.colsX[col], (cursor.y + 2));
+	});
+
 }
 
 
