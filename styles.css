@@ -417,3 +417,16 @@ tr.addOnRow {
 .inventoryTable .shirtRow td.center {
 	text-align: center;
 }
+
+.genderRadio {
+	margin: 10px;
+	white-space: nowrap;
+}
+
+.genderRadio p {
+	margin: 0 0 4px 0;
+}
+
+.genderRadio label {
+	display: inline-block;
+}

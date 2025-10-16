@@ -173,7 +173,7 @@ async function buildPage(events) {
 
          html += `<div class="invntryCntnr" data-e-site-i-d="${eSite.id}">
          <div class="row">
-            <h3>${eSite.site.name}</h3>
+            <h3>${eSite.site.name} - ${eSite.getDivisionsString()}</h3>
             <div class="top-btn-cntnr">
                <button class="topLevelButton" data-action="printInventory" title="print inventory">
                   <span class="material-icons">print</span>

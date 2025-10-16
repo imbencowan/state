@@ -11,14 +11,15 @@ class Style extends BasicTableModel {
 					'shortName' => 'styleShortName', 
 					'vShortName' => 'styleVeryShortName',
 					'code' => 'styleCode', 
-					'brand' => 'brandID',
+					'brandID' => 'brandID',
 					'sizingCategoryID' => 'sizingCategoryID',
 					'minSizeID' => 'minSizeID',
 					'maxSizeID'=> 'maxSizeID']; 
 	}
-		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
+			// $interTable = null, $stopContexts = [])
 	protected static function getRelations(): array {
-      return [new Relation('brand', 'Brand', 'brandID', 'brandID')];
+      return [new Relation('brand', 'Brand', 'brandID', 'brandID', false, null, ['year', 'orders'])];
    }
 	
 	
@@ -29,10 +30,11 @@ class Style extends BasicTableModel {
       public readonly ?string $shortName,
       public readonly ?string $vShortName,
       public readonly ?string $code,
-		public readonly ?Brand $brand,
+		public readonly ?int $brandID,
 		public readonly ?int $sizingCategoryID,
 		public readonly ?int $minSizeID,
 		public readonly ?int $maxSizeID,
+		public readonly ?Brand $brand = null,
 		private array $sizes = []
    ) {}
 	

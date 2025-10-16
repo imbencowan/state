@@ -22,8 +22,8 @@
 			<td title="M"><?= isset($neededSizes['M']) ? $neededSizes['M'] : '-'; ?></td>
 			<td title="L"><?= isset($neededSizes['L']) ? $neededSizes['L'] : '-'; ?></td>
 			<td title="XL"><?= isset($neededSizes['XL']) ? $neededSizes['XL'] : '-'; ?></td>
-			<td title="2XL"><?= isset($neededSizes['2XL']) ? $neededSizes['2XL'] : '-'; ?></td>
-			<td title="3XL"><?= isset($neededSizes['3XL']) ? $neededSizes['3XL'] : '-'; ?></td>
+			<td title="2X"><?= isset($neededSizes['2X']) ? $neededSizes['2X'] : '-'; ?></td>
+			<td title="3X"><?= isset($neededSizes['3X']) ? $neededSizes['3X'] : '-'; ?></td>
 			<td title="total"><?= ($neededSizes) ? array_sum($neededSizes) : '-'; ?></td>
 		</tr>
 	</tbody>

@@ -61,7 +61,7 @@ function genBoxLabel(doc, order, originI, lblN = 1) {
 	lbl.addSiteDivision(order.site, order.division);
 	
 		// start the horizontal rows
-	lbl.centerTextInLabel(order.sport);
+	lbl.centerTextInLabel(order.sportStr);
 	
 	lbl.lineY += 9;
 	doc.setFontSize(18);
@@ -424,6 +424,10 @@ export async function downloadInvoicePDF(order, type = "Invoice") {
 
 	const a = document.createElement("a");
 	a.href = url;
+
+	// let genderName = '';
+	// if (runtime.stateEvent.sport.name.toLowerCase() === "soccer") genderName
+
 	a.download = `${order.school.shortName} ${runtime.stateEvent.sport.name} ${runtime.stateEvent.getRealYear()} Add Ons`;
 	document.body.appendChild(a); // Required for Firefox
 	a.click();
@@ -572,7 +576,15 @@ async function genInvoicePDF(doc, order, type = "Invoice") {
 	doc.setFont(currentFont, 'normal');
 	
 	invP.lineDown(2);
-	invP.centerTextInPage(`${runtime.stateEvent.sport.name} ${runtime.stateEvent.startDate.getFullYear()}`);
+
+	let gndrStr = '';
+		console.log(order);
+	if ((order.genderID !== null) && (Number(order.genderID) < 3)) {
+		if (Number(order.genderID) === 1) gndrStr = "Boys ";
+		if (Number(order.genderID) === 2) gndrStr = "Girls ";
+	}
+	let str = `${gndrStr}${runtime.stateEvent.sport.name} ${runtime.stateEvent.startDate.getFullYear()}`
+	invP.centerTextInPage(str);
 }
 
 	// helper for invoice generation
@@ -591,6 +603,8 @@ function getItemByStyleIDSizeChar(styleID, displayChar) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // generating inventories
+const inventoryStates = ['START', 'END', 'SOLD'];
+
 export async function printInventory(btn) {
 	if (!btn) return;
 
@@ -615,36 +629,61 @@ export async function printAllInventories(eSites) {
 
 }
 
-async function genInventoryPDF(doc, eSite) {
+function genInventoryPDF(doc, eSite) {
 	const page = new InventoryPage(doc);
 	const cursor = page.cursor;
 	
-	const invSizeList = sizeList.slice(0, 6);
 
+		// START page
+	writeInventoryHeader(doc, page, cursor, eSite, 'START');
+		// get the current y so we can reset to it
+	const tableYInit = cursor.y;
+	buildInventoryTable(doc, page, cursor, eSite);
+		// reset the y to the top of the table
+	cursor.y = tableYInit;
+	fillInventoryTable(doc, page, cursor, eSite);
+	inventoryStartAddendum(doc, page, cursor, eSite);
 
-		// write Inventory - START, but fancy
+		// END page
+	page.addPage();
+	writeInventoryHeader(doc, page, cursor, eSite, 'END');
+	buildInventoryTable(doc, page, cursor, eSite);
+	inventoryEndAddendum(page);
+
+		// SOLD page
+	page.addPage();
+	writeInventoryHeader(doc, page, cursor, eSite, 'SOLD');
+	buildInventoryTable(doc, page, cursor, eSite);
+	inventorySoldAddendum(page);
+
+}
+
+function writeInventoryHeader(doc, page, cursor, eSite, sheet) {
+		// write Inventory - /SHEET/, with an underline and selectie bolding
 	let txt = 'Inventory - ';
 	page.textToCell(txt, 'left');
 	let w = doc.getTextWidth(txt);
 	doc.setFont(undefined, 'bold');
-	txt = 'START';
-	doc.text('START', (page.alignX + w + 2), cursor.y);
-	w += doc.getTextWidth(txt);
+	doc.text(sheet, (page.alignX + w + 2), cursor.y);
+	w += doc.getTextWidth(sheet);
 	doc.setFont(undefined, 'normal');
 	doc.line((cursor.x + 2), (cursor.y + 1), (cursor.x + w + 2), (cursor.y + 1));
 
-		// write sport - divisions / site
+		// write sport - divisions / site, top right of the page
 	let siteStr = eSite.sportName.toUpperCase();
 	siteStr += ' ' + eSite.getDivisionsString();
 	siteStr += ' / ' + eSite.site.name;
-
 	page.col = 10;
 	page.textToCell(siteStr, 'right', 'bold');
+	
 	page.newLine();
 	page.col = 10;
-		// write the employees for the site
+		// write the employees for the site, a new line on the right of the page
 	page.textToCell(eSite.getEmployeesString(), 'right');
-	console.log(eSite.getEmployeesString());
+}
+
+function buildInventoryTable(doc, page, cursor, eSite) {
+	const invSizeList = sizeList.slice(0, 6);
 
 	const yGridStart = cursor.y + 2;
 	page.hr();
@@ -663,9 +702,6 @@ async function genInventoryPDF(doc, eSite) {
 		// a small step to divide the head of the table
 	cursor.y += 1.5;
 
-		// garments total
-	let gTotal = 0;
-
 		// make each garment style's row. style name, styleCode, color, sizes, total
 	eSite.structuredInventory.garments.forEach(s => {
 		const youth = (s.style.sizingCategoryID === 2);
@@ -678,22 +714,16 @@ async function genInventoryPDF(doc, eSite) {
 
 		s.colors.forEach((c, i) => {
 			page.textToCell(c.color.name);
-			let total = 0;
 
 				// skip the Small column for youth hoods
 			if (s.style.id === 7) page.textToCell('---');
 
-			Object.values(c.sizes).forEach(z => {
-				page.textToCell(z.quantity);
-				total += z.quantity;
-			});
-
+				// shift the cell over to '---' non existent youth sizes
+			page.col += Object.keys(c.sizes).length;
+				// '---' non existent youth sizes
 			if (youth) {
 				for (; page.col < 10;) { page.textToCell('---'); }
 			}
-			
-			page.textToCell(total);
-			gTotal += total;
 
 				// if there are multiple colors, start the next color at column 3
 			if (i < s.colors.length - 1) {
@@ -712,12 +742,9 @@ async function genInventoryPDF(doc, eSite) {
 		doc.line(x, yGridStart, x, ySizesBreak);
 	});
 
-		// row for garments total
+		// a row for garments total
 	page.newLine();
 	page.textToCell('total', 'right', 'bold');
-		// move to the last column
-	page.col = 10;
-	page.textToCell(gTotal);
 
 		// put in a separator
 	page.hr();
@@ -729,8 +756,6 @@ async function genInventoryPDF(doc, eSite) {
 		page.hr();
 		page.newLine();
 		page.textToCell(a.style.inventoryName, 'left');
-		page.col = 10;
-		page.textToCell(a.quantity);
 	});
 
 		// close the table
@@ -739,6 +764,133 @@ async function genInventoryPDF(doc, eSite) {
 	page.sizelessCols.forEach(col => {
 		doc.line(page.colsX[col], ySizesBreak, page.colsX[col], (cursor.y + 2));
 	});
+}
+
+function fillInventoryTable(doc, page, cursor, eSite) {
+	page.newLine();
+		// a small step to divide the head of the table
+	cursor.y += 1.5;
+
+		// garments total
+	let gTotal = 0;
+
+		// make each garment style's row. style name, styleCode, color, sizes, total
+	eSite.structuredInventory.garments.forEach(s => {
+		page.newLine();
+
+		s.colors.forEach((c, i) => {
+			page.col = 4;
+			let total = 0;
+
+				// skip the Small column for youth hoods
+			if (s.style.id === 7) ++page.col;
+
+				// put in values for each size
+			Object.values(c.sizes).forEach(z => {
+				page.textToCell(z.quantity);
+				total += z.quantity;
+			});
+				// put in the total
+			page.col = 10;
+			page.textToCell(total);
+			gTotal += total;
+
+				// if there are multiple colors, start the next color at column 3
+			if (i < s.colors.length - 1) page.newLine();
+		});
+	});
+
+		// row for garments total
+	page.newLine();
+		// move to the last column
+	page.col = 10;
+	page.textToCell(gTotal);
+
+		// put in a separator
+	cursor.y += 1.5;
+
+		// make each accesory style's row. style name, total. // hats, beanies, etc
+	eSite.structuredInventory.accessories.forEach(a => {
+		page.newLine();
+		page.col = 10;
+		page.textToCell(a.quantity);
+	});
+}
+
+function inventoryStartAddendum(doc, page, cursor, eSite) {
+	page.newLine(2);
+	page.textToCell('transfers');
+	page.textToCell('150');
+
+	page.newLine(2);
+	page.textToCell('STATE CHAMPIONS');
+	page.textToCell('50');
+	page.newLine();
+	page.textToCell('STATE CHAMPION');
+	page.textToCell('50');
+
+	page.newLine(2);
+	page.textToCell('BACK TO BACK');
+	page.textToCell('50');
+	page.newLine();
+	page.textToCell('3-PEAT');
+	page.textToCell('50');
+	page.newLine();
+	page.textToCell('3X, 4X, 5X...');
+	page.textToCell('50');
+
+	page.newLine(2);
+	page.textToCell('small golf logo');
+	page.textToCell('40');
+
+	page.newLine(2);
+	page.textToCell('MOM/DAD/ETC');
+	page.textToCell('SET');
+	page.newLine();
+	page.textToCell('school names');
+	page.textToCell('SET');
+}
+
+function inventoryEndAddendum(page) {
+	page.newLine(2);
+	page.textToCell('transfers:', 'center', 'bold');
+
+	page.newLine(3);
+	page.textToCell('List any misprints below (style / color / size / quantity):', 'left');
+	page.hr();
+	// page.textToCell('STYLE');
+	// page.textToCell('COLOR');
+	// page.textToCell('SIZE');
+	// page.textToCell();
+}
+
+function inventorySoldAddendum(page) {
+	page.newLine(2);
+	page.textToCell('transfers');
+
+	page.newLine(2);
+	page.textToCell('STATE CHAMPION/S');
+
+	page.newLine(2);
+	page.textToCell('BACK TO BACK');
+	page.newLine();
+	page.textToCell('3-PEAT');
+	page.newLine();
+	page.textToCell('3X, 4X, 5X...');
+
+	page.newLine(2);
+	page.textToCell('small golf logo');
+
+	page.newLine(2);
+	page.textToCell('MOM/DAD/ETC');
+	page.newLine();
+	page.textToCell('school names');
+
+	page.newLine(2);
+	page.textToCell('Total $$');
+
+	page.newLine(2);
+	page.textToCell('hours');
 
 }
 

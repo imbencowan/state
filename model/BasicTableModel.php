@@ -406,12 +406,12 @@ abstract class BasicTableModel implements JsonSerializable {
 	}
 
 		// see above
-	public static function getByID(int $id): ?static {
+	public static function getByID(int $id, ?string $context = null): ?static {
 		$table = static::getTableName();
 		$idCol = static::getColumns()['id'];
-		$query = static::buildSelect() . " WHERE $table.$idCol  = :id";
+		$query = static::buildSelect($context) . " WHERE $table.$idCol  = :id";
 		$rows = static::getFromDB($query, [':id' => $id]);
-		$instance = !empty($rows) ? static::groupAndBuild($rows)[$id] : null;
+		$instance = !empty($rows) ? static::groupAndBuild($rows, $context)[$id] : null;
 		return $instance;
 	}
 	
@@ -441,20 +441,47 @@ abstract class BasicTableModel implements JsonSerializable {
 	}
 
 	
-		// a helper for various get...()s. takes a $query and $params, and makes the actual call
-	protected static function getFromDB(string $query, array $params = []): array {
-		$db = Database::getDB();
-		$statement = $db->prepare($query);
-		// Test::logX($query);
-		foreach ($params as $key => $value) {
-			$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
-		}
-		$statement->execute();
-		$rows = $statement->fetchAll();
-		$statement->closeCursor();
+	// 	// a helper for various get...()s. takes a $query and $params, and makes the actual call
+	// protected static function getFromDB(string $query, array $params = []): array {
+	// 	$db = Database::getDB();
+	// 	$statement = $db->prepare($query);
+	// 	// Test::logX($query);
+	// 	foreach ($params as $key => $value) {
+	// 		$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+	// 	}
+	// 	$statement->execute();
+	// 	$rows = $statement->fetchAll();
+	// 	$statement->closeCursor();
 
-		return $rows;
+	// 	return $rows;
+	// }
+
+protected static function getFromDB(string $query, array $params = []): array {
+	$db = Database::getDB();
+	$statement = $db->prepare($query);
+
+	// Bind parameters
+	foreach ($params as $key => $value) {
+		$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
 	}
+
+	$a = 'Memory before execute: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
+
+	$statement->execute();
+
+	$b = 'Memory after execute, before fetch: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
+
+	$rows = $statement->fetchAll();
+
+	$c = 'Memory after fetchAll: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
+	$d = 'Peak memory so far: ' . round(memory_get_peak_usage() / 1024 / 1024, 2) . " MB\n";
+	Test::logX($a, $b, $c, $d);
+
+	$statement->closeCursor();
+
+	return $rows;
+}
+
 	
 		// builds the SELECT statement for get...FromDB() functions. uses helpers to build JOINs and column selections
 			// this and buildJoins() got a little messy in needing to build a query with unique table aliases for JOINs, and

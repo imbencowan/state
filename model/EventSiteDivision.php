@@ -49,12 +49,41 @@ class EventSiteDivision extends BasicTableModel {
 	
 	//////////////////////////////////////////////////////
 	// Database functions	
-	public static function getIDByEventAndDivision($eventID, $divisionID) {
-		$query = "SELECT eventSiteHasDivisionID FROM eventSiteHasDivision 
-					INNER JOIN eventSites ON eventSites.eventSiteID = eventSiteHasDivision.eventSiteID 
-					WHERE eventID = :eventID AND divisionID = :divisionID";
-		$rows = static::getFromDB($query, [':eventID' => $eventID, ':divisionID' => $divisionID]);
-		return !empty($rows) ? $rows[0]['eventSiteHasDivisionID'] : null;
-	}
+	public static function getIDByEventAndDivisionAndGender($eventID, $divisionID, $genderID = null) {
+    if ($genderID && $genderID < 3) {
+        // Query including gender join
+        $query = 
+		  		"SELECT esd.eventSiteHasDivisionID
+            FROM eventSiteHasDivision AS esd
+            INNER JOIN eventSites AS es ON es.eventSiteID = esd.eventSiteID
+            INNER JOIN eventSiteHasGender AS esg ON esg.eventSiteID = es.eventSiteID
+            WHERE es.eventID = :eventID
+              AND esd.divisionID = :divisionID
+              AND esg.genderID = :genderID
+            LIMIT 1";
+        $params = [
+            ':eventID' => $eventID,
+            ':divisionID' => $divisionID,
+            ':genderID' => $genderID
+        ];
+    } else {
+        // Query without gender filter
+        $query = 
+		  		"SELECT esd.eventSiteHasDivisionID
+            FROM eventSiteHasDivision AS esd
+            INNER JOIN eventSites AS es ON es.eventSiteID = esd.eventSiteID
+            WHERE es.eventID = :eventID
+              AND esd.divisionID = :divisionID
+            LIMIT 1";
+        $params = [
+            ':eventID' => $eventID,
+            ':divisionID' => $divisionID
+        ];
+    }
+
+    $rows = static::getFromDB($query, $params);
+    return !empty($rows) ? $rows[0]['eventSiteHasDivisionID'] : null;
+}
+
 }
 ?>

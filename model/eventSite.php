@@ -12,14 +12,20 @@ class EventSite extends BasicTableModel {
 					'startDate' => 'startDate',
 					'endDate' => 'endDate'];
 	}
-		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
+			// $interTable = null, $stopContexts = [])
 	protected static function getRelations(): array {
       return [new Relation('site', 'Site', 'siteID', 'siteID', false),
 				new Relation('esDivisions', 'EventSiteDivision', 'eventSiteID', 'eventSiteID', true),
 				new Relation('gender', 'Gender', 'eventSiteID', 'genderID', false, 'eventsitehasgender'),
 				new Relation('vehicles', 'Vehicle', 'eventSiteID', 'vehicleID', true, 'eventsitehasvehicle'), 
 				new Relation('employees', 'Employee', 'eventSiteID', 'employeeID', true, 'eventsitehasemployee'), 
-				new Relation('inventory', 'EventSiteInventoryItem', 'eventSiteID', 'eventSiteID', true)];
+				new Relation('inventory', 'EventSiteInventoryItem', 'eventSiteID', 'eventSiteID', true, null, 
+								['year', 'orders'])
+				// ,
+				// new Relation('transfers', 'EventSiteTransfer', 'eventSiteID', 'eventSiteID', true, null, 
+				// 				['year', 'orders'])
+				];
    }
 	
 	public readonly array $esDivisions;
@@ -35,7 +41,8 @@ class EventSite extends BasicTableModel {
     	public readonly array $vehicles = [],
 		array $esDivisions = [],
 		public readonly array $employees = [],
-		public readonly array $inventory
+		public readonly array $inventory = [],
+		public readonly array $transfers = []
    ) {
 		$this->esDivisions = self::organizeDivisions($esDivisions);
 	}

@@ -173,9 +173,9 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 		let divGenderStr = '';
 		if (eventSite.gender) divGenderStr += ' ' + eventSite.gender.name;
 		let sportGenderStr = '';
-		if (runtime.stateEvent.sport.name === "Soccer") {
-			if (order.messageOrders[0].genderID === 1) sportGenderStr += ' - Boys';
-			if (order.messageOrders[0].genderID === 2) sportGenderStr += ' - Girls';
+		if (order.genderID !== null) {
+				if (order.genderID === 1) sportGenderStr += 'Boys ';
+				if (order.genderID === 2) sportGenderStr += 'Girls ';
 		}
 		
 			// hacky
@@ -183,7 +183,7 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 				// this is actually kind of clean considering the alternatives for getting this info where it needs to be.
 		order.division = division.division.name + divGenderStr;
 		order.site = eventSite.site.name;
-		order.sport = runtime.stateEvent.sport.name + sportGenderStr;
+		order.sportStr =  sportGenderStr + runtime.stateEvent.sport.name;
 		
 		return order || null;
 	}
@@ -608,6 +608,7 @@ function updateNeeded(order, add = true) {
 	});
 }
 
+
 	// marks a comment as handled
 async function changeCommentHandled(box) {
 	const data = {'id': box.dataset.orderId, 'handled': box.checked};
@@ -629,11 +630,20 @@ async function makeBlankOrder() {
 	    // Create content as a DOM fragment / wrapper
 	const wrapper = document.createElement('div');
 	wrapper.innerHTML = 
-        `<label for="schoolInput">Select School:</label>
+      `<label for="schoolInput">Select School:</label>
 		<input list="schoolList" id="schoolInput" name="schoolInput" />
 		<datalist id="schoolList"></datalist>
-		<p id="schoolIDDisplay">Selected School ID: <span id="schoolID"></span></p>
-		<button id="addSchoolBtn">Add School</button>`;
+		<p id="schoolIDDisplay">Selected School ID: <span id="schoolID"></span></p>`;
+	if (runtime.stateEvent.sport.name.toLowerCase() === "soccer") {
+		wrapper.innerHTML += 
+			`<form class="genderRadio"d>
+				<p>Gender:</p>
+				<label><input type="radio" name="gender" value="1">Boys</label>
+				<label><input type="radio" name="gender" value="2">Girls</label>
+				<p id="gndrMsg"></p>
+			</form>`;
+	}
+	wrapper.innerHTML += `<button id="addSchoolBtn">Add School</button>`;
 
         // setTimeout() to delay the code that follows. give the DOM time to catch up
 	setTimeout(() => {
@@ -659,24 +669,40 @@ async function makeBlankOrder() {
 
         // add a listener for the submit button
 	wrapper.querySelector("#addSchoolBtn").addEventListener("click", async () => {
+			// get the school
 		const schoolName = wrapper.querySelector("#schoolInput").value;
 		const school = schoolMap[schoolName];
 		if (!school) {
 			wrapper.querySelector("#schoolID").textContent = "School not found";
 			return;
 		}
+
+			// initialize gender as null
+		let gender = null;
+			// check if the gender form exists. currently only true for soccer
+		const genderForm = wrapper.querySelector(".genderRadio");
+		if (genderForm) {
+			const selected = genderForm.querySelector('input[name="gender"]:checked');
+			if (selected) {
+					gender = selected.value;
+			} else {
+						// optionally, handle case where nothing is selected
+					wrapper.querySelector("#gndrMsg").textContent = "Gender is required for this sport";
+					return;
+			}
+		}
             // close the modal on submit
 		closeModal();
 
             // get the eventSiteDivision so we can add this new order appropriately
-		const esd = runtime.stateEvent.getEsdByDivID(school.division.id);
+		const esd = runtime.stateEvent.getEsdByDivIDAndGenderID(school.division.id, gender);
 			// check if this school already has an order
 		if (esd.hasSchoolByID(school.id)) {
 				// if so, reopen modal just to show a message
 			openModal("This school is already in this event.");
 		} else {
 				// if not, add it
-			const request = new ActionRequest('addNewOrder', 'SchoolOrder', [esd.id, school.id]);
+			const request = new ActionRequest('addNewOrder', 'SchoolOrder', [esd.id, school.id, gender]);
 			const responseJSON = await myFetch(request);
 			const orderID = responseJSON.data;
                 // get the appropriate table to append this order to

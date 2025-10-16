@@ -123,7 +123,8 @@ class Event extends BasicTableModel {
 		$eventID = static::getIDBySportIDAndYear($sportID, $year);
 		if (!$eventID) return null;
 		// Test::logX($eventID);
-		$event = self::getByID($eventID);
+			// ($id, $context)
+		$event = self::getByID($eventID, 'orders');
 		return $event ?? null;
 	}
 	

@@ -8,6 +8,7 @@ class SchoolOrder extends BasicTableModel {
 		return ['id' => 'schoolOrderID', 
 					'eshdID' => 'eventSiteHasDivisionID', 
 					'school' => 'schoolID',
+					'genderID' => 'genderID',
 					'completeness' => 'completeness',
 					'due' => 'due',
 					'paid' => 'paid',
@@ -30,6 +31,7 @@ class SchoolOrder extends BasicTableModel {
 		public readonly ?int $id,
 		public readonly int $eshdID, 
 		public readonly School $school,
+		public readonly ?int $genderID = null,
 		public readonly int $completeness = 0,
 		public readonly ?int $due = 0,
 		public readonly ?bool $paid = false,
@@ -48,6 +50,7 @@ class SchoolOrder extends BasicTableModel {
 			'id' => $this->id,
 			'eshdID' => $this->eshdID,
 			'school' => $this->school,
+			'genderID' => $this->genderID,
 			'completeness' => $this->completeness,
 			'due' => $this->due,
 			'paid' => $this->paid,
@@ -127,6 +130,16 @@ class SchoolOrder extends BasicTableModel {
 			foreach ($orders as &$order) {
 					// we could move the logic in this foreach to a function like processOrder(), and wrap it in withDB() for transaction
 				
+					// gender should come in as the table's id value, because it's easy (just 1, 2, or 3)
+				$genderID = $order['gender'];
+					// it looks like i'm making gender a pair of properties in the order, rather than a gender object
+				$order['genderName'] = '';
+				if ($genderID == 1) {
+					$order['genderName'] = 'Boys ';
+				} elseif ($genderID == 2) {
+					$order['genderName'] = 'Girls ';
+				}
+				
 					// get the whole sport, we need sport->minDiv later
 				$sport = Sport::getByName($order['sport']);
 					// get the school year. an event in january - may of the 24-25 school year will be represented by 24
@@ -138,22 +151,12 @@ class SchoolOrder extends BasicTableModel {
 						// schools in lower divisions play in the lowest division that has a competition
 				if ($divisionID < $sport->minDiv) $divisionID = $sport->minDiv;
 
-				$eshdID = EventSiteDivision::getIDByEventAndDivision($eventID, $divisionID);
+				$eshdID = EventSiteDivision::getIDByEventAndDivisionAndGender($eventID, $divisionID, $genderID);
 			// Test::logX('eshdID is ' . $eshdID, 'eventID is ' . $eventID, 'divisionID is ' . $divisionID);
 				
 					// need to add logic for if $school is not in the db
 				$schoolID = School::getIDByName($order['school']);
 				$order['shortSchool'] = School::shortenSchoolName($order['school']);
-				
-					// gender should come in as the table's id value, because it's easy (just 1, 2, or 3)
-				$genderID = $order['gender'];
-					// it looks like i'm making gender a pair of properties in the order, rather than a gender object
-				$order['genderName'] = '';
-				if ($genderID == 1) {
-					$order['genderName'] = 'Boys ';
-				} elseif ($genderID == 2) {
-					$order['genderName'] = 'Girls ';
-				}
 				
 					// to make SOrderItems
 				$baseSize = 42;
@@ -305,10 +308,10 @@ class SchoolOrder extends BasicTableModel {
 	// 	$stmt->execute();
 	// }
 
-	
-	public static function addNewOrder($eshdID, $schoolID) {
 
-		$data = ['eventSiteHasDivisionID' => $eshdID, 'schoolID' => $schoolID];
+		// utilizes base class method
+	public static function addNewOrder($eshdID, $schoolID, $genderID = null) {
+		$data = ['eventSiteHasDivisionID' => $eshdID, 'schoolID' => $schoolID, 'genderID' => $genderID];
 		return self::insert($data);
 	}
 	

@@ -43,12 +43,17 @@ export class StateEvent {
 		return null; // Not found
 	}
 	
-	getEsdByDivID(id) {
-		if (id < this.sport.minDiv) id = this.sport.minDiv;
+	getEsdByDivIDAndGenderID(divID, genderID = null) {
+		if (divID < this.sport.minDiv) divID = this.sport.minDiv;
 		for (const es of this.eventSites) {
-			for (const esd of es.esDivisions) {
-				if (esd.division.id === Number(id)) return esd;
-			}
+            // if a genderID was passed (soccer) check it matches the EventSite's gender
+         if ((genderID == null) || (es.gender.id === Number(genderID))) {
+            for (const esd of es.esDivisions) {
+               if (esd.division.id === Number(divID)) {
+                  return esd;
+               }
+            }
+         }
 		}
 		return null;
 	}
@@ -66,13 +71,13 @@ export class StateEvent {
 					if (!order.completeness) {
                   let sportGenderStr = '';
                   if (this.sport.name === "Soccer") {
-                     if (order.messageOrders[0].genderID === 1) sportGenderStr += ' - Boys';
-                     if (order.messageOrders[0].genderID === 2) sportGenderStr += ' - Girls';
+                     if (order.genderID === 1) sportGenderStr += ' - Boys';
+                     if (order.genderID === 2) sportGenderStr += ' - Girls';
                   }
                   
 						order.division = eshd.division.name +divGenderStr;
 						order.site = eventSite.site.name;
-						order.sport = this.sport.name + sportGenderStr;
+						order.sportStr = this.sport.name + sportGenderStr;
 						orders.push(order);
 					}
 				});
@@ -102,7 +107,8 @@ export class Sport {
 }
 
 export class EventSite {
-   constructor({ id, eventID, site, managerName, gender, vehicle, employees, inventory, esDivisions = [] }) {
+   constructor({ id, eventID, site, managerName, gender, vehicle, employees, inventory, transfers, 
+               esDivisions = [] }) {
 		this.id = id;
 		this.eventID = eventID;
 		this.site = Utils.parseToInstance(site, Site);
@@ -111,6 +117,7 @@ export class EventSite {
 		this.vehicle = Utils.parseToInstance(vehicle, Vehicle);
       this.employees = Utils.parseToInstancesArr(employees, Employee);
       this.inventory = inventory;
+      this.transfers = transfers;
 		this.esDivisions = Utils.parseToInstancesArr(esDivisions, EventSiteDivision);
 	}
 
@@ -134,13 +141,16 @@ export class EventSite {
          if (div.id > maxDiv.id) maxDiv = div;
       });
 
-      return minDiv.id === maxDiv.id
+      let divStr = (minDiv.id === maxDiv.id)
          ? minDiv.name
          : `${minDiv.name}-${maxDiv.name}`;
+
+      if (this.gender && this.gender.id !== 3) divStr += ' ' + this.gender.name;
+
+      return divStr;
    }
 
    getEmployeesString() {
-      console.log(this.employees);
       if (!this.employees || this.employees.length === 0) return '';
 
       return this.employees.map(e => e.shortName).join(' / ');
@@ -245,12 +255,13 @@ export class Division {
 }
 
 export class SchoolOrder {
-   constructor({ id, eshdID, school, completeness = 0, due = null, paid = null, schoolOrderNote = null, 
-               invoiceDate = null, invoiceVersion = null, messageOrders = [], shirtsByStyle = [], 
-               site = undefined, sport = undefined }) {
+   constructor({ id, eshdID, school, genderID, completeness = 0, due = null, paid = null, 
+               schoolOrderNote = null, invoiceDate = null, invoiceVersion = null, messageOrders = [], 
+               shirtsByStyle = [], site = undefined, sport = undefined }) {
       this.id = id;
       this.eshdID = eshdID;
       this.school = Utils.parseToInstance(school, School);
+      this.genderID = genderID;
       this.completeness = completeness;
       this.due = due;
       this.paid = paid;
