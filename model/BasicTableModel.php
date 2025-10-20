@@ -458,6 +458,7 @@ abstract class BasicTableModel implements JsonSerializable {
 
 protected static function getFromDB(string $query, array $params = []): array {
 	$db = Database::getDB();
+	Test::logX($query);
 	$statement = $db->prepare($query);
 
 	// Bind parameters
@@ -495,7 +496,8 @@ protected static function getFromDB(string $query, array $params = []): array {
 		$selectColumns = [];
 		self::buildSelects($selectColumns, $table, $columns);
 			// Call recursive function to handle relations and their relations. returns array of JOIN statements
-		$joins = self::buildJoins($table, $relations, $selectColumns);
+		// $joins = self::buildJoins($table, $relations, $selectColumns);
+		$joins = self::buildJoins($table, $relations, $selectColumns, [], [], $context);
 			// get optional WHERE clause
 		$whereClause = 
 			// Build the final SELECT query
@@ -544,7 +546,8 @@ protected static function getFromDB(string $query, array $params = []): array {
 				$joins[] = self::writeJoin($relatedTable, $tableAlias, $oldAlias, $leftKey, $rightKey);
 			}
 				// Recursively handle relations of the related class (i.e., relations of relations)
-			$joins = self::buildJoins($relatedTable, $relatedClass::getContextRelations($context), $selectColumns, $joins, $path);
+			$joins = self::buildJoins($relatedTable, $relatedClass::getContextRelations($context), 
+												$selectColumns, $joins, $path, $context);
 		}
 		return $joins;
 	}

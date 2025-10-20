@@ -642,19 +642,19 @@ function genInventoryPDF(doc, eSite) {
 		// reset the y to the top of the table
 	cursor.y = tableYInit;
 	fillInventoryTable(doc, page, cursor, eSite);
-	inventoryStartAddendum(doc, page, cursor, eSite);
+	// inventoryStartAddendum(doc, page, cursor, eSite);
 
-		// END page
-	page.addPage();
-	writeInventoryHeader(doc, page, cursor, eSite, 'END');
-	buildInventoryTable(doc, page, cursor, eSite);
-	inventoryEndAddendum(page);
+	// 	// END page
+	// page.addPage();
+	// writeInventoryHeader(doc, page, cursor, eSite, 'END');
+	// buildInventoryTable(doc, page, cursor, eSite);
+	// inventoryEndAddendum(page);
 
-		// SOLD page
-	page.addPage();
-	writeInventoryHeader(doc, page, cursor, eSite, 'SOLD');
-	buildInventoryTable(doc, page, cursor, eSite);
-	inventorySoldAddendum(page);
+	// 	// SOLD page
+	// page.addPage();
+	// writeInventoryHeader(doc, page, cursor, eSite, 'SOLD');
+	// buildInventoryTable(doc, page, cursor, eSite);
+	// inventorySoldAddendum(page);
 
 }
 

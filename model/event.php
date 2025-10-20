@@ -234,7 +234,7 @@ class Event extends BasicTableModel {
 	static function showEventByDate(?string $date = null) {
 		if ($date == null) $date = date('Y-m-d');
 		$id = self::getNextIDByDate($date);
-		$event = self::getByID($id);
+		$event = self::getByID($id, 'orders');
 
 		return self::showEvent($event);
 	}

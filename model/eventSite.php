@@ -22,9 +22,9 @@ class EventSite extends BasicTableModel {
 				new Relation('employees', 'Employee', 'eventSiteID', 'employeeID', true, 'eventsitehasemployee'), 
 				new Relation('inventory', 'EventSiteInventoryItem', 'eventSiteID', 'eventSiteID', true, null, 
 								['year', 'orders'])
-				// ,
-				// new Relation('transfers', 'EventSiteTransfer', 'eventSiteID', 'eventSiteID', true, null, 
-				// 				['year', 'orders'])
+				,
+				new Relation('transfers', 'EventSiteTransfer', 'eventSiteID', 'eventSiteID', true, null, 
+								['year', 'orders'])
 				];
    }
 	
