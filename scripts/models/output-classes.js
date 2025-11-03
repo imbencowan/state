@@ -181,11 +181,13 @@ export class Label {
     
     addGridQuantities(style, min, max) {
         this.doc.setFontSize(11);
-        style.sizes.forEach(size => {
-            let x = this.gridX + this.gridStep * (size.id - min);
-            // this.doc.text(String(size.quantity), x, this.lineY);
-            this.centerInGrid(String(size.quantity), x);
-        });
+        if (style.id !== 13) {
+            style.sizes.forEach(size => {
+                let x = this.gridX + this.gridStep * (size.id - min);
+                // this.doc.text(String(size.quantity), x, this.lineY);
+                this.centerInGrid(String(size.quantity), x);
+            });
+        }
         // this.doc.text(String(style.getTotalQuantity()), (this.gridX + ((max - min + 1) * this.gridStep)), this.lineY);
         this.centerInGrid(String(style.getTotalQuantity()), (this.gridX + ((max - min + 1) * this.gridStep)));
     }
@@ -206,8 +208,8 @@ export class Label {
     
     addBoxSymbol() {
         let boxTotal = this.totalShirts;
-            // if this is the final label for an order
-        if (this.lblN === this.totalLabels) boxTotal %= 26;
+            // if this is the final label for a multi label order
+        if ((this.lblN === this.totalLabels) && (this.totalLabels > 1)) boxTotal %= 26;
         const boxX = this.origin.x + 88;
         const boxY = this.origin.y + this.offsetY + 2;
         const boxW = 7;
@@ -223,7 +225,7 @@ export class Label {
                 // mid size boxes, drawn sequentially as needed to represent s, m, l
             boxRect(this.doc, boxW, (boxH / 3));
             if (boxTotal > 6) boxRect(this.doc, boxW, (boxH * 2 / 3));
-            if (boxTotal > 13) boxRect(this.doc, boxW, boxH);
+            if (boxTotal > 14) boxRect(this.doc, boxW, boxH);
         } else {
             const w = boxW * 1.3;
             boxRect(this.doc, w, boxH);

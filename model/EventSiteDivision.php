@@ -50,40 +50,34 @@ class EventSiteDivision extends BasicTableModel {
 	//////////////////////////////////////////////////////
 	// Database functions	
 	public static function getIDByEventAndDivisionAndGender($eventID, $divisionID, $genderID = null) {
-    if ($genderID && $genderID < 3) {
-        // Query including gender join
-        $query = 
-		  		"SELECT esd.eventSiteHasDivisionID
-            FROM eventSiteHasDivision AS esd
-            INNER JOIN eventSites AS es ON es.eventSiteID = esd.eventSiteID
-            INNER JOIN eventSiteHasGender AS esg ON esg.eventSiteID = es.eventSiteID
-            WHERE es.eventID = :eventID
-              AND esd.divisionID = :divisionID
-              AND esg.genderID = :genderID
-            LIMIT 1";
-        $params = [
-            ':eventID' => $eventID,
-            ':divisionID' => $divisionID,
-            ':genderID' => $genderID
-        ];
-    } else {
-        // Query without gender filter
-        $query = 
-		  		"SELECT esd.eventSiteHasDivisionID
-            FROM eventSiteHasDivision AS esd
-            INNER JOIN eventSites AS es ON es.eventSiteID = esd.eventSiteID
-            WHERE es.eventID = :eventID
-              AND esd.divisionID = :divisionID
-            LIMIT 1";
-        $params = [
-            ':eventID' => $eventID,
-            ':divisionID' => $divisionID
-        ];
-    }
+			// checks if there is a matching record in eventSiteHasGender to get the correct esd
+		$query = "
+			SELECT esd.eventSiteHasDivisionID
+			FROM eventSiteHasDivision AS esd
+			INNER JOIN eventSites AS es ON es.eventSiteID = esd.eventSiteID
+			LEFT JOIN eventSiteHasGender AS esg
+				ON esg.eventSiteID = es.eventSiteID
+				AND esg.genderID = :genderID
+			WHERE es.eventID = :eventID
+				AND esd.divisionID = :divisionID
+				AND ( :genderID IS NULL
+						OR esg.eventSiteID IS NOT NULL
+						OR NOT EXISTS (SELECT 1 FROM eventSiteHasGender gchk WHERE gchk.eventSiteID = es.eventSiteID)
+					)
+			ORDER BY (esg.eventSiteID IS NOT NULL) DESC
+			LIMIT 1
+		";
 
-    $rows = static::getFromDB($query, $params);
-    return !empty($rows) ? $rows[0]['eventSiteHasDivisionID'] : null;
-}
+		$params = [
+			':eventID'    => $eventID,
+			':divisionID' => $divisionID,
+			':genderID'   => $genderID
+		];
+
+		$rows = static::getFromDB($query, $params);
+		return !empty($rows) ? $rows[0]['eventSiteHasDivisionID'] : null;
+	}
+
 
 }
 ?>

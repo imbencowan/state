@@ -53,8 +53,8 @@
 					<td>
 						<span class="material-icons clickable order-action addAddOns" title="add add ons">add</span>
 						<span class="material-icons clickable order-action editSizes" title="edit the sizes">edit</span>
-						<span class="material-icons clickable order-action showMessage" title="view the original message">article</span>
-						<span class="material-icons clickable order-action printLabel" title="print box label">print</span>
+						<span class="material-icons clickable order-action showMessage" title="view the original message">mail</span>
+						<span class="material-icons clickable order-action printLabel" title="print box label">article</span>
 						<span class="material-icons clickable order-action dlInvoice" title="download invoice">request_quote</span>
 						<span class="material-icons clickable order-action showMore" title="more options">more_horiz</span>
 						<input class="orderChckBx" type="checkbox" id="<?= $checkID; ?>" name="<?= $checkID; ?>" 

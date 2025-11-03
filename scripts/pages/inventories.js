@@ -28,6 +28,7 @@ export async function showInventories(data) {
       await runtime.allStyles.load();
       await runtime.allColors.load();
       await runtime.allSizes.load();
+      await runtime.allTransfers.load();
 
          // build an inventory template
       buildInventoryTemplate();
@@ -125,7 +126,7 @@ function buildInventoryTemplate() {
    });
 
 
-   console.log(inventoryTemplate);
+   // console.log(inventoryTemplate);
 }
 
    // returns a copy of the template, so we don't over write the template.
@@ -310,10 +311,26 @@ function buildInventoryTable(eSite) {
                   <td colspan="7"></td>`;
                const total = a.quantity || '';
                html += `<td data-column="size" data-item-i-d="${a.itemID}" 
-                                    data-o-value="${total}">${total}</td>
+                           data-o-value="${total}">${total}</td>
                   </tr>`;
             });
             html += `
+         </tbody>
+      </table>
+      <table class="transferTable">
+         <thead>
+            <th>Transfer</th>
+            <th>Quantity</th>
+         </thead>
+         <tbody>`;
+         eSite.transfers.forEach(trnsfr => {
+            html += `<tr>
+               <td>${trnsfr.transfer.transferName}</td>
+               <td data-transfer-i-d="${trnsfr.transfer.id}" 
+                     data-o-value="${trnsfr.quantity}">${trnsfr.quantity}</td>
+            </tr>`;
+         });
+         html += `
          </tbody>
       </table>
       </div>
@@ -329,18 +346,23 @@ function showEdit(target) {
 
       // get the table
    const container = target.closest('.invntryCntnr');
-   const table = container.querySelector('table');
+   const table = container.querySelector('table.inventoryTable');
+      // get the appropriate tds from inventory and transfer tables
+   const tds = [
+      ...table.querySelectorAll("td[data-column]"),
+      ...container.querySelectorAll('table.transferTable tr td:last-child')
+   ];
 
       // forEach size td, add an input
-   for (const td of table.querySelectorAll("td[data-column]")) {
+   for (const td of tds) {
          // make an input
       let input = document.createElement('input');
       input.type = 'number';
-      input.style.width = '35px';
-      input.value = td.dataset.oValue;
+      input.style.width = '40px';
+      input.value = td.dataset.oValue ?? '';
       td.textContent = "";
       td.appendChild(input);
-   }   
+   }
 
       // remove the edit button, replace it with submit and cancel
    const btnDiv = container.querySelector('.top-btn-cntnr');
@@ -352,44 +374,75 @@ function showEdit(target) {
 }
 
 async function submitEdit(btn) {
+   const allItems = runtime.allItems.getSync();
+   const allTransfers = runtime.allTransfers.getSync();
       // get the container, table, and tds
    const container = btn.closest('.invntryCntnr');
    const table = container.querySelector('table');
-   const tds = Array.from(table.querySelectorAll('td[data-column]'));
+   const invTDs = Array.from(table.querySelectorAll('td[data-column]'));
+   const trnsfrTDs = container.querySelectorAll('table.transferTable tr td:last-child');
 
-   let update = [];
-   tds.forEach((td) => {
+   let invUpdate = [];
+   invTDs.forEach((td) => {
       if (!td.dataset.itemID) console.log(td);
 
       const o = td.dataset.oValue;
       const v = td.querySelector('input').value;
          // if they don't match, send v to the server to update
       if (o !== v) {
-         if (td.dataset.itemID) update.push({ itemID: Number(td.dataset.itemID), quantity: Number(v) });
+         if (td.dataset.itemID) {
+            invUpdate.push({ itemID: Number(td.dataset.itemID), quantity: Number(v), 
+                           price: allItems[td.dataset.itemID].price });
+         }
       }
    });
 
+   let trnsfrUpdate = [];
+   trnsfrTDs.forEach((td) => {
+      if (!td.dataset.transferID) console.log(td);
+
+      const o = td.dataset.oValue;
+      const v = td.querySelector('input').value;
+         // if they don't match, send v to the server to update
+      if (o !== v) {
+         if (td.dataset.transferID) {
+            trnsfrUpdate.push({ transferID: Number(td.dataset.transferID), quantity: Number(v), 
+                              price: allTransfers[td.dataset.transferID].price });
+         }
+      }
+   });
+
+   let success = false;
 
       // if values were changed, update db, else cancel
-   if (update.length) {
-         // attach prices
-      const allItems = runtime.allItems.getSync();
-      update.forEach(u => {
-         u.price = allItems[u.itemID].price;
-      })      
-
-      const data = { 'eventSiteID': container.dataset.eSiteID, 'update': update };
+   if (invUpdate.length) {
+      const data = { 'eventSiteID': container.dataset.eSiteID, 'update': invUpdate };
       const request = new ActionRequest('editEventSiteInventory', 'EventSite', data);
-      let responseJSON = await myFetch(request);
-
-      if (responseJSON.success) {
-         updateTable(tds, update);
-            // put the edit button back
-         replaceEditButton(btn);
+      let response = await myFetch(request);
+      success = response.success;
+      if (success) {
+         updateTable(invTDs);
+         cancelEdit(btn);
       }
-   } else {
-      cancelEdit(btn);
-   } 
+   }
+   if (trnsfrUpdate.length) {
+      const data = { 'eventSiteID': container.dataset.eSiteID, 'update': trnsfrUpdate };
+      const request = new ActionRequest('editEventSiteTransfers', 'EventSite', data);
+      let response = await myFetch(request);
+      success = response.success;
+      if (success) {
+         updateTable(trnsfrTDs);
+         cancelEdit(btn);
+      }
+   }
+
+
+   // if (success) {
+   //       // put the edit button back
+   //    replaceEditButton(btn);
+   // } else {
+   //    cancelEdit(btn);
+   // } 
 
    
       // don't forget to reset
@@ -399,7 +452,9 @@ async function submitEdit(btn) {
 function updateTable(tds) {
    console.log(tds);
    tds.forEach(td => {
-      td.innerHTML = td.querySelector('input').value;
+      const value = td.querySelector('input').value
+      td.innerHTML = value;
+      td.dataset.oValue = value;
    });
 }
 
@@ -407,7 +462,11 @@ function cancelEdit(btn) {
       // get the container, table, and tds
    const container = btn.closest('.invntryCntnr');
    const table = container.querySelector('table');
-   const tds = Array.from(table.querySelectorAll('td[data-column]'));
+      // get the appropriate tds from inventory and transfer tables
+   const tds = [
+      ...table.querySelectorAll("td[data-column]"),
+      ...container.querySelectorAll('table.transferTable tr td:last-child')
+   ];
    
       // change them all back to their originalText
    tds.forEach((td) => {
@@ -424,7 +483,6 @@ function cancelEdit(btn) {
 function replaceEditButton(btn) {
    const btns = btn.parentElement;
    const prnt = btns.parentElement;
-   console.log(btn, btns, prnt);
    btns.remove();
    const btnHTML = `
             <button class="topLevelButton" data-action="printInventory" title="print inventory">

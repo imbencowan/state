@@ -291,6 +291,7 @@ function genSoS(doc, div) {
 		// makes each team's line. a line number, school name, total shirts, and quantity for each size
 	let i = 1;
 	div.schoolOrders.forEach(order => {
+			// draw a grid line
 		doc.line(sos.alignX, (sos.cursor.y + 1), sos.colsX[sos.colsX.length - 2], (sos.cursor.y + 1));
 		sos.newLine();
 			// check if we need a second page
@@ -364,6 +365,9 @@ function genSoS(doc, div) {
 	
 		// add ons
 	sos.newLine(2);
+		// check if one more line would push past the page break. if so, add new page
+	if (cursor.y > sos.pageBreakY) sos.addPage();
+
 	sos.lineStep = 5.5;
 	doc.setTextColor(black);
 	doc.text("add ons:", sos.alignX, cursor.y);
@@ -373,6 +377,17 @@ function genSoS(doc, div) {
 	});
 	addOnOrders.forEach(order => {
 		sos.newLine();
+			// check if we've reached the end of the page
+		if (cursor.y > sos.pageBreakY) {
+			sos.addPage();
+				// write a header
+			doc.text("add ons:", sos.alignX, cursor.y);
+			sos.col = 4;
+			sosSizeList.forEach(s => {
+				sos.textToCell(s);
+			});
+			sos.newLine();
+		}
 		const name = order.school.shortName;
 		sos.textToCell(name, 'left');
 		if (order.hasAddOns()) {
@@ -410,6 +425,9 @@ function genSoS(doc, div) {
 // generating invoices
 	// as named
 export async function downloadInvoicePDF(order, type = "Invoice") {
+	if (!order) order = runtime.activeOrder;
+	console.log(order);
+
 		// if there are no add ons, don't do any thing
 	if (order.getAddedStyles().length === 0) return;
 	
@@ -428,18 +446,15 @@ export async function downloadInvoicePDF(order, type = "Invoice") {
 	// let genderName = '';
 	// if (runtime.stateEvent.sport.name.toLowerCase() === "soccer") genderName
 
-	a.download = `${order.school.shortName} ${runtime.stateEvent.sport.name} ${runtime.stateEvent.getRealYear()} Add Ons`;
+	let suffix = '';
+	if (type !== "Invoice") suffix = ` - ${type}`;
+
+	a.download = `${order.school.shortName} ${runtime.stateEvent.sport.name} ${runtime.stateEvent.getRealYear()} Add Ons${suffix}`;
+
 	document.body.appendChild(a); // Required for Firefox
 	a.click();
 	document.body.removeChild(a);
 	URL.revokeObjectURL(url); // Clean up
-}
-
-export async function downloadQuotePDF(order) {
-	if (!order) order = runtime.activeOrder;
-
-	console.log(order);
-	downloadInvoicePDF(order, "Quote");	
 }
 
     // as named
@@ -551,6 +566,8 @@ async function genInvoicePDF(doc, order, type = "Invoice") {
 	for (const style of order.shirtsByStyle) {
 		if (style.shortName != 'Dairy Hoods') {
 			for (const shirt of style.sizes) {
+					// can we use id rather than displayChar?
+				// console.log(style.id, shirt.displayChar);
 				let item = getItemByStyleIDSizeChar(style.id, shirt.displayChar);
 				invP.cell(item.getInvoiceName(), 1, 2, 'left');
 				invP.cell(String(shirt.quantity), 3);
@@ -630,6 +647,7 @@ export async function printAllInventories(eSites) {
 }
 
 function genInventoryPDF(doc, eSite) {
+	console.log(eSite);
 	const page = new InventoryPage(doc);
 	const cursor = page.cursor;
 	
@@ -642,19 +660,19 @@ function genInventoryPDF(doc, eSite) {
 		// reset the y to the top of the table
 	cursor.y = tableYInit;
 	fillInventoryTable(doc, page, cursor, eSite);
-	// inventoryStartAddendum(doc, page, cursor, eSite);
+	inventoryStartAddendum(doc, page, cursor, eSite);
 
-	// 	// END page
-	// page.addPage();
-	// writeInventoryHeader(doc, page, cursor, eSite, 'END');
-	// buildInventoryTable(doc, page, cursor, eSite);
-	// inventoryEndAddendum(page);
+		// END page
+	page.addPage();
+	writeInventoryHeader(doc, page, cursor, eSite, 'END');
+	buildInventoryTable(doc, page, cursor, eSite);
+	inventoryEndAddendum(page);
 
-	// 	// SOLD page
-	// page.addPage();
-	// writeInventoryHeader(doc, page, cursor, eSite, 'SOLD');
-	// buildInventoryTable(doc, page, cursor, eSite);
-	// inventorySoldAddendum(page);
+		// SOLD page
+	page.addPage();
+	writeInventoryHeader(doc, page, cursor, eSite, 'SOLD');
+	buildInventoryTable(doc, page, cursor, eSite);
+	inventorySoldAddendum(page);
 
 }
 
@@ -819,42 +837,49 @@ function fillInventoryTable(doc, page, cursor, eSite) {
 
 function inventoryStartAddendum(doc, page, cursor, eSite) {
 	page.newLine(2);
-	page.textToCell('transfers');
-	page.textToCell('150');
+	eSite.transfers.forEach(t => {
+		const name = t.transfer.inventoryName ?? t.transfer.transferName;
+		const qtyText = (t.quantity < 10) ? t.quantity + ' SET' : t.quantity;
 
-	page.newLine(2);
-	page.textToCell('STATE CHAMPIONS');
-	page.textToCell('50');
-	page.newLine();
-	page.textToCell('STATE CHAMPION');
-	page.textToCell('50');
+		page.textToCell(name);
+		page.textToCell(qtyText);
+		page.newLine();
+	});
 
-	page.newLine(2);
-	page.textToCell('BACK TO BACK');
-	page.textToCell('50');
-	page.newLine();
-	page.textToCell('3-PEAT');
-	page.textToCell('50');
-	page.newLine();
-	page.textToCell('3X, 4X, 5X...');
-	page.textToCell('50');
 
-	page.newLine(2);
-	page.textToCell('small golf logo');
-	page.textToCell('40');
+	// page.textToCell('transfers');
+	// page.textToCell('150');
 
-	page.newLine(2);
-	page.textToCell('MOM/DAD/ETC');
-	page.textToCell('SET');
-	page.newLine();
-	page.textToCell('school names');
-	page.textToCell('SET');
+	// page.newLine(2);
+	// page.textToCell('STATE CHAMPIONS');
+	// page.textToCell('50');
+	// page.newLine();
+	// page.textToCell('STATE CHAMPION');
+	// page.textToCell('50');
+
+	// page.newLine(2);
+	// page.textToCell('BACK TO BACK');
+	// page.textToCell('50');
+	// page.newLine();
+	// page.textToCell('3-PEAT');
+	// page.textToCell('50');
+	// page.newLine();
+	// page.textToCell('3X, 4X, 5X...');
+	// page.textToCell('50');
+
+	// page.newLine(2);
+	// page.textToCell('small golf logo');
+	// page.textToCell('40');
+
+	// page.newLine(2);
+	// page.textToCell('MOM/DAD/ETC');
+	// page.textToCell('SET');
+	// page.newLine();
+	// page.textToCell('school names');
+	// page.textToCell('SET');
 }
 
 function inventoryEndAddendum(page) {
-	page.newLine(2);
-	page.textToCell('transfers:', 'center', 'bold');
-
 	page.newLine(3);
 	page.textToCell('List any misprints below (style / color / size / quantity):', 'left');
 	page.hr();
@@ -869,20 +894,18 @@ function inventorySoldAddendum(page) {
 	page.textToCell('transfers');
 
 	page.newLine(2);
-	page.textToCell('STATE CHAMPION/S');
+	page.textToCell('STATE CHAMPION(S)');
 
 	page.newLine(2);
 	page.textToCell('BACK TO BACK');
 	page.newLine();
 	page.textToCell('3-PEAT');
+
+	page.newLine(2);
+	page.textToCell('#s');
+
 	page.newLine();
-	page.textToCell('3X, 4X, 5X...');
-
-	page.newLine(2);
-	page.textToCell('small golf logo');
-
-	page.newLine(2);
-	page.textToCell('MOM/DAD/ETC');
+	page.textToCell('MOM, DAD, (TUB)');
 	page.newLine();
 	page.textToCell('school names');
 

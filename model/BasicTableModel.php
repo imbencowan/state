@@ -458,7 +458,7 @@ abstract class BasicTableModel implements JsonSerializable {
 
 protected static function getFromDB(string $query, array $params = []): array {
 	$db = Database::getDB();
-	Test::logX($query);
+	// Test::logX($query);
 	$statement = $db->prepare($query);
 
 	// Bind parameters
@@ -466,17 +466,17 @@ protected static function getFromDB(string $query, array $params = []): array {
 		$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
 	}
 
-	$a = 'Memory before execute: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
+	// $a = 'Memory before execute: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
 
 	$statement->execute();
 
-	$b = 'Memory after execute, before fetch: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
+	// $b = 'Memory after execute, before fetch: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
 
 	$rows = $statement->fetchAll();
 
-	$c = 'Memory after fetchAll: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
-	$d = 'Peak memory so far: ' . round(memory_get_peak_usage() / 1024 / 1024, 2) . " MB\n";
-	Test::logX($a, $b, $c, $d);
+	// $c = 'Memory after fetchAll: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
+	// $d = 'Peak memory so far: ' . round(memory_get_peak_usage() / 1024 / 1024, 2) . " MB\n";
+	// Test::logX($a, $b, $c, $d);
 
 	$statement->closeCursor();
 

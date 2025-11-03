@@ -151,8 +151,8 @@ class SchoolOrder extends BasicTableModel {
 						// schools in lower divisions play in the lowest division that has a competition
 				if ($divisionID < $sport->minDiv) $divisionID = $sport->minDiv;
 
-				$eshdID = EventSiteDivision::getIDByEventAndDivisionAndGender($eventID, $divisionID, $genderID);
-			// Test::logX('eshdID is ' . $eshdID, 'eventID is ' . $eventID, 'divisionID is ' . $divisionID);
+				$eshdID = EventSiteDivision::getIDByEventAndDivisionAndGender($eventID, $divisionID, $sport->id, $genderID);
+			// Test::logX('eshdID is ' . $eshdID, 'eventID is ' . $eventID, 'divisionID is ' . $divisionID, 'genderID is ' . $genderID);
 				
 					// need to add logic for if $school is not in the db
 				$schoolID = School::getIDByName($order['school']);

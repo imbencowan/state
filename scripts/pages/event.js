@@ -7,7 +7,7 @@ import { ActionRequest } from '../models/other-classes.js';
 import { StateEvent, SchoolOrder, School } from '../models/db-classes.js';
 import { openModal, closeModal } from '../modal.js';
 import { parseToInstancesArr } from '../utilities.js';
-import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, downloadQuotePDF, printAllInvoices, 
+import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoices, 
 			printSoSPDF, printAllSoSPDF, printOMessages, genIHSAATotals } from '../print.js';
 
 
@@ -130,9 +130,8 @@ export function addEventPageFunctionality() {
 	modal.addEventListener('click', function(event) {
 		const target = event.target;
 		const rowOptions = {
-			'button.quote' : () => {
-				downloadQuotePDF();
-			}
+			'button.quote' : () => { downloadInvoicePDF(null, "Quote"); },
+			'button.receipt' : () => { downloadInvoicePDF(null, "Receipt"); }
 		};
 
 		for (const sel in rowOptions) {
@@ -818,7 +817,10 @@ function showMoreRowOptions(order) {
 
 	const wrapper = document.createElement('div');
 	let html = `<button class="clickable quote" title="download add on quote">Quote</button>
-					<label>Download the invoice as a quote</label>`;
+					<label>Download the invoice as a quote</label>
+					<br />
+					<button class="clickable receipt" title="download add on receipt">Receipt</button>
+					<label>Download the invoice as a Receipt</label>`;
 
 	wrapper.innerHTML = html;
 	openModal(wrapper);

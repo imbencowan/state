@@ -313,9 +313,11 @@ export class SchoolOrder {
 		let boxTotal = 0;
       console.log(this.shirtsByStyle);
 		this.shirtsByStyle.forEach(style => {
-			style.sizes.forEach(size => {
-				boxTotal += size.quantity;
-			});
+         if (style.id !== 13) {
+            style.sizes.forEach(size => {
+               boxTotal += size.quantity;
+            });
+         }
 		});
 		return boxTotal;
 	}
@@ -336,7 +338,9 @@ export class SchoolOrder {
 		let min = Infinity;
 		this.shirtsByStyle.forEach(style => {
 			style.sizes.forEach(size => {
-				if (size.id < min) min = size.id;
+            if (size.id < 9) {
+				   if (size.id < min) min = size.id;
+            }
 			});
 		});
 		return min;
@@ -346,8 +350,10 @@ export class SchoolOrder {
 		let max = 0;
 		this.shirtsByStyle.forEach(style => {
 			style.sizes.forEach(size => {
-				if (size.id > max) max = size.id;
-			});
+            if (size.id < 9) {
+   				if (size.id > max) max = size.id;
+      		}
+         });
 		});
 		return max;
 	}
@@ -549,4 +555,19 @@ export class Brand {
    }
 }
 
+export class Transfer {
+   constructor({ id, transferName, inventoryName, price }) {
+      this.id = id;
+      this.transferName = transferName;
+      this.inventoryName = inventoryName;
+      this.price = price
+   }
 
+   static fromValues(id, name, shortName) {
+      return new Transfer({ id, name, shortName });
+   }
+
+   static fromJSON(json) {
+      return new Transfer(json);
+   }
+}

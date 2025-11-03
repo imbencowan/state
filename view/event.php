@@ -14,7 +14,9 @@
 			<button class="topLevelButton clickable printInvoicesBtn" data-btnType="printInvoices"
 				title="print all invoices"><span class="material-icons">print</span> Invoices
 			</button>
-			<!-- <button class="topLevelButton clickable printMessagesBtn" data-btnType="printMessages">Print Messages</button> -->
+			<button class="topLevelButton clickable printMessagesBtn" data-btnType="printMessages" 
+				title="print order messages"><span class="material-icons">print</span> Messages
+			</button>
 			<button class="topLevelButton clickable newOrderBtn" data-btnType="newOrder"
 				title="add an order">+ Order
 			</button>

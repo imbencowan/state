@@ -418,6 +418,22 @@ tr.addOnRow {
 	text-align: center;
 }
 
+.transferTable {
+	background-color: #e8e8e8;
+	color: black;
+	width: auto;
+	table-layout: auto;
+	display: inline-block;
+}
+
+.transferTable th:first-child, .transferTable td:first-child {
+	text-align: left;
+}
+
+.transferTable th:last-child, td:last-child {
+	text-align: right;
+}
+
 .genderRadio {
 	margin: 10px;
 	white-space: nowrap;
