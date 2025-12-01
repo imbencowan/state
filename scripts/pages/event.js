@@ -95,7 +95,8 @@ export function addEventPageFunctionality() {
 			'button.printMessagesBtn': () => printOMessages(),
 			'button.newOrderBtn': () => makeBlankOrder(),
 			'button.printAllSoSPDF': () => printAllSoSPDF(),
-			'button.printSoSPDF': () => printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid))
+			'button.printSoSPDF': () => printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid)),
+			'button.uploadQlfrs': () => showQlfrsUpld()
 		};
 
 		for (const sel in topLevelActions) {
@@ -116,10 +117,10 @@ export function addEventPageFunctionality() {
 		}
 	});
 	
-		// changeOrderCompleteness listeners
+		// toggleOrderCompleteness listeners
 	container.addEventListener('change', function(event) {
 		if (event.target.matches('input.orderChckBx')) {
-			changeOrderCompleteness(event.target, getOrderFromTableButton(event.target));
+			toggleOrderCompleteness(event.target, getOrderFromTableButton(event.target));
 		} else if (event.target.matches('input.commentChckBx')) {
 			changeCommentHandled(event.target);
 		}
@@ -559,7 +560,7 @@ function showOMessage(order) {
 
 
 	// toggles an order as done / not done
-async function changeOrderCompleteness(box, order) {
+async function toggleOrderCompleteness(box, order) {
 	if (order.shirtsByStyle.length === 0) {
 		openModal("You can not mark an order with no shirts complete");
 		box.checked = false;
@@ -572,16 +573,18 @@ async function changeOrderCompleteness(box, order) {
 		let responseJSON = await myFetch(request);
 		
 		if (responseJSON) {
-			order.completeness = completeness;
 			if (completeness) {
-				tbody.classList.remove("unDoneRow", "partDoneRow");
+				tbody.classList.remove("unDoneRow", "partDoneRow", "overRow", "unOrderedRow");
 				tbody.classList.add("doneRow");
-				updateNeeded(order);
+					// don't updateNeeded for partDone/overRows. they are not counted in the needed table
+				if (order.completeness < 2) updateNeeded(order);
 			} else {
 				tbody.classList.remove("doneRow", "partDoneRow");
 				tbody.classList.add("unDoneRow");
 				updateNeeded(order, false);
 			}
+				// do this last
+			order.completeness = completeness;
 		} else {
 			box.checked = !completeness;
 		}
@@ -592,7 +595,7 @@ async function changeOrderCompleteness(box, order) {
 function updateNeeded(order, add = true) {
 	const tds = document.querySelectorAll('.needTable tbody tr td');
 	order.getTeamStyle().sizes.forEach(size => {
-		const match = Array.from(tds).find(td => td.title === size.charName);
+		const match = Array.from(tds).find(td => td.title === size.displayChar);
       if (match) {
          let current = parseInt(match.textContent.trim(), 10);
          if (isNaN(current)) current = 0;
@@ -816,12 +819,135 @@ function showMoreRowOptions(order) {
 	runtime.activeOrder = order
 
 	const wrapper = document.createElement('div');
-	let html = `<button class="clickable quote" title="download add on quote">Quote</button>
-					<label>Download the invoice as a quote</label>
-					<br />
-					<button class="clickable receipt" title="download add on receipt">Receipt</button>
-					<label>Download the invoice as a Receipt</label>`;
+	let html = `<button class="clickable quote" title="download add on quote">Quote</button>`;
+	html += `<label>Download the invoice as a quote</label><br />
+				<button class="clickable receipt" title="download add on receipt">Receipt</button>`;
+	html += `<label>Download the invoice as a Receipt</label><br />`;
 
 	wrapper.innerHTML = html;
 	openModal(wrapper);
+}
+
+
+	// display an input in the modal
+function showQlfrsUpld() {
+		// make a file input
+	const wrapper = document.createElement('div');
+	wrapper.innerHTML = 
+		`<label>Select and excel file to upload qualifiers</label>
+		<input type="file" id="qlfrsInput" accept=".xlsx,.xls" />`;
+
+		// open it in the modal
+	openModal(wrapper);
+	
+		// add a listener to run when a file is selected
+	document.getElementById('qlfrsInput').addEventListener('change', uploadQualifiers);
+}
+
+
+	// upload qualifiers
+async function uploadQualifiers() {
+		// aliases for the total column to check for
+	const totalColAliases = ['total', 'students', 'grand total', 'not scratched', 'participants'];
+		// container for actual upload
+	let upSchools = {};
+
+		// get the file
+	const file = document.getElementById('qlfrsInput').files[0];
+	if (!file) return;
+		// Read file into an ArrayBuffer
+	const data = await file.arrayBuffer();
+		// Parse data
+	const workbook = XLSX.read(data);
+
+		// pull data from each sheet
+	workbook.SheetNames.forEach(sheetName => {
+			// get the actual sheet
+		const sheet = workbook.Sheets[sheetName];
+			// Convert to simple row arrays
+		const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+			// define some containers
+		let headerRowIndex = null;
+		let schoolColsIndices = [];
+		let totalColsIndices = [];
+
+			// find the actual header row, grab the school indexes
+		rows.forEach((row, i) => {
+			if (headerRowIndex) return; // already found, skip the rest
+			row.forEach((cell, j) => {
+				if (typeof cell === 'string' && cell.trim().toLowerCase().startsWith('school')) {
+					headerRowIndex = i;
+					schoolColsIndices.push(j);
+				}
+			});
+		});
+
+			// if no school column found, exit
+		if (headerRowIndex === null) {
+			openModal("No 'School' column found, check the file");
+			return;
+		}
+		
+			// grab the total column indices
+			// do this after finding the header in case some nut has placed the total column left of the school column
+		rows[headerRowIndex].forEach((cell, k) => {
+			if (typeof cell === 'string' && totalColAliases.some(str => cell.trim().toLowerCase().startsWith(str))) {
+				totalColsIndices.push(k);
+			}
+		})
+
+			// check if schools and totals have the same number of columns, if not exit
+		if (schoolColsIndices.length !== totalColsIndices.length) {
+			openModal(`Hey, this file contains ${schoolColsIndices.length} SCHOOL column and ${totalColsIndices.length} TOTAL columns. Check it.`);
+			return;
+		}
+
+			// get the actual data to upload
+		schoolColsIndices.forEach((val, i) => {
+				// which columns to pull from
+			let schoolI = schoolColsIndices[i];
+			let totalI = totalColsIndices[i];
+				// start after the header row
+			for (let j = headerRowIndex + 1; j < rows.length; ++j) {
+					// ensure the columns look right, a school, not a 'TOTAL' row, and a number in the right place
+				const total = Number(rows[j][totalI]);
+				if (typeof rows[j][schoolI] === 'string' && !isNaN(total) 
+					&& !rows[j][schoolI].trim().toLowerCase().startsWith('total')) {
+							// trim, and strip any '.' from name
+						const name = rows[j][schoolI].trim().replace(/\./g, '');
+						
+							// if upSchools does not yet include this school, add it
+						if (!upSchools[name]) {
+							upSchools[name] = { 
+								name: name,
+								qualifiers: 0
+							};
+						}
+
+							// then add the qualifiers
+						upSchools[name].qualifiers += total;
+				}
+			}
+		});
+	});
+	
+	// console.log(upSchools);
+
+	let esdIDs = {};
+	
+	runtime.stateEvent.eventSites.forEach(es => {
+		es.esDivisions.forEach(esd => {
+			esdIDs[esd.division.id] = esd.id;
+		});
+	});
+
+	const data2 = {'upSchools': upSchools, 'esdIDs': esdIDs};
+	let request = new ActionRequest('uploadQualifiers', 'SchoolOrder', data2);
+	let responseJSON = await myFetch(request);
+	
+	if (responseJSON) {
+			// remove the comment
+		// closeModal();
+	}
 }

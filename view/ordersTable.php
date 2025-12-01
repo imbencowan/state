@@ -14,6 +14,7 @@
 				<th>XL</th>
 				<th>2X</th>
 				<th>3X</th>
+				<th>4X</th>
 				<th>Total</th>
 				<th><span class="material-icons">more_horiz</span></th>
 			</tr>
@@ -30,6 +31,8 @@
 		$trClass = 'partDoneRow';
 	} elseif ($completeness == 3) {
 		$trClass = 'overRow';
+	} elseif ($completeness == 4) {
+		$trClass = 'unOrderedRow';
 	}
 	$hasAddOns = false;
 	$orderID = $order->id;
@@ -48,6 +51,7 @@
 					<td title="XL"><?= isset($teamShirts['XL']) ? $teamShirts['XL']->getQuantity() : '-'; ?></td>
 					<td title="2XL"><?= isset($teamShirts['2XL']) ? $teamShirts['2XL']->getQuantity() : '-'; ?></td>
 					<td title="3XL"><?= isset($teamShirts['3XL']) ? $teamShirts['3XL']->getQuantity() : '-'; ?></td>
+					<td title="4XL"><?= isset($teamShirts['4XL']) ? $teamShirts['4XL']->getQuantity() : '-'; ?></td>
 					<td title="total"><?= isset($order->shirtsByStyle['Dairy Hoods']) ? $order->getStyleTotal('Dairy Hoods') : '-'; ?></td>
 						<?php // a cell to hold action buttons ?>
 					<td>
@@ -75,6 +79,7 @@
 					<td title="XL"><?= isset($aStyle['XL']) ? $aStyle['XL']->getQuantity() : ''; ?></td>
 					<td title="2XL"><?= isset($aStyle['2XL']) ? $aStyle['2XL']->getQuantity() : ''; ?></td>
 					<td title="3XL"><?= isset($aStyle['3XL']) ? $aStyle['3XL']->getQuantity() : ''; ?></td>
+					<td title="4XL"><?= isset($aStyle['4XL']) ? $aStyle['4XL']->getQuantity() : ''; ?></td>
 					<td title="total"><?= $order->getStyleTotal($addedStyle->shortName); ?></td>
 					<td></td><?php // empty table place holder ?>
 				</tr>

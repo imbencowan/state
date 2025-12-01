@@ -294,7 +294,7 @@ export class SoSPage extends MyPDF {
         // use the default page size and margins
         
             // the start of each column. size columns are 11 wide
-        this.colsX = [0, 20, 28, 114, 125, 136, 147, 158, 169, 180, 191, 202];
+        this.colsX = [0, 20, 28, 103, 114, 125, 136, 147, 158, 169, 180, 191, 202];
         this.lineStep = 6.5;
         
         this.doc.setFontSize(10);

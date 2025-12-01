@@ -20,6 +20,9 @@
 			<button class="topLevelButton clickable newOrderBtn" data-btnType="newOrder"
 				title="add an order">+ Order
 			</button>
+			<button class="topLevelButton clickable uploadQlfrs" data-btnType="uploadQlfrs"
+				title="upload qualifiers"><span class="material-icons">upload</span> Qualifiers
+			</button>
 		</h1>
 	</div>
 

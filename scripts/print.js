@@ -244,7 +244,7 @@ function genSoS(doc, div) {
 	
 	// console.log(div.getMaxSize());
 	
-	const sosSizeList = sizeList.slice(0, 6);
+	const sosSizeList = sizeList.slice(0, 7);
 	const addOnOrders = [];
 	
 	
@@ -354,8 +354,8 @@ function genSoS(doc, div) {
 	sos.col = 2;
 	sos.textToCell('total', 'right');
 	const totalSum = Object.values(sizeTotals).reduce((sum, val) => sum + val, 0);
-	sos.col = 10;
-	sos.textToCell(totalSum);
+	// sos.col = 10;
+	// sos.textToCell(totalSum);
 	doc.setTextColor(blue);
 	sos.col = 3;
 	sos.textToCell(totalSum);
@@ -647,7 +647,6 @@ export async function printAllInventories(eSites) {
 }
 
 function genInventoryPDF(doc, eSite) {
-	console.log(eSite);
 	const page = new InventoryPage(doc);
 	const cursor = page.cursor;
 	
@@ -838,7 +837,9 @@ function fillInventoryTable(doc, page, cursor, eSite) {
 function inventoryStartAddendum(doc, page, cursor, eSite) {
 	page.newLine(2);
 	eSite.transfers.forEach(t => {
-		const name = t.transfer.inventoryName ?? t.transfer.transferName;
+		let name = t.transfer.inventoryName ?? t.transfer.transferName;
+		if (name === 'sport events') name = name.replace("sport", eSite.sportName);
+
 		const qtyText = (t.quantity < 10) ? t.quantity + ' SET' : t.quantity;
 
 		page.textToCell(name);
@@ -897,16 +898,19 @@ function inventorySoldAddendum(page) {
 	page.textToCell('STATE CHAMPION(S)');
 
 	page.newLine(2);
-	page.textToCell('BACK TO BACK');
+	page.textToCell('BACK TO BACK /');
 	page.newLine();
 	page.textToCell('3-PEAT');
 
 	page.newLine(2);
 	page.textToCell('#s');
 
-	page.newLine();
+	page.newLine(2);
 	page.textToCell('MOM, DAD, (TUB)');
-	page.newLine();
+	// page.newLine();
+	// page.textToCell('swimming events');
+
+	page.newLine(2);
 	page.textToCell('school names');
 
 	page.newLine(2);

@@ -185,8 +185,8 @@ table {
 }
 
 /* Target the 2nd through 7th columns (the middle 7 columns) */
-.orderTable th:nth-child(n+2):nth-child(-n+7),
-.orderTable td:nth-child(n+2):nth-child(-n+7) {
+.orderTable th:nth-child(n+2):nth-child(-n+8),
+.orderTable td:nth-child(n+2):nth-child(-n+8) {
 	width: 5.5%;
 	min-width: 100px;
 	text-align: right;
@@ -194,8 +194,8 @@ table {
 }
 
 /* Make the 8th column a little larger than the others */
-.orderTable th:nth-child(8),
-.orderTable td:nth-child(8) {
+.orderTable th:nth-child(9),
+.orderTable td:nth-child(9) {
     width: 10%;
 	 text-align: right;
 }
@@ -219,6 +219,10 @@ table {
 
 .overRow {
 	background-color: #f00;
+}
+
+.unOrderedRow {
+	background-color: #ff4;
 }
 
 tr.addOnRow {

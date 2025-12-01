@@ -52,13 +52,16 @@ function buildInventoryTemplate() {
    const white = allColors.find(c => c.name ==='white');
    const ash = allColors.find(c => c.name ==='ash');
    const atheather = allColors.find(c => c.name ==='athletic heather');
+   const aqblue = allColors.find(c => c.name === 'aquatic blue')
    const black = allColors.find(c => c.name ==='black');
    const assorted = allColors.find(c => c.name ==='assorted');
 
       // define an inventories styles, and their colors
    const garmentStyles = [ 
+      // ['t-shirts', [white, atheather, aqblue]],
       ['t-shirts', [white, atheather]],
       ['youth t-shirts', [white], {'S': {}, 'M': {}, 'L': {} }],
+      // ['long sleeves', [white, aqblue]],
       ['long sleeves', [white]],
       ['crews', [ash , atheather]],
       ['youth crew', [ash ], {'S': {}, 'M': {}, 'L': {} }],
@@ -174,7 +177,7 @@ async function buildPage(events) {
 
          html += `<div class="invntryCntnr" data-e-site-i-d="${eSite.id}">
          <div class="row">
-            <h3>${eSite.site.name} - ${eSite.getDivisionsString()}</h3>
+            <h3 title="${eSite.id}">${eSite.site.name} - ${eSite.getDivisionsString()}</h3>
             <div class="top-btn-cntnr">
                <button class="topLevelButton" data-action="printInventory" title="print inventory">
                   <span class="material-icons">print</span>

@@ -397,8 +397,8 @@ abstract class BasicTableModel implements JsonSerializable {
 		// getAll and getByID both implement a pair of helper functions 
 			// (buildSelect() and buildJoins()) that do the heavy lifting
 		// pass $where if needed, a Where instance to build 
-	public static function getAllFromDB(?string $context = null, ?Where $where = null): array {
-		$query = static::buildSelect($context);
+	public static function getAllFromDB(?string $context = null, ?array $columns = null, ?Where $where = null): array {
+		$query = static::buildSelect($context, $columns);
 			// if where, append it to the query
 		if ($where) $query .= $where->getWhereString();
 		$rows = static::getFromDB($query);
@@ -440,21 +440,6 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $value ?: null;
 	}
 
-	
-	// 	// a helper for various get...()s. takes a $query and $params, and makes the actual call
-	// protected static function getFromDB(string $query, array $params = []): array {
-	// 	$db = Database::getDB();
-	// 	$statement = $db->prepare($query);
-	// 	// Test::logX($query);
-	// 	foreach ($params as $key => $value) {
-	// 		$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
-	// 	}
-	// 	$statement->execute();
-	// 	$rows = $statement->fetchAll();
-	// 	$statement->closeCursor();
-
-	// 	return $rows;
-	// }
 
 protected static function getFromDB(string $query, array $params = []): array {
 	$db = Database::getDB();
@@ -488,15 +473,15 @@ protected static function getFromDB(string $query, array $params = []): array {
 			// this and buildJoins() got a little messy in needing to build a query with unique table aliases for JOINs, and
 				// unique column aliases. this is so we can join the same table to different tables, and have the returned
 				// associative array know what is what. those constructed aliases are deconstructed in buildFromRow()
-	protected static function buildSelect(?string $context = null): string {
+	protected static function buildSelect(?string $context = null, ?string $columns = null): string {
+			// allow specific columns to be provided, or get all by default
+		if (!$columns) $columns = static::getColumns();
 		$table = static::getTableName();
-		$columns = static::getColumns();
 		$relations = static::getContextRelations($context);
 	
 		$selectColumns = [];
 		self::buildSelects($selectColumns, $table, $columns);
 			// Call recursive function to handle relations and their relations. returns array of JOIN statements
-		// $joins = self::buildJoins($table, $relations, $selectColumns);
 		$joins = self::buildJoins($table, $relations, $selectColumns, [], [], $context);
 			// get optional WHERE clause
 		$whereClause = 

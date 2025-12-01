@@ -115,6 +115,71 @@ class SchoolOrder extends BasicTableModel {
 
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		// // Database Functions
+			// this will set due programatically by the sOrderItems currently in the db
+	public static function updateDue($db, $orderID) {
+		$stmt = $db->prepare("UPDATE schoolorders
+					SET due = (
+						SELECT SUM(ii.price * si.sOrderItemsQuantity)
+						FROM sorderitems si
+						JOIN inventoryitems ii ON si.itemID = ii.itemID
+						WHERE si.schoolOrderID = schoolorders.schoolOrderID
+					)
+					WHERE schoolOrderID = :id");
+		$stmt->execute([':id' => $orderID]);
+		
+			// return new due
+		return self::getColForID('due', $orderID);
+	}
+	
+	public static function updateCompletenessIf($orderID, $oldValue, $newValue) {
+		$db = Database::getDB();
+			// $oldValue should be 1 for complete, and $newValue should be 2 for partial, though other options are possible
+				// so calling this can change an order previously marked complete to marked partial
+		$stmt = $db->prepare("UPDATE " . self::getTableName()
+									 . " SET completeness = :newValue
+									WHERE schoolOrderID = :id AND completeness = :oldValue");
+		$stmt->bindValue(':id', $orderID);
+		$stmt->bindValue(':oldValue', $oldValue);
+		$stmt->bindValue(':newValue', $newValue);
+
+		$stmt->execute();
+	}
+
+	public static function updateInvoiceVersion($orderID) {
+		$db = Database::getDB();
+		$stmt = $db->prepare(
+			"UPDATE " . self::getTableName()
+			 . " SET invoiceVersion = CASE 
+					WHEN invoiceVersion IS NULL THEN 0
+					ELSE invoiceVersion + 1
+				END
+				WHERE schoolOrderID = :id"
+		);
+		$stmt->bindValue(':id', $orderID);
+		$stmt->execute();
+	}
+
+
+		// utilizes base class method
+	public static function addNewOrder($eshdID, $schoolID, $genderID = 0) {
+		$data = ['eventSiteHasDivisionID' => $eshdID, 'schoolID' => $schoolID, 'genderID' => $genderID];
+		return self::insert($data);
+	}
+	
+	
+	public static function getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID) {
+		$query = "SELECT schoolOrderID FROM schoolorders 
+					WHERE eventSiteHasDivisionID = :eshdID AND schoolID = :schoolID";
+		$rows = static::getFromDB($query, [':eshdID' => $eshdID, ':schoolID' => $schoolID]);
+		return !empty($rows) ? $rows[0]['schoolOrderID'] : null;
+	}
+
+
+
+	
+	//////////////////////////////////////////////////
+   // user actions
+	
 	static function uploadOrders($orders) {
 		
 		ob_start();
@@ -188,7 +253,7 @@ class SchoolOrder extends BasicTableModel {
 					if (!$messageOrderID) {
 							// SchoolOrder::addNewOrder inserts a row in the schoolOrders table
 								// and returns the id for that inserted row
-						$schoolOrderID = SchoolOrder::addNewOrder($eventID, $divisionID, $schoolID);
+						$schoolOrderID = SchoolOrder::addNewOrder($eventID, $divisionID, $schoolID, $genderID);
 							// create a new MessageOrder, and then add it to the db
 							// the new id will be returned
 						$o = new messageOrder(null, $schoolOrderID, $genderID, $orderedBy, $comment, $commentHandled, $orderText, 
@@ -226,8 +291,10 @@ class SchoolOrder extends BasicTableModel {
 							// here we make sure completeness is set correctly
 								// if the existing SchoolOrder is already marked complete, and a second MessageOrder is added,
 									// it needs to change to partial complete
-										// we could make a general function in BasicTableModel to UPDATE x to y if z 
+								// if it is a blank order, make it unDone
+								// we could make a general function in BasicTableModel to UPDATE x to y if z
 						self::updateCompletenessIf($schoolOrderID, 1, 2);
+						self::updateCompletenessIf($schoolOrderID, 4, 0);
 
 						$addedOrders[] = $order;
 					} else {
@@ -249,86 +316,7 @@ class SchoolOrder extends BasicTableModel {
 		return [ 'html' => $htmlContent, 'data' => $orders ];
 	}
 	
-		// this will set due programatically by the sOrderItems currently in the db
-	public static function updateDue($db, $orderID) {
-		$stmt = $db->prepare("UPDATE schoolorders
-					SET due = (
-						SELECT SUM(ii.price * si.sOrderItemsQuantity)
-						FROM sorderitems si
-						JOIN inventoryitems ii ON si.itemID = ii.itemID
-						WHERE si.schoolOrderID = schoolorders.schoolOrderID
-					)
-					WHERE schoolOrderID = :id");
-		$stmt->execute([':id' => $orderID]);
-		
-			// return new due
-		return self::getColForID('due', $orderID);
-	}
-	
-	public static function updateCompletenessIf($orderID, $oldValue, $newValue) {
-		$db = Database::getDB();
-			// $oldValue should be 1 for complete, and $newValue should be 2 for partial, though other options are possible
-				// so calling this can change an order previously marked complete to marked partial
-		$stmt = $db->prepare("UPDATE " . self::getTableName()
-									 . " SET completeness = :newValue
-									WHERE schoolOrderID = :id AND completeness = :oldValue");
-		$stmt->bindValue(':id', $orderID);
-		$stmt->bindValue(':oldValue', $oldValue);
-		$stmt->bindValue(':newValue', $newValue);
 
-		$stmt->execute();
-	}
-
-	public static function updateInvoiceVersion($orderID) {
-		$db = Database::getDB();
-		$stmt = $db->prepare(
-			"UPDATE " . self::getTableName()
-			 . " SET invoiceVersion = CASE 
-					WHEN invoiceVersion IS NULL THEN 0
-					ELSE invoiceVersion + 1
-				END
-				WHERE schoolOrderID = :id"
-		);
-		$stmt->bindValue(':id', $orderID);
-		$stmt->execute();
-	}
-
-
-	// 	// set invoiceDate on creation
-	// public static function updateInvoiceDate($orderID) {
-	// 	$db = Database::getDB();
-	// 	$stmt = $db->prepare("UPDATE  " . self::getTableName()
-	// 	 . " SET invoiceDate = CASE 
-	// 							WHEN invoiceDate IS NULL THEN NOW()
-	// 							ELSE invoiceDate
-	// 						END
-	// 	WHERE schoolOrderID = :id");
-	// 	$stmt->bindValue(':id', $orderID);
-
-	// 	$stmt->execute();
-	// }
-
-
-		// utilizes base class method
-	public static function addNewOrder($eshdID, $schoolID, $genderID = null) {
-		$data = ['eventSiteHasDivisionID' => $eshdID, 'schoolID' => $schoolID, 'genderID' => $genderID];
-		return self::insert($data);
-	}
-	
-	
-	public static function getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID) {
-		$query = "SELECT schoolOrderID FROM schoolorders 
-					WHERE eventSiteHasDivisionID = :eshdID AND schoolID = :schoolID";
-		$rows = static::getFromDB($query, [':eshdID' => $eshdID, ':schoolID' => $schoolID]);
-		return !empty($rows) ? $rows[0]['schoolOrderID'] : null;
-	}
-
-
-
-	
-	//////////////////////////////////////////////////
-   // user actions
-	
 	static function changeOrderCompleteness($id, $completeness) {
 		$rowsAffected = self::updateByID($id, ['completeness' => $completeness]);
 		return ['rowsAffected' => $rowsAffected];
@@ -363,6 +351,142 @@ class SchoolOrder extends BasicTableModel {
 	
 			return [ 'newOrder' => self::getByID($orderID) ];
 		});
+	}
+
+	public static function uploadQualifiers($upSchools, $esdIDs) {
+			// get the lowest division sent
+		$minDivID = min(array_keys($esdIDs));
+			// a container for making sure we don't have problems
+		$unmatchedSchools = [];
+			// from db for comparison
+		$allSchools = School::getAllFromDB();
+
+			// aliases for school names
+				// as 'upload name' => 'db shortName'
+		$aliasMap = [
+			'coeur d alene' => "coeur d'alene",
+			'community school (sun valley)' => 'sun valley community'
+		];
+
+			// find the uploaded school's data from the db list of schools
+		foreach ($upSchools as &$sUp) {
+				// move every thing to lower case
+			$sUpName = strtolower(trim($sUp['name']));
+
+				// first check if there is an alias pointing to a correct name
+			if (isset($aliasMap[$sUpName])) $sUpName = $aliasMap[$sUpName];
+
+				// next special cases for timberline/highland/shoshone
+					// these should all be mutually exclusive
+					// and should all match on the first exact match pass
+			if (str_contains($sUpName, 'weippe')) $sUpName = 'timberline - weippe';
+			if (str_contains($sUpName, 'craigmont')) $sUpName = 'highland - craigmont';
+			if (str_contains($sUpName, 'timberline') && str_contains($sUpName, 'boise')) $sUpName = 'timberline';
+			if (str_contains($sUpName, 'highland') && str_contains($sUpName, 'pocatello')) $sUpName = 'highland';
+			if (str_contains($sUpName, 'bannock')) $sUpName = 'shoshone-bannock';
+			if (str_contains($sUpName, 'shoshone') && !str_contains($sUpName, 'bannock')) $sUpName = 'shoshone';
+
+			
+
+				// reset each pass
+			$matchedSchool = null;
+
+				// match by comparing names. exact matches first
+			foreach ($allSchools as $sDB) {
+				if ($sUpName === strtolower($sDB->shortName)) {
+					$matchedSchool = $sDB;
+					break;
+				}
+			}
+
+				// check partial matches if no match was found previously
+			if (!$matchedSchool) {
+				foreach ($allSchools as $sDB) {
+					if (str_starts_with($sUpName, strtolower($sDB->shortName)) || 
+							str_starts_with(strtolower($sDB->shortName), $sUpName)) {
+						$matchedSchool = $sDB;
+						break;
+					}
+				}
+			}
+
+				// get the match's data, or push to unmatched
+			if ($matchedSchool) {
+				$sUp['id'] = $matchedSchool->id;
+
+				$sUp['dbName'] = $matchedSchool->shortName;
+
+					// account for schools smaller than minDiv.i
+				$divID = max($matchedSchool->division->id, $minDivID);
+				$sUp['esdID'] = $esdIDs[$divID];
+			} else {
+					// if no match was found put it in the container 
+				$unmatchedSchools[] = $sUp;
+			}
+		}
+
+			// if any schools didn't match, don't upload. return the offenders so we can fix things
+		if (count($unmatchedSchools) > 0) {
+			return ['unmatchedSchools' => $unmatchedSchools];
+				// else, upsert
+					/////////// a note. this upsert relies on a unique constraint on the schoolorders table
+						// an (esdID, schoolId, genderID) combination must be unique. genderID is necessary to 
+						// handle soccer sites allowing separate orders for girls and boys. this should never be 
+						// relevant since soccer doesn't send a list of qualifiers, they are team limited
+		} else {
+				// use withDB to avoid some thing like a partial update
+			return Database::withDB(function($db) use ($upSchools) {
+					// get the total already ordered
+				$totalStmt = $db->prepare("SELECT so.schoolOrderID, COALESCE(SUM(si.sOrderItemsQuantity), 0) AS ordered
+										FROM schoolorders so
+										LEFT JOIN sorderitems si ON si.schoolOrderID = so.schoolOrderID
+										WHERE so.schoolID = :schoolID 
+											AND so.eventSiteHasDivisionID = :esdID
+											AND so.genderID = :genderID
+										GROUP BY so.schoolOrderID
+									");
+				
+					// this will UPDATE records for existing sizes, and create new records for nonexisting
+				$upsrtStmt = $db->prepare("INSERT INTO schoolorders (eventSiteHasDivisionID, 
+										schoolID, qualifiers, completeness)
+										VALUES (:esdID, :schoolID, :qlfrs, :cmpltnss)
+										ON DUPLICATE KEY UPDATE 
+											qualifiers = VALUES(qualifiers),
+											completeness = IF(VALUES(completeness) IS NOT NULL, 
+											VALUES(completeness), completeness)
+									");
+				
+				foreach ($upSchools as &$s) {
+						// get the total already ordered
+					$totalStmt->execute([
+						':schoolID' => $s['id'], 
+						':esdID' => $s['esdID'], 
+						':genderID' => 0
+					]);
+					$result = $totalStmt->fetch();
+					$ordered = (int) ($result['ordered'] ?? 0);
+					$s['ordered'] = $ordered;
+
+						// set completeness based on $ordered
+					$completeness = null;
+					if ($ordered === 0) {
+						$completeness = 4;
+					} elseif ($ordered > $s['qualifiers']) {
+						$completeness = 3;
+					}
+					$s['completeness'] = $completeness;
+
+					$upsrtStmt->execute([
+						':esdID' => $s['esdID'],
+						':schoolID' => $s['id'],
+						':qlfrs' => (int) $s['qualifiers'],
+						':cmpltnss' => $completeness
+					]);
+				}
+				
+				return ['upSchools' => $upSchools];
+			});
+		}
 	}
 }
 ?>

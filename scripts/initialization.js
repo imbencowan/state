@@ -24,7 +24,7 @@ export async function init() {
 	buildNavList2();
 
 		// add the file submit listenter
-	document.getElementById('fileSubmit').addEventListener('click', submitOrderFiles);
+	document.getElementById('fileInput').addEventListener('change', submitOrderFiles);
 
 		// load size codes
 	let request = new ActionRequest('loadSizeCodesByStyle', 'Item');
@@ -48,6 +48,7 @@ export async function init() {
 	}
 
 	
+		// make the modal
 	modalInit();
 }
 
