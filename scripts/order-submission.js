@@ -1,5 +1,5 @@
     // a constant array for reading a submission
-import { sizeList } from './constants.js';
+import { sizeList, ihsaaSizeList } from './constants.js';
     // fetch
 import { myFetch } from './fetch.js';
     // classes to organize data to send to the server
@@ -128,7 +128,7 @@ function getSizes(inputString) {
 	inputString.subStart = inputString.subEnd + 1;
 	
 	let i = 0;
-	sizeList.forEach((size) => {
+	ihsaaSizeList.forEach((size) => {
 			// check if each size is included
 		let check = inputString.str.indexOf('\n' + size + ':', inputString.subStart);
 		// console.log(check);

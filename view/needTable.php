@@ -1,4 +1,4 @@
-<?php
+d<?php
 // this view uses an array named $schoolOrders of SchoolOrder objects and displays them in a table 
 	$neededSizes = $event->getNeededSizes($incompleteOrders);
 ?>

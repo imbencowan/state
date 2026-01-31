@@ -325,7 +325,7 @@ function genSoS(doc, div) {
 			doc.text(redText, (sos.colsX[2] + nameWidth + 4), cursor.y);
 			doc.setTextColor(black);
 		}
-		let total = (order.getTeamStyle()) ? order.getTeamStyle().getTotalQuantity() : 0;
+		let total = (order.getTeamStyle()) ? order.getTeamStyle().getTotalQuantity() : order.qualifiers;
 		sos.textToCell(total);
 		let teamStyle = order.getTeamStyle();
 		if (teamStyle) {
@@ -659,19 +659,19 @@ function genInventoryPDF(doc, eSite) {
 		// reset the y to the top of the table
 	cursor.y = tableYInit;
 	fillInventoryTable(doc, page, cursor, eSite);
-	inventoryStartAddendum(doc, page, cursor, eSite);
+	// inventoryStartAddendum(doc, page, cursor, eSite);
 
-		// END page
-	page.addPage();
-	writeInventoryHeader(doc, page, cursor, eSite, 'END');
-	buildInventoryTable(doc, page, cursor, eSite);
-	inventoryEndAddendum(page);
+	// 	// END page
+	// page.addPage();
+	// writeInventoryHeader(doc, page, cursor, eSite, 'END');
+	// buildInventoryTable(doc, page, cursor, eSite);
+	// inventoryEndAddendum(page);
 
-		// SOLD page
-	page.addPage();
-	writeInventoryHeader(doc, page, cursor, eSite, 'SOLD');
-	buildInventoryTable(doc, page, cursor, eSite);
-	inventorySoldAddendum(page);
+	// 	// SOLD page
+	// page.addPage();
+	// writeInventoryHeader(doc, page, cursor, eSite, 'SOLD');
+	// buildInventoryTable(doc, page, cursor, eSite);
+	// inventorySoldAddendum(page);
 
 }
 
@@ -902,13 +902,13 @@ function inventorySoldAddendum(page) {
 	page.newLine();
 	page.textToCell('3-PEAT');
 
-	page.newLine(2);
-	page.textToCell('#s');
+	// page.newLine(2);
+	// page.textToCell('#s');
 
 	page.newLine(2);
 	page.textToCell('MOM, DAD, (TUB)');
-	// page.newLine();
-	// page.textToCell('swimming events');
+	page.newLine();
+	page.textToCell('drama events');
 
 	page.newLine(2);
 	page.textToCell('school names');

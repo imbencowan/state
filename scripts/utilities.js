@@ -36,6 +36,60 @@ export function safeParseDate(input) {
    return isNaN(date.getTime()) ? null : date;
 }
 
+
+
+export function buildElement(tag, { text, html, classes, id, title, attrs, dataset, on, children } = {}) {
+   const el = document.createElement(tag);
+
+   if (text != null) el.textContent = text;
+   if (html != null) el.innerHTML = html;
+   if (id) el.id = id;
+   if (title) el.title = title;
+
+   if (classes) {
+      if (Array.isArray(classes)) {
+         el.classList.add(...classes);
+      } else {
+         el.className = classes;
+      }
+   }
+
+   if (attrs) {
+      for (const [k, v] of Object.entries(attrs)) {
+         el.setAttribute(k, v);
+      }
+   }
+
+   if (dataset) {
+      for (const [k, v] of Object.entries(dataset)) {
+         el.dataset[k] = v;
+      }
+   }
+
+   if (on) {
+      for (const [event, handler] of Object.entries(on)) {
+         el.addEventListener(event, handler);
+      }
+   }
+
+   if (children != null) {
+      const childList = Array.isArray(children) ? children : [children];
+
+      for (const child of childList) {
+         el.appendChild(
+            typeof child === "string"
+               ? document.createTextNode(child)
+               : child
+         );
+      }
+   }
+
+   return el;
+}
+
+
+
+
     // assumes objs is an array of objects that all have a unique id property
 export function mapObjsBy(objs, key = 'id') {
 	const result = {};

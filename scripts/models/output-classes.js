@@ -1,3 +1,5 @@
+import { sizeList } from '../constants.js';
+
 //these are used to structure output for a state event, mostly in the form of pdfs
 
     // semantically define points on a pdf
@@ -43,8 +45,8 @@ const labelPage6 = {
     // this sets which type of page we're printing labels on. importantly, it defines the origin of each label
 export const labelPage = labelPage4;
 
-	// this is used to provide shorter names for labels. indexes need to match sizeList
-const sizeListShort = ['S', 'M', 'L', 'XL', '2X', '3X', '4X', '5X'];
+// 	// this is used to provide shorter names for labels. indexes need to match sizeList
+// const sizeListShort = ['S', 'M', 'L', 'XL', '2X', '3X', '4X', '5X'];
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // THE CLASSES
@@ -170,12 +172,11 @@ export class Label {
     addGridSizes(min, max) {
         this.doc.setFontSize(12);
         let x = this.gridX;
+            // forEach()?
         for (let i = min - 1; i < max; ++i) {
-            // this.doc.text(sizeListShort[i], x, this.lineY);
-            this.centerInGrid(sizeListShort[i], x);
+            this.centerInGrid(sizeList[i], x);
             x += this.gridStep;
         }
-        // this.doc.text("Total", x, this.lineY);
         this.centerInGrid("Total", x);
     }
     
@@ -184,11 +185,9 @@ export class Label {
         if (style.id !== 13) {
             style.sizes.forEach(size => {
                 let x = this.gridX + this.gridStep * (size.id - min);
-                // this.doc.text(String(size.quantity), x, this.lineY);
                 this.centerInGrid(String(size.quantity), x);
             });
         }
-        // this.doc.text(String(style.getTotalQuantity()), (this.gridX + ((max - min + 1) * this.gridStep)), this.lineY);
         this.centerInGrid(String(style.getTotalQuantity()), (this.gridX + ((max - min + 1) * this.gridStep)));
     }
     

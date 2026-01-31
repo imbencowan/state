@@ -9,7 +9,7 @@ import * as Utils from './utilities.js';
     // modal initializaion
 import { init as modalInit } from './modal.js';
     // function for a listener
-import { goToEventPage, addEventPageFunctionality } from './pages/event.js';
+import { goToEventPage, buildEventPage, addEventPageFunctionality } from './pages/event.js';
 import { showPage } from './pages/page-handling.js';
 import { addShowYearFunctionality } from './pages/year.js';
 import { showInventories } from './pages/inventories.js';
@@ -43,6 +43,10 @@ export async function init() {
 	if (responseJSON.data !== null) {
 			// put the event in working memory
 		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
+
+		const pageContent = buildEventPage(runtime.stateEvent);
+		document.getElementById("display2").replaceChildren(pageContent);
+
 			// attach event listeners to the html in "display"
 		addEventPageFunctionality();
 	}

@@ -28,15 +28,13 @@
 			?>
 		</div>
 	</header>
-	<nav id="stateNav"><ul id="stateNavList">
-		<!-- nav list built in js to attach click listeners -->
+	<nav id="stateNav"><ul id="stateNavList"><!-- nav list built in js to attach click listeners --></ul></nav>
+	<nav id="nav2"><ul id="nav2List"><!-- nav list built in js to attach click listeners --></ul></nav>
+	<!--remove--><div class="parent">
+	<section id="display" class="half"></section>
+	<section id="display2" class="half">Text</section>
+	<!--remove--></div>
 
-	</ul></nav>
-	<nav id="nav2"><ul id="nav2List">
-			<!-- nav list built in js to attach click listeners -->
-	</ul></nav>
-	<section id="display">
-	</section>
 	<div id="myModal" class="modal">
 		<div class="modal-content">
 			<span class="close">&times;</span>

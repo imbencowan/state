@@ -6,7 +6,7 @@ import { sizeList } from '../constants.js';
 import { ActionRequest } from '../models/other-classes.js';
 import { StateEvent, SchoolOrder, School } from '../models/db-classes.js';
 import { openModal, closeModal } from '../modal.js';
-import { parseToInstancesArr } from '../utilities.js';
+import { buildElement, parseToInstancesArr } from '../utilities.js';
 import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoices, 
 			printSoSPDF, printAllSoSPDF, printOMessages, genIHSAATotals } from '../print.js';
 
@@ -34,11 +34,190 @@ export async function goToEventPage(sport) {
 
 	if (responseJSON.data !== null) {
 		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
+
+		const pageContent = buildEventPage(runtime.stateEvent);
+		// console.log(pageContent);
+
+		document.getElementById("display2").replaceChildren(pageContent);
+
 			// ATTACH EVENT LISTENERS 
 		addEventPageFunctionality();
 	}	
 }
 
+export function buildEventPage(data) {
+	const frag = document.createDocumentFragment();
+
+	attachSportHeader(frag, data);
+	attachTopButtons(frag, data);
+	attachNeededTable(frag, data);
+	attachOrders(frag, data);
+
+	return frag;
+}
+
+	// builds the inner page header
+function attachSportHeader(frag, data) {
+	const sport = data.sport.name;
+	const year = data.startDate.toLocaleDateString("en-US", { year: "numeric" });
+	const h = buildElement("h1", { text: sport + " " + year});
+	frag.appendChild(h);
+}
+
+	// builds buttons for the top of the page for various print options 
+function attachTopButtons(frag) {
+	const b1 = buildElement("button", {
+		classes: ["topLevelButton", "clickable", "genUndoneBoxLabelsBtn"],
+		dataset: { btnType: "genBoxLabels" },
+		title: "print all undone box labels",
+		children: [ buildIcon("print"), " Undone Labels" ]
+	});
+	const b2 = buildElement("button", {
+		classes: ["topLevelButton", "clickable", "printAllSoSPDF"],
+		dataset: { btnType: "printAllSoSPDF" },
+		title: "print all site's sign off sheets",
+		children: [ buildIcon("print"), " All SoS" ]
+	});
+	const b3 = buildElement("button", {
+		classes: ["topLevelButton", "clickable", "printInvoicesBtn"],
+		dataset: { btnType: "printInvoices" },
+		title: "print all invoices",
+		children: [ buildIcon("print"), " Invoices" ]
+	});
+	const b4 = buildElement("button", {
+		classes: ["topLevelButton", "clickable", "printMessagesBtn"],
+		dataset: { btnType: "printMessages" },
+		title: "print order messages",
+		children: [ buildIcon("print"), " Messages" ]
+	});
+	const b5 = buildElement("button", {
+		classes: ["topLevelButton", "clickable", "newOrderBtn"],
+		dataset: { btnType: "newOrder" },
+		title: "add an order",
+		children: ["+ Order"]
+	});
+	const b6 = buildElement("button", {
+		classes: ["topLevelButton", "clickable", "uploadQlfrs"],
+		dataset: { btnType: "uploadQlfrs" },
+		title: "upload qualifiers",
+		children: [ buildIcon("upload"), " Qualifiers" ]
+	});
+
+	const h = buildElement("h1", { children: [ b1, b2, b3, b4, b5, b6 ] })
+	const cntnr = buildElement("div", { id: "buttonContainer", children: [ h ] });
+
+	frag.appendChild(cntnr);
+}
+
+	// builds a table that displays how many shirts of each size are still incomplete
+function attachNeededTable(frag, data) {
+		// a list for the table headers
+	let thNames = [...sizeList];
+	thNames.push('Total');
+	let ths = [];
+
+		// build the actual <th>s and thead
+	thNames.forEach(name => {
+		ths.push(buildElement("th", { text: name }));
+	});
+	const thRow = buildElement("tr", { children: ths });
+	const thead = buildElement("thead", { children: thRow });
+
+		// get quantities from the StateEvent
+	const needSizes = data.getNeededSizes();
+	let needTDs = [];
+		// build each td
+	thNames.forEach(n => {
+		const txt = needSizes[n] === 0 ? "-" : needSizes[n];
+		needTDs.push(buildElement("td", { title: n, text: txt }));
+	});
+		// final cell for the total
+	needTDs.push(buildElement("td", { title: "total", text: needSizes.total }));
+
+		// put the cells in a row, the row in a tbody
+	const needRow = buildElement("tr", { children: needTDs });
+	const tbody = buildElement("tbody", { children: needRow });
+	
+		// build the table and a label
+	const t = buildElement("table", { classes: [ "needTable" ], children: [ thead, tbody ] });
+	const p = buildElement("p", { text: "We still need: " });
+
+		// attach to the container
+	const div = buildElement("div", { id: "needContainer", children: [ p, t ] });
+		// hide if empty
+	if (needSizes.total === 0) div.style.display = "none";
+
+	frag.appendChild(div);
+}
+
+	// attach the actual orders. for each division for each site, make a table with a row for each school order
+function attachOrders(frag, data) {
+	const ordersDiv = buildElement("div", { id: "ordersContainer" });
+
+		// for each EventSite
+	data.eventSites.forEach(es => {
+		const siteH2 = buildElement("h2", { text: es.site.name, attrs: { eventSiteId: es.id } });
+		ordersDiv.appendChild(siteH2);
+
+			// for each EventSiteDivision
+		es.esDivisions.forEach(esd => {
+			const divisionH3 = buildElement("h3", {text: esd.division.name });
+			// <h3 data-event-site-division-id="<?= $esd->id; ?>"><?= $esd->name . $gender; ?>
+			// 		<button class="topLevelButton clickable printSoSPDF" data-btnType="printSoSPDF" 
+			// 			data-eshdid="<?= $esd->id; ?>"><span class="material-icons">print</span> SoS</button>
+			// 	</h3>
+
+			const thead = buildThead();		
+
+			const table = buildElement("table", { 
+				classes: "orderTable",
+				children: thead
+			});
+
+			buildTbodies(table, esd);
+			
+			const tableDiv = buildElement("div", { classes: "table-container", children: table });
+			ordersDiv.appendChild(tableDiv);
+		});
+	});
+
+	frag.appendChild(ordersDiv);
+}
+
+function buildThead() {
+	let ths = [];
+	ths.push(buildElement("th", { text: "School" }));
+	sizeList.forEach(s => {
+		ths.push(buildElement("th", { text: s }));
+	});
+	ths.push(buildElement("th", { text: "Total" }));
+		// a "..." icon for the final th
+	ths.push(buildElement("th", { children: buildIcon("more_horiz") }));
+
+	const thRow = buildElement("tr", { children: ths });
+	
+	return buildElement("thead", { children: thRow });
+}
+
+function buildTbodies(table, esd) {
+	esd.schoolOrders.forEach(so => {
+		let tds = [];
+		tds.push(buildElement("td", {
+			text: so.school.shortName
+		}));
+		const tr = buildElement("tr", { children: tds });
+		const tbody = buildElement("tbody", { children: tr });
+		table.appendChild(tbody);
+	});
+}
+
+	// builds spans that contain icons. helper function to decrease redundant code
+function buildIcon(type) {
+   return buildElement("span", { classes: ["material-icons"], text: type });
+}
+
+
+	// attaches event listeners
 export function addEventPageFunctionality() {
 		// PRE LOAD 
 	runtime.allItems.load();
@@ -46,6 +225,7 @@ export function addEventPageFunctionality() {
 
 
 	const container = document.getElementById('eventContainer');
+
 		// this is one listener that handles clicks for all buttons on the event page
 			// may be should move top level buttons to a more specific listener
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -496,6 +676,8 @@ function cancelSizeEdit(target) {
 }
 
 async function submitSizeEdit(target, order) {
+	console.log('submitEditSizes called');
+
 	const tbody = target.closest('tbody');
 		// get the rows
 	const rows = Array.from(tbody.querySelectorAll('tr'));

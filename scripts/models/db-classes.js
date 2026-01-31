@@ -5,6 +5,7 @@
 
    // import helper functions
 import * as Utils from '../utilities.js';
+import { sizeList } from '../constants.js';
 // do not import runtime, no circular dependencies
 
 
@@ -57,6 +58,36 @@ export class StateEvent {
 		}
 		return null;
 	}
+
+      // returns an object with props for each size named by displayChar and a total prop
+   getNeededSizes() {
+         // makes an obj with properties named by sizeChars with values all set to 0
+      const neededSizes = Object.fromEntries(sizeList.map(size => [size, 0]));
+      neededSizes.total = 0;
+
+         // for each EventSite, each ESDivision, each SchoolOrder, each Size, increment the corresponding neededSize
+      for (const es of this.eventSites) {
+         for (const esd of es.esDivisions) {
+            for (const so of esd.schoolOrders) {
+                  // we only need incomplete orders
+               if (!so.completeness) {
+                     // dairyHoods style.id == 9. this filters out add ons
+                  const dHoods = so.shirtsByStyle.find(item => item.id === 9);
+                  if (dHoods) {
+                     for (const size of dHoods.sizes) {
+                           // make sure displayChar is valid
+                        if (!(size.displayChar in neededSizes)) throw new Error(`Unknown size: ${size.displayChar}`);
+                        neededSizes[size.displayChar] += size.quantity;
+                        neededSizes.total += size.quantity;
+                     }
+                  }
+               }
+            }
+         }
+      }
+
+      return neededSizes;
+   }
 	
 	getUndoneOrders() {
 		let orders = [];
@@ -255,13 +286,14 @@ export class Division {
 }
 
 export class SchoolOrder {
-   constructor({ id, eshdID, school, genderID, completeness = 0, due = null, paid = null, 
+   constructor({ id, eshdID, school, genderID, qualifiers = 0, completeness = 0, due = null, paid = null, 
                schoolOrderNote = null, invoiceDate = null, invoiceVersion = null, messageOrders = [], 
                shirtsByStyle = [], site = undefined, sport = undefined }) {
       this.id = id;
       this.eshdID = eshdID;
       this.school = Utils.parseToInstance(school, School);
       this.genderID = genderID;
+      this.qualifiers = qualifiers;
       this.completeness = completeness;
       this.due = due;
       this.paid = paid;
@@ -276,10 +308,10 @@ export class SchoolOrder {
       this.sport = sport;
    }
 
-   static fromValues(id, eShdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders, shirtsByStyle, 
-							site, sport) {
-      return new SchoolOrder({ id, eShdID, school, completeness, due, paid, schoolOrderNote, invoiceSent, messageOrders, shirtsByStyle, 
-										site, sport });
+   static fromValues(id, eShdID, school, genderID, qualifiers, completeness, due, paid, schoolOrderNote, 
+                     invoiceSent, messageOrders, shirtsByStyle, site, sport) {
+      return new SchoolOrder({ id, eShdID, school, genderID, qualifiers, completeness, due, paid, schoolOrderNote, 
+                              invoiceSent, messageOrders, shirtsByStyle, site, sport });
    }
 
    static fromJSON(json) {
