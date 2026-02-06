@@ -49,9 +49,9 @@
 					<td title="M"><?= isset($teamShirts['M']) ? $teamShirts['M']->getQuantity() : '-'; ?></td>
 					<td title="L"><?= isset($teamShirts['L']) ? $teamShirts['L']->getQuantity() : '-'; ?></td>
 					<td title="XL"><?= isset($teamShirts['XL']) ? $teamShirts['XL']->getQuantity() : '-'; ?></td>
-					<td title="2XL"><?= isset($teamShirts['2XL']) ? $teamShirts['2XL']->getQuantity() : '-'; ?></td>
-					<td title="3XL"><?= isset($teamShirts['3XL']) ? $teamShirts['3XL']->getQuantity() : '-'; ?></td>
-					<td title="4XL"><?= isset($teamShirts['4XL']) ? $teamShirts['4XL']->getQuantity() : '-'; ?></td>
+					<td title="2X"><?= isset($teamShirts['2XL']) ? $teamShirts['2XL']->getQuantity() : '-'; ?></td>
+					<td title="3X"><?= isset($teamShirts['3XL']) ? $teamShirts['3XL']->getQuantity() : '-'; ?></td>
+					<td title="4X"><?= isset($teamShirts['4XL']) ? $teamShirts['4XL']->getQuantity() : '-'; ?></td>
 					<td title="total"><?= isset($order->shirtsByStyle['Dairy Hoods']) ? $order->getStyleTotal('Dairy Hoods') : '-'; ?></td>
 						<?php // a cell to hold action buttons ?>
 					<td>
@@ -77,9 +77,9 @@
 					<td title="M"><?= isset($aStyle['M']) ? $aStyle['M']->getQuantity() : ''; ?></td>
 					<td title="L"><?= isset($aStyle['L']) ? $aStyle['L']->getQuantity() : ''; ?></td>
 					<td title="XL"><?= isset($aStyle['XL']) ? $aStyle['XL']->getQuantity() : ''; ?></td>
-					<td title="2XL"><?= isset($aStyle['2XL']) ? $aStyle['2XL']->getQuantity() : ''; ?></td>
-					<td title="3XL"><?= isset($aStyle['3XL']) ? $aStyle['3XL']->getQuantity() : ''; ?></td>
-					<td title="4XL"><?= isset($aStyle['4XL']) ? $aStyle['4XL']->getQuantity() : ''; ?></td>
+					<td title="2X"><?= isset($aStyle['2XL']) ? $aStyle['2XL']->getQuantity() : ''; ?></td>
+					<td title="3X"><?= isset($aStyle['3XL']) ? $aStyle['3XL']->getQuantity() : ''; ?></td>
+					<td title="4X"><?= isset($aStyle['4XL']) ? $aStyle['4XL']->getQuantity() : ''; ?></td>
 					<td title="total"><?= $order->getStyleTotal($addedStyle->shortName); ?></td>
 					<td></td><?php // empty table place holder ?>
 				</tr>

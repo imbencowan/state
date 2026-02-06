@@ -45,7 +45,7 @@ export async function init() {
 		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
 
 		const pageContent = buildEventPage(runtime.stateEvent);
-		document.getElementById("display2").replaceChildren(pageContent);
+		document.getElementById("display").replaceChildren(pageContent);
 
 			// attach event listeners to the html in "display"
 		addEventPageFunctionality();

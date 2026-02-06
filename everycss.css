@@ -39,6 +39,9 @@ td {
 button {
 	border-radius: 8px;
 	font-size: 95%;
+   display: inline-flex;
+   align-items: center;
+   gap: 0.25em;
 }
 
 fieldset {

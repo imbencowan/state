@@ -74,6 +74,7 @@ class Item extends BasicTableModel {
 				$sizeObj = new stdClass();
 				$sizeObj->name = $item->size->name;
 				$sizeObj->charName = $item->size->charName;
+				$sizeObj->displayChar = $item->size->displayChar;
 				$sizeObj->id = $item->id;
 				$styles[$shortName]->pushSizes($sizeObj);
 			}

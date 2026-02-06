@@ -116,6 +116,32 @@ export class StateEvent {
 		});
 		return orders;
 	}
+
+   getUnhandledComments() {
+      let unhandledComments = [];
+
+      for (const es of this.eventSites) {
+         for (const esd of es.esDivisions) {
+            for (const so of esd.schoolOrders) {
+               for (const mo of so.messageOrders) {
+                     // we only need orders with comments that are unhandled
+                  if (mo.comment && !this.commentHandled) {
+                     console.log(mo);
+                     unhandledComments.push({
+                        comment: mo.comment,
+                        moID: mo.id,
+                        soID: so.id,
+                        schoolName: so.school.shortName,
+                        divName: esd.division.name
+                     });
+                  }
+               }
+            }
+         }
+      }
+
+      return unhandledComments;
+   }
 }
 
 export class Sport {
@@ -179,6 +205,10 @@ export class EventSite {
       if (this.gender && this.gender.id !== 3) divStr += ' ' + this.gender.name;
 
       return divStr;
+   }
+
+   getGenderName() {
+      return this.gender?.name || '';
    }
 
    getEmployeesString() {
@@ -247,7 +277,6 @@ export class EventSiteDivision {
 	hasSchoolByID(id) {
 		return this.schoolOrders.some(order => order.school?.id === id);
 	}
-
 	
 	getTeamsWithAddOns() {
 		return this.schoolOrders.filter(order =>
@@ -343,7 +372,7 @@ export class SchoolOrder {
 	
 	getBoxTotal() {
 		let boxTotal = 0;
-      console.log(this.shirtsByStyle);
+      // console.log(this.shirtsByStyle);
 		this.shirtsByStyle.forEach(style => {
          if (style.id !== 13) {
             style.sizes.forEach(size => {
@@ -353,6 +382,21 @@ export class SchoolOrder {
 		});
 		return boxTotal;
 	}
+
+      // returns total number of participant hoods ordered
+   getDairyTotal() {
+      let dTotal = 0;
+
+         // find the dairy hoods. if there are any, sum them. // dairy hoods style.id === 9
+      const dHoods = this.shirtsByStyle.find(style => style.id === 9);
+      if (dHoods) {
+         for (const s of dHoods.sizes) {
+            dTotal += s.quantity;
+         }
+      }
+
+      return dTotal;
+   }
 	
 	hasAddOns() {
 		return this.shirtsByStyle.some(style => style.shortName !== 'Dairy Hoods');
@@ -389,6 +433,22 @@ export class SchoolOrder {
 		});
 		return max;
 	}
+
+      // returns a bool for whether more shirts have been ordered than qualifiers
+   isOver() {
+      let over = false;
+         // check if qualifiers has a value, and if dairyTotal exceeds it
+      if ((this.qualifiers > 0) && (this.getDairyTotal() > this.qualifiers)) over = true;
+
+      return over;
+   }
+
+   getMessageFileNames() {
+         // if no message orders return ''
+      if (!this.messageOrders || this.messageOrders.length === 0) return '';
+         // else, string them with commas
+      return this.messageOrders.map(mo => mo.fileName).join(', ');
+   }
 }
 
 export class School {
@@ -478,7 +538,7 @@ export class Style {
 
       this.sizeMap = {};
       for (const size of this.sizes) {
-         if (size && size.charName) this.sizeMap[size.charName] = size;
+         if (size && size.displayChar) this.sizeMap[size.displayChar] = size;
       }
    }
 

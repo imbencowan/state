@@ -434,7 +434,7 @@ tr.addOnRow {
 	text-align: left;
 }
 
-.transferTable th:last-child, td:last-child {
+.transferTable th:last-child, .transferTable td:last-child {
 	text-align: right;
 }
 

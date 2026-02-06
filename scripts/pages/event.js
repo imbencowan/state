@@ -17,16 +17,15 @@ export async function goToEventPage(sport) {
 	sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 	let year = sixMonthsAgo.getFullYear() % 100;
 		// but reset it based off the select. the previous year calculation is really a fall back
-	if (document.getElementById("selectYear")) {
-		year = document.getElementById("selectYear").value;
-	}
+	if (document.getElementById("selectYear")) year = document.getElementById("selectYear").value;
+
 	let sportID = sport[1];
 
 	let request = new ActionRequest('showEventBySportAndYear', 'Event', { 'year': year, 'sportID': sportID });
 
 	let responseJSON = await myFetch(request);
 	
-	document.getElementById("display").innerHTML = responseJSON.html;
+	// document.getElementById("display").innerHTML = responseJSON.html;
 	
 		// reset mode on load
 	runtime.activeMode = null;
@@ -38,7 +37,8 @@ export async function goToEventPage(sport) {
 		const pageContent = buildEventPage(runtime.stateEvent);
 		// console.log(pageContent);
 
-		document.getElementById("display2").replaceChildren(pageContent);
+		// document.getElementById("display2").replaceChildren(pageContent);
+		document.getElementById("display").replaceChildren(pageContent);
 
 			// ATTACH EVENT LISTENERS 
 		addEventPageFunctionality();
@@ -46,26 +46,29 @@ export async function goToEventPage(sport) {
 }
 
 export function buildEventPage(data) {
-	const frag = document.createDocumentFragment();
+		// a container
+	const cntnr = buildElement("div", { id: "eventContainer" });
 
-	attachSportHeader(frag, data);
-	attachTopButtons(frag, data);
-	attachNeededTable(frag, data);
-	attachOrders(frag, data);
+		// attach a header, the buttons at the top of the page, tables for orders, a couple helper tables
+	attachSportHeader(cntnr, data);
+	attachTopButtons(cntnr, data);
+	attachNeededTable(cntnr, data);
+	attachOrders(cntnr, data);
+	attachCommentTable(cntnr, data);
 
-	return frag;
+	return cntnr;
 }
 
 	// builds the inner page header
-function attachSportHeader(frag, data) {
+function attachSportHeader(cntnr, data) {
 	const sport = data.sport.name;
 	const year = data.startDate.toLocaleDateString("en-US", { year: "numeric" });
 	const h = buildElement("h1", { text: sport + " " + year});
-	frag.appendChild(h);
+	cntnr.appendChild(h);
 }
 
 	// builds buttons for the top of the page for various print options 
-function attachTopButtons(frag) {
+function attachTopButtons(cntnr) {
 	const b1 = buildElement("button", {
 		classes: ["topLevelButton", "clickable", "genUndoneBoxLabelsBtn"],
 		dataset: { btnType: "genBoxLabels" },
@@ -104,16 +107,15 @@ function attachTopButtons(frag) {
 	});
 
 	const h = buildElement("h1", { children: [ b1, b2, b3, b4, b5, b6 ] })
-	const cntnr = buildElement("div", { id: "buttonContainer", children: [ h ] });
+	const btnCntnr = buildElement("div", { id: "buttonContainer", children: [ h ] });
 
-	frag.appendChild(cntnr);
+	cntnr.appendChild(btnCntnr);
 }
 
 	// builds a table that displays how many shirts of each size are still incomplete
-function attachNeededTable(frag, data) {
+function attachNeededTable(cntnr, data) {
 		// a list for the table headers
-	let thNames = [...sizeList];
-	thNames.push('Total');
+	let thNames = [...sizeList, 'Total'];
 	let ths = [];
 
 		// build the actual <th>s and thead
@@ -123,19 +125,7 @@ function attachNeededTable(frag, data) {
 	const thRow = buildElement("tr", { children: ths });
 	const thead = buildElement("thead", { children: thRow });
 
-		// get quantities from the StateEvent
-	const needSizes = data.getNeededSizes();
-	let needTDs = [];
-		// build each td
-	thNames.forEach(n => {
-		const txt = needSizes[n] === 0 ? "-" : needSizes[n];
-		needTDs.push(buildElement("td", { title: n, text: txt }));
-	});
-		// final cell for the total
-	needTDs.push(buildElement("td", { title: "total", text: needSizes.total }));
-
-		// put the cells in a row, the row in a tbody
-	const needRow = buildElement("tr", { children: needTDs });
+	const needRow = buildNeedRow(data);
 	const tbody = buildElement("tbody", { children: needRow });
 	
 		// build the table and a label
@@ -144,44 +134,76 @@ function attachNeededTable(frag, data) {
 
 		// attach to the container
 	const div = buildElement("div", { id: "needContainer", children: [ p, t ] });
+		
+			// get quantities from the StateEvent
+	const needSizes = data.getNeededSizes();
 		// hide if empty
 	if (needSizes.total === 0) div.style.display = "none";
 
-	frag.appendChild(div);
+	cntnr.appendChild(div);
+}
+
+function buildNeedRow(data) {
+	let sizeChars = [...sizeList, 'total'];
+		// get quantities from the StateEvent
+	const needSizes = data.getNeededSizes();
+	let needTDs = [];
+		// build each td
+	sizeChars.forEach(n => {
+		const txt = needSizes[n] === 0 ? "-" : needSizes[n];
+		needTDs.push(buildElement("td", { title: n, text: txt }));
+	});
+
+		// put the cells in a row, the row in a tbody
+	const needRow = buildElement("tr", { children: needTDs });
+
+	return needRow;
 }
 
 	// attach the actual orders. for each division for each site, make a table with a row for each school order
-function attachOrders(frag, data) {
+function attachOrders(cntnr, data) {
+		// a container
 	const ordersDiv = buildElement("div", { id: "ordersContainer" });
 
 		// for each EventSite
 	data.eventSites.forEach(es => {
+			// a site header
 		const siteH2 = buildElement("h2", { text: es.site.name, attrs: { eventSiteId: es.id } });
 		ordersDiv.appendChild(siteH2);
 
 			// for each EventSiteDivision
 		es.esDivisions.forEach(esd => {
-			const divisionH3 = buildElement("h3", {text: esd.division.name });
-			// <h3 data-event-site-division-id="<?= $esd->id; ?>"><?= $esd->name . $gender; ?>
-			// 		<button class="topLevelButton clickable printSoSPDF" data-btnType="printSoSPDF" 
-			// 			data-eshdid="<?= $esd->id; ?>"><span class="material-icons">print</span> SoS</button>
-			// 	</h3>
+				// a button to print a site's sign off sheets
+			const sosBtn = buildElement("button", { 
+				classes: [ "topLevelButton", "clickable", "printSoSPDF" ],
+				attrs: { btnType: "printSoSPDF", eshdid: esd.id },
+				children: [ buildIcon("print"), " SoS" ]
+			 });
 
-			const thead = buildThead();		
-
-			const table = buildElement("table", { 
-				classes: "orderTable",
-				children: thead
+				// a division header
+			const divisionH3 = buildElement("h3", { 
+				text: (esd.division.name + " " + es.getGenderName()), 
+				children: sosBtn, 
+				attrs: { eventSiteDivisionId: esd.id } 
 			});
+			ordersDiv.appendChild(divisionH3);
 
-			buildTbodies(table, esd);
-			
-			const tableDiv = buildElement("div", { classes: "table-container", children: table });
-			ordersDiv.appendChild(tableDiv);
+				// if there are orders, put them in a table
+			if (esd.schoolOrders.length) {
+				const thead = buildThead();		
+					// the table, empty
+				const table = buildElement("table", { classes: "orderTable", children: thead });
+					// fill the table body
+				buildTbodies(table, esd);
+				
+					// put the table in a container
+				const tableDiv = buildElement("div", { classes: "table-container", children: table });
+				ordersDiv.appendChild(tableDiv);
+			}
 		});
 	});
 
-	frag.appendChild(ordersDiv);
+	cntnr.appendChild(ordersDiv);
 }
 
 function buildThead() {
@@ -201,19 +223,156 @@ function buildThead() {
 
 function buildTbodies(table, esd) {
 	esd.schoolOrders.forEach(so => {
+		const teamShirts = so.getTeamStyle();
+
 		let tds = [];
+
+			// first td, the school name
 		tds.push(buildElement("td", {
+			title: (so.id + " / " + so.getMessageFileNames()), 
 			text: so.school.shortName
 		}));
-		const tr = buildElement("tr", { children: tds });
-		const tbody = buildElement("tbody", { children: tr });
+			// then the sizes
+		for (const s of sizeList) {
+			tds.push(buildElement("td", { title: s, text: (teamShirts?.sizeMap[s]?.quantity || '-') }));
+		}
+			// then the total
+		tds.push(buildElement("td", { title: 'total', text: so.getDairyTotal() }));
+
+			// make an input to stick at the end
+		const chkBx = buildElement("input", { classes: 'orderChckBx', 
+			id: ('check' + so.id), 
+			title: 'mark order complete'
+		});
+		chkBx.type = 'checkbox';
+		chkBx.name = ('check' + so.id);
+		chkBx.value = so.id;
+		if (so.completeness === 1) chkBx.checked = true;
+	
+
+			// and then we can put the buttons in the last cell
+		tds.push(buildElement("td", { children: [
+			makeRowIconButton('add', 'addAddOns', 'add add ons'),
+			makeRowIconButton('edit', 'editSizes', 'edit the sizes'),
+			makeRowIconButton('mail', 'showMessage', 'view the original message'),
+			makeRowIconButton('article', 'printLabel', 'print box label'),
+			makeRowIconButton('request_quote', 'dlInvoice', 'download invoice'),
+			makeRowIconButton('more_horiz', 'showMore', 'show more options'),
+			chkBx
+		] }));
+
+			// build the row
+		const trs = [];
+		trs.push(buildElement("tr", { children: tds }));
+
+			// if there are any add ons, make rows for them
+		if (so.hasAddOns()) {
+			const addedStyles = so.getAddedStyles();
+			for (const aStyle of addedStyles) {
+				let tds = [];
+
+					// first td, the school name
+				tds.push(buildElement("td", {	text: aStyle.shortName }));
+					// then the sizes
+				let sTotal = 0
+				for (const s of sizeList) {
+					tds.push(buildElement("td", { title: s, text: (aStyle.sizeMap[s]?.quantity || '') }));
+					sTotal += aStyle.sizeMap[s]?.quantity || 0;
+				}
+					// then the total
+				tds.push(buildElement("td", { title: 'total', text: sTotal }));
+					// an empty td to fill the table
+				tds.push(buildElement("td"));
+
+					// make the row
+				trs.push(buildElement("tr", { classes: "addOnRow", attrs: { styleId: aStyle.id }, children: tds }));
+			}
+		}
+
+
+		const tbody = buildElement("tbody", { classes: getRowCompletenessClass(so), children: trs });
 		table.appendChild(tbody);
 	});
+}
+
+function getRowCompletenessClass(order) {
+	let trClass = '';
+		// order matters here. check the 'nature' of the order before looking at completeness, as they are independent
+			// ie, a row that isOver() could have been marked complete before receiving qualifier data
+				// unOrdered and over override .completeness for display, but are wrong to store in .completeness
+	if (order.getDairyTotal() === 0) {
+		trClass = 'unOrderedRow';
+	} else if (order.isOver()) {
+		trClass = 'overRow';
+	} else if (order.completeness == 0) {
+		trClass = 'unDoneRow';
+	} else if (order.completeness == 1) {
+		trClass = 'doneRow';
+	} else if (order.completeness == 2) {
+		trClass = 'partDoneRow';
+	}
+
+	return trClass;
+}
+
+function makeRowIconButton(type, iClass, title) {
+	let classes = [ 'material-icons', 'clickable', 'order-action' ];
+	classes.push(iClass);
+
+	return buildElement("span", { classes: classes, title: title, text: type });
 }
 
 	// builds spans that contain icons. helper function to decrease redundant code
 function buildIcon(type) {
    return buildElement("span", { classes: ["material-icons"], text: type });
+}
+
+function attachCommentTable(cntnr, data) {
+	const unhandledComments = data.getUnhandledComments();
+
+	if (unhandledComments.length) {
+		let chldrn = [];
+
+			// first a br for spacing
+		chldrn.push(buildElement("br"));
+			// a header
+		chldrn.push(buildElement("h2", { text: "Comments" }));
+
+			// the table
+				// the thead
+		let ths = [
+			buildElement("th", { text: "School" }),
+			buildElement("th", { text: "Division" }),
+			buildElement("th", { text: "Comment" }),
+			buildElement("th", { text: "Handled" })
+		];
+		const thRow = buildElement("tr", { children: ths });
+		const thead = buildElement("thead", { children: thRow });
+				// the tbody
+		let cRows = [];
+		for (const c of unhandledComments) {
+			let tds = [];
+				// school name, division, comment
+			tds.push(buildElement("td", { title: c.soID, text: c.schoolName }));
+			tds.push(buildElement("td", { text: c.divName }));
+			tds.push(buildElement("td", { text: c.comment }));
+				// a checkbox, to mark the comment being handled
+			const chkBx = buildElement("input", { classes: "commentChckBx", attrs: { orderId: c.soID } });
+			chkBx.type = "checkbox";
+			tds.push(buildElement("td", { children: chkBx }));
+
+				// build the row
+			cRows.push(buildElement("tr", { children: tds }));
+		}
+			// the actual body
+		const tbody = buildElement("tbody", { children: cRows });
+			// the table
+		chldrn.push(buildElement("table", { id: "commentsTable", children: [ thead, tbody ] }));
+		
+			// attach every thing to the cntnr
+		const cmmntDiv = buildElement("div", { id: "commentTableDiv", children: chldrn });
+		cntnr.appendChild(cmmntDiv);
+	}
 }
 
 
@@ -449,6 +608,7 @@ async function submitAddOns(target, order) {
 		inputs.forEach((input) => {
 				// match quantities with itemIDs, then push them to an array
 			const sizeChar = input.dataset.sizeChar;
+console.log(style);
 			const itemID = style.sizeMap[sizeChar].id;
 			const shirt = {
 				itemID: itemID,
