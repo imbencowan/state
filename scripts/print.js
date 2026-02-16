@@ -61,12 +61,12 @@ function genBoxLabel(doc, order, originI, lblN = 1) {
 	lbl.addSiteDivision(order.site, order.division);
 	
 		// start the horizontal rows
-	lbl.centerTextInLabel(order.sportStr);
+	lbl.centerTextInLabel(order.sportStr, order.sportLblClr);
 	
 	lbl.lineY += 9;
 	doc.setFontSize(18);
 		// box the school name
-	lbl.rectText(order.school.shortName, '#cfcfff', 'F');
+	lbl.rectText(order.school.shortName, '#9acfff', 'F');
 
 	let minSize = order.getMinSize();
 	let maxSize = order.getMaxSize();
@@ -254,6 +254,7 @@ function genSoS(doc, div) {
 		// if there are add ons, add 2 for the lines between
 	if (addOnLinesQ.length > 0) addOnLinesQ += 3;
 	
+		// is pageBreakLine never actually used?
 	let pageBreakLine;
 	const totalPageLines = schoolLinesQ + addOnLinesQ;
 	if (totalPageLines > 33) pageBreakLine = 33;
@@ -659,19 +660,19 @@ function genInventoryPDF(doc, eSite) {
 		// reset the y to the top of the table
 	cursor.y = tableYInit;
 	fillInventoryTable(doc, page, cursor, eSite);
-	// inventoryStartAddendum(doc, page, cursor, eSite);
+	inventoryStartAddendum(doc, page, cursor, eSite);
 
-	// 	// END page
-	// page.addPage();
-	// writeInventoryHeader(doc, page, cursor, eSite, 'END');
-	// buildInventoryTable(doc, page, cursor, eSite);
-	// inventoryEndAddendum(page);
+		// END page
+	page.addPage();
+	writeInventoryHeader(doc, page, cursor, eSite, 'END');
+	buildInventoryTable(doc, page, cursor, eSite);
+	inventoryEndAddendum(page);
 
-	// 	// SOLD page
-	// page.addPage();
-	// writeInventoryHeader(doc, page, cursor, eSite, 'SOLD');
-	// buildInventoryTable(doc, page, cursor, eSite);
-	// inventorySoldAddendum(page);
+		// SOLD page
+	page.addPage();
+	writeInventoryHeader(doc, page, cursor, eSite, 'SOLD');
+	buildInventoryTable(doc, page, cursor, eSite);
+	inventorySoldAddendum(page);
 
 }
 

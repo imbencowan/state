@@ -154,9 +154,15 @@ export class Label {
         this.doc.setFillColor('#000000');
     }
     
-    centerTextInLabel(txt) {
+    centerTextInLabel(txt, color = null) {
         let txtWdth = this.doc.getTextWidth(txt);
+        const txtHt = this.doc.getFontSize() / this.doc.internal.scaleFactor;
         let x = this.origin.x + ((this.width - txtWdth) / 2);
+        if (color) {
+            this.doc.setDrawColor(color);
+            this.doc.setFillColor(color);
+            this.doc.rect((x - 2), (this.lineY + 2), (txtWdth + 4), -(txtHt + 1.7), 'F');
+        }
         this.doc.text(txt, x, this.lineY);
     }
     

@@ -10,7 +10,8 @@ class Sport extends BasicTableModel {
 					'isGendered' => 'isGendered', 
 					'isIndividualed' => 'isIndividualed', 
 					'maxTeamSize' => 'maxTeamSize', 
-					'minDiv' => 'minDiv']; 
+					'minDiv' => 'minDiv',
+					'labelColor' => 'labelColor']; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 			// removed 'minDiv' => 'Division' for the time being
@@ -24,7 +25,8 @@ class Sport extends BasicTableModel {
       public readonly bool $isGendered = false,
       public readonly bool $isIndividualed = false,
       public readonly ?int $maxTeamSize,
-      public readonly int $minDiv
+      public readonly int $minDiv,
+		public readonly ?string $labelColor
    ) {}
 	
 

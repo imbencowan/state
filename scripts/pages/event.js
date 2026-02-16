@@ -21,8 +21,8 @@ export async function goToEventPage(sport) {
 
 	let sportID = sport[1];
 
+		// pull data
 	let request = new ActionRequest('showEventBySportAndYear', 'Event', { 'year': year, 'sportID': sportID });
-
 	let responseJSON = await myFetch(request);
 	
 	// document.getElementById("display").innerHTML = responseJSON.html;
@@ -129,7 +129,7 @@ function attachNeededTable(cntnr, data) {
 	const tbody = buildElement("tbody", { children: needRow });
 	
 		// build the table and a label
-	const t = buildElement("table", { classes: [ "needTable" ], children: [ thead, tbody ] });
+	const t = buildElement("table", { id: "needTable", classes: [ "needTable" ], children: [ thead, tbody ] });
 	const p = buildElement("p", { text: "We still need: " });
 
 		// attach to the container
@@ -138,7 +138,7 @@ function attachNeededTable(cntnr, data) {
 			// get quantities from the StateEvent
 	const needSizes = data.getNeededSizes();
 		// hide if empty
-	if (needSizes.total === 0) div.style.display = "none";
+	if (needSizes.total === 0) div.classList.add('hidden');
 
 	cntnr.appendChild(div);
 }
@@ -168,7 +168,7 @@ function attachOrders(cntnr, data) {
 		// for each EventSite
 	data.eventSites.forEach(es => {
 			// a site header
-		const siteH2 = buildElement("h2", { text: es.site.name, attrs: { eventSiteId: es.id } });
+		const siteH2 = buildElement("h2", { text: es.site.name, dataset: { eventSiteId: es.id } });
 		ordersDiv.appendChild(siteH2);
 
 			// for each EventSiteDivision
@@ -176,7 +176,7 @@ function attachOrders(cntnr, data) {
 				// a button to print a site's sign off sheets
 			const sosBtn = buildElement("button", { 
 				classes: [ "topLevelButton", "clickable", "printSoSPDF" ],
-				attrs: { btnType: "printSoSPDF", eshdid: esd.id },
+				dataset: { btnType: "printSoSPDF", eshdid: esd.id },
 				children: [ buildIcon("print"), " SoS" ]
 			 });
 
@@ -184,17 +184,14 @@ function attachOrders(cntnr, data) {
 			const divisionH3 = buildElement("h3", { 
 				text: (esd.division.name + " " + es.getGenderName()), 
 				children: sosBtn, 
-				attrs: { eventSiteDivisionId: esd.id } 
+				dataset: { eventSiteDivisionId: esd.id } 
 			});
 			ordersDiv.appendChild(divisionH3);
 
 				// if there are orders, put them in a table
-			if (esd.schoolOrders.length) {
-				const thead = buildThead();		
+			if (esd.schoolOrders.length) {	
 					// the table, empty
-				const table = buildElement("table", { classes: "orderTable", children: thead });
-					// fill the table body
-				buildTbodies(table, esd);
+				const table = buildOrdersTable(esd.schoolOrders, data.id, es.id, esd.id);
 				
 					// put the table in a container
 				const tableDiv = buildElement("div", { classes: "table-container", children: table });
@@ -204,6 +201,22 @@ function attachOrders(cntnr, data) {
 	});
 
 	cntnr.appendChild(ordersDiv);
+}
+
+function buildOrdersTable(orders, eventID, esID, esdID) {
+	const thead = buildThead();		
+		// the table, empty
+	const table = buildElement("table", { classes: "orderTable", children: thead, dataset: {
+		eventId: eventID,
+		eventSiteId: esID,
+		eventSiteDivisionId: esdID
+	// 	<table class="orderTable" data-event-id="<?= $event->id; ?>" data-event-site-id="<?= $eventSite->id; ?>"
+	// data-event-site-division-id="<?= $esd->id; ?>">
+	} });
+		// fill the table body
+	buildTbodies(table, orders);
+
+	return table;
 }
 
 function buildThead() {
@@ -221,8 +234,8 @@ function buildThead() {
 	return buildElement("thead", { children: thRow });
 }
 
-function buildTbodies(table, esd) {
-	esd.schoolOrders.forEach(so => {
+function buildTbodies(table, orders) {
+	orders.forEach(so => {
 		const teamShirts = so.getTeamStyle();
 
 		let tds = [];
@@ -285,12 +298,17 @@ function buildTbodies(table, esd) {
 				tds.push(buildElement("td"));
 
 					// make the row
-				trs.push(buildElement("tr", { classes: "addOnRow", attrs: { styleId: aStyle.id }, children: tds }));
+				trs.push(buildElement("tr", { classes: "addOnRow", dataset: { styleId: aStyle.id }, children: tds }));
 			}
 		}
 
 
-		const tbody = buildElement("tbody", { classes: getRowCompletenessClass(so), children: trs });
+		const tbody = buildElement("tbody", { 
+			id: ('row' + so.id),
+			classes: getRowCompletenessClass(so), 
+			dataset: { schoolOrderId: so.id },
+			children: trs 
+		});
 		table.appendChild(tbody);
 	});
 }
@@ -357,7 +375,7 @@ function attachCommentTable(cntnr, data) {
 			tds.push(buildElement("td", { text: c.divName }));
 			tds.push(buildElement("td", { text: c.comment }));
 				// a checkbox, to mark the comment being handled
-			const chkBx = buildElement("input", { classes: "commentChckBx", attrs: { orderId: c.soID } });
+			const chkBx = buildElement("input", { classes: "commentChckBx", dataset: { orderId: c.moID } });
 			chkBx.type = "checkbox";
 			tds.push(buildElement("td", { children: chkBx }));
 
@@ -523,6 +541,7 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 		order.division = division.division.name + divGenderStr;
 		order.site = eventSite.site.name;
 		order.sportStr =  sportGenderStr + runtime.stateEvent.sport.name;
+		order.sportLblClr = runtime.stateEvent.sport.labelColor;
 		
 		return order || null;
 	}
@@ -935,33 +954,64 @@ async function toggleOrderCompleteness(box, order) {
 
 	// updates a one row table at the top of the page displaying how many more of each size are needed
 function updateNeeded(order, add = true) {
-	const tds = document.querySelectorAll('.needTable tbody tr td');
+	const nCntnr = document.getElementById('needContainer');
+	const tds = nCntnr.querySelectorAll('tbody tr td');
+	const totalCell = Array.from(tds).find(td => td.title === "total");
+	let total = totalCell ? parseInt(totalCell.textContent.trim(), 10) || 0 : 0;
+
+
+		// show the table if it was empty and hidden
+	nCntnr.classList.remove('hidden');
+
 	order.getTeamStyle().sizes.forEach(size => {
 		const match = Array.from(tds).find(td => td.title === size.displayChar);
       if (match) {
          let current = parseInt(match.textContent.trim(), 10);
          if (isNaN(current)) current = 0;
+				// make quantity negative if add is false
          const delta = add ? -size.quantity : size.quantity;
          match.textContent = current + delta;
 			
-			const totalCell = Array.from(tds).find(td => td.title === "total");
-         let currentTotal = parseInt(totalCell.textContent.trim(), 10);
-         if (isNaN(currentTotal)) currentTotal = 0;
-         totalCell.textContent = currentTotal + delta;
+
+			total += delta;
+			// const totalCell = Array.from(tds).find(td => td.title === "total");
+         // let currentTotal = parseInt(totalCell.textContent.trim(), 10);
+         // if (isNaN(currentTotal)) currentTotal = 0;
+         // totalCell.textContent = currentTotal + delta;
+
+			// 	// hide if total needed = 0
+			// if ((currentTotal + delta) === 0) totalCell.closest('table').classList.add('hidden');
       }
 	});
+
+		// set the total display
+	if (totalCell) totalCell.textContent = total;
+		// if total needed == 0, hide the table
+	if (total === 0) nCntnr.classList.add('hidden');
 }
 
 
 	// marks a comment as handled
 async function changeCommentHandled(box) {
 	const data = {'id': box.dataset.orderId, 'handled': box.checked};
+	console.log(data);
 	let request = new ActionRequest('changeCommentHandled', 'MessageOrder', data);
 	let responseJSON = await myFetch(request);
 	
-	if (responseJSON) {
-			// remove the comment
+		// remove the comment, or alert user of db failure
+	if (responseJSON.data.rowsAffected) {
+		const table = box.closest('table');
+		const tbody = box.closest('tbody');
+
 		box.closest('tr').remove();
+
+			// if the tbody is emptied (this was the only comment), remove the table
+		if (tbody && tbody.querySelectorAll('tr').length === 0) {
+			table.remove();
+		}
+	} else {
+		openModal('Something went wrong marking this comment as handled');
+		box.checked = false;
 	}
 }
 
@@ -1051,9 +1101,9 @@ async function makeBlankOrder() {
 			const orderID = responseJSON.data;
                 // get the appropriate table to append this order to
 			let table = document.querySelector(`table.orderTable[data-event-site-division-id='${esd.id}']`);
-                // if it doesn't already exist, create it
-            if (!table) {
-				table = document.createElement('table');
+				// if it doesn't already exist, create it
+			if (!table) {
+				const table = document.createElement('table');
 				table.innerHTML = `<thead><tr>
 									<th>School</th>
 									<th>S</th><th>M</th><th>L</th><th>XL</th><th>2X</th><th>3X</th><th>Total</th>
@@ -1082,6 +1132,9 @@ async function makeBlankOrder() {
 					console.error(`Could not find corresponding h2 for division id ${esd.id}`);
 					return;
 				}
+
+				// const so = new SchoolOrder({ id: orderID, eshdID: esd.id, })
+				// const table = buildOrdersTable();
 
 					// Insert the table after the h3
 				h3.insertAdjacentElement('afterend', table);

@@ -109,6 +109,7 @@ export class StateEvent {
 						order.division = eshd.division.name +divGenderStr;
 						order.site = eventSite.site.name;
 						order.sportStr = this.sport.name + sportGenderStr;
+                  order.sportLblClr = this.sport.labelColor;
 						orders.push(order);
 					}
 				});
@@ -125,7 +126,7 @@ export class StateEvent {
             for (const so of esd.schoolOrders) {
                for (const mo of so.messageOrders) {
                      // we only need orders with comments that are unhandled
-                  if (mo.comment && !this.commentHandled) {
+                  if (mo.comment && !mo.commentHandled) {
                      console.log(mo);
                      unhandledComments.push({
                         comment: mo.comment,
@@ -145,17 +146,18 @@ export class StateEvent {
 }
 
 export class Sport {
-   constructor({ id, name, isGendered, isIndividualed, maxTeamSize, minDiv }) {
+   constructor({ id, name, isGendered, isIndividualed, maxTeamSize, minDiv, labelColor }) {
       this.id = id;
       this.name = name;
       this.isGendered = isGendered;
       this.isIndividualed = isIndividualed;
       this.maxTeamSize = maxTeamSize;
       this.minDiv = minDiv;
+      this.labelColor = labelColor;
    }
 
-   static fromValues(id, name, isGendered, isIndividualed, maxTeamSize, minDiv) {
-      return new Sport({ id, name, isGendered, isIndividualed, maxTeamSize, minDiv });
+   static fromValues(id, name, isGendered, isIndividualed, maxTeamSize, minDiv, labelColor) {
+      return new Sport({ id, name, isGendered, isIndividualed, maxTeamSize, minDiv, labelColor });
    }
 
    static fromJSON(json) {
