@@ -118,7 +118,7 @@ function genBoxLabel(doc, order, originI, lblN = 1) {
 	lbl.addBoxSymbol();
 		
 		// handle box size and additional labels for multiple boxes
-	if (lbl.totalShirts > 26) {
+	if (lbl.totalShirts > 28) {
 			// print box x/y
 		lbl.addBoxX();
 			// if this is not the last box of the order, print the label for the next box of the order

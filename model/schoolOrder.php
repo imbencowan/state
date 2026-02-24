@@ -357,6 +357,16 @@ class SchoolOrder extends BasicTableModel {
 	}
 
 	public static function uploadQualifiers($upSchools, $esdIDs) {
+			// some times people put other things in the same column. ignore these
+		$ignoreRow = [ '6A', '5A', '4A', '3A', '2A', '1A' ];
+			// remove rows where 'school' column contains a division name.
+				// this has happened in secondary headers
+		$upSchools = array_filter($upSchools, function ($s) use ($ignoreRow) {
+			$name = strtoupper(trim($s['name']));
+			// if (in_array($name,$ignoreRow, true)) Test::logX($name);
+			return !in_array($name, $ignoreRow, true);
+		});
+
 			// get the lowest division sent
 		$minDivID = min(array_keys($esdIDs));
 			// a container for making sure we don't have problems
@@ -439,51 +449,48 @@ class SchoolOrder extends BasicTableModel {
 		} else {
 				// use withDB to avoid some thing like a partial update
 			return Database::withDB(function($db) use ($upSchools) {
-					// get the total already ordered
-				$totalStmt = $db->prepare("SELECT so.schoolOrderID, COALESCE(SUM(si.sOrderItemsQuantity), 0) AS ordered
-										FROM schoolorders so
-										LEFT JOIN sorderitems si ON si.schoolOrderID = so.schoolOrderID
-										WHERE so.schoolID = :schoolID 
-											AND so.eventSiteHasDivisionID = :esdID
-											AND so.genderID = :genderID
-										GROUP BY so.schoolOrderID
-									");
+				// 	// get the total already ordered
+				// $totalStmt = $db->prepare("SELECT so.schoolOrderID, COALESCE(SUM(si.sOrderItemsQuantity), 0) AS ordered
+				// 						FROM schoolorders so
+				// 						LEFT JOIN sorderitems si ON si.schoolOrderID = so.schoolOrderID
+				// 						WHERE so.schoolID = :schoolID 
+				// 							AND so.eventSiteHasDivisionID = :esdID
+				// 							AND so.genderID = :genderID
+				// 						GROUP BY so.schoolOrderID
+				// 					");
 				
 					// this will UPDATE records for existing sizes, and create new records for nonexisting
 				$upsrtStmt = $db->prepare("INSERT INTO schoolorders (eventSiteHasDivisionID, 
-										schoolID, qualifiers, completeness)
-										VALUES (:esdID, :schoolID, :qlfrs, :cmpltnss)
+										schoolID, qualifiers)
+										VALUES (:esdID, :schoolID, :qlfrs)
 										ON DUPLICATE KEY UPDATE 
-											qualifiers = VALUES(qualifiers),
-											completeness = IF(VALUES(completeness) IS NOT NULL, 
-											VALUES(completeness), completeness)
+											qualifiers = VALUES(qualifiers)
 									");
 				
 				foreach ($upSchools as &$s) {
-						// get the total already ordered
-					$totalStmt->execute([
-						':schoolID' => $s['id'], 
-						':esdID' => $s['esdID'], 
-						':genderID' => 0
-					]);
-					$result = $totalStmt->fetch();
-					$ordered = (int) ($result['ordered'] ?? 0);
-					$s['ordered'] = $ordered;
+					// 	// get the total already ordered
+					// $totalStmt->execute([
+					// 	':schoolID' => $s['id'], 
+					// 	':esdID' => $s['esdID'], 
+					// 	':genderID' => 0
+					// ]);
+					// $result = $totalStmt->fetch();
+					// $ordered = (int) ($result['ordered'] ?? 0);
+					// $s['ordered'] = $ordered;
 
-						// set completeness based on $ordered
-					$completeness = null;
-					if ($ordered === 0) {
-						$completeness = 4;
-					} elseif ($ordered > $s['qualifiers']) {
-						$completeness = 3;
-					}
-					$s['completeness'] = $completeness;
+					// 	// set completeness based on $ordered
+					// $completeness = null;
+					// if ($ordered === 0) {
+					// 	$completeness = 4;
+					// } elseif ($ordered > $s['qualifiers']) {
+					// 	$completeness = 3;
+					// }
+					// $s['completeness'] = $completeness;
 
 					$upsrtStmt->execute([
 						':esdID' => $s['esdID'],
 						':schoolID' => $s['id'],
-						':qlfrs' => (int) $s['qualifiers'],
-						':cmpltnss' => $completeness
+						':qlfrs' => (int) $s['qualifiers']
 					]);
 				}
 				

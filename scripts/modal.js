@@ -14,8 +14,9 @@ function init() {
 
 function openModal(content) {
    modalText.innerHTML = "";
+
    if (typeof content === "string") {
-      modalText.textContent = content;
+      modalText.innerHTML = content;   // ← render HTML
    } else {
       modalText.appendChild(content);
    }

@@ -235,6 +235,10 @@ function buildThead() {
 }
 
 function buildTbodies(table, orders) {
+		// we'll need this for a data- in the trs
+	const allStyles = runtime.allStyles.getSync();
+	const teamStyleID = Object.values(allStyles).find(style => style.shortName === "Dairy Hoods").id;
+
 	orders.forEach(so => {
 		const teamShirts = so.getTeamStyle();
 
@@ -276,7 +280,7 @@ function buildTbodies(table, orders) {
 
 			// build the row
 		const trs = [];
-		trs.push(buildElement("tr", { children: tds }));
+		trs.push(buildElement("tr", { dataset: { styleId: teamStyleID }, children: tds }));
 
 			// if there are any add ons, make rows for them
 		if (so.hasAddOns()) {
@@ -855,8 +859,6 @@ function cancelSizeEdit(target) {
 }
 
 async function submitSizeEdit(target, order) {
-	console.log('submitEditSizes called');
-
 	const tbody = target.closest('tbody');
 		// get the rows
 	const rows = Array.from(tbody.querySelectorAll('tr'));
@@ -875,6 +877,7 @@ async function submitSizeEdit(target, order) {
 			if (oValue === '-' || oValue === '') oValue = 0;
 			if (input.value != oValue) {
 				const sizeChar = input.closest('td').title;
+				console.log(sizeChar, style);
 				const itemID = style.sizeMap[sizeChar].id;
 				let shirt = {
 					itemID: itemID,
@@ -1243,7 +1246,7 @@ function showQlfrsUpld() {
 	// upload qualifiers
 async function uploadQualifiers() {
 		// aliases for the total column to check for
-	const totalColAliases = ['total', 'students', 'grand total', 'not scratched', 'participants'];
+	const totalColAliases = ['total', 'students', 'grand total', 'not scratched', 'participants', '# Part'];
 		// container for actual upload
 	let upSchools = {};
 
@@ -1340,9 +1343,19 @@ async function uploadQualifiers() {
 	const data2 = {'upSchools': upSchools, 'esdIDs': esdIDs};
 	let request = new ActionRequest('uploadQualifiers', 'SchoolOrder', data2);
 	let responseJSON = await myFetch(request);
-	
-	if (responseJSON) {
-			// remove the comment
-		// closeModal();
+
+		// if school names didn't match, display them in the modal
+	if (Array.isArray(responseJSON.data.unmatchedSchools) && responseJSON.data.unmatchedSchools.length) {
+		const schools = responseJSON.data.unmatchedSchools;
+
+		const message = `
+			<p>There were some unmatched schools:</p>
+			<ul>${schools.map(s => `<li>${s.name}</li>`).join('')}</ul>
+		`;
+
+		openModal(message);
+		// if all matched, close the modal
+	} else if (responseJSON) {
+		closeModal();
 	}
 }

@@ -31,6 +31,7 @@ export async function init() {
 	let sizeData = await myFetch(request);
 	runtime.sizeCodesByStyles = sizeData.data.map(styleData => Style.fromJSON(styleData));
 	runtime.styleMap = Utils.mapObjsBy(runtime.sizeCodesByStyles);
+	await runtime.allStyles.load();
 
 
 		// display next event

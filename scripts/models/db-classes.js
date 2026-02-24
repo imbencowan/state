@@ -89,6 +89,8 @@ export class StateEvent {
       return neededSizes;
    }
 	
+      // only if they are not blank
+         // and not over
 	getUndoneOrders() {
 		let orders = [];
 
@@ -98,8 +100,8 @@ export class StateEvent {
 
 			eventSite.esDivisions.forEach(eshd => {
 				eshd.schoolOrders.forEach(order => {
-						// check completeness. 0 == incomplete.
-					if (!order.completeness) {
+						// check completeness. 0 == incomplete. // check blank // check over qualifiers
+					if (!order.completeness && (order.getDairyTotal() > 0) && !order.isOver()) {
                   let sportGenderStr = '';
                   if (this.sport.name === "Soccer") {
                      if (order.genderID === 1) sportGenderStr += ' - Boys';
@@ -127,7 +129,6 @@ export class StateEvent {
                for (const mo of so.messageOrders) {
                      // we only need orders with comments that are unhandled
                   if (mo.comment && !mo.commentHandled) {
-                     console.log(mo);
                      unhandledComments.push({
                         comment: mo.comment,
                         moID: mo.id,
@@ -537,10 +538,15 @@ export class Style {
       this.minSizeID = minSizeID;
       this.maxSizeID = maxSizeID;
       this.sizes = Array.isArray(sizes) ? sizes.map(size => size) : [];
+      // if (id === 9) console.log(sizes);
 
       this.sizeMap = {};
       for (const size of this.sizes) {
-         if (size && size.displayChar) this.sizeMap[size.displayChar] = size;
+         if (size && size.displayChar) {
+            this.sizeMap[size.displayChar] = size;
+         } else {
+            console.log(this.shortName, size);
+         }
       }
    }
 

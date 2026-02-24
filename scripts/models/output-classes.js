@@ -134,7 +134,7 @@ export class Label {
         this.totalShirts = totalShirts;
         this.lblN = lblN;
             // use Math.max(1, ...) to make sure always = at least 1 label
-        this.totalLabels = Math.max(1, Math.ceil(totalShirts / 26));
+        this.totalLabels = Math.max(1, Math.ceil(totalShirts / 28));
     }
     
     lineDown(step) {
