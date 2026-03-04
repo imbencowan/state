@@ -73,7 +73,8 @@ function buildInventoryTemplate() {
    const accessoryStyles = [
       ['baseball hats', assorted],
       ['beanies', black],
-      ['cinch bags', atheather]
+      ['cinch bags', atheather] //,
+      // ['tote bags', atheather]
    ];
 
 

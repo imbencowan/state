@@ -1,6 +1,6 @@
 import { runtime } from './runtime.js';
 import { Label, InvoicePage, SoSPage, InventoryPage } from './models/output-classes.js';
-import { sizeList } from './constants.js';
+import { sizeList, ADULT_HOOD_STYLE_ID } from './constants.js';
 import { openModal } from './modal.js';
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ function genBoxLabel(doc, order, originI, lblN = 1) {
 	lbl.lineY += 9;
 	doc.setFontSize(18);
 		// box the school name
-	lbl.rectText(order.school.shortName, '#9acfff', 'F');
+	lbl.rectText(order.school.shortName, '#bce0ff', 'F');
 
 	let minSize = order.getMinSize();
 	let maxSize = order.getMaxSize();
@@ -376,8 +376,9 @@ function genSoS(doc, div) {
 	sosSizeList.forEach(s => {
 		sos.textToCell(s);
 	});
+	sos.newLine();
+
 	addOnOrders.forEach(order => {
-		sos.newLine();
 			// check if we've reached the end of the page
 		if (cursor.y > sos.pageBreakY) {
 			sos.addPage();
@@ -389,22 +390,28 @@ function genSoS(doc, div) {
 			});
 			sos.newLine();
 		}
+
+			// print the school name
 		const name = order.school.shortName;
 		sos.textToCell(name, 'left');
-		if (order.hasAddOns()) {
-			addOnOrders.push(order);
-			doc.setTextColor(red);
-			let redText;
-			let nameWidth = doc.getTextWidth(name);
-			if (!order.paid) {
-				redText = `(due $${order.due})`;
-			} else {
-				redText = 'PAID';
-			}
-			doc.text(redText, (sos.alignX + nameWidth + 4), cursor.y);
-			doc.setTextColor(black);
+			// print the amount due, or 'PAID'
+		doc.setTextColor(red);
+		let redText;
+		let nameWidth = doc.getTextWidth(name);
+		if (!order.paid) {
+			redText = `(due $${order.due})`;
+		} else {
+			redText = 'PAID';
 		}
+		doc.text(redText, (sos.alignX + nameWidth + 4), cursor.y);
+			// reset to black
+		doc.setTextColor(black);
+		
 		order.getAddedStyles().forEach(style => {
+			if (style.id != ADULT_HOOD_STYLE_ID) {
+				sos.col = 3;
+				sos.textToCell(style.shortName, 'right');
+			}
 			sos.col = 4;
 			let shirts = style.sizeMap;
 			sosSizeList.forEach(size => {
@@ -415,6 +422,7 @@ function genSoS(doc, div) {
 				}
 				sos.textToCell(q);
 			});
+			sos.newLine();
 		});
 	});
 }
@@ -903,13 +911,13 @@ function inventorySoldAddendum(page) {
 	page.newLine();
 	page.textToCell('3-PEAT');
 
-	// page.newLine(2);
-	// page.textToCell('#s');
+	page.newLine(2);
+	page.textToCell('#s');
 
 	page.newLine(2);
 	page.textToCell('MOM, DAD, (TUB)');
-	page.newLine();
-	page.textToCell('drama events');
+	// page.newLine();
+	// page.textToCell('#s');
 
 	page.newLine(2);
 	page.textToCell('school names');

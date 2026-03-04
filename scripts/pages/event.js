@@ -94,19 +94,25 @@ function attachTopButtons(cntnr) {
 		children: [ buildIcon("print"), " Messages" ]
 	});
 	const b5 = buildElement("button", {
+		classes: ["topLevelButton", "clickable", "printTotalsBtn"],
+		dataset: { btnType: "printTotals" },
+		title: "print shirt totals",
+		children: [ buildIcon("print"), " Totals" ]
+	});
+	const b6 = buildElement("button", {
 		classes: ["topLevelButton", "clickable", "newOrderBtn"],
 		dataset: { btnType: "newOrder" },
 		title: "add an order",
 		children: ["+ Order"]
 	});
-	const b6 = buildElement("button", {
+	const b7 = buildElement("button", {
 		classes: ["topLevelButton", "clickable", "uploadQlfrs"],
 		dataset: { btnType: "uploadQlfrs" },
 		title: "upload qualifiers",
 		children: [ buildIcon("upload"), " Qualifiers" ]
 	});
 
-	const h = buildElement("h1", { children: [ b1, b2, b3, b4, b5, b6 ] })
+	const h = buildElement("h1", { children: [ b1, b2, b3, b4, b5, b6, b7 ] })
 	const btnCntnr = buildElement("div", { id: "buttonContainer", children: [ h ] });
 
 	cntnr.appendChild(btnCntnr);
@@ -454,6 +460,7 @@ export function addEventPageFunctionality() {
 			'button.genTotalsBtn': () => genIHSAATotals(),
 			'button.printInvoicesBtn': () => printAllInvoices(),
 			'button.printMessagesBtn': () => printOMessages(),
+			'button.printTotalsBtn': () => printTotals(),
 			'button.newOrderBtn': () => makeBlankOrder(),
 			'button.printAllSoSPDF': () => printAllSoSPDF(),
 			'button.printSoSPDF': () => printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid)),
@@ -467,7 +474,6 @@ export function addEventPageFunctionality() {
 			}
 		}
 	});
-
 
 
 	

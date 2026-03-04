@@ -5,7 +5,7 @@
 
    // import helper functions
 import * as Utils from '../utilities.js';
-import { sizeList } from '../constants.js';
+import { sizeList, ADULT_HOOD_STYLE_ID } from '../constants.js';
 // do not import runtime, no circular dependencies
 
 
@@ -410,7 +410,17 @@ export class SchoolOrder {
 	}
 	
 	getAddedStyles() {
-		return this.shirtsByStyle.filter(style => style.shortName !== 'Dairy Hoods')
+         // omit the dairy hoods
+      const styles = this.shirtsByStyle.filter(style => style.shortName !== 'Dairy Hoods');
+
+         // put adult hoods first in the list
+      styles.sort((a, b) => {
+         if (a.id ===  ADULT_HOOD_STYLE_ID) return -1;
+         if (b.id ===  ADULT_HOOD_STYLE_ID) return 1;
+         return 0;
+      });
+
+      return styles;
 	}
 	
 	getMinSize() {
