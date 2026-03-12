@@ -69,8 +69,8 @@ export class StateEvent {
       for (const es of this.eventSites) {
          for (const esd of es.esDivisions) {
             for (const so of esd.schoolOrders) {
-                  // we only need incomplete orders
-               if (!so.completeness) {
+                  // we only need incomplete orders // exclude orders that are over their qualifiers
+               if (!so.completeness && so.getDairyTotal() <= so.qualifiers) {
                      // dairyHoods style.id == 9. this filters out add ons
                   const dHoods = so.shirtsByStyle.find(item => item.id === 9);
                   if (dHoods) {

@@ -260,7 +260,12 @@ function buildTbodies(table, orders) {
 			tds.push(buildElement("td", { title: s, text: (teamShirts?.sizeMap[s]?.quantity || '-') }));
 		}
 			// then the total
-		tds.push(buildElement("td", { title: 'total', text: so.getDairyTotal() }));
+		let totalText = so.getDairyTotal();
+		if (so.qualifiers == null) console.log(so.id, so.school.shortName);
+		if (so.qualifiers && (so.qualifiers != so.getDairyTotal())) {
+			totalText += "/" + so.qualifiers;
+		}
+		tds.push(buildElement("td", { title: 'total', text: totalText }));
 
 			// make an input to stick at the end
 		const chkBx = buildElement("input", { classes: 'orderChckBx', 

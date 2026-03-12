@@ -75,13 +75,22 @@ class MyPDF {
         this.cursor.y += (n * this.lineStep);
     }
 
-    hr(x1, x2) {
+        // a horizontal line with optional width, start, and end
+    hr(width = 0.2, x1 = this.colsX[1], x2 = this.colsX[this.colsX.length - 1]) {
+        console.log('hr call');
+        console.log(width, x1, x2);
         const y = this.cursor.y + 2;
-        if (x1 === undefined) x1 = this.colsX[1];
-        if (x2 === undefined) x2 = this.colsX[this.colsX.length - 1];
-
+        this.doc.setLineWidth(width);
         this.doc.line(x1, y, x2, y);
     }
+
+    // hr(x1, x2) {
+    //     const y = this.cursor.y + 2;
+    //     if (x1 === undefined) x1 = this.colsX[1];
+    //     if (x2 === undefined) x2 = this.colsX[this.colsX.length - 1];
+
+    //     this.doc.line(x1, y, x2, y);
+    // }
     
     addPage() {
         this.doc.addPage();

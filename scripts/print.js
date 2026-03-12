@@ -733,7 +733,7 @@ function buildInventoryTable(doc, page, cursor, eSite) {
 		const youth = (s.style.sizingCategoryID === 2);
 		const align = (youth) ? 'right' : 'left';
 
-		page.hr();
+		page.hr(.4);
 		page.newLine();
 		page.textToCell(s.style.inventoryName, align);
 		page.textToCell(s.style.code);
@@ -753,7 +753,7 @@ function buildInventoryTable(doc, page, cursor, eSite) {
 
 				// if there are multiple colors, start the next color at column 3
 			if (i < s.colors.length - 1) {
-				page.hr(page.colsX[3]);
+				page.hr(null, page.colsX[3]);
 				page.newLine();
 				page.col = 3;
 			}
@@ -911,13 +911,13 @@ function inventorySoldAddendum(page) {
 	page.newLine();
 	page.textToCell('3-PEAT');
 
-	page.newLine(2);
-	page.textToCell('#s');
+	// page.newLine(2);
+	// page.textToCell('#s');
 
 	page.newLine(2);
 	page.textToCell('MOM, DAD, (TUB)');
-	// page.newLine();
-	// page.textToCell('#s');
+	page.newLine();
+	page.textToCell('small events');
 
 	page.newLine(2);
 	page.textToCell('school names');
