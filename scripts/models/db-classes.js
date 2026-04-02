@@ -6,6 +6,8 @@
    // import helper functions
 import * as Utils from '../utilities.js';
 import { sizeList, ADULT_HOOD_STYLE_ID } from '../constants.js';
+import { ActionRequest } from "./other-classes.js";
+import { myFetch } from '../fetch.js';
 // do not import runtime, no circular dependencies
 
 
@@ -70,7 +72,7 @@ export class StateEvent {
          for (const esd of es.esDivisions) {
             for (const so of esd.schoolOrders) {
                   // we only need incomplete orders // exclude orders that are over their qualifiers
-               if (!so.completeness && so.getDairyTotal() <= so.qualifiers) {
+               if (!so.completeness && ((so.qualifiers === null || so.getDairyTotal() <= so.qualifiers))) {
                      // dairyHoods style.id == 9. this filters out add ons
                   const dHoods = so.shirtsByStyle.find(item => item.id === 9);
                   if (dHoods) {
@@ -144,6 +146,13 @@ export class StateEvent {
 
       return unhandledComments;
    }
+
+      // this function is a wrapper to conveniently call on a stateEvent instance
+         // allItems must be passed in from runtime via the caller to avoid circular dependencies
+         // you can't import runtime to this module
+   async loadInventories(allItems, allTransfers) {
+      await EventSite.fetchInventories(this.eventSites, allItems, allTransfers);  
+   }
 }
 
 export class Sport {
@@ -178,6 +187,7 @@ export class EventSite {
       this.employees = Utils.parseToInstancesArr(employees, Employee);
       this.inventory = inventory;
       this.transfers = transfers;
+      this.inventoryLoaded = false;
 		this.esDivisions = Utils.parseToInstancesArr(esDivisions, EventSiteDivision);
 	}
 
@@ -218,6 +228,119 @@ export class EventSite {
       if (!this.employees || this.employees.length === 0) return '';
 
       return this.employees.map(e => e.shortName).join(' / ');
+   }
+
+   getStructuredInventory() {
+      return {
+         garments: this.getInventoryGarmentsByStyleByColor(),
+         accessories: this.getInventoryAccessories(),
+         transfers: this.getInventoryTransfers()
+      }
+   }
+
+   getInventoryGarmentsByStyleByColor() {
+      const styles = {};
+
+      for (const inv of this.inventory) {
+         const sizeCat = inv.item.style.sizingCategoryID;
+         if (sizeCat == 1 || sizeCat == 2 || sizeCat == 3) {
+            const styleID = inv.item.style.id;
+            const colorID = inv.item.color.id;
+
+               // initialize style container
+            if (!styles[styleID]) {
+                  styles[styleID] = {
+                     ...inv.item.style,
+                     colors: {}
+                  };
+            }
+
+               // initialize color container
+            if (!styles[styleID].colors[colorID]) {
+                  styles[styleID].colors[colorID] = {
+                     ...inv.item.color,
+                     sizes: {}
+                  };
+            }
+
+               // push the inventory item
+            styles[styleID].colors[colorID].sizes[inv.item.size.displayChar] = inv;
+         }
+      }
+
+      // console.log(styles);
+
+      return styles;
+   }
+
+   getInventoryAccessories() {
+      const styles = {};
+
+      for (const inv of this.inventory) {
+         const sizeCat = inv.item.style.sizingCategoryID;
+            // 4 = 'one size fits all' category. hats, bags, etc
+         if (sizeCat == 4) {
+            const styleID = inv.item.style.id;
+
+               // push the inventory item
+            styles[styleID] = inv;
+         }
+      }
+
+      return styles;
+   }
+
+   getInventoryTransfers() {
+      return this.transfers;
+   }
+
+   updateInventory(update) {
+      update.forEach(u => {
+         const invItem = this.inventory.find(ii => ii.id === u.invItemID);
+         invItem.startQ = Number(u.quantity);
+      });
+   }
+
+      // static batch fetch method
+   static async fetchInventories(eSites, allItems, allTransfers) {
+         // make sure these are loaded
+      await allItems.load();
+      // await allTransfers.load();
+
+         // filter for sites missing inventory
+      const missingSites = eSites.filter(s => !s.inventoryLoaded);
+      if (missingSites.length === 0) return {};
+
+         // fetch
+      const request = new ActionRequest('getInventoryItems', 'Event', { eSiteIDs: missingSites.map(s => s.id) });
+      const responseJSON = await myFetch(request);
+
+         // get and group the site's inventory items
+      const itemsBySite = {};
+      for (const ii of Object.values(responseJSON.data.invItems)) {
+         const invItem = Utils.parseToInstance(ii, InventoryItem);
+         invItem.item = allItems.getByID(ii.itemID);
+
+         if (!itemsBySite[ii.eventSiteID]) itemsBySite[ii.eventSiteID] = [];
+         itemsBySite[ii.eventSiteID].push(invItem);
+      }
+
+         // get the site's transfers
+      const transfersBySite = {};
+      for (const t of Object.values(responseJSON.data.transfers)) {
+         const trnsfr = Utils.parseToInstance(t, InventoryTransfer);
+         trnsfr.transfer = allTransfers.getByID(t.transferID);
+
+         if (!transfersBySite[t.eventSiteID]) transfersBySite[t.eventSiteID] = [];
+         transfersBySite[t.eventSiteID].push(trnsfr);
+      }
+
+         // mark loaded
+      for (const es of missingSites) {
+         es.inventoryLoaded = true;
+         es.inventory = itemsBySite[es.id] || [];
+         es.transfers = transfersBySite[es.id] || [];
+      }
    }
 }
 
@@ -534,6 +657,28 @@ export class Item {
 	}
 }
 
+export class InventoryItem {
+   constructor({ id, eventSiteID, itemID, startQ, endQ, addedQ, removedQ, price, item }) {
+		this.id = id;
+		this.eventSiteID = eventSiteID;
+		this.itemID = itemID;
+      this.startQ = startQ;
+      this.endQ = endQ;
+      this.addedQ = addedQ;
+      this.removedQ = removedQ;
+      this.price = price;
+      this.item = Utils.parseToInstance(item, Item);   
+	}
+
+   static fromValues(id, eventSiteID, itemID, startQ, endQ, addedQ, removedQ, price, item) {
+      return new InventoryItem({ id, eventSiteID, itemID, startQ, endQ, addedQ, removedQ, price, item });
+   }
+
+   static fromJSON(json) {
+      return new InventoryItem(json);
+   }
+}
+
 export class Style {
    constructor({ id, code, name, inventoryName, shortName, vShortName, brand, sizingCategoryID, 
                minSizeID, maxSizeID, sizes = [] }) {
@@ -679,5 +824,25 @@ export class Transfer {
 
    static fromJSON(json) {
       return new Transfer(json);
+   }
+}
+
+export class InventoryTransfer {
+   constructor({ id, eventSiteID, transferID, startQ, soldQ, price, transfer }) {
+      this.id = id;
+      this.eventSiteID = eventSiteID;
+      this.transferID = transferID;
+      this.startQ = startQ;
+      this.soldQ = soldQ;
+      this.price = price;
+      this.transfer = Utils.parseToInstance(transfer, Transfer);
+   }
+
+   static fromValues(id, eventSiteID, transferID, startQ, soldQ, price, transfer) {
+      return new InventoryTransfer({ id, eventSiteID, transferID, startQ, soldQ, price, transfer });
+   }
+
+   static fromJSON(json) {
+      return new InventoryTransfer(json);
    }
 }

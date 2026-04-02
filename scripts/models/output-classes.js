@@ -77,8 +77,8 @@ class MyPDF {
 
         // a horizontal line with optional width, start, and end
     hr(width = 0.2, x1 = this.colsX[1], x2 = this.colsX[this.colsX.length - 1]) {
-        console.log('hr call');
-        console.log(width, x1, x2);
+        // console.log('hr call');
+        // console.log(width, x1, x2);
         const y = this.cursor.y + 2;
         this.doc.setLineWidth(width);
         this.doc.line(x1, y, x2, y);

@@ -175,87 +175,110 @@ class EventSite extends BasicTableModel {
 		// return $data;
 	}
 
-	public static function editEventSiteInventory($eventSiteID, $update) {
+	public static function editEventSiteInventory($eventSiteID, $updateItems = [], $updateTransfers = []) {
 		$db = Database::getDB();
+
+		$affected = [
+			'invItems'  => 0,
+			'transfers' => 0
+		];
 
 		try {
 			$db->beginTransaction();
 
-			// upsert
-			$sql = "
-				INSERT INTO eventsiteinventories (eventSiteID, itemID, startQ, price)
-				VALUES (:eventSiteID, :itemID, :startQ, :price)
-				ON DUPLICATE KEY UPDATE
-					startQ = VALUES(startQ)
+			// --- inventory items ---
+			$sqlInv = "
+					INSERT INTO eventsiteinventories (eventSiteID, itemID, startQ, price)
+					VALUES (:eventSiteID, :itemID, :startQ, :price)
+					ON DUPLICATE KEY UPDATE
+						startQ = VALUES(startQ),
+						price  = VALUES(price)
 			";
-			$stmt = $db->prepare($sql);
+			$stmtInv = $db->prepare($sqlInv);
 
-				// bind and run
-			foreach ($update as $row) {
-				$stmt->execute([
-					':eventSiteID' => $eventSiteID,
-					':itemID'      => $row['itemID'],
-					':startQ'      => $row['quantity'],
-					':price'       => $row['price']	
-				]);
+			foreach ($updateItems as $row) {
+					$stmtInv->execute([
+						':eventSiteID' => $eventSiteID,
+						':itemID'      => $row['itemID'],
+						':startQ'      => $row['quantity'],
+						':price'       => $row['price']    
+					]);
+					$affected['invItems'] += ($stmtInv->rowCount() > 0) ? 1 : 0;
 			}
 
+			// --- transfers ---
+			if (!empty($updateTransfers)) {
+					$sqlTrf = "
+						INSERT INTO eventsitetransfers (eventSiteID, transferID, startQ, price)
+						VALUES (:eventSiteID, :transferID, :startQ, :price)
+						ON DUPLICATE KEY UPDATE
+							startQ = VALUES(startQ),
+							price  = VALUES(price)
+					";
+					$stmtTrf = $db->prepare($sqlTrf);
 
-				// finish transaction
+					foreach ($updateTransfers as $row) {
+						$stmtTrf->execute([
+							':eventSiteID' => $eventSiteID,
+							':transferID'  => $row['transferID'],
+							':startQ'      => $row['quantity'],
+							':price'       => $row['price']
+						]);
+						$affected['transfers'] += ($stmtTrf->rowCount() > 0) ? 1 : 0;
+					}
+			}
+
 			$db->commit();
 
 		} catch (Exception $e) {
-				// rollback if anything goes wrong
 			$db->rollBack();
-			throw $e; // or handle error
+			throw $e;
 		}
 
-
-		$affected = $stmt->rowCount();
-
-		return $update;
+		return (object) [ 'affected' => (object) $affected ];
 	}
 
-	public static function editEventSiteTransfers($eventSiteID, $update) {
-		$db = Database::getDB();
+/////////////////rolled in to editEventSiteInventory
+// 	public static function editEventSiteTransfers($eventSiteID, $update) {
+// 		$db = Database::getDB();
 
-		try {
-			$db->beginTransaction();
+// 		try {
+// 			$db->beginTransaction();
 
-			// upsert
-			$sql = "
-				INSERT INTO eventsitetransfers (eventSiteID, transferID, quantity, price)
-				VALUES (:eventSiteID, :itemID, :quantity, :price)
-				ON DUPLICATE KEY UPDATE
-					quantity = VALUES(quantity)
-			";
-			$stmt = $db->prepare($sql);
+// 			// upsert
+// 			$sql = "
+// 				INSERT INTO eventsitetransfers (eventSiteID, transferID, quantity, price)
+// 				VALUES (:eventSiteID, :itemID, :quantity, :price)
+// 				ON DUPLICATE KEY UPDATE
+// 					quantity = VALUES(quantity)
+// 			";
+// 			$stmt = $db->prepare($sql);
 
-				// bind and run
-			foreach ($update as $row) {
-				$stmt->execute([
-					':eventSiteID' => $eventSiteID,
-					':itemID'      => $row['transferID'],
-					':quantity'      => $row['quantity'],
-					':price'       => $row['price']	
-				]);
-			}
-
-
-				// finish transaction
-			$db->commit();
-
-		} catch (Exception $e) {
-				// rollback if anything goes wrong
-			$db->rollBack();
-			throw $e; // or handle error
-		}
+// 				// bind and run
+// 			foreach ($update as $row) {
+// 				$stmt->execute([
+// 					':eventSiteID' => $eventSiteID,
+// 					':itemID'      => $row['transferID'],
+// 					':quantity'      => $row['quantity'],
+// 					':price'       => $row['price']	
+// 				]);
+// 			}
 
 
-		$affected = $stmt->rowCount();
+// 				// finish transaction
+// 			$db->commit();
 
-		return $update;
-	}
+// 		} catch (Exception $e) {
+// 				// rollback if anything goes wrong
+// 			$db->rollBack();
+// 			throw $e; // or handle error
+// 		}
+
+
+// 		$affected = $stmt->rowCount();
+
+// 		return $update;
+// 	}
 
 }
 ?>

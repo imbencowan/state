@@ -314,6 +314,7 @@ tr.addOnRow {
 
 .addOnButton {
 	font-size: 75%;
+	margin: 5px;
 }
 
 .right {
@@ -402,18 +403,6 @@ tr.addOnRow {
 	border: 1px solid black;
 }
 
-.inventoryTable th:nth-child(-n+3) {
-   text-align: left;
-}
-
-.inventoryTable th:nth-child(n+4) {
-   text-align: right;
-}
-
-.inventoryTable .shirtRow td:nth-last-child(-n+7) {
-   text-align: right;
-}
-
 .inventoryTable td:last-child {
 	text-align: right;
 }
@@ -461,4 +450,30 @@ tr.addOnRow {
    /* optional spacing */
    padding: 0 10px;
    box-sizing: border-box; /* include padding in width */
+}
+.eventTabNav {
+	border-bottom: 1px solid black;
+}
+
+.eventTabNav button {
+	border-radius: 8px 8px 0 0;
+	background-color: #fff;
+}
+
+.eventTabNav button.active {
+	background-color: aquamarine;
+}
+
+.tabPanel {
+	display: none;
+}
+
+.tabPanel.active {
+   display: block;
+}
+
+	/* apply to element's children */
+.invntryBtnCntnr > * {
+	margin-left: 50 px;
+	font-size: 60%;
 }

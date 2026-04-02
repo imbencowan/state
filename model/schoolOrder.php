@@ -122,9 +122,9 @@ class SchoolOrder extends BasicTableModel {
 	public static function updateDue($db, $orderID) {
 		$stmt = $db->prepare("UPDATE schoolorders
 					SET due = (
-						SELECT SUM(ii.price * si.sOrderItemsQuantity)
+						SELECT SUM(a.price * si.sOrderItemsQuantity)
 						FROM sorderitems si
-						JOIN inventoryitems ii ON si.itemID = ii.itemID
+						JOIN apparel a ON si.itemID = a.itemID
 						WHERE si.schoolOrderID = schoolorders.schoolOrderID
 					)
 					WHERE schoolOrderID = :id");

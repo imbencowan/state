@@ -8,6 +8,7 @@ class SOrderItem extends BasicTableModel {
 		return ['id' => 'sOrderItemsID', 
 					'schoolOrderID' => 'schoolOrderID', 
 					'item' => 'itemID', 
+					'itemTypesID' => 'itemTypesID',
 					'quantity' => 'sOrderItemsQuantity',
 					'price' => 'orderPrice'
 					]; 
@@ -22,6 +23,7 @@ class SOrderItem extends BasicTableModel {
       public readonly ?int $id,
       public readonly int $schoolOrderID,
       public readonly ?Item $item,
+		public readonly int $itemTypesID,
       public readonly int $quantity,
 		public readonly float $price
    ) {}

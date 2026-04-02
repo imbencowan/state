@@ -2,6 +2,7 @@ import { runtime } from './runtime.js';
 import { Label, InvoicePage, SoSPage, InventoryPage } from './models/output-classes.js';
 import { sizeList, ADULT_HOOD_STYLE_ID } from './constants.js';
 import { openModal } from './modal.js';
+import { EventSite } from './models/db-classes.js';
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // generating box labels
@@ -631,6 +632,30 @@ function getItemByStyleIDSizeChar(styleID, displayChar) {
 // generating inventories
 const inventoryStates = ['START', 'END', 'SOLD'];
 
+export async function printAllInventories({ pages = 3, eSites = runtime.stateEvent.eventSites }) {
+		// validate eSites is an array of EventSite objects
+   if (!Array.isArray(eSites) ||!eSites.every(es => es instanceof EventSite)) {
+      openModal("Invalid event sites data.");
+      return;
+   }
+
+		// Access jsPDF from the global object
+	const { jsPDF } = window.jspdf; 
+   const doc = new jsPDF('p', 'mm', 'letter');
+
+		// generate the sheets for each site
+	eSites.forEach((es, i) => {
+		genInventoryPDF(doc, es, pages);
+			// add a page for each inventory but the last
+		if (i < eSites.length - 1) doc.addPage();
+	});
+
+		// Generate a Blob URL and open it in a new tab
+	const pdfBlob = doc.output("blob");
+	const url = URL.createObjectURL(pdfBlob);
+	window.open(url, "_blank", "noopener");
+}
+
 export async function printInventory(btn) {
 	if (!btn) return;
 
@@ -651,14 +676,11 @@ export async function printInventory(btn) {
 	window.open(url, "_blank", "noopener");
 }
 
-export async function printAllInventories(eSites) {
-
-}
-
-function genInventoryPDF(doc, eSite) {
+function genInventoryPDF(doc, eSite, pages) {
 	const page = new InventoryPage(doc);
 	const cursor = page.cursor;
 	
+		// do START page for any call
 
 		// START page
 	writeInventoryHeader(doc, page, cursor, eSite, 'START');
@@ -668,19 +690,23 @@ function genInventoryPDF(doc, eSite) {
 		// reset the y to the top of the table
 	cursor.y = tableYInit;
 	fillInventoryTable(doc, page, cursor, eSite);
-	inventoryStartAddendum(doc, page, cursor, eSite);
 
-		// END page
-	page.addPage();
-	writeInventoryHeader(doc, page, cursor, eSite, 'END');
-	buildInventoryTable(doc, page, cursor, eSite);
-	inventoryEndAddendum(page);
+		// print all pages if we didn't call for just page 1
+	if (pages !== 1) {
+		inventoryStartAddendum(doc, page, cursor, eSite);
 
-		// SOLD page
-	page.addPage();
-	writeInventoryHeader(doc, page, cursor, eSite, 'SOLD');
-	buildInventoryTable(doc, page, cursor, eSite);
-	inventorySoldAddendum(page);
+			// END page
+		page.addPage();
+		writeInventoryHeader(doc, page, cursor, eSite, 'END');
+		buildInventoryTable(doc, page, cursor, eSite);
+		inventoryEndAddendum(page);
+
+			// SOLD page
+		page.addPage();
+		writeInventoryHeader(doc, page, cursor, eSite, 'SOLD');
+		buildInventoryTable(doc, page, cursor, eSite);
+		inventorySoldAddendum(page);
+	}
 
 }
 
@@ -696,7 +722,7 @@ function writeInventoryHeader(doc, page, cursor, eSite, sheet) {
 	doc.line((cursor.x + 2), (cursor.y + 1), (cursor.x + w + 2), (cursor.y + 1));
 
 		// write sport - divisions / site, top right of the page
-	let siteStr = eSite.sportName.toUpperCase();
+	let siteStr = runtime.stateEvent.sport.name.toUpperCase();
 	siteStr += ' ' + eSite.getDivisionsString();
 	siteStr += ' / ' + eSite.site.name;
 	page.col = 10;
@@ -728,21 +754,23 @@ function buildInventoryTable(doc, page, cursor, eSite) {
 		// a small step to divide the head of the table
 	cursor.y += 1.5;
 
+	const structInventory = eSite.getStructuredInventory();
+
 		// make each garment style's row. style name, styleCode, color, sizes, total
-	eSite.structuredInventory.garments.forEach(s => {
-		const youth = (s.style.sizingCategoryID === 2);
+	for (const s of Object.values(structInventory.garments)) {
+		const youth = (s.sizingCategoryID === 2);
 		const align = (youth) ? 'right' : 'left';
 
 		page.hr(.4);
 		page.newLine();
-		page.textToCell(s.style.inventoryName, align);
-		page.textToCell(s.style.code);
+		page.textToCell(s.inventoryName, align);
+		page.textToCell(s.code);
 
-		s.colors.forEach((c, i) => {
-			page.textToCell(c.color.name);
+		Object.values(s.colors).forEach((c, i) => {
+			page.textToCell(c.name);
 
 				// skip the Small column for youth hoods
-			if (s.style.id === 7) page.textToCell('---');
+			if (s.id === 7) page.textToCell('---');
 
 				// shift the cell over to '---' non existent youth sizes
 			page.col += Object.keys(c.sizes).length;
@@ -752,13 +780,13 @@ function buildInventoryTable(doc, page, cursor, eSite) {
 			}
 
 				// if there are multiple colors, start the next color at column 3
-			if (i < s.colors.length - 1) {
+			if (i < Object.keys(s.colors).length - 1) {
 				page.hr(null, page.colsX[3]);
 				page.newLine();
 				page.col = 3;
 			}
 		});
-	});
+	}
 
 		// close the table
 	page.hr();
@@ -778,11 +806,11 @@ function buildInventoryTable(doc, page, cursor, eSite) {
 	page.hr();
 
 		// make each accesory style's row. style name, total. // hats, beanies, etc
-	eSite.structuredInventory.accessories.forEach(a => {
+	for (const a of Object.values(structInventory.accessories)) {
 		page.hr();
 		page.newLine();
-		page.textToCell(a.style.inventoryName, 'left');
-	});
+		page.textToCell(a.item.style.inventoryName, 'left');
+	}
 
 		// close the table
 	page.hr();
@@ -800,21 +828,23 @@ function fillInventoryTable(doc, page, cursor, eSite) {
 		// garments total
 	let gTotal = 0;
 
+	const structInventory = eSite.getStructuredInventory();
+
 		// make each garment style's row. style name, styleCode, color, sizes, total
-	eSite.structuredInventory.garments.forEach(s => {
+	for (const s of Object.values(structInventory.garments)) {
 		page.newLine();
 
-		s.colors.forEach((c, i) => {
+		Object.values(s.colors).forEach((c, i) => {
 			page.col = 4;
 			let total = 0;
 
 				// skip the Small column for youth hoods
-			if (s.style.id === 7) ++page.col;
+			if (s.id === 7) ++page.col;
 
 				// put in values for each size
 			Object.values(c.sizes).forEach(z => {
-				page.textToCell(z.quantity);
-				total += z.quantity;
+				page.textToCell(z.startQ);
+				total += z.startQ;
 			});
 				// put in the total
 			page.col = 10;
@@ -822,9 +852,9 @@ function fillInventoryTable(doc, page, cursor, eSite) {
 			gTotal += total;
 
 				// if there are multiple colors, start the next color at column 3
-			if (i < s.colors.length - 1) page.newLine();
+			if (i < Object.keys(s.colors).length - 1) page.newLine();
 		});
-	});
+	}
 
 		// row for garments total
 	page.newLine();
@@ -836,11 +866,11 @@ function fillInventoryTable(doc, page, cursor, eSite) {
 	cursor.y += 1.5;
 
 		// make each accesory style's row. style name, total. // hats, beanies, etc
-	eSite.structuredInventory.accessories.forEach(a => {
+	for (const a of Object.values(structInventory.accessories)) {
 		page.newLine();
 		page.col = 10;
-		page.textToCell(a.quantity);
-	});
+		page.textToCell(a.startQ);
+	}
 }
 
 function inventoryStartAddendum(doc, page, cursor, eSite) {

@@ -30,11 +30,7 @@
 	</header>
 	<nav id="stateNav"><ul id="stateNavList"><!-- nav list built in js to attach click listeners --></ul></nav>
 	<nav id="nav2"><ul id="nav2List"><!-- nav list built in js to attach click listeners --></ul></nav>
-	<!-- <div class="parent"> -->
 	<section id="display"></section>
-	<!-- <section id="display" class="half"></section> -->
-	<!-- <section id="display2" class="half">Text</section> -->
-	<!-- </div> -->
 
 	<div id="myModal" class="modal">
 		<div class="modal-content">

@@ -7,8 +7,8 @@ import { ActionRequest } from '../models/other-classes.js';
 import { StateEvent, SchoolOrder, School } from '../models/db-classes.js';
 import { openModal, closeModal } from '../modal.js';
 import { buildElement, parseToInstancesArr } from '../utilities.js';
-import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoices, 
-			printSoSPDF, printAllSoSPDF, printOMessages, genIHSAATotals } from '../print.js';
+import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoices, printSoSPDF, printAllSoSPDF, 
+			printOMessages, genIHSAATotals, printAllInventories } from '../print.js';
 
 
 export async function goToEventPage(sport) {
@@ -49,12 +49,9 @@ export function buildEventPage(data) {
 		// a container
 	const cntnr = buildElement("div", { id: "eventContainer" });
 
-		// attach a header, the buttons at the top of the page, tables for orders, a couple helper tables
+		// attach a header, the buttons at the top of the page, tabs for viewing event data
 	attachSportHeader(cntnr, data);
-	attachTopButtons(cntnr, data);
-	attachNeededTable(cntnr, data);
-	attachOrders(cntnr, data);
-	attachCommentTable(cntnr, data);
+	attachTabs(cntnr, data);
 
 	return cntnr;
 }
@@ -67,8 +64,81 @@ function attachSportHeader(cntnr, data) {
 	cntnr.appendChild(h);
 }
 
+function attachTabs(parent, data) {
+
+   const tabs = [
+      { id: "orders", label: "Orders", build: attachOrdersPanel },
+      { id: "inventory", label: "Inventory", build: attachInventoryPanel },
+      { id: "reports", label: "Reports", build: attachReportsPanel }
+   ];
+
+   const nav = buildElement("nav", { classes: ["eventTabNav"] });
+   const panels = buildElement("div", { classes: ["tabPanels"] });
+
+   tabs.forEach((tab, i) => {
+			// a button for switching tabs
+      const btn = buildElement("button", {
+         text: tab.label,
+         dataset: { tab: tab.id }
+      });
+			// the panel that will hold the tab's display
+      const panel = buildElement("div", {
+         classes: ["tabPanel"],
+         dataset: { tab: tab.id }
+      });
+
+			// the first tab will be active and built
+      if (i === 0) {
+         btn.classList.add("active");
+         panel.classList.add("active");
+         	// build first tab immediately
+         tab.build(panel, data);
+         panel.dataset.built = "true";
+      }
+
+      nav.append(btn);
+      panels.append(panel);
+   });
+
+		// listener switches tabs, including building them on first access
+   nav.addEventListener("click", e => {
+			// exit if a tab button wasn't clicked
+      if (!e.target.matches("button")) return;
+
+      const tabID = e.target.dataset.tab;
+
+			// remove active from any tab
+      nav.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+      panels.querySelectorAll(".tabPanel").forEach(p => p.classList.remove("active"));
+
+			// mark the target as active
+      const panel = panels.querySelector(`[data-tab="${tabID}"]`);
+      e.target.classList.add("active");
+      panel.classList.add("active");
+
+      	// lazy build. calls the build function if the panel has not yet been built.
+      if (!panel.dataset.built) {
+				// get the tab and build the panel
+         const tab = tabs.find(t => t.id === tabID);
+         tab.build(panel, data);
+				// mark built as true now
+         panel.dataset.built = "true";
+      }
+   });
+
+   parent.append(nav, panels);
+}
+
+
+function attachOrdersPanel(panel, data) {
+	attachOrdersTopButtons(panel, data);
+	attachNeededTable(panel, data);
+	attachOrders(panel, data);
+	attachCommentTable(panel, data);
+}
+
 	// builds buttons for the top of the page for various print options 
-function attachTopButtons(cntnr) {
+function attachOrdersTopButtons(cntnr) {
 	const b1 = buildElement("button", {
 		classes: ["topLevelButton", "clickable", "genUndoneBoxLabelsBtn"],
 		dataset: { btnType: "genBoxLabels" },
@@ -210,37 +280,32 @@ function attachOrders(cntnr, data) {
 }
 
 function buildOrdersTable(orders, eventID, esID, esdID) {
-	const thead = buildThead();		
+	const thead = buildOrdersThead();		
 		// the table, empty
-	const table = buildElement("table", { classes: "orderTable", children: thead, dataset: {
-		eventId: eventID,
-		eventSiteId: esID,
-		eventSiteDivisionId: esdID
-	// 	<table class="orderTable" data-event-id="<?= $event->id; ?>" data-event-site-id="<?= $eventSite->id; ?>"
-	// data-event-site-division-id="<?= $esd->id; ?>">
-	} });
+	const table = buildElement("table", { classes: "orderTable", children: thead, 
+						dataset: { eventId: eventID, eventSiteId: esID, eventSiteDivisionId: esdID } });
 		// fill the table body
-	buildTbodies(table, orders);
+	buildOrdersTbodies(table, orders);
 
 	return table;
 }
 
-function buildThead() {
-	let ths = [];
-	ths.push(buildElement("th", { text: "School" }));
-	sizeList.forEach(s => {
-		ths.push(buildElement("th", { text: s }));
-	});
-	ths.push(buildElement("th", { text: "Total" }));
-		// a "..." icon for the final th
-	ths.push(buildElement("th", { children: buildIcon("more_horiz") }));
+function buildOrdersThead() {
+		let ths = [];
+		ths.push(buildElement("th", { text: "School" }));
+		sizeList.forEach(s => {
+			ths.push(buildElement("th", { text: s }));
+		});
+		ths.push(buildElement("th", { text: "Total" }));
+			// a "..." icon for the final th
+		ths.push(buildElement("th", { children: buildIcon("more_horiz") }));
 
-	const thRow = buildElement("tr", { children: ths });
-	
-	return buildElement("thead", { children: thRow });
-}
+		const thRow = buildElement("tr", { children: ths });
+		
+		return buildElement("thead", { children: thRow });
+	}
 
-function buildTbodies(table, orders) {
+function buildOrdersTbodies(table, orders) {
 		// we'll need this for a data- in the trs
 	const allStyles = runtime.allStyles.getSync();
 	const teamStyleID = Object.values(allStyles).find(style => style.shortName === "Dairy Hoods").id;
@@ -261,7 +326,7 @@ function buildTbodies(table, orders) {
 		}
 			// then the total
 		let totalText = so.getDairyTotal();
-		if (so.qualifiers == null) console.log(so.id, so.school.shortName);
+		// if (so.qualifiers == null) console.log(so.id, so.school.shortName);
 		if (so.qualifiers && (so.qualifiers != so.getDairyTotal())) {
 			totalText += "/" + so.qualifiers;
 		}
@@ -409,10 +474,197 @@ function attachCommentTable(cntnr, data) {
 }
 
 
+async function attachInventoryPanel(panel) {
+	attachInventoryTopButtons(panel);
+
+		// first, ensure the appropriate data
+	await runtime.stateEvent.loadInventories(runtime.allItems, runtime.allTransfers);
+
+		// build inventory tables for each site
+	for (const es of runtime.stateEvent.eventSites) {
+			// some buttons for each inventory, to edit, and to fill
+		const btns = buildEditAndFillButtons(es.id);
+			// a button container
+		const btnDiv = buildElement("div", { classes: [ 'invntryBtnCntnr', 'inline' ], children: btns });
+
+			// a site header, with those buttons
+		const hTxt = es.site.name + ' ' + es.getDivisionsString();
+		const siteH2 = buildElement("h2", { text: hTxt, children: [ btnDiv ] });
+		
+		panel.appendChild(siteH2);
+			// the table
+		// console.log(es.getStructuredInventory());
+		panel.appendChild(buildInventoryTable(es.getStructuredInventory(), runtime.stateEvent.id, es.id));
+	}
+}
+
+	// builds buttons for the top of the page for various print options 
+function attachInventoryTopButtons(cntnr) {
+	const printAllPage1Btn = buildElement("button", {
+		classes: ["topLevelButton", "clickable", "printAllInventoriesPage1Btn"],
+		dataset: { btnType: "printAllInvetoriesPage1" },
+		title: "print all site's starting inventory",
+		children: [ buildIcon("print"), " All Page 1" ]
+	});
+	const printAllBtn = buildElement("button", {
+		classes: ["topLevelButton", "clickable", "printAllInventoriesBtn"],
+		dataset: { btnType: "printAllInventories" },
+		title: "print all site's inventorie sheets",
+		children: [ buildIcon("print"), " All Full" ]
+	});
+
+	const h = buildElement("h1", { children: [ printAllPage1Btn, printAllBtn ] });
+	const btnCntnr = buildElement("div", { id: "buttonContainer", children: [ h ] });
+
+	cntnr.appendChild(btnCntnr);
+}
+
+function buildEditAndFillButtons(esID) {
+	const editBtn = buildElement("button", {
+		classes: ["topLevelButton", "clickable", "inventory-action", "editInventoriesBtn"],
+		dataset: { btnType: "editInventories", eventSiteId: esID },
+		title: "edit inventories",
+		children: [ buildIcon("edit"), " Edit" ]
+	});
+	const fillBtn = buildElement("button", {
+		classes: ["topLevelButton", "clickable", "inventory-action", "fillInventoriesBtn"],
+		dataset: { btnType: "fillInventories", eventSiteId: esID },
+		title: "fill inventories",
+		children: [ buildIcon("edit"), " Fill" ]
+	});
+
+	return [ editBtn, fillBtn ];
+}
+
+
+function buildInventoryTable(inventory, eventID, esID) {
+	const thead = buildInventoryThead();
+	const tbody = buildElement("tbody");		
+		// fill the table body
+	buildInventoryGarmentsRows(tbody, inventory.garments);
+	buildInventoryAccessoriesRows(tbody, inventory.accessories);
+	buildInvetoryTransfersRows(tbody, inventory.transfers)
+		// the table, empty
+	const table = buildElement("table", { classes: "inventoryTable", children: [ thead, tbody ], 
+													dataset: { eventId: eventID, eventSiteId: esID } });
+
+	return table;
+}
+
+function buildInventoryThead() {
+	let ths = [];
+	ths.push(buildElement("th", { text: "Item", classes: 'left' }));
+	ths.push(buildElement("th", { text: "Color", classes: 'left' }));
+	sizeList.forEach(s => {
+		ths.push(buildElement("th", { text: s, classes: 'center' }));
+	});
+	ths.push(buildElement("th", { text: "Total", classes: 'right' }));
+
+	const thRow = buildElement("tr", { children: ths });
+	
+	return buildElement("thead", { children: thRow });
+}
+
+	// build garment rows with style, color, size quantities and total
+function buildInventoryGarmentsRows(tbody, garments) {
+	for (const style of Object.values(garments)) {
+			// an identifier to right align youth styles
+		const align = style.sizingCategoryID === 2 ? 'right' : 'left';
+
+			// simplify an identifier
+		const colors = Object.values(style.colors);
+
+			// iterate over colors
+		colors.forEach((color, i) => {
+			const tds = [];
+
+				// include style only on the first row
+			if (i === 0) tds.push(buildElement("td", { 
+				text: style.shortName, 
+				attrs: { rowspan: colors.length }, 
+				classes: align
+			}));
+				// color td
+			tds.push(buildElement("td", { text: color.name }));
+
+				// container to increment
+			let total = 0;
+				// make tds for each size
+			sizeList.forEach(char => { 
+					// only do sizes that exist for the style
+				if (char in color.sizes) {
+					const size = color.sizes[char];
+					const q = size.startQ || 0;
+					total += q;
+					const qStr = size.startQ || '';
+						// "size" here is representing an InventoryItem. size.id is the id for a row in the apparel db table
+					tds.push(buildElement("td", { text: qStr, classes: 'right', title: char, dataset: { 
+						itemID: size.item.id, 
+						invItemID: size.id, 
+						oValue: qStr 
+					} }));
+				} else {
+						// if there isn't a size for this style (youth)
+					tds.push(buildElement("td", { text: "---", classes: "center" }));
+				}
+			});
+
+				// finally the total
+			tds.push(buildElement("td", { text: total }));
+
+				// attach the row
+			const tr = buildElement("tr", { children: tds, classes: 'shirtRow' });
+			tbody.appendChild(tr);
+		});
+	}
+}
+
+function buildInventoryAccessoriesRows(tbody, accessories) {
+	for (const a of Object.values(accessories)) {
+		const tds = [];
+		tds.push(buildElement("td", { text: a.item.style.shortName }));
+		tds.push(buildElement("td", { text: a.item.color.name }));
+		tds.push(buildElement("td", { attrs: { colspan: 7 } }));
+		tds.push(buildElement("td", { text: a.startQ, dataset: {
+			itemID: a.itemID,
+			invItemID: a.id,
+			oValue: a.startQ
+		} }));
+
+			// attach the row
+		const tr = buildElement("tr", { children: tds });
+		tbody.appendChild(tr);
+	}
+}
+
+function buildInvetoryTransfersRows(tbody, transfers) {
+	
+	for (const t of Object.values(transfers)) {
+		const tds = [];
+		tds.push(buildElement("td", { text: t.transfer.inventoryName }));
+		tds.push(buildElement("td", { attrs: {colspan: 8} }));
+		tds.push(buildElement("td", { text: t.startQ, dataset: {
+			transferID: t.transferID,
+			invTransferID: t.id,
+			oValue: t.startQ
+		} }));
+
+			// attach the row
+		const tr = buildElement("tr", { children: tds });
+		tbody.appendChild(tr);
+}
+	}
+
+function attachReportsPanel(tab, data) {
+
+}
+
+
 	// attaches event listeners
 export function addEventPageFunctionality() {
+	// taking this out. it should be in initialization.js now and unnecessary. leaving commented just in case
 		// PRE LOAD 
-	runtime.allItems.load();
+	// runtime.allItems.load();
 
 
 
@@ -422,7 +674,13 @@ export function addEventPageFunctionality() {
 			// may be should move top level buttons to a more specific listener
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 	container.addEventListener('click', function(event) {
-		const target = event.target;
+			// qualify the target, some buttons have span children
+		const btn = event.target.closest('button');
+		const spn = event.target.closest('span');
+
+			// prioritize buttons if found. if not, we've got a naked span to use
+		const target = btn || spn;
+		if (!target) return;
 
 			////////////////// call the correct function for the click by checking the target ////////////////////
 			
@@ -448,7 +706,6 @@ export function addEventPageFunctionality() {
 				'button.cancelEdit': () => cancelSizeEdit(target)
 			};
 
-
 				// check if the target matches any of the above selectors, call it's function and exit if so
 			for (const sel in orderActions) {
 				if (target.matches(sel)) {
@@ -457,29 +714,53 @@ export function addEventPageFunctionality() {
 				}
 			}
 			return; // nothing matched, exit. this will skip the rest of the listener
-		}
+		} else if (target.classList.contains('inventory-action')) {
+			const inventoryActions = {
+				'button.editInventoriesBtn': () => showEditInventory(target),
+				'button.fillInventoriesBtn': () => showFillInventory(target),
+				'button.submitInventoryEdit': () => submitInventoryEdit(target),
+				'button.cancelInventoryEdit': () => cancelInventoryEdit(target), 
+				'button.submitInventoryFill': () => submitInventoryFill(target),
+				'button.cancelInventoryFill': () => cancelInventoryFill(target)
+			};
 
-			// top-level buttons. 'selector': function to call
-		const topLevelActions = {
-			'button.genUndoneBoxLabelsBtn': () => printUndoneBoxLabels(),
-			'button.genTotalsBtn': () => genIHSAATotals(),
-			'button.printInvoicesBtn': () => printAllInvoices(),
-			'button.printMessagesBtn': () => printOMessages(),
-			'button.printTotalsBtn': () => printTotals(),
-			'button.newOrderBtn': () => makeBlankOrder(),
-			'button.printAllSoSPDF': () => printAllSoSPDF(),
-			'button.printSoSPDF': () => printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid)),
-			'button.uploadQlfrs': () => showQlfrsUpld()
-		};
+				// check if the target matches any of the above selectors, call it's function and exit if so
+			for (const sel in inventoryActions) {
+				if (target.matches(sel)) {
+					inventoryActions[sel]();
+					return;
+				}
+			}
+			return; // nothing matched, exit. this will skip the rest of the listener
+		} else {
+				// top-level buttons. 'selector': function to call
+			const topLevelActions = {
+					// orders panel actions
+				'button.genUndoneBoxLabelsBtn': () => printUndoneBoxLabels(),
+				'button.genTotalsBtn': () => genIHSAATotals(),
+				'button.printInvoicesBtn': () => printAllInvoices(),
+				'button.printMessagesBtn': () => printOMessages(),
+				'button.printTotalsBtn': () => printTotals(),
+				'button.newOrderBtn': () => makeBlankOrder(),
+				'button.printAllSoSPDF': () => printAllSoSPDF(),
+				'button.printSoSPDF': () => printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid)),
+				'button.uploadQlfrs': () => showQlfrsUpld(),
+					// inventory panel actions
+						// pass an argument to print only page 1 of each inventory
+				'button.printAllInventoriesPage1Btn': () => printAllInventories({ pages: 1 }),
+				'button.printAllInventoriesBtn': () => printAllInventories({ pages: 3 }),
+				'button.editInventoriesBtn': () => showEditInventory(),
+				'button.fillInventoriesBtn': () => showFillInventory()
+			};
 
-		for (const sel in topLevelActions) {
-			if (target.matches(sel)) {
-				topLevelActions[sel]();
-				return;
+			for (const sel in topLevelActions) {
+				if (target.matches(sel)) {
+					topLevelActions[sel]();
+					return;
+				}
 			}
 		}
 	});
-
 
 	
 		// next a listener for the inputs to ensure integer values
@@ -593,7 +874,7 @@ function showAddOnInputs(order) {
 				// create the inputs for the middle rows
 			for (let i = 0; i < tdCount - 3; i++) {
 				const newTd = document.createElement('td');
-				const input = makeInput(i);
+				const input = makeOrderInput(i);
 				newTd.appendChild(input);  
 				newTr.appendChild(newTd);  
 				if (!firstInput) firstInput = input;
@@ -603,7 +884,9 @@ function showAddOnInputs(order) {
 			const btnTD = document.createElement('td');
 			newTr.appendChild(btnTD);
 				// put submit and cancel buttons in the btnTD, unless there already is one
-			if (prnt.querySelector('button.submitAddOns') === null) makeSubmitCancelButtons(btnTD, prnt, 'AddOns');
+			if (prnt.querySelector('button.submitAddOns') === null) {
+				makeSubmitCancelButtons(btnTD, prnt, 'order', 'AddOns');
+			}
 			
 				// a final empty cell to maintain form
 			const lastTd = document.createElement('td');
@@ -684,22 +967,25 @@ function cancelAddOns(target) {
 	runtime.activeMode = null;
 }
 
-function makeSubmitCancelButtons(td, tbody, action) {
-	const submitButton = document.createElement('button');
-	submitButton.type = 'button';
-	submitButton.textContent = 'Submit';
-	submitButton.classList.add('addOnButton', 'order-action', 'submit' + action);
-	td.appendChild(submitButton);
-	
-	const cancelButton = document.createElement('button');
-	cancelButton.type = 'button';
-	cancelButton.textContent = 'X';
-	cancelButton.classList.add('addOnButton', 'order-action', 'cancel' + action);
-	td.appendChild(cancelButton);
+function makeSubmitCancelButtons(btnCntnr, lstnrCntnr, type, action, id) {
+		// first, clear the destination
+	btnCntnr.innerHTML = '';
+
+		// make the buttons // secondary classes guide listeners handling
+	const submitButton = buildElement('button', { text: 'Submit', type: 'button',
+		classes: ['addOnButton', `${type}-action`, `submit${action}`], 
+		dataset: { id: id }
+	});
+	const cancelButton = buildElement('button', { text: 'X',	type: 'button',
+		classes: ['addOnButton', `${type}-action`, `cancel${action}`], 
+		dataset: { id: id }
+	});
+		// append them
+	btnCntnr.append(submitButton, cancelButton);
 
 		// add event listeners for ESC and ENTER
-	if (tbody) {
-		// define the listener as a named function
+	if (lstnrCntnr) {
+			// define the listener as a named function
 		const keyHandler = function(e) {
 			if (e.key === 'Escape') {
 					cancelButton.click();
@@ -710,11 +996,11 @@ function makeSubmitCancelButtons(td, tbody, action) {
 			}
 		};
 
-		tbody.addEventListener('keydown', keyHandler);
+		lstnrCntnr.addEventListener('keydown', keyHandler);
 
-		// define a cleanup helper
+			// define a cleanup helper
 		function cleanup() {
-			tbody.removeEventListener('keydown', keyHandler);
+			lstnrCntnr.removeEventListener('keydown', keyHandler);
 		}
 	}
 }
@@ -799,7 +1085,7 @@ function checkDuplicateAddedStyles(rows) {
 	return check;
 }
 
-function makeInput(i) {
+function makeOrderInput(i) {
 	const input = document.createElement('input');
 		input.type = 'number';
 		input.name = `addOn${i}`;
@@ -829,7 +1115,7 @@ function showEditSizeInputs(order) {
 				// Add number inputs to all but the first, and last two cells of each row
 			for (let i = 1; i < cells.length - 2; i++) {
 				const currentValue = cells[i].textContent.trim();
-				const input = makeInput(i);
+				const input = makeOrderInput(i);
 					// Set initial value from current text in <td>
 				input.value = currentValue;
 					// also make a data-attribute to compare against on submit
@@ -847,7 +1133,8 @@ function showEditSizeInputs(order) {
 			// put submit and cancel in the right place
 		const firstCells = rows[0].querySelectorAll('td');
 		const btnTD = firstCells[firstCells.length - 2];
-		makeSubmitCancelButtons(btnTD, prnt, 'Edit');
+			// function(btnCntnr, lstnrCntnr, type, action)
+		makeSubmitCancelButtons(btnTD, prnt, 'order', 'Edit');
 			// give focus
 		firstInput.focus()
 	} else {
@@ -1369,4 +1656,173 @@ async function uploadQualifiers() {
 	} else if (responseJSON) {
 		closeModal();
 	}
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// functions for handling an event's inventories
+
+function showEditInventory(btn) {
+		// set mode. prevents addOns being activated while edit is in progress
+	runtime.activeMode = 'edit';
+
+	const invTbl = getInventoryTable(btn.dataset.eventSiteId);
+	const invTDs = invTbl.querySelectorAll('td[data-inv-item-i-d]');
+	const trnsfrTDs = invTbl.querySelectorAll('td[data-inv-transfer-i-d]');
+
+		// put inputs in the appropriate tds
+	invTDs.forEach(td => {
+		const inpt = makeInventoryInput(td);
+		td.textContent = '';
+		td.appendChild(inpt);
+	});
+	trnsfrTDs.forEach(td => {
+		const inpt = makeTransferInput(td);
+		td.textContent = '';
+		td.appendChild(inpt);
+	});
+
+		// give focus
+	invTDs[0]?.querySelector('input')?.focus();
+
+		// function(buttonContainer, listenerContainer, type, action, id)
+	makeSubmitCancelButtons(btn.parentElement, invTbl, 'inventory', 'InventoryEdit', btn.dataset.eventSiteId);
+}
+
+async function submitInventoryEdit(btn) {
+	const itemsMap = runtime.allItems.getSync();
+	const transfersMap = runtime.allTransfers.getSync();
+
+	const esID = btn.dataset.id;
+	const tbl = getInventoryTable(esID);
+	const invTDs = tbl.querySelectorAll('td[data-inv-item-i-d]');
+	const trnsfrTDs = tbl.querySelectorAll('td[data-inv-transfer-i-d]');
+
+	const updateInvItems = [];
+	const updateTransfers = [];
+
+	invTDs.forEach(td => {
+		const inputValue = Number(td.querySelector('input').value);
+		if (Number(td.dataset.oValue) !== inputValue) {
+			updateInvItems.push({ 
+				invItemID: Number(td.dataset.invItemID), 
+				itemID: Number(td.dataset.itemID), 
+				quantity: inputValue, 
+				price: itemsMap[td.dataset.itemID].price 
+			});
+		}
+	});
+
+	trnsfrTDs.forEach(td => {
+		const inputValue = Number(td.querySelector('input').value);
+		if (Number(td.dataset.oValue) !== inputValue) {
+			updateTransfers.push({ 
+				invTransferID: Number(td.dataset.invTransferID), 
+				transferID: Number(td.dataset.transferID), 
+				quantity: inputValue, 
+				price: transfersMap[td.dataset.transferID].price 
+			});
+		}
+	});
+	
+		// if there are changes, send them to the server
+	if (updateInvItems.length || updateTransfers.length) {
+		const data = { 'eventSiteID': esID, 'updateItems': updateInvItems, 'updateTransfers': updateTransfers };	
+		const request = new ActionRequest('editEventSiteInventory', 'EventSite', data);
+		let responseJSON = await myFetch(request);
+
+		if (responseJSON.success) {
+				// update the cells
+			invTDs.forEach(td => {
+				td.textContent = td.querySelector('input').value;
+				td.dataset.oValue = td.textContent;
+			});
+			trnsfrTDs.forEach(td => {
+				td.textContent = td.querySelector('input').value;
+				td.dataset.oValue = td.textContent;
+			});
+
+				// update runtime
+			const eSite = runtime.stateEvent.getEventSiteByID(esID);
+			eSite.updateInventory(updateInvItems, updateTransfers);
+
+				// reset the buttons
+			resetInventoryButtons(btn);
+
+				// unset activeMode
+			runtime.activeMode = null;
+		} else {
+			openModal("there was a problem submitting the inventory edit");
+		}
+	} else {
+		cancelInventoryEdit(btn);
+	}
+}
+
+function cancelInventoryEdit(btn) {
+		// get the right table
+	const tbl = getInventoryTable(btn.dataset.id);
+
+		// clear the tds
+	tbl.querySelectorAll('td[data-inv-item-i-d], td[data-inv-transfer-i-d]').forEach(td => {
+		td.innerHTML = '';
+		td.textContent = td.dataset.oValue;
+	});
+
+		// reset the buttons
+	resetInventoryButtons(btn);
+
+		// unset activeMode
+	runtime.activeMode = null;
+}
+
+function resetInventoryButtons(btn) {
+	const prnt = btn.parentElement;
+	prnt.innerHTML = '';
+
+	const newBtns = buildEditAndFillButtons(btn.dataset.id);
+	prnt.append(...newBtns);
+}
+
+function showFillInventory() {
+	console.log('fill');
+}
+
+function getInventoryTable(esID) {
+		// grab the inventory container
+	const cntnr = document.querySelector('.tabPanel.active[data-tab="inventory"]');
+		// select the table with the matching data attribute
+	const tbl = cntnr.querySelector(`table[data-event-site-id="${esID}"]`);
+
+		// if no table matches, alert
+	if (!tbl) {
+		openModal("Could not find inventory table for eventSiteID " + esID);
+		return;
+	}
+
+	return tbl;
+}
+
+function makeInventoryInput(td) {
+	const input = document.createElement('input');
+		input.type = 'number';
+		input.name = `inventory${td.dataset.invItemId}`;
+		input.value = td.dataset.oValue;
+		input.min = 0; 
+		input.max = 1000;
+		input.step = 1;
+		input.dataset.sizeChar = td.dataset.title;
+	return input;
+}
+
+function makeTransferInput(td) {
+	const input = document.createElement('input');
+		input.type = 'number';
+		input.name = `inventory${td.dataset.invTransferID}`;
+		input.value = td.dataset.oValue;
+		input.min = 0; 
+		input.max = 1000;
+		input.step = 1;
+	return input;
 }

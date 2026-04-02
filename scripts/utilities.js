@@ -183,6 +183,11 @@ export function makeDataLoader(srvrClassName, jsClass = null, srvrFnctn = "getAl
          return cache;
       },
 
+      getByID(id) {
+         if (!cache) throw new Error("Data not loaded yet");
+         return cache[id];
+      },
+
          // clear everything
       clear() {
          cache = null;

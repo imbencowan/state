@@ -31,7 +31,14 @@ export async function init() {
 	let sizeData = await myFetch(request);
 	runtime.sizeCodesByStyles = sizeData.data.map(styleData => Style.fromJSON(styleData));
 	runtime.styleMap = Utils.mapObjsBy(runtime.sizeCodesByStyles);
-	await runtime.allStyles.load();
+	
+	await Promise.all([
+		runtime.allSizes.load(),
+		runtime.allColors.load(),
+		runtime.allStyles.load(),
+		runtime.allTransfers.load()
+	]);
+	await runtime.allItems.load();
 
 
 		// display next event
@@ -99,7 +106,7 @@ function buildNavList2() {
 		// [<h>, serverFunc, serverClass, jsFunc]
 	const nav2Items = [
 		['Year', 'showYear', 'Year'],
-		['Inventories', 'showInventories', 'EventSite', 'showInventories'],
+		// ['Inventories', 'showInventories', 'EventSite', 'showInventories'],
 		['Schools', 'showSchools', 'School'],
 		['Items', 'showItems', 'Item'],
 		['Tests', 'showTests', 'Test']

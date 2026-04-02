@@ -203,6 +203,19 @@ class Event extends BasicTableModel {
 		elseif ($this->startDate->format('m') == 5) return 2;
 		elseif ($this->startDate->format('m') > 5) return 3;
 	}
+
+	public static function getInventoryItems($eSiteIDs) {
+		// Test::logX($eSiteIDs);
+			// Where __construct(string $column, mixed $value, string $operator = '=', array $path = [])
+                // $path specifies the table JOIN path to the target table, ie ['events', 'eventsites', 'sites']
+		$whereInvntry = new Where('eventSiteID', $eSiteIDs, 'IN', ['eventsiteinventories']);
+		$whereTrnsfr = new Where('eventSiteID', $eSiteIDs, 'IN', ['eventsitetransfers']);
+
+		$invItems = EventSiteInventoryItem::getAllFromDB(context: 'inventory', where: $whereInvntry);
+		$transfers = EventSiteTransfer::getAllFromDB(context: 'inventory', where: $whereTrnsfr);
+
+		return [ 'invItems' => $invItems, 'transfers' => $transfers ];
+	}
 	
 	
 	

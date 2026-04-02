@@ -4,6 +4,7 @@ import { sizeList, ihsaaSizeList } from './constants.js';
 import { myFetch } from './fetch.js';
     // classes to organize data to send to the server
 import { ActionRequest, InputOrder } from './models/other-classes.js';
+import { openModal } from './modal.js';
 
 export async function submitOrderFiles() {
 	let files = document.getElementById("fileInput").files;
@@ -19,7 +20,8 @@ export async function submitOrderFiles() {
 	let request = new ActionRequest('uploadOrders', 'SchoolOrder', { 'orders': orders });
 	let responseJSON = await myFetch(request);
 
-	document.getElementById("display").innerHTML = responseJSON.html;
+	// document.getElementById("display").innerHTML = responseJSON.html;
+	openModal(responseJSON.html);
 		// add event listener for comment table checkboxes
 	const commentsContainer = document.getElementById('commentsTable');
 	if (commentsContainer) {
@@ -35,7 +37,8 @@ export async function submitOrderFiles() {
 	// this came from gpt, because i'm still fuzzy on how to work with promises. and map.
 async function readFiles(files) {
 	let orders = [];
-	const fileArray = Array.from(files); // Convert FileList to an array. i believe so that we can map it
+		// Convert FileList to an array, so that we can map it
+	const fileArray = Array.from(files);
 	const promises = fileArray.map(file => {
 	  return new Promise((resolve) => {
 			let reader = new FileReader();
@@ -51,9 +54,9 @@ async function readFiles(files) {
 		// Wait for all file reading promises to resolve
 	await Promise.all(promises);
 		// Code here will run after all orders have been pushed
-	console.log("All orders processed:", orders);
+	// console.log("All orders processed:", orders);
 	return orders;
-};
+}
 	
 	// this function does the actual reading of the text file submitted, with the help of getSlice()
 function getOrder(orderText, fileName) {

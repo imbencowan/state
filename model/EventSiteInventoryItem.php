@@ -12,7 +12,7 @@ class EventSiteInventoryItem extends BasicTableModel {
 		return [
          'id' => 'eventSiteInventoryID', 
          'eventSiteID' => 'eventSiteID', 
-         'item' => 'itemID',
+         'itemID' => 'itemID',
          'startQ' => 'startQ',
          'endQ' => 'endQ',
          'addedQ' => 'addedQ',
@@ -23,19 +23,20 @@ class EventSiteInventoryItem extends BasicTableModel {
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
 			// $interTable = null, $stopContexts = [])
 	protected static function getRelations(): array { 
-		return [ new Relation('item', 'Item', 'itemID', 'itemID') ];
+		// return [ new Relation('item', 'Item', 'itemID', 'itemID') ];
+		return [ new Relation('item', 'Item', 'itemID', 'itemID', false, null, ['inventory']) ];
 	}
 	
 	public function __construct(
 		public readonly ?int $id,
 		public readonly int $eventSiteID,
-		public readonly Item $item,
+		public readonly int $itemID,
       public readonly ?int $startQ,
       public readonly ?int $endQ,
       public readonly ?int $addedQ,
       public readonly ?int $removedQ,
-      public readonly float $price
-
+      public readonly float $price,
+		public readonly ?Item $item = null
 	) {}
 	
 	

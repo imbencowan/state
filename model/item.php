@@ -1,7 +1,7 @@
 <?php
 class Item extends BasicTableModel {
 		// define the corresponding table, columns, and dependent tables to be used in the class
-   protected static function getTableName(): string { return 'inventoryitems'; }
+   protected static function getTableName(): string { return 'apparel'; }
    protected static function getPrimaryKey(): string { return 'itemID'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 

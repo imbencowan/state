@@ -8,23 +8,26 @@ class EventSiteTransfer extends BasicTableModel {
 		return [
          'id' => 'eventSiteTransferID', 
          'eventSiteID' => 'eventSiteID', 
-         'transfer' => 'transferID',
-         'quantity' => 'quantity',
+         'transferID' => 'transferID',
+         'startQ' => 'startQ',
+			'soldQ' => 'soldQ',
          'price' => 'price'
       ]; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
 			// $interTable = null, $stopContexts = [])
 	protected static function getRelations(): array { 
-		return [ new Relation('transfer', 'Transfer', 'transferID', 'transferID') ];
+		return [ new Relation('transfer', 'Transfer', 'transferID', 'transferID', false, null, ['inventory']) ];
 	}
 	
 	public function __construct(
 		public readonly ?int $id,
 		public readonly int $eventSiteID,
-		public readonly Transfer $transfer,
-      public readonly ?int $quantity,
-      public readonly float $price
+		public readonly int $transferID,
+      public readonly ?int $startQ,
+		public readonly ?int $soldQ,
+      public readonly float $price,
+		public readonly ?Transfer $transfer = null
 	) {}
 }
 ?>
