@@ -75,6 +75,10 @@ a:link {
 	overflow: auto;
 }
 
+.block {
+	display: block;
+}
+
 .hidden {
 	display: hidden;
 }

@@ -1,30 +1,37 @@
 // pop up container with a little logic
 
+   // a constant for ease
+import { giveFirstFocus } from './utilities.js';
+
+
 let modal;
-let modalText;
+let modalContent;
 let closeBtn;
 
 function init() {
    modal = document.getElementById("myModal");
-   modalText = document.getElementById("modalText");
+   modalContent = document.getElementById("modalContent");
    closeBtn = document.querySelector(".close");
 
    closeBtn.addEventListener("click", closeModal);
 }
 
 function openModal(content) {
-   modalText.innerHTML = "";
+   modalContent.innerHTML = "";
 
    if (typeof content === "string") {
-      modalText.innerHTML = content;   // ← render HTML
+      modalContent.innerHTML = content;
    } else {
-      modalText.appendChild(content);
+      modalContent.appendChild(content);
    }
 
    document.addEventListener('keydown', escListener);
    document.addEventListener('click', windowListener);
 
    modal.style.display = "block";
+
+      // requestAnimationFrame() to delay for DOM changes
+   requestAnimationFrame(() => giveFirstFocus(modalContent));
 }
 
 function escListener(e) {

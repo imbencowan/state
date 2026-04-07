@@ -270,27 +270,42 @@ export class EventSite {
 
       // console.log(styles);
 
-      return styles;
+         // convert styles object → ordered array
+      const orderedStyles = Object.values(styles)
+         .sort((a, b) => a.listOrder - b.listOrder)
+         .map(style => {
+               // convert colors object → array (optional sort)
+            const orderedColors = Object.values(style.colors)
+               // .sort((a, b) => a.listOrder - b.listOrder) // optional if you add listOrder for colors
+            
+            return {
+               ...style,
+               colors: orderedColors
+            };
+         });
+
+      return orderedStyles;
    }
 
    getInventoryAccessories() {
-      const styles = {};
+      const styles = [];
 
       for (const inv of this.inventory) {
-         const sizeCat = inv.item.style.sizingCategoryID;
             // 4 = 'one size fits all' category. hats, bags, etc
-         if (sizeCat == 4) {
-            const styleID = inv.item.style.id;
-
-               // push the inventory item
-            styles[styleID] = inv;
-         }
+         if (inv.item.style.sizingCategoryID == 4) styles.push(inv);
       }
+
+      styles.sort((a, b) => 
+         a.item.style.listOrder - b.item.style.listOrder
+      );
 
       return styles;
    }
 
    getInventoryTransfers() {
+      this.transfers.sort((a, b) => 
+         a.transfer.listOrder - b.transfer.listOrder
+      );
       return this.transfers;
    }
 
@@ -681,7 +696,7 @@ export class InventoryItem {
 
 export class Style {
    constructor({ id, code, name, inventoryName, shortName, vShortName, brand, sizingCategoryID, 
-               minSizeID, maxSizeID, sizes = [] }) {
+               minSizeID, maxSizeID, listOrder, sizes = [] }) {
       this.id = id;
       this.code = code;
       this.name = name;
@@ -692,6 +707,7 @@ export class Style {
       this.sizingCategoryID = sizingCategoryID;
       this.minSizeID = minSizeID;
       this.maxSizeID = maxSizeID;
+      this.listOrder = listOrder;
       this.sizes = Array.isArray(sizes) ? sizes.map(size => size) : [];
       // if (id === 9) console.log(sizes);
 
@@ -705,8 +721,10 @@ export class Style {
       }
    }
 
-   static fromValues(id, name, shortName, vShortName, brandID, code, sizes = []) {
-      return new Style({ id, name, shortName, vShortName, brandID, code, sizes });
+   static fromValues(id, code, name, inventoryName, shortName, vShortName, brand, sizingCategoryID, minSizeID,
+                     maxSizeID, listOrder, sizes = []) {
+      return new Style({ id, code, name, inventoryName, shortName, vShortName, brand, sizingCategoryID, minSizeID, 
+                     maxSizeID, listOrder, sizes });
    }
 
    static fromJSON(json) {
@@ -811,15 +829,16 @@ export class Brand {
 }
 
 export class Transfer {
-   constructor({ id, transferName, inventoryName, price }) {
+   constructor({ id, transferName, inventoryName, price, listOrder }) {
       this.id = id;
       this.transferName = transferName;
       this.inventoryName = inventoryName;
-      this.price = price
+      this.price = price;
+      this.listOrder = listOrder;
    }
 
-   static fromValues(id, name, shortName) {
-      return new Transfer({ id, name, shortName });
+   static fromValues(id, transferName, inventoryName, price, listOrder) {
+      return new Transfer({ id, transferName, inventoryName, price, listOrder });
    }
 
    static fromJSON(json) {

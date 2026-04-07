@@ -4,11 +4,11 @@ import { runtime } from '../runtime.js';
 import { myFetch } from '../fetch.js';
 import { sizeList } from '../constants.js';
 import { ActionRequest } from '../models/other-classes.js';
-import { StateEvent, SchoolOrder, School } from '../models/db-classes.js';
+import { StateEvent, SchoolOrder, InventoryTransfer } from '../models/db-classes.js';
 import { openModal, closeModal } from '../modal.js';
 import { buildElement, parseToInstancesArr } from '../utilities.js';
 import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoices, printSoSPDF, printAllSoSPDF, 
-			printOMessages, genIHSAATotals, printAllInventories } from '../print.js';
+			printOMessages, genIHSAATotals, printInventories } from '../print.js';
 
 
 export async function goToEventPage(sport) {
@@ -139,52 +139,25 @@ function attachOrdersPanel(panel, data) {
 
 	// builds buttons for the top of the page for various print options 
 function attachOrdersTopButtons(cntnr) {
-	const b1 = buildElement("button", {
-		classes: ["topLevelButton", "clickable", "genUndoneBoxLabelsBtn"],
-		dataset: { btnType: "genBoxLabels" },
-		title: "print all undone box labels",
-		children: [ buildIcon("print"), " Undone Labels" ]
-	});
-	const b2 = buildElement("button", {
-		classes: ["topLevelButton", "clickable", "printAllSoSPDF"],
-		dataset: { btnType: "printAllSoSPDF" },
-		title: "print all site's sign off sheets",
-		children: [ buildIcon("print"), " All SoS" ]
-	});
-	const b3 = buildElement("button", {
-		classes: ["topLevelButton", "clickable", "printInvoicesBtn"],
-		dataset: { btnType: "printInvoices" },
-		title: "print all invoices",
-		children: [ buildIcon("print"), " Invoices" ]
-	});
-	const b4 = buildElement("button", {
-		classes: ["topLevelButton", "clickable", "printMessagesBtn"],
-		dataset: { btnType: "printMessages" },
-		title: "print order messages",
-		children: [ buildIcon("print"), " Messages" ]
-	});
-	const b5 = buildElement("button", {
-		classes: ["topLevelButton", "clickable", "printTotalsBtn"],
-		dataset: { btnType: "printTotals" },
-		title: "print shirt totals",
-		children: [ buildIcon("print"), " Totals" ]
-	});
-	const b6 = buildElement("button", {
-		classes: ["topLevelButton", "clickable", "newOrderBtn"],
-		dataset: { btnType: "newOrder" },
-		title: "add an order",
-		children: ["+ Order"]
-	});
-	const b7 = buildElement("button", {
-		classes: ["topLevelButton", "clickable", "uploadQlfrs"],
-		dataset: { btnType: "uploadQlfrs" },
-		title: "upload qualifiers",
-		children: [ buildIcon("upload"), " Qualifiers" ]
-	});
+	const buttons = [
+		{ type: "genBoxLabels", title: "print all undone box labels", icon: "print", text: " Undone Labels", 
+			classes: ["genUndoneBoxLabelsBtn"] },
+		{ type: "printAllSoSPDF", title: "print all site's sign off sheets", icon: "print", text: " All SoS", 
+			classes: ["printAllSoSPDF"] },
+		{ type: "printInvoices", title: "print all invoices", icon: "print", text: " Invoices", 
+			classes: ["printInvoicesBtn"] },
+		{ type: "printMessages", title: "print order messages", icon: "print", text: " Messages", 
+			classes: ["printMessagesBtn"] },
+		{ type: "printTotals", title: "print shirt totals", icon: "print", text: " Totals", 
+			classes: ["printTotalsBtn"] },
+		{ type: "newOrder", title: "add an order", text: "+ Order", classes: ["newOrderBtn"] },
+		{ type: "uploadQlfrs", title: "upload qualifiers", icon: "upload", text: " Qualifiers", 
+			classes: ["uploadQlfrs"] },
+	];
 
-	const h = buildElement("h1", { children: [ b1, b2, b3, b4, b5, b6, b7 ] })
-	const btnCntnr = buildElement("div", { id: "buttonContainer", children: [ h ] });
-
+	const btnElements = buttons.map(buildActionButton);
+	const h = buildElement("h1", { children: btnElements });
+	const btnCntnr = buildElement("div", { classes: "buttonContainer", children: [h] });
 	cntnr.appendChild(btnCntnr);
 }
 
@@ -483,7 +456,7 @@ async function attachInventoryPanel(panel) {
 		// build inventory tables for each site
 	for (const es of runtime.stateEvent.eventSites) {
 			// some buttons for each inventory, to edit, and to fill
-		const btns = buildEditAndFillButtons(es.id);
+		const btns = buildInventorySiteButtons(es.id);
 			// a button container
 		const btnDiv = buildElement("div", { classes: [ 'invntryBtnCntnr', 'inline' ], children: btns });
 
@@ -493,47 +466,42 @@ async function attachInventoryPanel(panel) {
 		
 		panel.appendChild(siteH2);
 			// the table
-		// console.log(es.getStructuredInventory());
 		panel.appendChild(buildInventoryTable(es.getStructuredInventory(), runtime.stateEvent.id, es.id));
 	}
 }
 
 	// builds buttons for the top of the page for various print options 
 function attachInventoryTopButtons(cntnr) {
-	const printAllPage1Btn = buildElement("button", {
-		classes: ["topLevelButton", "clickable", "printAllInventoriesPage1Btn"],
-		dataset: { btnType: "printAllInvetoriesPage1" },
-		title: "print all site's starting inventory",
-		children: [ buildIcon("print"), " All Page 1" ]
-	});
-	const printAllBtn = buildElement("button", {
-		classes: ["topLevelButton", "clickable", "printAllInventoriesBtn"],
-		dataset: { btnType: "printAllInventories" },
-		title: "print all site's inventorie sheets",
-		children: [ buildIcon("print"), " All Full" ]
-	});
+	const buttons = [
+		{ type: "printAllInvetoriesPage1", title: "print all site's starting inventory", icon: "print",
+			text: " All Page 1", classes: ["printAllInventoriesPage1Btn"] },
+		{ type: "printAllInventories", title: "print all site's inventory sheets", icon: "print", 
+			text: " All Full", classes: ["printAllInventoriesBtn"] }
+	];
 
-	const h = buildElement("h1", { children: [ printAllPage1Btn, printAllBtn ] });
-	const btnCntnr = buildElement("div", { id: "buttonContainer", children: [ h ] });
-
+	const btnElements = buttons.map(buildActionButton);
+	const h = buildElement("h1", { children: btnElements });
+	const btnCntnr = buildElement("div", { classes: "buttonContainer", children: [h] });
 	cntnr.appendChild(btnCntnr);
 }
 
-function buildEditAndFillButtons(esID) {
-	const editBtn = buildElement("button", {
-		classes: ["topLevelButton", "clickable", "inventory-action", "editInventoriesBtn"],
-		dataset: { btnType: "editInventories", eventSiteId: esID },
-		title: "edit inventories",
-		children: [ buildIcon("edit"), " Edit" ]
-	});
-	const fillBtn = buildElement("button", {
-		classes: ["topLevelButton", "clickable", "inventory-action", "fillInventoriesBtn"],
-		dataset: { btnType: "fillInventories", eventSiteId: esID },
-		title: "fill inventories",
-		children: [ buildIcon("edit"), " Fill" ]
-	});
+function buildInventorySiteButtons(esID) {
+    const btnConfigs = [
+		{ type: "printSiteInvetoryPage1", title: "print site's starting inventory", icon: "print", text: " Page 1", 
+			classes: [ "inventory-action", "printSiteInventoryPage1Btn" ], datasetExtra: { eventSiteID: esID } },
+		{ type: "printSiteInventory", title: "print site's inventory sheets", icon: "print", text: " Full", 
+			classes: [ "inventory-action", "printSiteInventoryBtn" ], datasetExtra: { eventSiteID: esID } },
+      { type: "editInventory", title: "edit inventory", icon: "edit", text: " Edit", 
+		  	classes: ["inventory-action", "editInventoryBtn"], datasetExtra: { eventSiteID: esID } },
+      { type: "fillInventory", title: "fill inventory", icon: "edit", text: " Fill", 
+		  	classes: ["inventory-action", "fillInventoryBtn"], datasetExtra: { eventSiteID: esID } },
+      { type: "addItem", title: "add an item", text: "+ Item", classes: ["inventory-action", "addItemBtn"], 
+		  	datasetExtra: { eventSiteID: esID } },
+      { type: "addTransfer", title: "add a transfer type", text: "+ Transfer", 
+			classes: ["inventory-action", "addTransferBtn"], datasetExtra: { eventSiteID: esID } },
+    ];
 
-	return [ editBtn, fillBtn ];
+    return btnConfigs.map(buildActionButton);
 }
 
 
@@ -543,10 +511,11 @@ function buildInventoryTable(inventory, eventID, esID) {
 		// fill the table body
 	buildInventoryGarmentsRows(tbody, inventory.garments);
 	buildInventoryAccessoriesRows(tbody, inventory.accessories);
-	buildInvetoryTransfersRows(tbody, inventory.transfers)
+	buildInventoryTransfersRows(tbody, inventory.transfers);
+	console.log(inventory.transfers);
 		// the table, empty
 	const table = buildElement("table", { classes: "inventoryTable", children: [ thead, tbody ], 
-													dataset: { eventId: eventID, eventSiteId: esID } });
+													dataset: { eventId: eventID, eventSiteID: esID } });
 
 	return table;
 }
@@ -567,7 +536,7 @@ function buildInventoryThead() {
 
 	// build garment rows with style, color, size quantities and total
 function buildInventoryGarmentsRows(tbody, garments) {
-	for (const style of Object.values(garments)) {
+	for (const style of garments) {
 			// an identifier to right align youth styles
 		const align = style.sizingCategoryID === 2 ? 'right' : 'left';
 
@@ -610,7 +579,7 @@ function buildInventoryGarmentsRows(tbody, garments) {
 			});
 
 				// finally the total
-			tds.push(buildElement("td", { text: total }));
+			tds.push(buildElement("td", { text: total, dataset: { totalCell: true } }));
 
 				// attach the row
 			const tr = buildElement("tr", { children: tds, classes: 'shirtRow' });
@@ -620,7 +589,7 @@ function buildInventoryGarmentsRows(tbody, garments) {
 }
 
 function buildInventoryAccessoriesRows(tbody, accessories) {
-	for (const a of Object.values(accessories)) {
+	for (const a of accessories) {
 		const tds = [];
 		tds.push(buildElement("td", { text: a.item.style.shortName }));
 		tds.push(buildElement("td", { text: a.item.color.name }));
@@ -637,8 +606,7 @@ function buildInventoryAccessoriesRows(tbody, accessories) {
 	}
 }
 
-function buildInvetoryTransfersRows(tbody, transfers) {
-	
+function buildInventoryTransfersRows(tbody, transfers) {
 	for (const t of Object.values(transfers)) {
 		const tds = [];
 		tds.push(buildElement("td", { text: t.transfer.inventoryName }));
@@ -652,8 +620,8 @@ function buildInvetoryTransfersRows(tbody, transfers) {
 			// attach the row
 		const tr = buildElement("tr", { children: tds });
 		tbody.appendChild(tr);
-}
 	}
+}
 
 function attachReportsPanel(tab, data) {
 
@@ -715,13 +683,18 @@ export function addEventPageFunctionality() {
 			}
 			return; // nothing matched, exit. this will skip the rest of the listener
 		} else if (target.classList.contains('inventory-action')) {
+			const eSite = runtime.stateEvent.getEventSiteByID(target.dataset.eventSiteID);
 			const inventoryActions = {
-				'button.editInventoriesBtn': () => showEditInventory(target),
-				'button.fillInventoriesBtn': () => showFillInventory(target),
-				'button.submitInventoryEdit': () => submitInventoryEdit(target),
-				'button.cancelInventoryEdit': () => cancelInventoryEdit(target), 
-				'button.submitInventoryFill': () => submitInventoryFill(target),
-				'button.cancelInventoryFill': () => cancelInventoryFill(target)
+				'.editInventoryBtn': () => showEditInventory(target),
+				'.fillInventoryBtn': () => showFillInventory(target),
+				'button.printSiteInventoryPage1Btn': () => printInventories({ pages: 1, eSites: [ eSite ] }),
+				'button.printSiteInventoryBtn': () => printInventories({ pages: 3, eSites: [ eSite ] }),
+				'.submitInventoryEdit': () => submitInventoryEdit(target),
+				'.cancelInventoryEdit': () => cancelInventoryEdit(target), 
+				'.submitInventoryFill': () => submitInventoryFill(target),
+				'.cancelInventoryFill': () => cancelInventoryFill(target),
+				'.addTransferBtn': () => showAddTransfer(target),
+				'.addItemBtn': () => showAddItem(target)
 			};
 
 				// check if the target matches any of the above selectors, call it's function and exit if so
@@ -747,10 +720,8 @@ export function addEventPageFunctionality() {
 				'button.uploadQlfrs': () => showQlfrsUpld(),
 					// inventory panel actions
 						// pass an argument to print only page 1 of each inventory
-				'button.printAllInventoriesPage1Btn': () => printAllInventories({ pages: 1 }),
-				'button.printAllInventoriesBtn': () => printAllInventories({ pages: 3 }),
-				'button.editInventoriesBtn': () => showEditInventory(),
-				'button.fillInventoriesBtn': () => showFillInventory()
+				'button.printAllInventoriesPage1Btn': () => printInventories({ pages: 1 }),
+				'button.printAllInventoriesBtn': () => printInventories({ pages: 3 })
 			};
 
 			for (const sel in topLevelActions) {
@@ -844,6 +815,8 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 }
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////// functions for editing orders in the page
 
 function showAddOnInputs(order) {
@@ -1667,7 +1640,7 @@ function showEditInventory(btn) {
 		// set mode. prevents addOns being activated while edit is in progress
 	runtime.activeMode = 'edit';
 
-	const invTbl = getInventoryTable(btn.dataset.eventSiteId);
+	const invTbl = getInventoryTable(btn.dataset.eventSiteID);
 	const invTDs = invTbl.querySelectorAll('td[data-inv-item-i-d]');
 	const trnsfrTDs = invTbl.querySelectorAll('td[data-inv-transfer-i-d]');
 
@@ -1687,7 +1660,7 @@ function showEditInventory(btn) {
 	invTDs[0]?.querySelector('input')?.focus();
 
 		// function(buttonContainer, listenerContainer, type, action, id)
-	makeSubmitCancelButtons(btn.parentElement, invTbl, 'inventory', 'InventoryEdit', btn.dataset.eventSiteId);
+	makeSubmitCancelButtons(btn.parentElement, invTbl, 'inventory', 'InventoryEdit', btn.dataset.eventSiteID);
 }
 
 async function submitInventoryEdit(btn) {
@@ -1735,6 +1708,7 @@ async function submitInventoryEdit(btn) {
 		if (responseJSON.success) {
 				// update the cells
 			invTDs.forEach(td => {
+				updateTotalCell(td);
 				td.textContent = td.querySelector('input').value;
 				td.dataset.oValue = td.textContent;
 			});
@@ -1760,6 +1734,20 @@ async function submitInventoryEdit(btn) {
 	}
 }
 
+function updateTotalCell(td) {
+	// console.log(td, td.querySelector('input'), td.querySelector('input').value);
+	console.log(td, td.querySelector('input'));
+	const newValue = Number(td.querySelector('input').value);
+	const oldValue = Number(td.dataset.oValue ?? td.textContent);
+	const diff = newValue - oldValue;
+
+		// find total cell in the same row
+	const totalCell = td.parentElement.querySelector('td[data-total-cell]');
+
+		// adjust the value
+	if (totalCell) totalCell.textContent = Number(totalCell.textContent) + diff;
+}
+
 function cancelInventoryEdit(btn) {
 		// get the right table
 	const tbl = getInventoryTable(btn.dataset.id);
@@ -1781,7 +1769,7 @@ function resetInventoryButtons(btn) {
 	const prnt = btn.parentElement;
 	prnt.innerHTML = '';
 
-	const newBtns = buildEditAndFillButtons(btn.dataset.id);
+	const newBtns = buildInventorySiteButtons(btn.dataset.id);
 	prnt.append(...newBtns);
 }
 
@@ -1793,7 +1781,7 @@ function getInventoryTable(esID) {
 		// grab the inventory container
 	const cntnr = document.querySelector('.tabPanel.active[data-tab="inventory"]');
 		// select the table with the matching data attribute
-	const tbl = cntnr.querySelector(`table[data-event-site-id="${esID}"]`);
+	const tbl = cntnr.querySelector(`table[data-event-site-i-d="${esID}"]`);
 
 		// if no table matches, alert
 	if (!tbl) {
@@ -1825,4 +1813,123 @@ function makeTransferInput(td) {
 		input.max = 1000;
 		input.step = 1;
 	return input;
+}
+
+function showAddItem(btn) {
+	console.log('show')
+}
+
+function showAddTransfer(btn) {
+	runtime.activeMode = 'addInventoryTransfer';
+
+		// bring in a couple things
+	const esID = btn.dataset.eventSiteID
+	const eSite = runtime.stateEvent.getEventSiteByID(esID);
+	const allTransfers = runtime.allTransfers.getSync();
+	const eSiteTransfers = eSite.transfers;
+
+		// make a Set of existing transferIDs
+	const existingIDs = new Set(eSiteTransfers.map(t => t.transferID));
+		// filter out matches
+	const unTransfers = Object.values(allTransfers).filter(t => !existingIDs.has(t.id));
+
+		// build a form to add transfers not already part of the event
+	const frm = buildElement("form", { id: 'addTransferForm', dataset: { esID: esID } });
+	frm.append(buildElement("p", { text: "Enter quantities for additional transfers:" }));
+	frm.addEventListener("submit", function(e) { submitAddTransfer(e, frm); });
+
+		// fill labels/inputs in the form
+	unTransfers.forEach(t => {
+		const inpt = buildElement("input", { id: `addTransfer${t.id}`, attrs: {
+			name: t.id,
+			type: 'number',
+			min: 0,
+			max: 2000,
+			step: 1
+		} });
+		const lbl = buildElement("label", { text: `${t.transferName}: `, attrs: { for:`addTransfer${t.id}` } });
+		frm.appendChild(buildElement("fieldset", { children: [ lbl, inpt ] }));
+	});
+
+		// make a label, a button, put them in the modal
+	frm.appendChild(buildElement("button", { text: "SUBMIT", classes: 'block' }));
+
+	openModal(frm);
+}
+
+async function submitAddTransfer(e, form) {
+		// stop page refresh
+	e.preventDefault();
+
+		// ensure necessary data loaded
+	await runtime.allTransfers.load();
+
+	const esID = form.dataset.esID;
+
+		// handle your form data here
+	const data = new FormData(form);
+	const updateTransfers = [];
+
+	for (const [key, value] of data) {
+		if (value > 0) {
+			const t = runtime.allTransfers.getByID(key);
+			updateTransfers.push({ 
+				invTransferID: null, 
+				transferID: Number(t.id), 
+				quantity: Number(value), 
+				price: t.price
+			});
+		}
+	}
+	
+	const update = { 'eventSiteID': esID, 'updateTransfers': updateTransfers };	
+	console.log(update);
+	const request = new ActionRequest('editEventSiteInventory', 'EventSite', update);
+	let responseJSON = await myFetch(request);
+
+	if (responseJSON.success) {
+		closeModal();
+
+			// add the new transfers to the table
+		const tbl = getInventoryTable(esID);
+		const tbody = tbl.querySelector("tbody");
+
+		const newTransfers = [];
+		updateTransfers.forEach(ut => {
+			newTransfers.push(InventoryTransfer.fromJSON({ 
+				id: null,
+				eventSiteID: esID,
+				transferID: ut.transferID,
+				startQ: ut.quantity,
+				soldQ: null,
+				price: ut.price,
+				transfer: runtime.allTransfers.getByID(ut.transferID)
+			}))
+		});
+
+		buildInventoryTransfersRows(tbody, newTransfers);
+
+			// add the new transfers to runtime
+		const eSite = runtime.stateEvent.getEventSiteByID(esID);
+		eSite.transfers.push(...newTransfers);
+
+	}
+}
+
+
+
+
+
+	// helper
+function buildActionButton({ type, title = "", icon = null, text = "", classes = [], datasetExtra = {} }) {
+    const children = [];
+    if (icon) children.push(buildIcon(icon));
+    if (text) children.push(text);
+
+    return buildElement("button", {
+        classes: ["topLevelButton", "clickable", ...classes],
+        dataset: { btnType: type, ...datasetExtra },
+        title,
+        children
+    });
 }

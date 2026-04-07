@@ -12,7 +12,6 @@ import { init as modalInit } from './modal.js';
 import { goToEventPage, buildEventPage, addEventPageFunctionality } from './pages/event.js';
 import { showPage } from './pages/page-handling.js';
 import { addShowYearFunctionality } from './pages/year.js';
-import { showInventories } from './pages/inventories.js';
 
 
 
@@ -106,7 +105,6 @@ function buildNavList2() {
 		// [<h>, serverFunc, serverClass, jsFunc]
 	const nav2Items = [
 		['Year', 'showYear', 'Year'],
-		// ['Inventories', 'showInventories', 'EventSite', 'showInventories'],
 		['Schools', 'showSchools', 'School'],
 		['Items', 'showItems', 'Item'],
 		['Tests', 'showTests', 'Test']

@@ -35,7 +35,7 @@
 	<div id="myModal" class="modal">
 		<div class="modal-content">
 			<span class="close">&times;</span>
-			<p id="modalText">This is the modal content!</p>
+			<p id="modalContent">This is the modal content!</p>
 		</div>
 	</div>
 	</main>

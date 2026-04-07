@@ -632,9 +632,10 @@ function getItemByStyleIDSizeChar(styleID, displayChar) {
 // generating inventories
 const inventoryStates = ['START', 'END', 'SOLD'];
 
-export async function printAllInventories({ pages = 3, eSites = runtime.stateEvent.eventSites }) {
+	// pages parameter allows printing just the start page
+export async function printInventories({ pages = 3, eSites = runtime.stateEvent.eventSites }) {
 		// validate eSites is an array of EventSite objects
-   if (!Array.isArray(eSites) ||!eSites.every(es => es instanceof EventSite)) {
+   if (!Array.isArray(eSites) || !eSites.every(es => es instanceof EventSite)) {
       openModal("Invalid event sites data.");
       return;
    }
@@ -656,25 +657,25 @@ export async function printAllInventories({ pages = 3, eSites = runtime.stateEve
 	window.open(url, "_blank", "noopener");
 }
 
-export async function printInventory(btn) {
-	if (!btn) return;
+// export async function printInventory(btn) {
+// 	if (!btn) return;
 
-		// get the eSite
-	const cntnr = btn.closest('.invntryCntnr');
-	const eSite = runtime.inventoriesBySite[cntnr.dataset.eSiteID];
+// 		// get the eSite
+// 	const cntnr = btn.closest('.invntryCntnr');
+// 	const eSite = runtime.inventoriesBySite[cntnr.dataset.eSiteID];
 	
-		// Access jsPDF from the global object
-	const { jsPDF } = window.jspdf; 
-   const doc = new jsPDF('p', 'mm', 'letter');
+// 		// Access jsPDF from the global object
+// 	const { jsPDF } = window.jspdf; 
+//    const doc = new jsPDF('p', 'mm', 'letter');
 
-		// generate the inventory
-	genInventoryPDF(doc, eSite);
+// 		// generate the inventory
+// 	genInventoryPDF(doc, eSite);
 	
-		// Generate a Blob URL and open it in a new tab
-	const pdfBlob = doc.output("blob");
-	const url = URL.createObjectURL(pdfBlob);
-	window.open(url, "_blank", "noopener");
-}
+// 		// Generate a Blob URL and open it in a new tab
+// 	const pdfBlob = doc.output("blob");
+// 	const url = URL.createObjectURL(pdfBlob);
+// 	window.open(url, "_blank", "noopener");
+// }
 
 function genInventoryPDF(doc, eSite, pages) {
 	const page = new InventoryPage(doc);
@@ -686,6 +687,7 @@ function genInventoryPDF(doc, eSite, pages) {
 	writeInventoryHeader(doc, page, cursor, eSite, 'START');
 		// get the current y so we can reset to it
 	const tableYInit = cursor.y;
+		// build the table for the starting inventory
 	buildInventoryTable(doc, page, cursor, eSite);
 		// reset the y to the top of the table
 	cursor.y = tableYInit;
@@ -705,7 +707,7 @@ function genInventoryPDF(doc, eSite, pages) {
 		page.addPage();
 		writeInventoryHeader(doc, page, cursor, eSite, 'SOLD');
 		buildInventoryTable(doc, page, cursor, eSite);
-		inventorySoldAddendum(page);
+		inventorySoldAddendum(page, eSite);
 	}
 
 }
@@ -757,7 +759,7 @@ function buildInventoryTable(doc, page, cursor, eSite) {
 	const structInventory = eSite.getStructuredInventory();
 
 		// make each garment style's row. style name, styleCode, color, sizes, total
-	for (const s of Object.values(structInventory.garments)) {
+	for (const s of structInventory.garments) {
 		const youth = (s.sizingCategoryID === 2);
 		const align = (youth) ? 'right' : 'left';
 
@@ -806,7 +808,7 @@ function buildInventoryTable(doc, page, cursor, eSite) {
 	page.hr();
 
 		// make each accesory style's row. style name, total. // hats, beanies, etc
-	for (const a of Object.values(structInventory.accessories)) {
+	for (const a of structInventory.accessories) {
 		page.hr();
 		page.newLine();
 		page.textToCell(a.item.style.inventoryName, 'left');
@@ -831,7 +833,7 @@ function fillInventoryTable(doc, page, cursor, eSite) {
 	const structInventory = eSite.getStructuredInventory();
 
 		// make each garment style's row. style name, styleCode, color, sizes, total
-	for (const s of Object.values(structInventory.garments)) {
+	for (const s of structInventory.garments) {
 		page.newLine();
 
 		Object.values(s.colors).forEach((c, i) => {
@@ -866,7 +868,7 @@ function fillInventoryTable(doc, page, cursor, eSite) {
 	cursor.y += 1.5;
 
 		// make each accesory style's row. style name, total. // hats, beanies, etc
-	for (const a of Object.values(structInventory.accessories)) {
+	for (const a of structInventory.accessories) {
 		page.newLine();
 		page.col = 10;
 		page.textToCell(a.startQ);
@@ -878,45 +880,14 @@ function inventoryStartAddendum(doc, page, cursor, eSite) {
 	eSite.transfers.forEach(t => {
 		let name = t.transfer.inventoryName ?? t.transfer.transferName;
 		if (name === 'sport events') name = name.replace("sport", eSite.sportName);
+		if (name === 'sub events') name = name.replace("sub", runtime.stateEvent.sport.name.toLowerCase());
 
-		const qtyText = (t.quantity < 10) ? t.quantity + ' SET' : t.quantity;
+		const qtyText = (t.startQ < 10) ? t.startQ + ' SET' : t.startQ;
 
-		page.textToCell(name);
+		page.textToCell(name, 'left');
 		page.textToCell(qtyText);
 		page.newLine();
 	});
-
-
-	// page.textToCell('transfers');
-	// page.textToCell('150');
-
-	// page.newLine(2);
-	// page.textToCell('STATE CHAMPIONS');
-	// page.textToCell('50');
-	// page.newLine();
-	// page.textToCell('STATE CHAMPION');
-	// page.textToCell('50');
-
-	// page.newLine(2);
-	// page.textToCell('BACK TO BACK');
-	// page.textToCell('50');
-	// page.newLine();
-	// page.textToCell('3-PEAT');
-	// page.textToCell('50');
-	// page.newLine();
-	// page.textToCell('3X, 4X, 5X...');
-	// page.textToCell('50');
-
-	// page.newLine(2);
-	// page.textToCell('small golf logo');
-	// page.textToCell('40');
-
-	// page.newLine(2);
-	// page.textToCell('MOM/DAD/ETC');
-	// page.textToCell('SET');
-	// page.newLine();
-	// page.textToCell('school names');
-	// page.textToCell('SET');
 }
 
 function inventoryEndAddendum(page) {
@@ -929,34 +900,52 @@ function inventoryEndAddendum(page) {
 	// page.textToCell();
 }
 
-function inventorySoldAddendum(page) {
+function inventorySoldAddendum(page, eSite) {
+	const trnsfrs = Object.values(eSite.getInventoryTransfers());
+	const tNames = new Set(trnsfrs.map(t => t.transfer.transferName));
+	console.log(tNames);
+
+
+		// print the transfers to record how many sold
 	page.newLine(2);
-	page.textToCell('transfers');
+	page.textToCell('transfers', 'right');
+
+		// no site should have 'champion', or 'back to back', etc without 'champoins'. 
+			// check for 'champions', print them all
+	if (tNames.has("state champions")) {
+		page.newLine(1.6);
+		page.textToCell('STATE CHAMPION(S)', 'right');
+		page.newLine(1.6);
+		page.textToCell('BACK TO BACK /', 'right');
+		page.newLine(.8);
+		page.textToCell('3-PEAT', 'right');
+	}
+
+	if (tNames.has("#s")) {
+		page.newLine(1.6);
+		page.textToCell('#s', 'right');
+	}
+
+		// group the misc $5 transfers
+	page.newLine(1.6);
+	page.textToCell('MOM, DAD, (tub)', 'right');
+	if (trnsfrs.some(t => t.transfer.transferName === "small event logo")) {
+		page.newLine(.8);
+		page.textToCell('small logos', 'right');
+	}
+	if (trnsfrs.some(t => t.transfer.transferName === "sub events")) {
+		page.newLine(.8);
+		page.textToCell(`${runtime.stateEvent.sport.name.toLowerCase()} events`, 'right');
+	}
+
+	page.newLine(1.6);
+	page.textToCell('school names', 'right');
 
 	page.newLine(2);
-	page.textToCell('STATE CHAMPION(S)');
+	page.textToCell('Total $$', 'right');
 
 	page.newLine(2);
-	page.textToCell('BACK TO BACK /');
-	page.newLine();
-	page.textToCell('3-PEAT');
-
-	// page.newLine(2);
-	// page.textToCell('#s');
-
-	page.newLine(2);
-	page.textToCell('MOM, DAD, (TUB)');
-	page.newLine();
-	page.textToCell('small events');
-
-	page.newLine(2);
-	page.textToCell('school names');
-
-	page.newLine(2);
-	page.textToCell('Total $$');
-
-	page.newLine(2);
-	page.textToCell('hours');
+	page.textToCell('hours', 'right');
 
 }
 

@@ -1,6 +1,14 @@
 import { myFetch } from "./fetch.js";
 import { ActionRequest } from "./models/other-classes.js";
 
+
+
+
+const FOCUSABLE_SELECTOR = 'input, button, select, textarea, a[href], [tabindex]:not([tabindex="-1"])';
+
+
+
+
 export function parseToInstancesArr(data, ClassRef) {
         // takes data, and returns an array of object of the class given by ClassRef
             // expects data to be an array of objects, or an object where each property is an object
@@ -250,6 +258,21 @@ export function appndSbmtCnclBtns(prnt, actn) {
 
       prnt.appendChild(btnDiv);
    }
+}
+
+
+   // finds the first focusable element in a container. ignores disabled and some hidden elements
+export function getFirstFocusable(container = document) {
+   return [...container.querySelectorAll(FOCUSABLE_SELECTOR)]
+      .find(el => !el.disabled && el.offsetParent !== null);
+}
+
+   // gives focus to the first focusable element in a container. ignores disabled and some hidden elements
+export function giveFirstFocus(container = document) {
+   console.log('yes it does');
+   const el = getFirstFocusable(container);
+   el?.focus();
+   return el;
 }
 
 

@@ -8,7 +8,9 @@ class Transfer extends BasicTableModel {
 		return ['id' => 'transferID', 
 					'transferName' => 'transferName', 
 					'inventoryName' => 'inventoryName', 
-					'price' => 'price']; 
+					'price' => 'price',
+               'listOrder' => 'listOrder'
+            ]; 
 	}
 		// defined: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
 	protected static function getRelations(): array { return []; }
@@ -19,7 +21,8 @@ class Transfer extends BasicTableModel {
       public readonly ?int $id,
       public readonly ?string $transferName,
       ?string $inventoryName,
-      public readonly ?float $price
+      public readonly ?float $price,
+      public readonly ?int $listOrder
    ) {
          // If $inventoryName is null, fallback to $transferName
       $this->inventoryName = $inventoryName ?? $transferName;

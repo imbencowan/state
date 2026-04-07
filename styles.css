@@ -476,4 +476,35 @@ tr.addOnRow {
 .invntryBtnCntnr > * {
 	margin-left: 50 px;
 	font-size: 60%;
+	vertical-align: middle;
 }
+
+.buttonContainer {
+	vertical-align: middle;
+}
+
+.buttonContainer h1 {
+   display: flex;   /* keeps the h1 inline if needed */
+	flex-wrap: wrap;  
+	align-items: center;    /* vertically center text + buttons */
+	vertical-align: middle;
+	gap: 0.5em;             /* spacing between text and buttons */
+}
+
+.topLevelButton {
+	margin-left: 25px;
+	font-size: 60%;
+}
+
+
+#addTransferForm fieldset {
+   display: flex;
+   align-items: center; 
+   gap: 0.5em;          
+   margin-bottom: 1em;
+}
+
+#addTransferForm label {
+   width: 150px;        
+   text-align: right;
+} 

@@ -140,7 +140,7 @@ async function makeDvsnSlct(td) {
    return newSlct;
 }
 
-   // make a select for divisions
+   // make a select for employees
 async function makeEmplySlct(td) {
    const allEmployees = await runtime.allEmployees.load();
 
@@ -687,4 +687,3 @@ async function parseYear(txt) {
       });
    }
 }
-

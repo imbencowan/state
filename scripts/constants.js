@@ -4,3 +4,5 @@ export const ihsaaSizeList = ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'];
 export const sizeList = ['S', 'M', 'L', 'XL', '2X', '3X', '4X'];
 
 export const ADULT_HOOD_STYLE_ID = 6;
+
+export const FOCUSABLE_SELECTOR = 'input, button, select, textarea, a[href], [tabindex]:not([tabindex="-1"])';
