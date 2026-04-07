@@ -6,6 +6,15 @@ import { ActionRequest } from '../models/other-classes.js';
 import { arraysEqualIgnoreOrder } from '../utilities.js';
 import { openModal } from '../modal.js';
 import { EventSite, Site } from '../models/db-classes.js';
+import { showPage } from './page-handling.js';
+
+export async function goToYearPage() {
+   const data = { year: document.getElementById('selectYear').value };
+
+   await showPage('showYear', 'Year', data);
+
+   addShowYearFunctionality();
+}
 
 export function addShowYearFunctionality() {
    const container = document.getElementById('yearContainer');

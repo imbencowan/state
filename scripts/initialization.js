@@ -5,14 +5,17 @@ import { StateEvent, Style, Item } from './models/db-classes.js'
     // function to be attached to a listener
 import { submitOrderFiles } from './order-submission.js';
 	// utilities?
-import * as Utils from './utilities.js';
+import { mapObjsBy, buildElement } from './utilities.js';
     // modal initializaion
 import { init as modalInit } from './modal.js';
     // function for a listener
 import { goToEventPage, buildEventPage, addEventPageFunctionality } from './pages/event.js';
-import { showPage } from './pages/page-handling.js';
-import { addShowYearFunctionality } from './pages/year.js';
+import { goToYearPage } from './pages/year.js';
+import { goToItemsPage } from './pages/items.js';
+import { goToSchoolsPage } from './pages/schools.js';
 
+
+const nav2Handlers = { goToYearPage, goToItemsPage, goToSchoolsPage };
 
 
 	// init is called onload() and does stuff after the script and html is in place
@@ -29,8 +32,9 @@ export async function init() {
 	let request = new ActionRequest('loadSizeCodesByStyle', 'Item');
 	let sizeData = await myFetch(request);
 	runtime.sizeCodesByStyles = sizeData.data.map(styleData => Style.fromJSON(styleData));
-	runtime.styleMap = Utils.mapObjsBy(runtime.sizeCodesByStyles);
+	runtime.styleMap = mapObjsBy(runtime.sizeCodesByStyles);
 	
+		// initail load
 	await Promise.all([
 		runtime.allSizes.load(),
 		runtime.allColors.load(),
@@ -58,7 +62,6 @@ export async function init() {
 		addEventPageFunctionality();
 	}
 
-	
 		// make the modal
 	modalInit();
 }
@@ -102,38 +105,28 @@ function buildNavList2() {
 		// get the nav bar
 	let navList = document.getElementById("nav2List");
 
-		// [<h>, serverFunc, serverClass, jsFunc]
+		// [text, jsFunc]
 	const nav2Items = [
-		['Year', 'showYear', 'Year'],
-		['Schools', 'showSchools', 'School'],
-		['Items', 'showItems', 'Item'],
-		['Tests', 'showTests', 'Test']
+		['Year', 'goToYearPage'],
+		['Items', 'goToItemsPage'],
+		['Schools', 'goToSchoolsPage']
 	];
-	nav2Items.forEach((item) => {
-			// create the element
-		let newLI = document.createElement("li");
-		newLI.innerHTML = item[0];
 
-			// add a listener to load the appropriate content when clicked
-		newLI.addEventListener('click', async function() {
-			let data = null;
-			if (item[1] == 'showYear' || item[1] == 'showInventories') {
-				data = { year: document.getElementById('selectYear').value };
-			}
+		// build each <li>, with a couple data-attrs, and append them to nav2
+	nav2Items.forEach((itm) => {
+      navList.appendChild(buildElement("li", { text: itm[0], dataset: { func: itm[1] } }));
+   });
 
-			if (item[3] == 'showInventories') {
-				showInventories(data);
-			} else {
-					// await the main content load
-				await showPage(item[1], item[2], data);
-			}
+		// call a function specified in the nav li's dataset
+	navList.addEventListener('click', async (e) => {
+			// get the function to call from. nav2Handlers is a constant of this module
+      const li = e.target.closest('li');
+      if (!li) return;
+		const handler = nav2Handlers[li.dataset.func];
 
-				// additional behavior after content is loaded
-			if (item[1] === 'showYear') {
-				addShowYearFunctionality();
-			}
-      });
-			// add it to the page
-		navList.appendChild(newLI);
-	});
+		if (!handler) return;
+
+			// is await necessary?
+		await handler();
+   });
 }
