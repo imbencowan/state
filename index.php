@@ -15,7 +15,7 @@
 	<link rel="stylesheet" href="everycss.css">
 	<link rel="stylesheet" href="styles.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<script type="module" src="main.js"></script>
+	<script type="module" src="main.js?v=1"></script>
 </head>
 <body>
 	<main>

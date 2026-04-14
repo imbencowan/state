@@ -9,6 +9,7 @@ import { openModal, closeModal } from '../modal.js';
 import { buildElement, parseToInstancesArr } from '../utilities.js';
 import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoices, printSoSPDF, printAllSoSPDF, 
 			printOMessages, genIHSAATotals, printInventories } from '../print.js';
+import { buildActionButton, buildIcon, makeSubmitCancelButtons } from './page-utils.js';
 
 
 export async function goToEventPage(sport) {
@@ -153,6 +154,8 @@ function attachOrdersTopButtons(cntnr) {
 		{ type: "newOrder", title: "add an order", text: "+ Order", classes: ["newOrderBtn"] },
 		{ type: "uploadQlfrs", title: "upload qualifiers", icon: "upload", text: " Qualifiers", 
 			classes: ["uploadQlfrs"] },
+		{ type: "showAllSchoolsAZ", title: "show A-Z list of all schools", icon: "visibility", text: " A-Z Schools", 
+			classes: ["showAllSchoolsAZ"] }
 	];
 
 	const btnElements = buttons.map(buildActionButton);
@@ -393,11 +396,6 @@ function makeRowIconButton(type, iClass, title) {
 	return buildElement("span", { classes: classes, title: title, text: type });
 }
 
-	// builds spans that contain icons. helper function to decrease redundant code
-function buildIcon(type) {
-   return buildElement("span", { classes: ["material-icons"], text: type });
-}
-
 function attachCommentTable(cntnr, data) {
 	const unhandledComments = data.getUnhandledComments();
 
@@ -486,22 +484,22 @@ function attachInventoryTopButtons(cntnr) {
 }
 
 function buildInventorySiteButtons(esID) {
-    const btnConfigs = [
+	const btnConfigs = [
 		{ type: "printSiteInvetoryPage1", title: "print site's starting inventory", icon: "print", text: " Page 1", 
 			classes: [ "inventory-action", "printSiteInventoryPage1Btn" ], datasetExtra: { eventSiteID: esID } },
 		{ type: "printSiteInventory", title: "print site's inventory sheets", icon: "print", text: " Full", 
 			classes: [ "inventory-action", "printSiteInventoryBtn" ], datasetExtra: { eventSiteID: esID } },
-      { type: "editInventory", title: "edit inventory", icon: "edit", text: " Edit", 
-		  	classes: ["inventory-action", "editInventoryBtn"], datasetExtra: { eventSiteID: esID } },
-      { type: "fillInventory", title: "fill inventory", icon: "edit", text: " Fill", 
-		  	classes: ["inventory-action", "fillInventoryBtn"], datasetExtra: { eventSiteID: esID } },
-      { type: "addItem", title: "add an item", text: "+ Item", classes: ["inventory-action", "addItemBtn"], 
-		  	datasetExtra: { eventSiteID: esID } },
-      { type: "addTransfer", title: "add a transfer type", text: "+ Transfer", 
-			classes: ["inventory-action", "addTransferBtn"], datasetExtra: { eventSiteID: esID } },
-    ];
+		{ type: "editInventory", title: "edit inventory", icon: "edit", text: " Edit", 
+			classes: ["inventory-action", "editInventoryBtn"], datasetExtra: { eventSiteID: esID } },
+		{ type: "fillInventory", title: "fill inventory", icon: "edit", text: " Fill", 
+			classes: ["inventory-action", "fillInventoryBtn"], datasetExtra: { eventSiteID: esID } },
+		{ type: "addItem", title: "add an item", text: "+ Item", classes: ["inventory-action", "addItemBtn"], 
+			datasetExtra: { eventSiteID: esID } },
+		{ type: "addTransfer", title: "add a transfer type", text: "+ Transfer", 
+			classes: ["inventory-action", "addTransferBtn"], datasetExtra: { eventSiteID: esID } }
+	];
 
-    return btnConfigs.map(buildActionButton);
+	return btnConfigs.map(buildActionButton);
 }
 
 
@@ -718,6 +716,7 @@ export function addEventPageFunctionality() {
 				'button.printAllSoSPDF': () => printAllSoSPDF(),
 				'button.printSoSPDF': () => printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid)),
 				'button.uploadQlfrs': () => showQlfrsUpld(),
+				'button.showAllSchoolsAZ': () => showAllSchoolsAZ(),
 					// inventory panel actions
 						// pass an argument to print only page 1 of each inventory
 				'button.printAllInventoriesPage1Btn': () => printInventories({ pages: 1 }),
@@ -938,44 +937,6 @@ function cancelAddOns(target) {
    });
 		// exit add on mode
 	runtime.activeMode = null;
-}
-
-function makeSubmitCancelButtons(btnCntnr, lstnrCntnr, type, action, id) {
-		// first, clear the destination
-	btnCntnr.innerHTML = '';
-
-		// make the buttons // secondary classes guide listeners handling
-	const submitButton = buildElement('button', { text: 'Submit', type: 'button',
-		classes: ['addOnButton', `${type}-action`, `submit${action}`], 
-		dataset: { id: id }
-	});
-	const cancelButton = buildElement('button', { text: 'X',	type: 'button',
-		classes: ['addOnButton', `${type}-action`, `cancel${action}`], 
-		dataset: { id: id }
-	});
-		// append them
-	btnCntnr.append(submitButton, cancelButton);
-
-		// add event listeners for ESC and ENTER
-	if (lstnrCntnr) {
-			// define the listener as a named function
-		const keyHandler = function(e) {
-			if (e.key === 'Escape') {
-					cancelButton.click();
-					cleanup();
-			} else if (e.key === 'Enter') {
-					submitButton.click();
-					cleanup();
-			}
-		};
-
-		lstnrCntnr.addEventListener('keydown', keyHandler);
-
-			// define a cleanup helper
-		function cleanup() {
-			lstnrCntnr.removeEventListener('keydown', keyHandler);
-		}
-	}
 }
 
 function buildAddOnSelect(prnt) {
@@ -1631,6 +1592,28 @@ async function uploadQualifiers() {
 	}
 }
 
+	// show an A-Z list of all schools in the event
+function showAllSchoolsAZ() {
+	const schoolNames = [];
+	runtime.stateEvent.eventSites.forEach(es => {
+		es.esDivisions.forEach(esd => {
+			esd.schoolOrders.forEach(so => {
+				schoolNames.push(so.school.shortName);
+			});
+		});
+	});
+
+	schoolNames.sort();
+
+	const ul = buildElement("ul");
+
+	schoolNames.forEach(sn => {
+		ul.appendChild(buildElement("li", { text: sn }));
+	});
+
+	openModal(ul);
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1921,15 +1904,15 @@ async function submitAddTransfer(e, form) {
 
 
 	// helper
-function buildActionButton({ type, title = "", icon = null, text = "", classes = [], datasetExtra = {} }) {
-    const children = [];
-    if (icon) children.push(buildIcon(icon));
-    if (text) children.push(text);
+// function buildActionButton({ type, title = "", icon = null, text = "", classes = [], datasetExtra = {} }) {
+//     const children = [];
+//     if (icon) children.push(buildIcon(icon));
+//     if (text) children.push(text);
 
-    return buildElement("button", {
-        classes: ["topLevelButton", "clickable", ...classes],
-        dataset: { btnType: type, ...datasetExtra },
-        title,
-        children
-    });
-}
+//     return buildElement("button", {
+//         classes: ["topLevelButton", "clickable", ...classes],
+//         dataset: { btnType: type, ...datasetExtra },
+//         title,
+//         children
+//     });
+// }

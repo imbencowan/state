@@ -237,48 +237,5 @@ class EventSite extends BasicTableModel {
 
 		return (object) [ 'affected' => (object) $affected ];
 	}
-
-/////////////////rolled in to editEventSiteInventory
-// 	public static function editEventSiteTransfers($eventSiteID, $update) {
-// 		$db = Database::getDB();
-
-// 		try {
-// 			$db->beginTransaction();
-
-// 			// upsert
-// 			$sql = "
-// 				INSERT INTO eventsitetransfers (eventSiteID, transferID, quantity, price)
-// 				VALUES (:eventSiteID, :itemID, :quantity, :price)
-// 				ON DUPLICATE KEY UPDATE
-// 					quantity = VALUES(quantity)
-// 			";
-// 			$stmt = $db->prepare($sql);
-
-// 				// bind and run
-// 			foreach ($update as $row) {
-// 				$stmt->execute([
-// 					':eventSiteID' => $eventSiteID,
-// 					':itemID'      => $row['transferID'],
-// 					':quantity'      => $row['quantity'],
-// 					':price'       => $row['price']	
-// 				]);
-// 			}
-
-
-// 				// finish transaction
-// 			$db->commit();
-
-// 		} catch (Exception $e) {
-// 				// rollback if anything goes wrong
-// 			$db->rollBack();
-// 			throw $e; // or handle error
-// 		}
-
-
-// 		$affected = $stmt->rowCount();
-
-// 		return $update;
-// 	}
-
 }
 ?>

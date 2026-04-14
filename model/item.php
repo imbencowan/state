@@ -25,7 +25,7 @@ class Item extends BasicTableModel {
 		public readonly ?int $styleID,
 		public readonly ?int $sizeID,
 		public readonly ?int $colorID,
-      public readonly ?int $price,
+      public readonly ?float $price,
       public readonly ?Color $color = null,
       public readonly ?Style $style = null,
       public readonly ?Size $size = null,

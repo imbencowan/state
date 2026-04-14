@@ -324,6 +324,68 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $affectedRows > 0;
 	}
 
+		// $update should be an array of objects with an id property, and other props named for columns to update
+	public static function updateRowsByIDs(array $update): bool {
+		if (empty($update)) return false;
+
+		$db = Database::getDB();
+		$table = static::getTableName();
+		$columns = static::getColumns();
+		$idCol = $columns['id'];
+
+		$stmt = null;
+		$affected = 0;
+
+		$db->beginTransaction();
+
+		try {
+			foreach ($update as $row) {
+
+					// normalize objects → arrays
+				if (is_object($row)) $row = get_object_vars($row);
+
+					// must have id
+				if (!isset($row[$idCol])) throw new InvalidArgumentException("Missing ID column: {$idCol}");
+
+				$id = $row[$idCol];
+					// so we don't try to UPDATE id
+				unset($row[$idCol]);
+
+					// filter invalid keys
+				$invalid = array_diff(array_keys($row), $columns);
+				if (!empty($invalid)) {
+					throw new InvalidArgumentException("Invalid column(s): " . implode(', ', $invalid));
+				}
+
+					// build SET clause
+				$setParts = [];
+				$params = [':id' => $id];
+
+				foreach ($row as $col => $val) {
+					$setParts[] = "$col = :$col";
+					$params[":$col"] = $val;
+				}
+
+					// don't update no thing
+				if (empty($setParts)) continue;
+
+				$sql = "UPDATE $table SET " . implode(', ', $setParts) . " WHERE $idCol = :id";
+
+				$stmt = $db->prepare($sql);
+				$stmt->execute($params);
+
+				$affected += $stmt->rowCount();
+			}
+
+			$db->commit();
+			return $affected > 0;
+
+		} catch (Throwable $e) {
+			$db->rollBack();
+			throw $e;
+		}
+	}
+
 
 	public static function updateInterTable(array $primaryKey, array $secondaryKey): void {
 		$db = Database::getDB();

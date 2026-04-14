@@ -269,7 +269,6 @@ export function getFirstFocusable(container = document) {
 
    // gives focus to the first focusable element in a container. ignores disabled and some hidden elements
 export function giveFirstFocus(container = document) {
-   console.log('yes it does');
    const el = getFirstFocusable(container);
    el?.focus();
    return el;

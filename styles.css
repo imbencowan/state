@@ -271,9 +271,9 @@ tr.addOnRow {
 	vertical-align: top;
 	padding: 10px;
 	font-size: 90%;
-    white-space: normal;       /* allow wrapping at spaces */
-    word-break: normal;        /* do not break words */
-    overflow-wrap: normal;     /* prevent word splitting */
+	white-space: normal;       /* allow wrapping at spaces */
+	word-break: normal;        /* do not break words */
+	overflow-wrap: normal;     /* prevent word splitting */
 }
 
 .eventsTable h2 {
@@ -508,3 +508,22 @@ tr.addOnRow {
    width: 150px;        
    text-align: right;
 } 
+
+
+.itemsTable td {
+	border-top: 1px solid black;
+	vertical-align: top;
+}
+
+.itemsTable td:last-child,
+.itemsTable th:last-child,
+.itemsTable td:nth-last-child(2),
+.itemsTable th:nth-last-child(2) {
+    text-align: right;
+}
+
+.itemsTable td:nth-last-child(3),
+.itemsTable th:nth-last-child(3) {
+    text-align: center;
+}
+

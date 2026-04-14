@@ -8,7 +8,7 @@ import * as Utils from '../utilities.js';
 import { sizeList, ADULT_HOOD_STYLE_ID } from '../constants.js';
 import { ActionRequest } from "./other-classes.js";
 import { myFetch } from '../fetch.js';
-// do not import runtime, no circular dependencies
+// DO NOT IMPORT RUNTIME, no circular dependencies.
 
 
 	// define how an event works from json
