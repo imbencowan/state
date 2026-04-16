@@ -657,26 +657,6 @@ export async function printInventories({ pages = 3, eSites = runtime.stateEvent.
 	window.open(url, "_blank", "noopener");
 }
 
-// export async function printInventory(btn) {
-// 	if (!btn) return;
-
-// 		// get the eSite
-// 	const cntnr = btn.closest('.invntryCntnr');
-// 	const eSite = runtime.inventoriesBySite[cntnr.dataset.eSiteID];
-	
-// 		// Access jsPDF from the global object
-// 	const { jsPDF } = window.jspdf; 
-//    const doc = new jsPDF('p', 'mm', 'letter');
-
-// 		// generate the inventory
-// 	genInventoryPDF(doc, eSite);
-	
-// 		// Generate a Blob URL and open it in a new tab
-// 	const pdfBlob = doc.output("blob");
-// 	const url = URL.createObjectURL(pdfBlob);
-// 	window.open(url, "_blank", "noopener");
-// }
-
 function genInventoryPDF(doc, eSite, pages) {
 	const page = new InventoryPage(doc);
 	const cursor = page.cursor;
@@ -998,4 +978,449 @@ export function printOMessages() {
 	// unimplemented, place holder
 export function genIHSAATotals() {
 	console.log('IHSAA totals');
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// season stock
+export function printSeasonStockPDF(season, dateRange, stockRows) {
+	if (!season || !Array.isArray(stockRows) || stockRows.length === 0) {
+		openModal("No season stock data found.");
+		return;
+	}
+
+	const rows = buildSeasonStockRows(stockRows);
+	if (rows.length === 0) {
+		openModal("No season stock data found.");
+		return;
+	}
+
+	const { jsPDF } = window.jspdf;
+	const doc = new jsPDF('p', 'mm', 'letter');
+	const page = new InventoryPage(doc);
+	page.colsX = [0, 20, 68, 102, 126, 150, 174, 202];
+	page.lineStep = 5.6;
+
+	writeSeasonStockHeader(doc, page, season, dateRange);
+	writeSeasonStockTable(doc, page, rows);
+
+	const orderRows = buildSeasonOrderRows(rows);
+	if (orderRows.length > 0) {
+		page.addPage();
+		writeSeasonOrderTable(doc, page, orderRows);
+	}
+
+	page.addPage();
+	writeSeasonHoodSizeTable(doc, page, rows);
+
+	const pdfBlob = doc.output("blob");
+	const url = URL.createObjectURL(pdfBlob);
+	window.open(url, "_blank", "noopener");
+}
+
+function buildSeasonStockRows(stockRows) {
+	const allItems = runtime.allItems.getSync();
+
+	const rows = stockRows.map(row => {
+		const item = allItems[row.itemID];
+		if (!item) return null;
+
+		
+		const needed = Number(row.totalQ ?? 0);
+		const stock = Number(row.stock ?? item.stock ?? 0);
+		const shortage = Math.max(needed - stock, 0);
+		const caseQ = Number(item.caseQ ?? 0);
+
+		return {
+			itemID: Number(row.itemID),
+			item: item,
+			style: item.style,
+			color: item.color,
+			size: item.size,
+			stock: stock,
+			needed: needed,
+			shortage: shortage,
+			order: caseQ > 0 ? Math.ceil(shortage / caseQ) : 0
+		};
+	}).filter(Boolean);
+
+	rows.sort((a, b) => {
+		const styleDiff = (a.style.listOrder ?? 999) - (b.style.listOrder ?? 999);
+		if (styleDiff !== 0) return styleDiff;
+
+		const colorDiff = a.color.name.localeCompare(b.color.name);
+		if (colorDiff !== 0) return colorDiff;
+
+		return sizeList.indexOf(a.size.displayChar) - sizeList.indexOf(b.size.displayChar);
+	});
+
+	return rows;
+}
+
+function writeSeasonStockHeader(doc, page, season, dateRange) {
+	doc.setFont(undefined, 'bold');
+	page.textToCell(`${season.name} Stock`, 'left');
+	doc.setFont(undefined, 'normal');
+
+	page.newLine();
+	page.textToCell(`${dateRange.start} to ${dateRange.end}`, 'left');
+	page.newLine(2);
+}
+
+function writeSeasonStockTable(doc, page, rows) {
+	writeSeasonTable(doc, page, rows, {
+		title: 'All Season Stock',
+		headers: ['Style', 'Color', 'Size', 'Stock', 'Needed', 'Delta Cases'],
+		colPositions: [1, 2, 3, 4, 5, 6],
+		writeRow(page, row) {
+			page.textToCell(getSeasonStockSizeCell(row));
+			page.textToCell(row.stock);
+			page.textToCell(row.needed);
+			page.textToCell(row.order);
+		}
+	});
+}
+
+function writeSeasonOrderTable(doc, page, rows) {
+	writeSeasonTable(doc, page, rows, {
+		title: 'To Order',
+		headers: ['Style', 'Color', 'Size', 'Order'],
+		colPositions: [1, 2, 3, 4],
+		writeRow(page, row) {
+			page.textToCell(getSeasonStockSizeCell(row));
+			page.textToCell(row.order);
+		}
+	});
+}
+
+function getSeasonStockSizeCell(row) {
+	if (row.style.sizingCategoryID === 4) return '';
+	return row.size.displayChar === 'O' ? '' : row.size.displayChar;
+}
+
+function buildSeasonOrderRows(rows) {
+	const allItems = runtime.allItems.getSync();
+	const merged = new Map();
+
+	rows.forEach(row => {
+		const targetItem = getSeasonOrderTargetItem(row, allItems);
+		if (!targetItem) return;
+
+		const key = targetItem.id;
+		if (!merged.has(key)) {
+			merged.set(key, {
+				itemID: targetItem.id,
+				item: targetItem,
+				style: targetItem.style,
+				color: targetItem.color,
+				size: targetItem.size,
+				nativeNeeded: 0,
+				nativeStock: Number(targetItem.stock ?? 0),
+				borrowNeeded: 0,
+				borrowStock: 0,
+				order: 0
+			});
+		}
+
+		const targetRow = merged.get(key);
+		if (row.style.shortName === 'Dairy Hoods' && targetItem.style?.shortName === 'Adult Hoods') {
+			targetRow.borrowNeeded += row.needed;
+			targetRow.borrowStock += row.stock;
+		} else {
+			targetRow.nativeNeeded += row.needed;
+		}
+	});
+
+	const orderRows = Array.from(merged.values()).map(row => {
+		const caseQ = Number(row.item.caseQ ?? 0);
+		const isAshAdultHood = row.style?.shortName === 'Adult Hoods'
+			&& row.color?.name?.toLowerCase().includes('ash');
+
+		let totalOrderCases = 0;
+		if (isAshAdultHood && row.borrowNeeded > 0) {
+			const stockCases = toCases(row.nativeStock, caseQ, Math.floor);
+			const nativeNeededCases = toCases(row.nativeNeeded, caseQ, Math.ceil);
+			const borrowNeededCases = toCases(row.borrowNeeded, caseQ, Math.ceil);
+			const borrowStockCases = toCases(row.borrowStock, caseQ, Math.floor);
+			const canCoverNativeAndBorrow = row.nativeStock >= (row.nativeNeeded + row.borrowNeeded);
+
+			totalOrderCases = canCoverNativeAndBorrow
+				? 0
+				: Math.max(nativeNeededCases - stockCases, 0) + Math.max(borrowNeededCases - borrowStockCases, 0);
+		} else {
+			const nativeShortage = Math.max(row.nativeNeeded - row.nativeStock, 0);
+			const borrowShortage = Math.max(row.borrowNeeded - row.borrowStock, 0);
+			const canCoverNativeAndBorrow = row.nativeStock >= (row.nativeNeeded + row.borrowNeeded);
+			const totalUnits = canCoverNativeAndBorrow
+				? nativeShortage
+				: nativeShortage + borrowShortage;
+
+			totalOrderCases = caseQ > 0 ? Math.ceil(totalUnits / caseQ) : 0;
+		}
+
+		row.order = totalOrderCases;
+		return row;
+	}).filter(row => row.order > 0);
+
+	orderRows.sort((a, b) => {
+		const styleDiff = (a.style.listOrder ?? 999) - (b.style.listOrder ?? 999);
+		if (styleDiff !== 0) return styleDiff;
+
+		const colorDiff = a.color.name.localeCompare(b.color.name);
+		if (colorDiff !== 0) return colorDiff;
+
+		return sizeList.indexOf(a.size.displayChar) - sizeList.indexOf(b.size.displayChar);
+	});
+
+	return orderRows;
+
+	function toCases(quantity, caseQ, roundFn = Math.ceil) {
+		if (!quantity) return 0;
+		if (!caseQ) return quantity;
+		return roundFn(quantity / caseQ);
+	}
+}
+
+function getSeasonOrderTargetItem(row, allItems) {
+	if (row.style.shortName !== 'Dairy Hoods') return row.item;
+
+	return Object.values(allItems).find(item =>
+		item.style?.shortName === 'Adult Hoods'
+		&& item.color?.id === row.color.id
+		&& item.size?.id === row.size.id
+	) || row.item;
+}
+
+function writeSeasonHoodSizeTable(doc, page, rows) {
+	const hoodData = buildSeasonHoodSizeData(rows);
+	const hoodSizes = sizeList.slice(0, 7);
+
+	page.colsX = [0, 20, 60, 80, 100, 120, 140, 160, 180, 200];
+	page.lineStep = 6;
+
+	doc.setFont(undefined, 'bold');
+	page.textToCell('Hood Size Summary', 'left');
+	doc.setFont(undefined, 'normal');
+	page.newLine(2);
+
+	const xStart = page.colsX[1];
+	const xEnd = page.colsX[9];
+	const yTop = page.cursor.y + 2;
+
+	page.hr(.2, xStart, xEnd);
+	page.newLine();
+	page.col = 1;
+	page.textToCell('');
+	hoodSizes.forEach(size => page.textToCell(size));
+	page.hr(.2, xStart, xEnd);
+
+	const rowLabels = [
+		['needHoods', 'Need Hoods'],
+		['stockHoods', 'Stock Hoods'],
+		['toGarage', 'To Garage'],
+		['needDairy', 'Need Dairy'],
+		['stockDairy', 'Stock Dairy'],
+		['toBasement', 'To Basement'],
+		['order', 'Order']
+	];
+
+	rowLabels.forEach(([key, label]) => {
+		page.newLine();
+		page.col = 1;
+		page.textToCell(label, 'left');
+		hoodSizes.forEach(size => {
+			const value = hoodData[key][size];
+			page.textToCell(value === 0 ? '' : value);
+		});
+		page.hr(.2, xStart, xEnd);
+	});
+
+	const yBottom = page.cursor.y + 2.6;
+	for (let i = 1; i <= 9; ++i) {
+		doc.line(page.colsX[i], yTop, page.colsX[i], yBottom);
+	}
+}
+
+function buildSeasonHoodSizeData(rows) {
+	console.log(rows);
+	const hoodSizes = sizeList.slice(0, 7);
+	const data = {
+		rawStockHoods: Object.fromEntries(hoodSizes.map(size => [size, 0])),
+		rawNeedHoods: Object.fromEntries(hoodSizes.map(size => [size, 0])),
+		stockHoods: Object.fromEntries(hoodSizes.map(size => [size, 0])),
+		needHoods: Object.fromEntries(hoodSizes.map(size => [size, 0])),
+		toGarage: Object.fromEntries(hoodSizes.map(size => [size, 0])),
+		rawStockDairy: Object.fromEntries(hoodSizes.map(size => [size, 0])),
+		rawNeedDairy: Object.fromEntries(hoodSizes.map(size => [size, 0])),
+		stockDairy: Object.fromEntries(hoodSizes.map(size => [size, 0])),
+		needDairy: Object.fromEntries(hoodSizes.map(size => [size, 0])),
+		toBasement: Object.fromEntries(hoodSizes.map(size => [size, 0])),
+		order: Object.fromEntries(hoodSizes.map(size => [size, 0])),
+		hoodCaseQ: Object.fromEntries(hoodSizes.map(size => [size, 0])),
+		dairyCaseQ: Object.fromEntries(hoodSizes.map(size => [size, 0]))
+	};
+
+	rows.forEach(row => {
+		const size = row.size.displayChar;
+		if (!hoodSizes.includes(size)) return;
+
+		if (row.style.shortName === 'Adult Hoods' && row.color?.name?.toLowerCase().includes('ash')) {
+			data.rawStockHoods[size] += row.stock;
+			data.rawNeedHoods[size] += row.needed;
+			data.stockHoods[size] += row.stock;
+			data.needHoods[size] += row.needed;
+			data.hoodCaseQ[size] = Number(row.item.caseQ ?? 0);
+		}
+
+		if (row.style.shortName === 'Dairy Hoods') {
+			data.rawStockDairy[size] += row.stock;
+			data.rawNeedDairy[size] += row.needed;
+			data.stockDairy[size] += row.stock;
+			data.needDairy[size] += row.needed;
+			data.dairyCaseQ[size] = Number(row.item.caseQ ?? 0);
+		}
+	});
+
+	console.log(data);
+
+	hoodSizes.forEach(size => {
+		const canCoverHoodsAndDairy = data.rawStockHoods[size] >= (data.rawNeedHoods[size] + data.rawNeedDairy[size]);
+
+		// const hoodShortage = Math.max(data.needHoods[size] - data.stockHoods[size], 0);
+		// const hoodSurplus = Math.max(data.stockHoods[size] - data.needHoods[size], 0);
+		// const dairyShortage = Math.max(data.needDairy[size] - data.stockDairy[size], 0);
+
+		// const totalOrderUnits = hoodShortage + Math.max(dairyShortage - hoodSurplus, 0);
+		// data.order[size] = toCases(totalOrderUnits, data.hoodCaseQ[size] || data.dairyCaseQ[size]);
+		data.stockHoods[size] = toCases(data.stockHoods[size], data.hoodCaseQ[size], Math.floor);
+		data.needHoods[size] = toCases(data.needHoods[size], data.hoodCaseQ[size], Math.ceil);
+		data.toGarage[size] = Math.max(0, data.needHoods[size] - data.stockHoods[size]);
+
+		data.stockDairy[size] = toCases(data.stockDairy[size], data.dairyCaseQ[size], Math.floor);
+		data.needDairy[size] = toCases(data.needDairy[size], data.dairyCaseQ[size], Math.ceil);
+		data.toBasement[size] = canCoverHoodsAndDairy ? 0 : Math.max(0, data.needDairy[size] - data.stockDairy[size]);
+		
+		data.order[size] = canCoverHoodsAndDairy ? 0 : data.toBasement[size] + data.toGarage[size];
+	});
+
+	return data;
+
+	function toCases(quantity, caseQ, roundFn = Math.ceil) {
+   if (!quantity) return 0;
+   if (!caseQ) return quantity;
+   return roundFn(quantity / caseQ);
+}
+}
+
+function writeSeasonTable(doc, page, rows, config) {
+	let currentStyleID = null;
+	let currentColorKey = null;
+	let styleStartY = null;
+	let colorStartY = null;
+	let lastRowY = null;
+
+	doc.setFont(undefined, 'bold');
+	page.textToCell(config.title, 'left');
+	doc.setFont(undefined, 'normal');
+	page.newLine(2);
+
+	writeSeasonStockTableHead(doc, page, config.headers, config.colPositions);
+
+	rows.forEach((row, i) => {
+		if (page.cursor.y > page.pageBreakY) {
+			closeSeasonStockSpans(doc, page, config.colPositions, currentStyleID, currentColorKey, styleStartY, colorStartY, lastRowY);
+			page.addPage();
+			doc.setFont(undefined, 'bold');
+			page.textToCell(config.title, 'left');
+			doc.setFont(undefined, 'normal');
+			page.newLine(2);
+			writeSeasonStockTableHead(doc, page, config.headers, config.colPositions);
+			currentStyleID = null;
+			currentColorKey = null;
+			styleStartY = null;
+			colorStartY = null;
+		}
+
+		const colorKey = `${row.style.id}-${row.color.id}`;
+		const showStyle = currentStyleID !== row.style.id;
+		const showColor = currentColorKey !== colorKey;
+		let hrStartX = page.colsX[config.colPositions[0]];
+		if (!showStyle) hrStartX = page.colsX[config.colPositions[1]];
+		if (!showColor) hrStartX = page.colsX[config.colPositions[2]];
+
+		page.hr(.2, hrStartX, page.colsX[config.colPositions[config.colPositions.length - 1] + 1]);
+		page.newLine();
+
+		if (showStyle) {
+			if (currentStyleID !== null && styleStartY !== null && lastRowY !== null) {
+				drawSeasonStockSpan(doc, page.colsX[config.colPositions[0]], page.colsX[config.colPositions[1]], styleStartY, lastRowY);
+			}
+
+			currentStyleID = row.style.id;
+			styleStartY = page.cursor.y;
+			page.col = config.colPositions[0];
+			page.textToCell(row.style.shortName, row.style.sizingCategoryID === 2 ? 'right' : 'left');
+		} else {
+			page.col = config.colPositions[1];
+		}
+
+		if (showColor) {
+			if (currentColorKey !== null && colorStartY !== null && lastRowY !== null) {
+				drawSeasonStockSpan(doc, page.colsX[config.colPositions[1]], page.colsX[config.colPositions[2]], colorStartY, lastRowY);
+			}
+
+			currentColorKey = colorKey;
+			colorStartY = page.cursor.y;
+			page.col = config.colPositions[1];
+			page.textToCell(row.color.name, 'left');
+		} else {
+			page.col = config.colPositions[2];
+		}
+
+		page.col = config.colPositions[2];
+		config.writeRow(page, row);
+		lastRowY = page.cursor.y;
+
+		if (i === rows.length - 1) {
+			closeSeasonStockSpans(doc, page, config.colPositions, currentStyleID, currentColorKey, styleStartY, colorStartY, lastRowY);
+		}
+	});
+
+	page.hr(.2, page.colsX[config.colPositions[0]], page.colsX[config.colPositions[config.colPositions.length - 1] + 1]);
+}
+
+function writeSeasonStockTableHead(doc, page, headers, colPositions) {
+	const yGridStart = page.cursor.y + 2;
+
+	page.hr(.2, page.colsX[colPositions[0]], page.colsX[colPositions[colPositions.length - 1] + 1]);
+	page.newLine();
+	headers.forEach((th, i) => {
+		page.col = colPositions[i];
+		page.textToCell(th);
+	});
+	page.hr(.2, page.colsX[colPositions[0]], page.colsX[colPositions[colPositions.length - 1] + 1]);
+
+	page._seasonStockGridStartY = yGridStart;
+	page._seasonStockGridEndY = page.cursor.y + 2;
+}
+
+function drawSeasonStockSpan(doc, x1, x2, startY, endY) {
+	if (startY == null || endY == null) return;
+
+	doc.rect(x1, startY - 3.2, x2 - x1, (endY - startY) + 5.8);
+}
+
+function closeSeasonStockSpans(doc, page, colPositions, currentStyleID, currentColorKey, styleStartY, colorStartY, lastRowY) {
+	if (currentStyleID !== null && styleStartY !== null && lastRowY !== null) {
+		drawSeasonStockSpan(doc, page.colsX[colPositions[0]], page.colsX[colPositions[1]], styleStartY, lastRowY);
+	}
+
+	if (currentColorKey !== null && colorStartY !== null && lastRowY !== null) {
+		drawSeasonStockSpan(doc, page.colsX[colPositions[1]], page.colsX[colPositions[2]], colorStartY, lastRowY);
+	}
+
+	const gridStart = page._seasonStockGridStartY;
+	const gridEnd = lastRowY ? lastRowY + 2.6 : page._seasonStockGridEndY;
+	page.colsX.slice(colPositions[0], colPositions[colPositions.length - 1] + 2).forEach(x => {
+		doc.line(x, gridStart, x, gridEnd);
+	});
 }

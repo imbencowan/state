@@ -216,6 +216,80 @@ class Event extends BasicTableModel {
 
 		return [ 'invItems' => $invItems, 'transfers' => $transfers ];
 	}
+
+	public static function fetchDateRange(string $start, string $end): array {
+		$where = new Where('startDate', [$start, $end], 'BETWEEN', ['events']);
+		$events = self::getAllFromDB(context: 'orders', where: $where);
+		usort($events, function($a, $b) { return $a->startDate <=> $b->startDate; });
+
+		return array_values($events);
+	}
+
+		// this function is to calculate what stock we need for a given season
+	public static function getStockByDateRange(string $start, string $end): array {
+			// build a WHERE to SELECT events between dates passed in.
+		$where = new Where('startDate', [$start, $end], 'BETWEEN', ['events']);
+			// build a query to get the sum of eventsiteinventories for those events
+		$query = "SELECT eventsiteinventories.itemID,
+							SUM(eventsiteinventories.startQ) AS totalQ
+					FROM events
+					JOIN eventsites
+						ON events.eventID = eventsites.eventID
+					JOIN eventsiteinventories
+						ON eventsites.eventSiteID = eventsiteinventories.eventSiteID"
+					. $where->getWhereString() .
+					" GROUP BY eventsiteinventories.itemID
+					  ORDER BY eventsiteinventories.itemID";
+
+		$stockRows = self::getFromDB($query);
+
+			// get the sum of sorderitems we did for this date range in the previous year
+		$priorStart = (new DateTime($start))->modify('-1 year')->format('Y-m-d');
+		$priorEnd = (new DateTime($end))->modify('-1 year')->format('Y-m-d');
+		$priorWhere = new Where('startDate', [$priorStart, $priorEnd], 'BETWEEN', ['events']);
+		$priorQuery = "SELECT sorderitems.itemID,
+								SUM(sorderitems.sOrderItemsQuantity) AS totalQ
+						FROM events
+						JOIN eventsites
+							ON events.eventID = eventsites.eventID
+						JOIN eventsitehasdivision
+							ON eventsites.eventSiteID = eventsitehasdivision.eventSiteID
+						JOIN schoolorders
+							ON eventsitehasdivision.eventSiteHasDivisionID = schoolorders.eventSiteHasDivisionID
+						JOIN sorderitems
+							ON schoolorders.schoolOrderID = sorderitems.schoolOrderID"
+						. $priorWhere->getWhereString() .
+						" GROUP BY sorderitems.itemID
+						  ORDER BY sorderitems.itemID";
+
+		$priorRows = self::getFromDB($priorQuery);
+
+			// merge the results of the two queries. sorderitems can include retail items as part of a schoolorder
+		$merged = [];
+		foreach ($stockRows as $row) {
+			$itemID = $row['itemID'];
+			$merged[$itemID] = [
+				'itemID' => $itemID,
+				'totalQ' => (int) $row['totalQ']
+			];
+		}
+
+		foreach ($priorRows as $row) {
+			$itemID = $row['itemID'];
+			if (!isset($merged[$itemID])) {
+				$merged[$itemID] = [
+					'itemID' => $itemID,
+					'totalQ' => 0
+				];
+			}
+
+			$merged[$itemID]['totalQ'] += (int) $row['totalQ'];
+		}
+
+			// sort and return
+		ksort($merged);
+		return array_values($merged);
+	}
 	
 	
 	

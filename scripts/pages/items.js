@@ -43,6 +43,7 @@ function buildTopBtnCntnr() {
 function buildTopButtons() {
    const buttons = [
       { type: "editStock", title: "edit stock", icon: "edit", text: " Stock", classes: ["editStock"] },
+      { type: "incrementStock", title: "increment stock", icon: "add", text: " Stock", classes: ["incrementStock"] },
       { type: "editPrices", title: "edit prices", icon: "edit", text: " Prices", classes: ["editPrices"] }
    ];
 
@@ -54,6 +55,7 @@ function buildGarmentsTable(garments) {
       children: [
          buildElement("col", { classes: "left" }),
          buildElement("col", { classes: "left" }),
+         buildElement("col", { classes: "center" }),
          buildElement("col", { classes: "center" }),
          buildElement("col", { classes: "right" }),
          buildElement("col", { classes: "right" })
@@ -67,7 +69,7 @@ function buildGarmentsTable(garments) {
 }
 
 function buildGarmentsTHead() {
-   const thTexts = [ 'Style', 'Color', 'Size', 'Price', 'Stock' ];
+   const thTexts = [ 'Style', 'Color', 'ID', 'Size', 'Price', 'Stock' ];
    const thRow = buildElement("tr");
 
    thTexts.forEach(t => {
@@ -86,6 +88,7 @@ function buildGarmentRows(garments) {
             const tds = [];
             if (i === 0 && j === 0) tds.push(buildElement("td", { text: style.shortName, attrs: { rowspan: getStyleRowCount(style) } }));
             if (j === 0) tds.push(buildElement("td", { text: color.name, attrs: { rowspan: color.sizes.length } }));
+            tds.push(buildElement("td", { text: item.id }));
             tds.push(buildElement("td", { text: item.size.displayChar }));
             tds.push(buildElement("td", { text: item.price, dataset: { oPrice: item.price } }));
             tds.push(buildElement("td", { text: item.stock, dataset: { oStock: item.stock } }));
@@ -127,8 +130,10 @@ export function addItemsPageFunctionality() {
       const topLevelActions = {
             // orders panel actions
          'button.editStock': () => showEditStock(target),
+         'button.incrementStock': () => showIncrementStock(target),
          'button.editPrices': () => showEditPrices(target),
          'button.submitStockUpdate': () => submitStockUpdate(target),
+         'button.submitStockIncrement': () => submitStockIncrement(target),
          'button.cancelStockUpdate': () => cancelStockUpdate(target)
       };
 
@@ -168,11 +173,28 @@ function showEditStock(btn) {
    makeSubmitCancelButtons(btn.parentElement, tbl, 'items', 'StockUpdate');
 }
 
-function makeStockInput(td) {
+function showIncrementStock(btn) {
+   runtime.activeMode = 'edit';
+
+   const tbl = document.getElementById('allGarmentsTable');
+   const tds = tbl.querySelectorAll('td[data-o-stock]');
+
+   tds.forEach(td => {
+      const inpt = makeStockInput(td, 0);
+      td.textContent = '';
+      td.appendChild(inpt);
+   });
+
+   tds[0]?.querySelector('input')?.focus();
+
+   makeSubmitCancelButtons(btn.parentElement, tbl, 'items', 'StockIncrement');
+}
+
+function makeStockInput(td, value = td.dataset.oStock) {
 	const input = document.createElement('input');
 		input.type = 'number';
 		input.name = `stock${td.parentElement.dataset.itemId}`;
-		input.value = td.dataset.oStock;
+		input.value = value;
 		input.min = 0; 
 		input.max = 5000;
 		input.step = 1;
@@ -241,8 +263,53 @@ function cancelStockUpdate(btn) {
          // reset the buttons
       resetTopButtons(btn);
    
-         // unset activeMode
+      // unset activeMode
       runtime.activeMode = null;
+}
+
+async function submitStockIncrement(btn) {
+	const itemsMap = runtime.allItems.getSync();
+
+   const tbl = document.getElementById('allGarmentsTable');
+   const tds = tbl.querySelectorAll('td[data-o-stock]');
+
+   const updateItems = [];
+
+   tds.forEach(td => {
+      const incrementValue = Number(td.querySelector('input').value);
+		if (incrementValue !== 0) {
+         const itemID = Number(td.parentElement.dataset.itemID);
+         const newStock = Number(td.dataset.oStock) + incrementValue;
+
+			updateItems.push({
+				itemID: itemID,
+				stock: newStock,
+			});
+		}
+   });
+
+	if (updateItems.length) {
+		const data = { 'update': updateItems };	
+		const request = new ActionRequest('updateRowsByIDs', 'Item', data);
+		let responseJSON = await myFetch(request);
+
+		if (responseJSON.success) {
+			tds.forEach(td => {
+            const incrementValue = Number(td.querySelector('input').value);
+            const newStock = Number(td.dataset.oStock) + incrementValue;
+				td.textContent = newStock;
+				td.dataset.oStock = td.textContent;
+			});
+
+			runtime.allItems.refresh();
+			resetTopButtons(btn);
+			runtime.activeMode = null;
+		} else {
+			openModal("there was a problem submitting the stock increment");
+		}
+	} else {
+		cancelStockUpdate(btn);
+	}
 }
 
 function resetTopButtons(btn) {

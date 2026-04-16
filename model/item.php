@@ -10,7 +10,10 @@ class Item extends BasicTableModel {
 					'sizeID' => 'sizeID', 
 					'colorID' => 'colorID', 
 					'price' => 'price', 
-					'stock' => 'stock']; 
+					'stock' => 'stock',
+					'caseQ' => 'caseQ',
+					'inventoryMin' => 'inventoryMinimum',
+					'inventoryStep' => 'inventoryStep']; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
 			// $interTable = null, $stopContexts = [])
@@ -26,6 +29,9 @@ class Item extends BasicTableModel {
 		public readonly ?int $sizeID,
 		public readonly ?int $colorID,
       public readonly ?float $price,
+      public readonly ?int $caseQ = 0,
+      public readonly ?int $inventoryMin = 0,
+      public readonly ?int $inventoryStep = 0,
       public readonly ?Color $color = null,
       public readonly ?Style $style = null,
       public readonly ?Size $size = null,

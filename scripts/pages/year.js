@@ -5,13 +5,15 @@ import { myFetch } from '../fetch.js';
 import { ActionRequest } from '../models/other-classes.js';
 import { arraysEqualIgnoreOrder } from '../utilities.js';
 import { openModal } from '../modal.js';
-import { EventSite, Site } from '../models/db-classes.js';
+import { EventSite, Season, Site } from '../models/db-classes.js';
 import { showPage } from './page-handling.js';
+import { printSeasonStockPDF } from '../print.js';
 
 export async function goToYearPage() {
    const data = { year: document.getElementById('selectYear').value };
 
    await showPage('showYear', 'Year', data);
+   await runtime.allSeasons.load();
 
    addShowYearFunctionality();
 }
@@ -30,7 +32,8 @@ export function addShowYearFunctionality() {
          'editRow': () => { if (!runtime.activeMode) showRowEdit(btn); },
          'cancelRowEdit': () => cancelRowEdit(btn),
          'submitRowEdit': () => submitRowEdit(btn),
-         'addYear': () => showAddYear()
+         'addYear': () => showAddYear(),
+         'getSeasonStock': () => showSeasonStock()
       };
 
       for (const slct in actions) {
@@ -123,6 +126,7 @@ async function makeSiteSlct(td) {
 }
 
    // make a select for divisions
+      // omitted. editing divisions in row is currently prevented
 async function makeDvsnSlct(td) {
    const allDivisions = await runtime.allDivisions.load();
 
@@ -695,4 +699,40 @@ async function parseYear(txt) {
          es.esDivisions = divs;
       });
    }
+}
+
+
+   // 
+async function showSeasonStock() {
+   const allSeasons = Object.values(await runtime.allSeasons.load());
+   await runtime.allItems.load();
+
+   const season = Season.getNextSeason(allSeasons);
+   if (!season) {
+      openModal('No next season found.');
+      return;
+   }
+
+   const dateRange = getNextSeasonDateRange(season);
+   const request = new ActionRequest('getStockByDateRange', 'Event', dateRange);
+   const responseJSON = await myFetch(request);
+   if (!responseJSON?.success) return;
+
+   printSeasonStockPDF(season, dateRange, responseJSON.data);
+}
+
+function getNextSeasonDateRange(season) {
+   const now = new Date();
+   const currentYear = now.getFullYear();
+   const today = ((now.getMonth() + 1) * 100) + now.getDate();
+   const start = (season.startMonth * 100) + season.startDay;
+   const crossesYear = start > ((season.endMonth * 100) + season.endDay);
+
+   const startYear = start > today ? currentYear : currentYear + 1;
+   const endYear = crossesYear ? startYear + 1 : startYear;
+
+   return {
+      start: `${startYear}-${String(season.startMonth).padStart(2, '0')}-${String(season.startDay).padStart(2, '0')}`,
+      end: `${endYear}-${String(season.endMonth).padStart(2, '0')}-${String(season.endDay).padStart(2, '0')}`
+   };
 }

@@ -1,7 +1,7 @@
 	//////////////////// a container to hold data at runtime
 	// holds page data, made available to the console
 import { makeDataLoader } from "./utilities.js";
-import { Color, Division, Employee, Item, Person, School, Site, Size, Sport, Style, Transfer, Vehicle } 
+import { Color, Division, Employee, Item, Person, School, Season, Site, Size, Sport, Style, Transfer, Vehicle } 
 			from "./models/db-classes.js";
 
 export const runtime = {
@@ -24,6 +24,7 @@ export const runtime = {
 	allStyles: makeDataLoader('Style', Style),
 	allTransfers: makeDataLoader('Transfer', Transfer),
 	allVehicles: makeDataLoader('Vehicle', Vehicle),
+	allSeasons: makeDataLoader('Season', Season),
 		// this one prevents different actions being called while others are still open
 	activeMode: undefined
 };
