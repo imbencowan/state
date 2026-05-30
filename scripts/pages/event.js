@@ -1562,7 +1562,7 @@ async function uploadQualifiers() {
 		});
 	});
 	
-	// console.log(upSchools);
+	console.log(upSchools);
 
 	let esdIDs = {};
 	

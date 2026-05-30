@@ -1,8 +1,9 @@
 import { runtime } from './runtime.js';
-import { Label, InvoicePage, SoSPage, InventoryPage } from './models/output-classes.js';
+import { Label, InvoicePage, SoSPage, InventoryPage, labelPage } from './models/output-classes.js';
 import { sizeList, ADULT_HOOD_STYLE_ID } from './constants.js';
 import { openModal } from './modal.js';
 import { EventSite } from './models/db-classes.js';
+import * as Helpers from './printHelpers.js';
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // generating box labels
@@ -54,7 +55,7 @@ export function printUndoneBoxLabels() {
 
 	// actual label generation
 function genBoxLabel(doc, order, originI, lblN = 1) {
-	// drawLabelRects(doc);
+	drawLabelRects(doc);
 	
 	const lbl = new Label(doc, originI, order.getBoxTotal(), lblN);	
 		
@@ -71,9 +72,12 @@ function genBoxLabel(doc, order, originI, lblN = 1) {
 
 	let minSize = order.getMinSize();
 	let maxSize = order.getMaxSize();
-	if ((maxSize - minSize) > 5) lbl.gridStep = 7.8;
+	let szCnt = maxSize - minSize;
+		// we should expand on this
+	if (szCnt > 5) lbl.gridStep = 7.8;
 
-	
+
+		// label team line
 	lbl.lineY += 8;
 	lbl.addGridSizes(order.getMinSize(), order.getMaxSize());
 	lbl.lineY += 4.5;
@@ -85,20 +89,41 @@ function genBoxLabel(doc, order, originI, lblN = 1) {
 		lbl.addGridQuantities(order.getTeamStyle(), order.getMinSize(), order.getMaxSize());
 	}
 	
-		// only do this if there are additional styles in order.shirtsByStyle
-	if (order.shirtsByStyle.length > 1) {
-		lbl.lineY += 8;
+		// only do this if there are additional styles in order.shirtsByStyle OR added transfers
+	if (order.shirtsByStyle.length > 1 || order.oTransfers.length) {
 		doc.setTextColor('666666');
-		doc.text("Additional", lbl.indentX, lbl.lineY);
-			// omit Dairy Hoods
-		order.getAddedStyles().forEach(style => {
+		let trnsfrLines = (order.oTransfers.length) ? 1 : 0;
+			// only print 'Additional' if space permits
+		if ((order.getAddedStyles().length + trnsfrLines) < 5) {
+			lbl.lineY += 8;
+			doc.text("Additional", lbl.indentX, lbl.lineY);
+		}
+			// make each line of added shirts, if there are any
+		if (order.shirtsByStyle.length > 1) {
+				// omit Dairy Hoods by only using AddedStyles
+			order.getAddedStyles().forEach(style => {
+				lbl.lineY += 6;
+				doc.text(style.shortName, lbl.alignX, lbl.lineY);
+				lbl.addGridQuantities(style, order.getMinSize(), order.getMaxSize());
+			});
+		}
+			// make a line for the number of transfers added
+				// adding a line for each potential transfer is beyond the scope of this label. 
+					// itemization is for the invoice
+						// this label specifies what is in this box, and a total number of transfers accomplishes that
+		if (order.oTransfers.length) {
+			let ttlTrnsfrs = 0
+			order.oTransfers.forEach(t => {
+				ttlTrnsfrs += t.quantity;
+			});
 			lbl.lineY += 6;
-			doc.text(style.shortName, lbl.alignX, lbl.lineY);
-			lbl.addGridQuantities(style, order.getMinSize(), order.getMaxSize());
-		});
+			doc.text('transfers', lbl.alignX, lbl.lineY);
+			lbl.addGridTotal(ttlTrnsfrs, szCnt);
+		}
 		doc.setFontSize(14);
 		lbl.lineY += 9;
 		doc.setTextColor('#000000');
+			// write amount due for add ons
 		let txt = "Due: $" + order.due;
 		if (!order.paid) {
 			let txtWdth = doc.getTextWidth(txt);
@@ -106,6 +131,7 @@ function genBoxLabel(doc, order, originI, lblN = 1) {
 			doc.rect((lbl.lineX - 1), (lbl.lineY + 1), (txtWdth + 2), -7, "F");
 		}
 		doc.text(txt, lbl.lineX, lbl.lineY);
+			// if order is paid, mark PAID
 		if (order.paid) {
 			doc.setTextColor('#ff0000'); // red
 			let txtWdth = doc.getTextWidth(txt);
@@ -245,24 +271,13 @@ function genSoS(doc, div) {
 	
 	// console.log(div.getMaxSize());
 	
-	const sosSizeList = sizeList.slice(0, 7);
+	sos.sizeList = sizeList.slice(0, 7);
+
 	const addOnOrders = [];
 	
 	
-		// +1 for the totals line
-	const schoolLinesQ = (div.schoolOrders.length + 1);
-	const addOnLinesQ = div.getTeamsWithAddOns().length;
-		// if there are add ons, add 2 for the lines between
-	if (addOnLinesQ.length > 0) addOnLinesQ += 3;
-	
-		// is pageBreakLine never actually used?
-	let pageBreakLine;
-	const totalPageLines = schoolLinesQ + addOnLinesQ;
-	if (totalPageLines > 33) pageBreakLine = 33;
-	
-	
 		// makes an object to hold totals for each line
-	const sizeTotals = Object.fromEntries(sosSizeList.map(k => [k, 0]));
+	const sizeTotals = Object.fromEntries(sos.sizeList.map(k => [k, 0]));
 	const red = '#ff0000';
 	const blue = '#0000ff';
 	const black = '#000000';
@@ -281,35 +296,26 @@ function genSoS(doc, div) {
 	doc.setFontSize(11);
 	
 	let topLineY = cursor.y + 1;
-	doc.line(sos.colsX[4], topLineY, sos.colsX[sos.colsX.length -2], topLineY);
-	
-	sos.newLine();
-	sos.col = 3;
-	sos.textToCell('total');
-	sosSizeList.forEach(s => {
-		sos.textToCell(s);
-	})
+
+	makeSoSGridHead(doc, sos, topLineY);
 	
 		// makes each team's line. a line number, school name, total shirts, and quantity for each size
 	let i = 1;
 	div.schoolOrders.forEach(order => {
-			// draw a grid line
-		doc.line(sos.alignX, (sos.cursor.y + 1), sos.colsX[sos.colsX.length - 2], (sos.cursor.y + 1));
 		sos.newLine();
-			// check if we need a second page
+			// check if we need an additional page
 		if (cursor.y > sos.pageBreakY) {
 				// go back up a line before drawing the vertical grid
 			sos.newLine(-1);
-				// draw the vertical grid
-			for (let i = 4; i < (sos.colsX.length - 1); ++i) {
-				doc.line(sos.colsX[i], topLineY, sos.colsX[i], (cursor.y + 1));
-			}
+				// draw the vertical grid to finish the page
+			makeSoSGridVert(doc, sos, topLineY, cursor);
+
 			sos.addPage();
-				// go up a line and draw the top line
-			sos.newLine(-1)
+				// make the header for the new page
+			makeSoSGridHead(doc, sos, topLineY);
+				//make the first horizontal line before continueing 
 			doc.line(sos.alignX, (sos.cursor.y + 1), sos.colsX[sos.colsX.length - 2], (sos.cursor.y + 1));
 			sos.newLine();
-			topLineY -= sos.lineStep;
 		}
 		sos.textToCell(i, 'right');
 		const name = order.school.shortName;
@@ -332,7 +338,7 @@ function genSoS(doc, div) {
 		let teamStyle = order.getTeamStyle();
 		if (teamStyle) {
 			let shirts = teamStyle.sizeMap;
-			sosSizeList.forEach(size => {
+			sos.sizeList.forEach(size => {
 				let q = '-';
 				if (shirts[size]) {
 					q = shirts[size].quantity;
@@ -341,27 +347,25 @@ function genSoS(doc, div) {
 				sos.textToCell(q);
 			});
 		}
+			// draw a grid line
+		doc.line(sos.alignX, (sos.cursor.y + 1), sos.colsX[sos.colsX.length - 2], (sos.cursor.y + 1));
 		++i;
 	});
-		// the last line
-	doc.line(sos.alignX, (sos.cursor.y + 1), sos.colsX[sos.colsX.length - 2], (sos.cursor.y + 1));
 	
 		// vertical grid lines
-	for (let i = 4; i < (sos.colsX.length - 1); ++i) {
-		doc.line(sos.colsX[i], topLineY, sos.colsX[i], (cursor.y + 1));
-	}
-		// totals line
+	makeSoSGridVert(doc, sos, topLineY, cursor);
+
+		// totals line. probably unnecessary on the actual SoS?
 	sos.newLine();
 	doc.setTextColor(red);
 	sos.col = 2;
 	sos.textToCell('total', 'right');
 	const totalSum = Object.values(sizeTotals).reduce((sum, val) => sum + val, 0);
-	// sos.col = 10;
-	// sos.textToCell(totalSum);
+		// the actual totals
 	doc.setTextColor(blue);
 	sos.col = 3;
 	sos.textToCell(totalSum);
-	sosSizeList.forEach(size => {
+	sos.sizeList.forEach(size => {
 		sos.textToCell(sizeTotals[size]);
 	});
 	
@@ -374,7 +378,7 @@ function genSoS(doc, div) {
 	doc.setTextColor(black);
 	doc.text("add ons:", sos.alignX, cursor.y);
 	sos.col = 4;
-	sosSizeList.forEach(s => {
+	sos.sizeList.forEach(s => {
 		sos.textToCell(s);
 	});
 	sos.newLine();
@@ -386,7 +390,7 @@ function genSoS(doc, div) {
 				// write a header
 			doc.text("add ons:", sos.alignX, cursor.y);
 			sos.col = 4;
-			sosSizeList.forEach(s => {
+			sos.sizeList.forEach(s => {
 				sos.textToCell(s);
 			});
 			sos.newLine();
@@ -415,7 +419,7 @@ function genSoS(doc, div) {
 			}
 			sos.col = 4;
 			let shirts = style.sizeMap;
-			sosSizeList.forEach(size => {
+			sos.sizeList.forEach(size => {
 				let q = '';
 				if (shirts[size]) {
 					q = shirts[size].quantity;
@@ -425,7 +429,36 @@ function genSoS(doc, div) {
 			});
 			sos.newLine();
 		});
+
+		console.log(order.oTransfers);
+		if (order.oTransfers.length) {
+			sos.col = 3;
+			sos.textToCell('Transfers', 'right');
+			sos.col = 4;
+			sos.textToCell(order.getTotalTransfers());
+			sos.newLine();
+		}
 	});
+} 
+
+function makeSoSGridHead(doc, sos, y){
+	doc.line(sos.colsX[4], y, sos.colsX[sos.colsX.length -2], y);
+
+	sos.newLine();
+	sos.col = 3;
+	sos.textToCell('total');
+	sos.sizeList.forEach(s => {
+		sos.textToCell(s);
+	});
+
+		// draw the first grid line
+	doc.line(sos.alignX, (sos.cursor.y + 1), sos.colsX[sos.colsX.length - 2], (sos.cursor.y + 1));
+}
+
+function makeSoSGridVert(doc, sos, topY, cursor) {
+	for (let i = 4; i < (sos.colsX.length - 1); ++i) {
+		doc.line(sos.colsX[i], topY, sos.colsX[i], (cursor.y + 1));
+	}
 }
 
 
@@ -569,10 +602,11 @@ async function genInvoicePDF(doc, order, type = "Invoice") {
 	doc.text("AMOUNT", invP.colsX[5], invP.lineY);
 	doc.setFont(currentFont, 'normal');
 	
-	let totalShirts = 0;
+	let totalItems = 0;
 	let totalDollars = 0;
 	
 	invP.lineDown();
+		// first list shirts ordered
 	for (const style of order.shirtsByStyle) {
 		if (style.shortName != 'Dairy Hoods') {
 			for (const shirt of style.sizes) {
@@ -584,15 +618,27 @@ async function genInvoicePDF(doc, order, type = "Invoice") {
 				invP.cell(`$${item.price}`, 4);
 				invP.cell(`$${shirt.quantity * item.price}`, 5, 1, 'right');
 				invP.lineDown();
-				totalShirts += shirt.quantity;
+				totalItems += shirt.quantity;
 				totalDollars += (shirt.quantity * item.price);
 			}
 		}
 	}
+		// now list any transfers
+	for (const oTrnsfr of order.oTransfers) {
+				let quantPrice = oTrnsfr.quantity * oTrnsfr.price;
+
+				invP.cell(Helpers.getTransferInvoiceName(oTrnsfr.transfer), 1, 2, 'left');
+				invP.cell(String(oTrnsfr.quantity), 3);
+				invP.cell(`$${oTrnsfr.price}`, 4);
+				invP.cell(`$${quantPrice}`, 5, 1, 'right');
+				invP.lineDown();
+				totalItems += oTrnsfr.quantity;
+				totalDollars += (quantPrice);
+	}
 	
 	
 	invP.lineDown(2);
-	doc.text(`Total Ordered:   ${totalShirts}`, invP.colsX[3], invP.lineY);
+	doc.text(`Total Ordered:   ${totalItems}`, invP.colsX[3], invP.lineY);
 	
 	invP.lineDown();
 	doc.line(invP.colsX[3], invP.lineY, invP.colsX[4], invP.lineY);
@@ -883,7 +929,7 @@ function inventoryEndAddendum(page) {
 function inventorySoldAddendum(page, eSite) {
 	const trnsfrs = Object.values(eSite.getInventoryTransfers());
 	const tNames = new Set(trnsfrs.map(t => t.transfer.transferName));
-	console.log(tNames);
+	// console.log(tNames);
 
 
 		// print the transfers to record how many sold
@@ -901,7 +947,11 @@ function inventorySoldAddendum(page, eSite) {
 		page.textToCell('3-PEAT', 'right');
 	}
 
-	if (tNames.has("#s")) {
+	if (tNames.has("#s") && tNames.has("positions")) {
+		page.newLine(1.6);
+		page.textToCell('#s / positions', 'right');
+		console.log("positions");
+	} else if (tNames.has("#s")) {
 		page.newLine(1.6);
 		page.textToCell('#s', 'right');
 	}

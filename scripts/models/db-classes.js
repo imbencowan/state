@@ -458,7 +458,7 @@ export class Division {
 export class SchoolOrder {
    constructor({ id, eshdID, school, genderID, qualifiers = 0, completeness = 0, due = null, paid = null, 
                schoolOrderNote = null, invoiceDate = null, invoiceVersion = null, messageOrders = [], 
-               shirtsByStyle = [], site = undefined, sport = undefined }) {
+               shirtsByStyle = [], oTransfers = [], site = undefined, sport = undefined }) {
       this.id = id;
       this.eshdID = eshdID;
       this.school = Utils.parseToInstance(school, School);
@@ -474,6 +474,7 @@ export class SchoolOrder {
       this.shirtsByStyle = Array.isArray(shirtsByStyle)
          ? shirtsByStyle.map(style => style instanceof Style ? style : style != null ? Style.fromJSON(style) : null).filter(Boolean)
          : [];
+      this.oTransfers = Utils.parseToInstancesArr(oTransfers, SOrderTransfer);
       this.site = site;
       this.sport = sport;
    }
@@ -538,9 +539,22 @@ export class SchoolOrder {
 
       return dTotal;
    }
+
+   getTotalTransfers() {
+      let total = 0;
+      this.oTransfers.forEach(t => {
+         total += t.quantity;
+      });
+
+      return total;
+   }
 	
+      // does the order have added shirts or transfers?
 	hasAddOns() {
-		return this.shirtsByStyle.some(style => style.shortName !== 'Dairy Hoods');
+		return (
+         this.shirtsByStyle.some(style => style.shortName !== 'Dairy Hoods') ||
+         (this.oTransfers.length > 0)
+      );
 	}
 	
 	getTeamStyle() {
@@ -835,7 +849,7 @@ export class Transfer {
    constructor({ id, transferName, inventoryName, price, listOrder }) {
       this.id = id;
       this.transferName = transferName;
-      this.inventoryName = inventoryName;
+      this.inventoryName = inventoryName ?? transferName;
       this.price = price;
       this.listOrder = listOrder;
    }
@@ -866,6 +880,25 @@ export class InventoryTransfer {
 
    static fromJSON(json) {
       return new InventoryTransfer(json);
+   }
+}
+
+export class SOrderTransfer {
+   constructor({ id, schoolOrderID, transferID, quantity, price, transfer }) {
+      this.id = id;
+      this.schoolOrderID = schoolOrderID;
+      this.transferID = transferID;
+      this.quantity = quantity;
+      this.price = price;
+      this.transfer = Utils.parseToInstance(transfer, Transfer);
+   }
+
+   static fromValues(id, schoolOrderID, transferID, quantity, price, transfer) {
+      return new SOrderTransfer({ id, schoolOrderID, transferID, quantity, price, transfer });
+   }
+
+   static fromJSON(json) {
+      return new SOrderTransfer(json);
    }
 }
 

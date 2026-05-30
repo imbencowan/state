@@ -15,8 +15,8 @@ const labelPage4 = {
 	labels : 4,
 	width : 215,
 	height : 279,
-	xMargin : 4,
-	yMargin : 13,
+	xMargin : 5,
+	yMargin : 12.5,
 	labelWidth : 101.6,
 	labelHeight : 127,
 	xCenter : 108,
@@ -132,7 +132,7 @@ export class Label {
         this.width = labelPage.labelWidth;
         this.lineSpaces = [4.5, 7, 9];
         this.offsetX = 14;
-        this.offsetY = 10;
+        this.offsetY = 9;
         this.indentX = this.origin.x + this.offsetX + 3;
         this.alignX = this.origin.x + this.offsetX;
         this.gridX = this.origin.x + 38;
@@ -197,6 +197,7 @@ export class Label {
     
     addGridQuantities(style, min, max) {
         this.doc.setFontSize(11);
+            // we can take out this condition once we finish fixing how transfers are attached to orders
         if (style.id !== 13) {
             style.sizes.forEach(size => {
                 let x = this.gridX + this.gridStep * (size.id - min);
@@ -204,6 +205,10 @@ export class Label {
             });
         }
         this.centerInGrid(String(style.getTotalQuantity()), (this.gridX + ((max - min + 1) * this.gridStep)));
+    }
+
+    addGridTotal(total, sizes) {
+        this.centerInGrid(String(total), this.gridX + ((sizes + 1) * this.gridStep));
     }
     
     centerInGrid(txt, x) {

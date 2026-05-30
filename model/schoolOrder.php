@@ -22,6 +22,7 @@ class SchoolOrder extends BasicTableModel {
     	return [ // new Relation('division', 'Division', 'divisionID', false), 
 					new Relation('school', 'School', 'schoolID', 'schoolID', false), 
 					new Relation('shirtsByStyle', 'SOrderItem', 'schoolOrderID', 'schoolOrderID', true), 
+					new Relation('oTransfers', 'SOrderTransfer', 'schoolOrderID', 'schoolOrderID', true),
 					new Relation('messageOrders', 'MessageOrder', 'schoolOrderID', 'schoolOrderID', true)];
    }
 	
@@ -42,6 +43,7 @@ class SchoolOrder extends BasicTableModel {
 		public readonly ?int $invoiceVersion = null,
 		private array $messageOrders = [],
 		array $shirtsByStyle = [],
+		public readonly array $oTransfers = []
    ) {
 		$this->shirtsByStyle = self::organizeOrderItems($shirtsByStyle);
 		$this->invoiceDate = is_string($invoiceDate) ? new DateTime($invoiceDate) : $invoiceDate;
@@ -62,6 +64,7 @@ class SchoolOrder extends BasicTableModel {
 			'invoiceVersion' => $this->invoiceVersion,
 			'messageOrders' => $this->messageOrders,
 			'shirtsByStyle' => array_values($this->shirtsByStyle),
+			'oTransfers' => array_values($this->oTransfers)
 		];
    }
 		
@@ -378,7 +381,18 @@ class SchoolOrder extends BasicTableModel {
 				// as 'upload name' => 'db shortName'
 		$aliasMap = [
 			'coeur d alene' => "coeur d'alene",
-			'community school (sun valley)' => 'sun valley community'
+			'community school (sun valley)' => 'sun valley community',
+			'community school' => 'sun valley community',
+			'mt view' => "mountain view",
+			'rocky mt' => "rocky mountain",
+			'mt home' => "mountain home",
+			'cda charter academy' => "coeur d'alene charter",
+			'highland - p' => "highland",
+			'highland - c' => "highland - craigmont",
+			'priest river lamanna' => 'priest river',
+			'sho-ban' => 'shoshone-bannock',
+			'timberline (boise)' => "timberline",
+			'timberline (weippe)' => 'timberline - weippe'
 		];
 
 			// find the uploaded school's data from the db list of schools
