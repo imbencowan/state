@@ -551,11 +551,16 @@ export class SchoolOrder {
 	
       // does the order have added shirts or transfers?
 	hasAddOns() {
-		return (
-         this.shirtsByStyle.some(style => style.shortName !== 'Dairy Hoods') ||
-         (this.oTransfers.length > 0)
-      );
+		return (this.hasAddedShirts() || this.hasAddedTransfers());
 	}
+
+   hasAddedShirts() {
+      return this.shirtsByStyle.some(style => style.shortName !== 'Dairy Hoods')
+   }
+
+   hasAddedTransfers() {
+      return (this.oTransfers.length > 0)
+   }
 	
 	getTeamStyle() {
 		return this.shirtsByStyle.find(style => style.shortName === 'Dairy Hoods');

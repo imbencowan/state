@@ -5,31 +5,33 @@
  
     // all fetch requests go to controller.php
 export async function myFetch(request) {
-    const url = 'controller.php';
     try {
-        const response = await fetch(url, {
+        const response = await fetch('controller.php', {
             method: "POST", 
             headers: {'Content-Type': 'application/json'}, 
             body: JSON.stringify(request)
         });
-            // get the response
-        const responseText = await response.text();
-        let json;
-            // convert to json or throw
-        try {
-            // console.log(responseText);
-            json = JSON.parse(responseText);
-        } catch {
-            throw new Error("Invalid JSON returned from server");
-        }
+            // get the response data
+        const data = await response.json().catch(() => null);
+        // let json;
+        //     // convert to json or throw
+        // try {
+        //     // console.log(responseText);
+        //     json = JSON.parse(responseText);
+        // } catch {
+        //     throw new Error("Invalid JSON returned from server");
+        // }
 
-            // Treat any server-reported error as an exception
-        if (json.success === false) throw new Error(json.eMessage || "Unknown server error");
+        //     // Treat any server-reported error as an exception
+        // if (json.success === false) throw new Error(json.eMessage || "Unknown server error");
             // Throw on HTTP-level errors
-        if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        // if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        if (!response.ok) throw new Error(data?.error || data?.message || response.statusText);
+       
+      
 
-        console.log(json);
-        return json;
+        console.log(data);
+        return data;
     } catch (error) {
         console.error("Fetch Error:", error.message);
         openModal("Fetch Error: " + error.message);

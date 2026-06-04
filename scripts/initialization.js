@@ -31,10 +31,11 @@ export async function init() {
 		// load size codes
 	let request = new ActionRequest('loadSizeCodesByStyle', 'Item');
 	let sizeData = await myFetch(request);
+		// i don't know that we need this. is sizeCodesByStyles used for any thing but making styleMap?
 	runtime.sizeCodesByStyles = sizeData.data.map(styleData => Style.fromJSON(styleData));
 	runtime.styleMap = mapObjsBy(runtime.sizeCodesByStyles);
 	
-		// initail load
+		// initial load
 	await Promise.all([
 		runtime.allSizes.load(),
 		runtime.allColors.load(),

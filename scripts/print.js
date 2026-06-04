@@ -430,7 +430,6 @@ function genSoS(doc, div) {
 			sos.newLine();
 		});
 
-		console.log(order.oTransfers);
 		if (order.oTransfers.length) {
 			sos.col = 3;
 			sos.textToCell('Transfers', 'right');

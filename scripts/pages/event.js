@@ -293,19 +293,16 @@ function buildOrdersTbodies(table, orders) {
 
 			// first td, the school name
 		tds.push(buildElement("td", {
+				// include id and fileName in title text for qol
 			title: (so.id + " / " + so.getMessageFileNames()), 
 			text: so.school.shortName
 		}));
 			// then the sizes
-		for (const s of sizeList) {
-			tds.push(buildElement("td", { title: s, text: (teamShirts?.sizeMap[s]?.quantity || '-') }));
-		}
+		makeSizeTDs(tds, teamShirts, '-');
 			// then the total
 		let totalText = so.getDairyTotal();
-		// if (so.qualifiers == null) console.log(so.id, so.school.shortName);
-		if (so.qualifiers && (so.qualifiers != so.getDairyTotal())) {
-			totalText += "/" + so.qualifiers;
-		}
+			// add "/ qualifiers" if totals != qualifiers
+		if (so.qualifiers && (so.qualifiers != so.getDairyTotal())) totalText += "/" + so.qualifiers;
 		tds.push(buildElement("td", { title: 'total', text: totalText }));
 
 			// make an input to stick at the end
@@ -322,7 +319,7 @@ function buildOrdersTbodies(table, orders) {
 			// and then we can put the buttons in the last cell
 		tds.push(buildElement("td", { children: [
 			makeRowIconButton('add', 'addAddOns', 'add add ons'),
-			makeRowIconButton('edit', 'editSizes', 'edit the sizes'),
+			makeRowIconButton('edit', 'editSizes', 'edit the quantities'),
 			makeRowIconButton('mail', 'showMessage', 'view the original message'),
 			makeRowIconButton('article', 'printLabel', 'print box label'),
 			makeRowIconButton('request_quote', 'dlInvoice', 'download invoice'),
@@ -330,33 +327,13 @@ function buildOrdersTbodies(table, orders) {
 			chkBx
 		] }));
 
-			// build the row
+			// build the first row
 		const trs = [];
-		trs.push(buildElement("tr", { dataset: { styleId: teamStyleID }, children: tds }));
-
-			// if there are any add ons, make rows for them
-		if (so.hasAddOns()) {
-			const addedStyles = so.getAddedStyles();
-			for (const aStyle of addedStyles) {
-				let tds = [];
-
-					// first td, the school name
-				tds.push(buildElement("td", {	text: aStyle.shortName }));
-					// then the sizes
-				let sTotal = 0
-				for (const s of sizeList) {
-					tds.push(buildElement("td", { title: s, text: (aStyle.sizeMap[s]?.quantity || '') }));
-					sTotal += aStyle.sizeMap[s]?.quantity || 0;
-				}
-					// then the total
-				tds.push(buildElement("td", { title: 'total', text: sTotal }));
-					// an empty td to fill the table
-				tds.push(buildElement("td"));
-
-					// make the row
-				trs.push(buildElement("tr", { classes: "addOnRow", dataset: { styleId: aStyle.id }, children: tds }));
-			}
-		}
+		trs.push(buildElement("tr", { dataset: { styleID: teamStyleID }, children: tds }));
+			// if there are any add on shirts, make rows for them
+		if (so.hasAddedShirts()) trs.push(...buildAddedStyleRows(so));
+			// if there are any add on transfers, make rows for them
+		if (so.hasAddedTransfers()) trs.push(...buildAddedTransferRows(so));
 
 
 		const tbody = buildElement("tbody", { 
@@ -367,6 +344,66 @@ function buildOrdersTbodies(table, orders) {
 		});
 		table.appendChild(tbody);
 	});
+}
+
+	// returns an array of rows, one for each added style for a SchoolOrder
+function buildAddedStyleRows(so) {
+	const trs = [];
+
+	for (const aStyle of so.getAddedStyles()) {
+		let tds = [];
+
+			// first td, the style name
+		tds.push(buildElement("td", {	text: aStyle.shortName }));
+			// then the sizes
+		makeSizeTDs(tds, aStyle);
+			// then the total
+		let sTotal = 0
+		for (const s of aStyle.sizes) {
+			sTotal += s.quantity;
+		}
+		tds.push(buildElement("td", { title: 'total', text: sTotal }));
+			// an empty td to fill the table
+		tds.push(buildElement("td"));
+
+			// make the row
+		trs.push(buildElement("tr", { classes: "addOnRow", dataset: { styleID: aStyle.id }, children: tds }));
+	}
+
+	return trs;
+}
+
+	// use this to force all shirt rows through the same construction, so they have the same attributes
+function makeSizeTDs(tds, shirts, emptyValue = '') {
+	for (const s of sizeList) {
+		tds.push(buildElement("td", { 
+			title: s, 
+			dataset: { displayChar: s }, 
+			text: (shirts?.sizeMap[s]?.quantity || emptyValue) 
+		}));
+	}
+}
+
+	// returns an array of rows, one row for each transfer added to a SchoolOrder
+function buildAddedTransferRows(so) {
+	const trs =[];
+	for (const t of so.oTransfers) {
+		let tds = [];
+
+			// td the transfer name
+		tds.push(buildElement("td", { text: 'Transfer - ' + t.transfer.transferName }));
+			// skip the sizes
+		tds.push(buildElement("td", { dataset: { blankCell: true }, attrs: { colspan: sizeList.length } }));
+			// then the quantity in the total column
+		tds.push(buildElement("td", { title: 'total', text: t.quantity }));
+			// an empty td to fill the table
+		tds.push(buildElement("td"));
+
+			// make the row
+		trs.push(buildElement("tr", { classes: "addOnRow", dataset: { transferID: t.transfer.id }, children: tds }));
+	}
+
+	return trs;
 }
 
 function getRowCompletenessClass(order) {
@@ -622,7 +659,7 @@ function buildInventoryTransfersRows(tbody, transfers) {
 }
 
 function attachReportsPanel(tab, data) {
-
+	
 }
 
 
@@ -816,59 +853,56 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////// functions for editing orders in the page
 
 function showAddOnInputs(order) {
 		// set mode. prevents edit being called while this is open
 	runtime.activeMode = 'add';
 		// get the parent element with the specified data attribute
+			// the parent is a tbody that can hold multiple rows
 	const prnt = document.querySelector(`[data-school-order-id="${order.id}"]`);
 	if (prnt) {
-			// don't add more rows than there are styles
+			// don't add more rows than there are styles (9)
 		if (prnt.querySelectorAll('tr').length < 9) {
-				// get the first tr
-			const firstTr = prnt.querySelector('tr');
+			const tds = [];
 			
-			const tdCount = firstTr ? firstTr.children.length : 0;
-
-			const newTr = document.createElement('tr');
-			
-			newTr.classList.add('addOnRow');
 				// create the style select
-			const newTd = document.createElement('td');
-				// send the parent so we can omit options that already exist
+					// send the parent so we can omit options that already exist
 			const newSlct = buildAddOnSelect(prnt);
-			newTd.appendChild(newSlct);
-			newTr.appendChild(newTd);
+			tds.push(buildElement("td", { children: newSlct }));
+
+			const valueType = parseAddOnOption(newSlct.value).table;
+			const valueID = parseAddOnOption(newSlct.value).id;
 			
-				// make an identifier for the first input so we can focus later
-			let firstInput = null;
-				// create the inputs for the middle rows
-			for (let i = 0; i < tdCount - 3; i++) {
-				const newTd = document.createElement('td');
-				const input = makeOrderInput(i);
-				newTd.appendChild(input);  
-				newTr.appendChild(newTd);  
-				if (!firstInput) firstInput = input;
+				// create the inputs for the middle columns
+			if (valueType == 'styles') {
+				const styleSizes = runtime.styleMap[valueID].sizeMap;
+				for (const s of sizeList) {
+					const td = buildElement("td", { title: s, dataset: { displayChar: s } });
+					if (s in styleSizes) td.appendChild(makeOrderInput(s));
+					tds.push(td);
+				}
 			}
 			
 				// submit/cancel td
-			const btnTD = document.createElement('td');
-			newTr.appendChild(btnTD);
+			const btnTD = buildElement("td");
 				// put submit and cancel buttons in the btnTD, unless there already is one
 			if (prnt.querySelector('button.submitAddOns') === null) {
 				makeSubmitCancelButtons(btnTD, prnt, 'order', 'AddOns');
 			}
+			tds.push(btnTD);
 			
-				// a final empty cell to maintain form
-			const lastTd = document.createElement('td');
-			newTr.appendChild(lastTd);
+				// a final empty cell to maintain form // for where row options go
+			tds.push(buildElement("td"));
 
 				// Append the newly created <tr> to the <tbody>
-			prnt.appendChild(newTr);
+					// create a variable for focus
+			const newTR = buildElement("tr", { classes: 'addOnRow', children: tds })
+			prnt.appendChild(newTR);
 			
 				// give focus to the first input
-			firstInput.focus();
+			newTR.querySelector('input')?.focus();
 		}
 	} else {
 		console.error(`Element with data-school-order-id="${order.id}" not found.`);
@@ -887,24 +921,32 @@ async function submitAddOns(target, order) {
 	
 		// get the additions
 	let addItems = [];
+	let addTransfers = [];
 	rows.forEach((row) => {
 			// get the itemID
-		let styleID = Number(row.querySelector('select').value);
-		let style = runtime.sizeCodesByStyles.find(style => style.id === styleID);
-			// get the inputs
-		const inputs = Array.from(row.querySelectorAll('input[type="number"]'))
-			.filter(input => parseInt(input.value, 10) > 0);
-		inputs.forEach((input) => {
-				// match quantities with itemIDs, then push them to an array
-			const sizeChar = input.dataset.sizeChar;
-console.log(style);
-			const itemID = style.sizeMap[sizeChar].id;
-			const shirt = {
-				itemID: itemID,
-				quantity: input.value
-			};
-			addItems.push(shirt);
-		});
+		let value = row.querySelector('select').value;
+		let tbl = parseAddOnOption(value).table;
+		let id = Number(parseAddOnOption(value).id);
+
+		if (tbl == 'styles') {
+			let style = runtime.sizeCodesByStyles.find(style => style.id === id);
+				// get the inputs
+			const inputs = Array.from(row.querySelectorAll('input[type="number"]'))
+				.filter(input => parseInt(input.value, 10) > 0);
+			inputs.forEach((input) => {
+					// match quantities with itemIDs, then push them to an array
+				const sizeChar = input.dataset.sizeChar;
+
+				const itemID = style.sizeMap[sizeChar].id;
+				const shirt = {
+					itemID: itemID,
+					quantity: input.value
+				};
+				addItems.push(shirt);
+			});
+		} else if (tbl == 'transfers') {
+
+		}
 	});
 	
 		// cancel if no thing was input
@@ -914,8 +956,8 @@ console.log(style);
 	}
 	
 		// send it to the server
-	const data = {'orderID': order.id, 'addItems': addItems };
-	let request = new ActionRequest('addAddOns', 'SOrderItem', data);
+	const data = {'orderID': order.id, 'addItems': addItems, 'addTransfers': addTransfers };
+	let request = new ActionRequest('addAddOns', 'SchoolOrder', data);
 	let responseJSON = await myFetch(request);
 	
 	if (responseJSON.success) {
@@ -940,25 +982,146 @@ function cancelAddOns(target) {
 }
 
 function buildAddOnSelect(prnt) {
+			// we should be doing this from the actual order, not the DOM, yeah?
 		// get the styles that have already been added. get the rows with the attribute, then pull the ids with .map()
-	const rows = Array.from(prnt.querySelectorAll('tr[data-style-id]'))
-	const preStyleIDs = rows.map(tr => Number(tr.getAttribute('data-style-id')));
+	const styleRows = Array.from(prnt.querySelectorAll('tr[data-style-i-d]'))
+	const preStyleIDs = styleRows.map(tr => Number(tr.getAttribute('data-style-i-d')));
 	
 	const newSlct = document.createElement('select');
+		//add styles to the select
 	runtime.sizeCodesByStyles.forEach((style) => {
 			// exclude the preexisting styles
 		if (!preStyleIDs.includes(style.id)) {
 			const newOptn = document.createElement('option');
 			newOptn.textContent = style.shortName;
-			newOptn.value = style.id;
+			newOptn.value = makeAddOnValue('styles', style.id);
 			newSlct.appendChild(newOptn);
 		}
 	});
+
+		//add transfers to the select
+	const transferRows = Array.from(prnt.querySelectorAll('tr[data-transfer-i-d]'))
+	const preTransferIDs = transferRows.map(tr => Number(tr.getAttribute('data-transfer-i-d')));
+	console.log(preTransferIDs);
+	// console.log(runtime.allTransfers.getSync());
+	for (const t of Object.values(runtime.allTransfers.getSync())) {
+		if (!preTransferIDs.includes(t.id)) {
+			const newOptn = buildElement("option", { text: t.transferName });
+			newOptn.value = makeAddOnValue('transfers', t.id);
+			newSlct.appendChild(newOptn);
+		}
+	}
+
+
+	newSlct.addEventListener('change', (e) => {
+		const row = e.target.closest('tr');
+
+		const valueType = parseAddOnOption(e.target.value).table;
+		const valueID = parseAddOnOption(e.target.value).id;
+		
+			// create the inputs for the middle columns
+		makeSizeInputs(row, valueType, valueID);
+   });
+
 	return newSlct;
+}
+
+	// doesn't just make the inputs, but handles when which cells get inputs
+function makeSizeInputs(row, tbl, id) {
+	if (tbl == 'styles') {
+		const styleSizes = runtime.styleMap[id].sizeMap;
+
+			// we want to distinguish between 'styles' and 'transfers'
+		const keys = Object.keys(styleSizes);
+
+		if (keys.length === 1 && keys[0] === 'O') {
+			for (const td of row.querySelectorAll('td[data-display-char]')) {
+				if (td.dataset.displayChar == 'S' || td.dataset.displayChar == 'O') {
+						// clear the cell
+					td.textContent = '';
+						// make an input
+					const input = makeOrderInput('O');
+						// for *one-size* items, get the quantity from the total cell, if it exists
+					const tCell = row.querySelector('td[title=total]');
+					if (tCell) {
+						const q = tCell.textContent;
+						if (q) {
+							input.value = q;
+							td.dataset.oValue = q;
+						}
+					}
+
+					td.appendChild(input);
+					td.dataset.displayChar = 'O';
+					td.title = 'O';
+				} else {
+						// clear
+					td.textContent = '';
+				}
+			}
+		} else {
+				// if the first cell held a 'one-size' input, fix it
+			if (row.cells[1].dataset.displayChar == 'O') {
+				row.cells[1].dataset.displayChar = 'S';
+				row.cells[1].title = 'S';
+			}
+			for (const td of row.querySelectorAll('td[data-display-char]')) {
+				const size = td.dataset.displayChar;
+
+				if (size in styleSizes) {
+					const currentValue = td.textContent.trim();
+					const input = makeOrderInput(size);
+					td.textContent = ''; // Clear existing content
+					td.appendChild(input);
+					
+					if (currentValue) {
+							// Set initial value from current text in <td>
+						input.value = currentValue;
+							// also make a data-attribute to compare against on submit
+						td.dataset.oValue = currentValue;
+						td.appendChild(input);
+					}
+				} else {
+						// if this size doesn't exist for this style, remove any existing input
+					// input?.remove();
+					td.textContent = '';
+				}
+			}
+		}
+	} else if (tbl == 'transfers') {
+		const inputTD = row.cells[1];
+		const totalTD = row.querySelector('td[title=total]');
+
+			// if we are in add mode, handle middle cells
+				// if we are in edit mode, row.cells[1] should colspan all those cells
+		const sizeTDs = row.querySelectorAll('td[data-display-char]');
+		if (sizeTDs) {
+			sizeTDs.forEach(std => {
+				std.textContent = '';
+			})
+		}
+
+			// clear the first cell
+		inputTD.textContent = '';
+		inputTD.style.textAlign = 'left';
+			// make an input
+		const input = makeOrderInput('transfer:' + id);
+
+		if (totalTD) {
+			const q = totalTD.textContent;
+			if (q) {
+				input.value = q;
+				inputTD.dataset.oValue = q;
+			}
+		}
+		
+		inputTD.appendChild(input);
+	}
 }
 
 	// takes the values of inputs, puts them directly in table cells
 function cleanInputRows(rows) {
+	console.log('clean');
 		// check if the row was marked complete. if so, change to partial. uncheck the box
 	const tbody = rows[0].closest('tbody');
 	if (tbody.classList.contains('doneRow')) {
@@ -966,42 +1129,52 @@ function cleanInputRows(rows) {
 		tbody.classList.add('partDoneRow');
 		tbody.querySelector('input[type="checkbox"]').checked = false;
 	}
+		// actual cell cleaning
 	rows.forEach((row) => {
 		const cells = row.querySelectorAll('td');
 			// if the first element contains a select, get it's name and make that the first td
 		const slct = row.querySelector('select');
 		if (slct) {
-			const name = slct.options[slct.selectedIndex].text;
-			cells[0].textContent = "+ " + name;
+			cells[0].textContent = slct.options[slct.selectedIndex].text;;
 				// be sure to set the data-attributej
 			row.dataset.styleId = slct.value;
 		}
-		
-		let total = 0;
-		let zeroReplacement = '';
-			// if this is the first row, use '-'
-		if (row === row.parentElement.firstElementChild) zeroReplacement = '-';
 
-			
-			// skip the first and last two cells
-		for (let i = 1; i < cells.length - 2; i++) {
-			const input = cells[i].querySelector('input');
-			let value = 0;
-			if (input) {
-					// if the input.value > 0, put it in the cell, otherwise empty the cell
-				value = parseInt(input.value) || 0;
-				cells[i].textContent = (value > 0) ? value : zeroReplacement;
+		let total = 0;
+
+		if (cells[1].dataset.displayChar == 'O') {
+			console.log('here');
+				// get the total, if any
+			const input = cells[1].querySelector('input');
+			if (input) total = parseInt(input.value) || 0;
+				// clear the cell regardless
+			cells[1].textContent = '';
+		} else {		
+			let zeroReplacement = '';
+				// if this is the first row, use '-'
+			if (row === row.parentElement.firstElementChild) zeroReplacement = '-';
+
+				
+				// skip the first and last two cells
+			for (let i = 1; i < cells.length - 2; i++) {
+				const input = cells[i].querySelector('input');
+				let value = 0;
+				if (input) {
+						// if the input.value > 0, put it in the cell, otherwise empty the cell
+					value = parseInt(input.value) || 0;
+					cells[i].textContent = (value > 0) ? value : zeroReplacement;
+				}
+				total += value;
+				
+					// add a title for new rows
+				if (!cells[i].title) cells[i].title = sizeList[i - 1];
 			}
-			total += value;
-			
-				// add a title for new rows
-			if (!cells[i].title) cells[i].title = sizeList[i - 1];
 		}
 		
 			// set the total, and DONT ensure the final cell is empty, because it might hold the buttons
 		cells[cells.length - 2].textContent = total;
 		// cells[cells.length - 1].textContent = '';
-			// remove the row if the row if it was empty
+			// remove the row if it was empty, and was not the first row
 		if ((total === 0) && (row !== row.parentElement.firstElementChild)) row.remove();
 	});
 }
@@ -1019,14 +1192,23 @@ function checkDuplicateAddedStyles(rows) {
 	return check;
 }
 
-function makeOrderInput(i) {
+function makeAddOnValue(table, id) {
+	return table + ':' + id;
+}
+
+function parseAddOnOption(value) {
+	const [table, id] = value.split(':');
+   return { table, id: Number(id) };
+}
+
+function makeOrderInput(s) {
 	const input = document.createElement('input');
 		input.type = 'number';
-		input.name = `addOn${i}`;
+		input.name = `addOn:${s}`;
 		input.min = 0; 
 		input.max = 99;
 		input.step = 1;
-		input.dataset.sizeChar = sizeList[i];
+		input.dataset.sizeChar = s;
 	return input;
 }
 
@@ -1042,23 +1224,19 @@ function showEditSizeInputs(order) {
 		const rows = Array.from(prnt.children);
 			// make an identifier for the first input so we can focus later
 		let firstInput = null;
-
 			// make inputs
-    	rows.forEach((currentRow) => {
-			const cells = currentRow.querySelectorAll('td');
-				// Add number inputs to all but the first, and last two cells of each row
-			for (let i = 1; i < cells.length - 2; i++) {
-				const currentValue = cells[i].textContent.trim();
-				const input = makeOrderInput(i);
-					// Set initial value from current text in <td>
-				input.value = currentValue;
-					// also make a data-attribute to compare against on submit
-				cells[i].dataset.oValue = currentValue;
-				cells[i].textContent = ''; // Clear existing content
-				cells[i].appendChild(input);
-
-				if (!firstInput) firstInput = input;
+    	rows.forEach((row) => {
+			const styleID = row.dataset.styleID;
+			const transferID = row.dataset.transferID;
+				// handle size tds
+			if (styleID) {
+				makeSizeInputs(row, 'styles', styleID);
+			} else if (transferID) {
+				makeSizeInputs(row, 'transfers', transferID);
 			}
+
+				// handle the total td. store it's textContent, and empty it
+			const cells = row.querySelectorAll('td');
 			let totalCell = cells[cells.length - 2];
 			totalCell.dataset.oValue = totalCell.textContent.trim();
 			totalCell.textContent = '';
@@ -1069,8 +1247,9 @@ function showEditSizeInputs(order) {
 		const btnTD = firstCells[firstCells.length - 2];
 			// function(btnCntnr, lstnrCntnr, type, action)
 		makeSubmitCancelButtons(btnTD, prnt, 'order', 'Edit');
-			// give focus
-		firstInput.focus()
+
+			// give focus to the first input
+		rows[0].querySelector('input')?.focus();
 	} else {
 		console.error(`Element with data-schoolOrderID="${orderID}" not found.`);
 	}
@@ -1083,7 +1262,12 @@ function cancelSizeEdit(target) {
    rows.forEach(row => {
 		const cells = Array.from(row.querySelectorAll('td'));
 		for (let i = 1; i < cells.length -1; i++) {
-			cells[i].textContent = cells[i].dataset.oValue;
+				// empty 'one-size' cells
+			if (cells[i].dataset.displayChar == 'O' || cells[i].dataset.blankCell) {
+				cells[i].textContent = '';
+			} else {
+				cells[i].textContent = cells[i].dataset.oValue;
+			}
 		}
    });
 		// exit edit mode
@@ -1099,7 +1283,7 @@ async function submitSizeEdit(target, order) {
 	let items = [];
 	rows.forEach((row) => {
 			// get the style
-		let styleID = Number(row.dataset.styleId);
+		let styleID = Number(row.dataset.styleID);
 		let style = runtime.sizeCodesByStyles.find(style => style.id === styleID);
 			// get the inputs
 		let inputs = Array.from(row.querySelectorAll('input[type="number"]'));
@@ -1109,7 +1293,6 @@ async function submitSizeEdit(target, order) {
 			if (oValue === '-' || oValue === '') oValue = 0;
 			if (input.value != oValue) {
 				const sizeChar = input.closest('td').title;
-				console.log(sizeChar, style);
 				const itemID = style.sizeMap[sizeChar].id;
 				let shirt = {
 					itemID: itemID,
@@ -1386,7 +1569,7 @@ async function makeBlankOrder() {
 					<td title="3XL">-</td>
 					<td title="total">-</td>
 					<td>
-						<span class="material-icons clickable order-action addAddOns" title="add add ons">add</span><span class="material-icons clickable order-action editSizes" title="edit the sizes">edit</span>
+						<span class="material-icons clickable order-action addAddOns" title="add add ons">add</span><span class="material-icons clickable order-action editSizes" title="edit the quantities">edit</span>
 						<span class="material-icons clickable order-action showMessage" title="view the original message">article</span>
 						<span class="material-icons clickable order-action printLabel" title="print box label">print</span>
 						<span class="material-icons clickable order-action dlInvoice" title="download invoice">request_quote</span>
@@ -1459,7 +1642,7 @@ function showMoreRowOptions(order) {
 }
 
 
-	// display an input in the modal
+	// display an input in the modal for uploading qualifiers
 function showQlfrsUpld() {
 		// make a file input
 	const wrapper = document.createElement('div');
@@ -1616,6 +1799,7 @@ function showAllSchoolsAZ() {
 
 
 
+///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 // functions for handling an event's inventories
 

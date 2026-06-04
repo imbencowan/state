@@ -32,7 +32,7 @@ class SOrderTransfer extends BasicTableModel {
 
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		// // Database Functions
-	public static function addAddOns($orderID, $addItems) {
+	public static function addTransfers($orderID, $addTransfers) {
 		$query = "SELECT transferID FROM sordertransfers WHERE schoolOrderID = :schoolOrderID";
 			// use the parent method to get existing itemIDs for the order
 		$priorItems = SOrderTransfer::getFromDB($query, [':schoolOrderID' => $orderID]);

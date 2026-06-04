@@ -44,9 +44,17 @@
 					} else {
 						echo json_encode(['success' => true, 'data' => $result]);
 					}
-				} catch (Exception $e) {
-					error_log(print_r($e->getTrace(), true));
-					echo json_encode(['success' => false, 'eMessage' => $e->getMessage(), 'error' => $e]);
+				// } catch (Exception $e) {
+				// 	error_log(print_r($e->getTrace(), true));
+				// 	echo json_encode(['success' => false, 'eMessage' => $e->getMessage(), 'error' => $e]);
+				// }
+				} catch (Throwable $e) {
+					error_log($e->getMessage() . "\n" . $e->getTraceAsString());
+
+					echo json_encode([
+						'success' => false,
+						'message' => $e->getMessage()
+					]);
 				}
 			} else {
 				echo json_encode(['success' => false, 'eMessage' => "Invalid action: $action"]);
