@@ -8,8 +8,11 @@
 	<div class="row">
 		<h2><?= $displayYear . ' Events'; ?></h2>
 		<button class="topLevelButton" data-action="getSeasonStock">Get Next Season Stock</button>
+		<button class="topLevelButton" data-action="addEvent" title="add an event">
+			<span class="material-icons">add</span> Event
+		</button>
 		<button class="topLevelButton" data-action="addYear" title="add a year">
-			<span class="material-icons">add</span>
+			<span class="material-icons">add</span> Year
 		</button>
 	</div>
 <div class="table-container">

@@ -51,7 +51,7 @@ class Year implements JsonSerializable {
 		usort($this->events, function($a, $b) { return $a->startDate <=> $b->startDate; });
    }
 
-   public function jsonSerialize() {
+   public function jsonSerialize(): mixed {
       return [
          'year' => $this->year,
          'startDate' => $this->startDate->format('Y-m-d'),

@@ -32,59 +32,15 @@ class SOrderTransfer extends BasicTableModel {
 
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		// // Database Functions
-	public static function addTransfers($orderID, $addTransfers) {
-		$query = "SELECT transferID FROM sordertransfers WHERE schoolOrderID = :schoolOrderID";
-			// use the parent method to get existing itemIDs for the order
-		$priorItems = SOrderTransfer::getFromDB($query, [':schoolOrderID' => $orderID]);
-			// make arrays of itemIDs
-		$priorItemIDs = array_column($priorItems, 'transferID');
-		$addItemIDs = array_column($addItems, 'transferID');
-			// check for duplicates between the arrays. don't *add* some thing that already exists
-		$duplicates = array_intersect($priorItemIDs, $addItemIDs);
-		
-		if ($duplicates) {
-				// bad request
-					// might be nice to check and return what conflicted here
-			http_response_code(400); 
-			return ['error' => "There is already an add on for at least one of the submitted items. 
-									Check the order. No items were added"];
-			exit;
-		} 
-		
-			// INSERT now
-		try {
-			$db = Database::getDB();
-				// using a transaction
-			$db->beginTransaction();
-
-				// add the items
-			foreach ($addItems as $item) {
-				$data = ['schoolOrderID' => $orderID, 
-							'transferID' => $item['transferID'], 
-							'sOrderItemsQuantity' => $item['quantity']
-							];
-				self::insert($data);
-			}
-			
-				// UPDATE due
-			$due = SchoolOrder::updateDue($db, $orderID);
-				// UPDATE completeness IF currently complete
-			SchoolOrder::updateCompletenessIf($orderID, 1, 2);
-				// UPDATE invoiceDate ($id, ['column': $value])
-			SchoolOrder::updateByID($orderID, ['invoiceDate' => date('Y-m-d')]);
-				// UPDATE invoiceVersion
-			SchoolOrder::updateInvoiceVersion($orderID);
-
-			$db->commit();
-
-			return [ 'newOrder' => SchoolOrder::getByID($orderID), 'message' => 'Add-ons successfully added.' ];
-		} catch (PDOException $e) {
-			if ($db->inTransaction()) {
-				$db->rollBack();
-			}
-			http_response_code(500);
-			return ['error' => 'Database error: ' . $e->getMessage() ];
-			exit;
+	public static function addTransfers($db, $orderID, $addTransfers) {
+// Test::logX($addTransfers);
+			// match values to columns and insert
+		foreach ($addTransfers as $trnsfr) {
+			$data = ['schoolOrderID' => $orderID, 
+						'transferID' => $trnsfr['transferID'], 
+						'sOrderTransfersQuantity' => $trnsfr['quantity']
+						];
+			self::insert($data);
 		}
 	}
 }

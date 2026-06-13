@@ -3,11 +3,12 @@
 import { runtime } from '../runtime.js';
 import { myFetch } from '../fetch.js';
 import { ActionRequest } from '../models/other-classes.js';
-import { arraysEqualIgnoreOrder } from '../utilities.js';
+import { arraysEqualIgnoreOrder, buildElement } from '../utilities.js';
 import { openModal } from '../modal.js';
 import { EventSite, Season, Site } from '../models/db-classes.js';
 import { showPage } from './page-handling.js';
 import { printSeasonStockPDF } from '../print.js';
+
 
 export async function goToYearPage() {
    const data = { year: document.getElementById('selectYear').value };
@@ -362,28 +363,23 @@ function replaceEditButton(tds) {
 
 
 function showAddYear() {
-      // make a wrapper so we don’t pollute the page
-   const wrapper = document.createElement("div");
-   // wrapper.style.margin = "1em 0";
-
       // header
-   const head = document.createElement("h2");
-   head.textContent = "Paste a year's schedule here, and we'll try to parse it"
-   wrapper.appendChild(head);
+   const head = buildElement("h2", { text: "Paste a year's schedule here, and we'll try to parse it" });
 
       // textarea
    const textarea = document.createElement("textarea");
    textarea.rows = 10;
    textarea.cols = 50;
    textarea.placeholder = "Paste PDF text here...";
-   wrapper.appendChild(textarea);
 
    // submit button
    const submitBtn = document.createElement("button");
    submitBtn.textContent = "Parse";
    submitBtn.style.display = "block";
    submitBtn.style.marginTop = "0.5em";
-   wrapper.appendChild(submitBtn);
+
+      // make a wrapper so we don’t pollute the page
+   const wrapper = buildElement("div", { children: [ head, textarea, submitBtn ] });
 
       // wire the button
    submitBtn.addEventListener("click", () => {
@@ -699,6 +695,42 @@ async function parseYear(txt) {
          es.esDivisions = divs;
       });
    }
+}
+
+
+
+   // 
+function showAddEvent() {
+      // header
+   const head = buildElement("h2", { text: "Add an event" });
+
+      // we need to replace this with a select for sports, a start date, and an end date
+      // textarea
+   // const textarea = document.createElement("textarea");
+   // textarea.rows = 10;
+   // textarea.cols = 50;
+   // textarea.placeholder = "Paste PDF text here...";
+
+      // submit button
+   const submitBtn = document.createElement("button");
+   submitBtn.textContent = "Submit";
+   submitBtn.style.display = "block";
+   submitBtn.style.marginTop = "0.5em";
+
+      // make a wrapper so we don’t pollute the page
+   const wrapper = buildElement("div", { children: [ head, submitBtn ] });
+
+      // wire the button
+   submitBtn.addEventListener("click", () => {
+      const txt = textarea.value.trim();
+      if (txt) {
+         parseYear(txt);
+      }
+   });
+
+      // add to page
+   openModal(wrapper);
+   textarea.focus();
 }
 
 

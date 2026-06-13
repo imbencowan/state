@@ -928,11 +928,13 @@ async function submitAddOns(target, order) {
 		let tbl = parseAddOnOption(value).table;
 		let id = Number(parseAddOnOption(value).id);
 
+		const inputs = Array.from(row.querySelectorAll('input[type="number"]'))
+				.filter(input => parseInt(input.value, 10) > 0);
+
 		if (tbl == 'styles') {
 			let style = runtime.sizeCodesByStyles.find(style => style.id === id);
 				// get the inputs
-			const inputs = Array.from(row.querySelectorAll('input[type="number"]'))
-				.filter(input => parseInt(input.value, 10) > 0);
+			
 			inputs.forEach((input) => {
 					// match quantities with itemIDs, then push them to an array
 				const sizeChar = input.dataset.sizeChar;
@@ -945,18 +947,22 @@ async function submitAddOns(target, order) {
 				addItems.push(shirt);
 			});
 		} else if (tbl == 'transfers') {
-
+			addTransfers.push({
+				transferID: id,
+				quantity: inputs[0].value
+			});
 		}
 	});
 	
 		// cancel if no thing was input
-	if (addItems.length === 0) {
+	if (addItems.length === 0 && addTransfers.length === 0) {
 		cancelAddOns(target);
 		return;
 	}
 	
 		// send it to the server
 	const data = {'orderID': order.id, 'addItems': addItems, 'addTransfers': addTransfers };
+	console.log(data);
 	let request = new ActionRequest('addAddOns', 'SchoolOrder', data);
 	let responseJSON = await myFetch(request);
 	
@@ -1002,8 +1008,7 @@ function buildAddOnSelect(prnt) {
 		//add transfers to the select
 	const transferRows = Array.from(prnt.querySelectorAll('tr[data-transfer-i-d]'))
 	const preTransferIDs = transferRows.map(tr => Number(tr.getAttribute('data-transfer-i-d')));
-	console.log(preTransferIDs);
-	// console.log(runtime.allTransfers.getSync());
+	
 	for (const t of Object.values(runtime.allTransfers.getSync())) {
 		if (!preTransferIDs.includes(t.id)) {
 			const newOptn = buildElement("option", { text: t.transferName });
@@ -1121,7 +1126,6 @@ function makeSizeInputs(row, tbl, id) {
 
 	// takes the values of inputs, puts them directly in table cells
 function cleanInputRows(rows) {
-	console.log('clean');
 		// check if the row was marked complete. if so, change to partial. uncheck the box
 	const tbody = rows[0].closest('tbody');
 	if (tbody.classList.contains('doneRow')) {
@@ -1153,7 +1157,6 @@ function cleanInputRows(rows) {
 			let zeroReplacement = '';
 				// if this is the first row, use '-'
 			if (row === row.parentElement.firstElementChild) zeroReplacement = '-';
-
 				
 				// skip the first and last two cells
 			for (let i = 1; i < cells.length - 2; i++) {

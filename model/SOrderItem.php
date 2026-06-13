@@ -33,61 +33,15 @@ class SOrderItem extends BasicTableModel {
 
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		// // Database Functions
-	public static function addItems($orderID, $addItems) {
-		// die("HIT addItems");
-		// $query = "SELECT itemID FROM sorderitems WHERE schoolOrderID = :schoolOrderID";
-		// 	// use the parent method to get existing itemIDs for the order
-		// $priorItems = SOrderItem::getFromDB($query, [':schoolOrderID' => $orderID]);
-		// 	// make arrays of itemIDs
-		// $priorItemIDs = array_column($priorItems, 'itemID');
-		// $addItemIDs = array_column($addItems, 'itemID');
-		// 	// check for duplicates between the arrays. don't *add* some thing that already exists
-		// $duplicates = array_intersect($priorItemIDs, $addItemIDs);
-		
-		// if ($duplicates) {
-		// 		// bad request
-		// 			// might be nice to check and return what conflicted here
-		// 	http_response_code(400); 
-		// 	return ['error' => "There is already an add on for at least one of the submitted items. 
-		// 							Check the order. No items were added"];
-		// 	exit;
-		// } 
-		
-			// INSERT now
-		// try {
-		// 	$db = Database::getDB();
-		// 		// using a transaction
-		// 	$db->beginTransaction();
-
-				// add the items
-			foreach ($addItems as $item) {
-				$data = ['schoolOrderID' => $orderID, 
-							'itemID' => $item['itemID'], 
-							'sOrderItemsQuantity' => $item['quantity']
-							];
-				self::insert($data);
-			}
-			
-			// 	// UPDATE due
-			// SchoolOrder::updateDue($db, $orderID);
-			// 	// UPDATE completeness IF currently complete
-			// SchoolOrder::updateCompletenessIf($orderID, 1, 2);
-			// 	// UPDATE invoiceDate ($id, ['column': $value])
-			// SchoolOrder::updateByID($orderID, ['invoiceDate' => date('Y-m-d')]);
-			// 	// UPDATE invoiceVersion
-			// SchoolOrder::updateInvoiceVersion($orderID);
-
-			// $db->commit();
-
-			// return [ 'newOrder' => SchoolOrder::getByID($orderID), 'message' => 'Add-ons successfully added.' ];
-		// } catch (PDOException $e) {
-		// 	if ($db->inTransaction()) {
-		// 		$db->rollBack();
-		// 	}
-		// 	http_response_code(500);
-		// 	return ['error' => 'Database error: ' . $e->getMessage() ];
-		// 	exit;
-		// }
+	public static function addItems($db, $orderID, $addItems) {
+			// match values to columns and insert
+		foreach ($addItems as $item) {
+			$data = ['schoolOrderID' => $orderID, 
+						'itemID' => $item['itemID'], 
+						'sOrderItemsQuantity' => $item['quantity']
+						];
+			self::insert($data);
+		}
 	}
 
 	

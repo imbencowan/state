@@ -10,6 +10,11 @@
 		// magically loads required files
 	require 'autoloader.php';
 	require 'functions.php';
+
+		// make warnings throw rather than silently fail
+	set_error_handler(function (int $severity, string $message, string $file, int $line) {
+		throw new ErrorException($message, 0, $severity, $file, $line);
+	});
 	
 		// set the time zone
 	date_default_timezone_set('America/Boise');

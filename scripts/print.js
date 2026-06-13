@@ -55,7 +55,7 @@ export function printUndoneBoxLabels() {
 
 	// actual label generation
 function genBoxLabel(doc, order, originI, lblN = 1) {
-	drawLabelRects(doc);
+	// drawLabelRects(doc);
 	
 	const lbl = new Label(doc, originI, order.getBoxTotal(), lblN);	
 		
@@ -471,7 +471,7 @@ export async function downloadInvoicePDF(order, type = "Invoice") {
 	console.log(order);
 
 		// if there are no add ons, don't do any thing
-	if (order.getAddedStyles().length === 0) return;
+	if (!order.hasAddOns()) return;
 	
 	const { jsPDF } = window.jspdf; 
    const doc = new jsPDF('p', 'mm', 'letter');

@@ -6,7 +6,7 @@ class Test implements JsonSerializable {
        $this->txt = $txt;
    }
 
-   public function jsonSerialize() {
+   public function jsonSerialize(): mixed {
        return [
            'txt' => $this->txt
        ];

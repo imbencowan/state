@@ -125,15 +125,16 @@ class SchoolOrder extends BasicTableModel {
 	public static function addAddOns($orderID, $addItems, $addTransfers) {
 
 		return Database::withDB(function($db) use ($orderID, $addItems, $addTransfers) {
-			SOrderItem::addItems($orderID, $addItems, $db);
-			// SOrderTransfer::addTransfers($orderID, $addTransfers, $db);
+			SOrderItem::addItems($db, $orderID, $addItems);
+			SOrderTransfer::addTransfers($db, $orderID, $addTransfers);
 
 			SchoolOrder::updateDue($db, $orderID);
 			SchoolOrder::updateCompletenessIf($orderID, 1, 2);
 			SchoolOrder::updateByID($orderID, ['invoiceDate' => date('Y-m-d')]);
 			SchoolOrder::updateInvoiceVersion($orderID);
 
-			return SchoolOrder::getByID($orderID);
+			// return SchoolOrder::getByID($orderID);
+			return [ 'newOrder' => SchoolOrder::getByID($orderID), 'message' => 'Add-ons successfully added.' ];
 		});
 		
 

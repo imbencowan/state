@@ -131,7 +131,10 @@ abstract class BasicTableModel implements JsonSerializable {
    // Database functions
 	
 		// basic add. insert given properties. $data = {column => value}
-	public static function insert(object|array $data): ?int {
+	public static function insert(object|array $data, ?PDO $db = null): ?int {
+			// if no $db passed in (for transactions), create a new connection
+		$db = $db ?? Database::getDB();
+		
 			// if $data is an object, convert to assoc array
 		if (is_object($data)) $data = (array) $data;
 		if (empty($data)) return null;
@@ -154,7 +157,6 @@ abstract class BasicTableModel implements JsonSerializable {
 		$placeholders = implode(', ', array_map(fn($c) => ":$c", array_keys($data)));
 
 			// make the query
-		$db = Database::getDB();
 		$stmt = $db->prepare("INSERT INTO " . static::getTableName() . " ($colNames) VALUES ($placeholders)");
 
 			// bind values
