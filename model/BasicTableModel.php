@@ -129,47 +129,80 @@ abstract class BasicTableModel implements JsonSerializable {
    ////////////////////////////////////////////////////////////////////////////////////
    ////////////////////////////////////////////////////////////////////////////////////
    // Database functions
-	
-		// basic add. insert given properties. $data = {column => value}
-	public static function insert(object|array $data, ?PDO $db = null): ?int {
+
+		// a basic writer for insert, upsert, etc. // append sql as necessary // with no $tailSQL, this is just an INSERT
+	public static function writeMany(array $rows, string $tailSQL, ?PDO $db = null): ?int {
 			// if no $db passed in (for transactions), create a new connection
 		$db = $db ?? Database::getDB();
 		
-			// if $data is an object, convert to assoc array
-		if (is_object($data)) $data = (array) $data;
-		if (empty($data)) return null;
+		if (empty($rows)) return null;
 
 			// get columns
 		$columns = static::getColumns();
-
 			// DO NOT allow id in inserts. remove it from column validator
 		unset($columns['id']); 
 
-			// if any $data keys do not match column names, throw
-		$invalidKeys = array_diff(array_keys($data), $columns);
+Test::logX($rows);
+
+		$keys = array_keys($rows[0]);
+
+			// if any $rows keys do not match column names, throw
+		$invalidKeys = array_diff($keys, $columns);
 		if (!empty($invalidKeys)) {
 			throw new InvalidArgumentException(
 					"Invalid column(s): " . implode(', ', array_keys($invalidKeys))
 			);
 		}
+
 			// build strings for the $query
-		$colNames = implode(', ', array_keys($data));
-		$placeholders = implode(', ', array_map(fn($c) => ":$c", array_keys($data)));
+		$colNames = implode(', ', $keys);
+		$placeholders = implode(', ', array_map(fn($c) => ":$c", $keys));
 
 			// make the query
-		$stmt = $db->prepare("INSERT INTO " . static::getTableName() . " ($colNames) VALUES ($placeholders)");
+		$stmt = $db->prepare("INSERT INTO " . static::getTableName() . " ($colNames) VALUES ($placeholders)" . $tailSQL);
 
-			// bind values
-		foreach ($data as $col => $val) {
-			$stmt->bindValue(":$col", $val);
+		foreach ($rows as $row) {
+			$stmt->execute($row);
 		}
 
-		$stmt->execute();
-			// return the newly generated id
+			// return the last generated id
+		return $db->lastInsertId();
+	}
+	
+		// basic add. insert given properties. $data = {column => value}
+	public static function insert(object|array $data, ?PDO $db = null): ?int {
+			// ensure an array
+		if (is_object($data)) $data = (array) $data;
+		if (empty($data)) return null;
+
+			//pass $data to insertMany wrapped in an array
+		static::insertMany([$data], $db);
+
 		return $db->lastInsertId();
 	}
 
+		// insert multiple entries via one prepared statement
+	public static function insertMany(array $rows, ?PDO $db = null): ?int {
+		return static::writeMany($rows, '', $db);
+	}
+
+
+		// a single upsert wraps the row in an array, and passes it on to upsertMany
+	public static function upsert(array $row, array $updateCols, ?PDO $db = null): void {
+		static::upsertMany([$row], $updateCols, $db);
+	}
+
+	public static function upsertMany(array $rows, array $updateCols, ?PDO $db = null) {
+		$updates = implode(', ', array_map(
+			fn($col) => "$col = VALUES($col)",
+			$updateCols
+		));
+
+		static::writeMany($rows, "ON DUPLICATE KEY UPDATE $updates", $db);
+	}
+
 		// inserts the instance to the db
+			// is this replaceable with insert()?
 	public function addInstanceToDB(): ?int {
 		$db = Database::getDB();
 		
@@ -203,7 +236,7 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $db->lastInsertId();
 	}
 
-		// insert in an intermediate table. // utilizes a subclasses Relations
+		// insert in an intermediate table. // utilizes a subclass's Relations
 			// matched by property parameter to Relation property
 			// $values expects a keyed array [leftKey: value, rightKey: value]
 				// where leftKey and rightKey should match the values of those properties in the Relation

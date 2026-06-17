@@ -923,13 +923,13 @@ async function submitAddOns(target, order) {
 	}
 	
 		// get the additions
-	let addItems = [];
-	let addTransfers = [];
+	const addItems = [];
+	const addTransfers = [];
 	rows.forEach((row) => {
 			// get the itemID
-		let value = row.querySelector('select').value;
-		let tbl = parseAddOnOption(value).table;
-		let id = Number(parseAddOnOption(value).id);
+		const value = row.querySelector('select').value;
+		const tbl = parseAddOnOption(value).table;
+		const id = Number(parseAddOnOption(value).id);
 
 		const inputs = Array.from(row.querySelectorAll('input[type="number"]'))
 				.filter(input => parseInt(input.value, 10) > 0);
@@ -1164,18 +1164,32 @@ function cleanInputRows(rows) {
 		// actual cell cleaning
 	rows.forEach((row) => {
 		const cells = row.querySelectorAll('td');
-			// if the first element contains a select, get it's name and make that the first td
-		const slct = row.querySelector('select');
-		if (slct) {
-			cells[0].textContent = slct.options[slct.selectedIndex].text;;
-				// be sure to set the data-attributej
-			row.dataset.styleId = slct.value;
-		}
 
 		let total = 0;
 
+			// if the first element contains a select, get it's name and make that the first td
+		const slct = row.querySelector('select');
+		if (slct) {
+			const value = slct.value;
+			const tbl = parseAddOnOption(value).table;
+			const id = Number(parseAddOnOption(value).id);
+
+				// be sure to set the data-attribute
+			if (tbl == 'styles') {
+				cells[0].textContent = slct.options[slct.selectedIndex].text;
+				row.dataset.styleID = id;
+			} else if (tbl == 'transfers') {
+				row.dataset.transferID = id;
+				cells[0].textContent = 'Transfer - ' + slct.options[slct.selectedIndex].text;
+					// get the total, if any
+				const input = cells[1].querySelector('input');
+				if (input) total = parseInt(input.value) || 0;
+					// clear the cell regardless
+				cells[1].textContent = '';
+			}
+		}
+
 		if (cells[1].dataset.displayChar == 'O') {
-			console.log('here');
 				// get the total, if any
 			const input = cells[1].querySelector('input');
 			if (input) total = parseInt(input.value) || 0;
@@ -1294,45 +1308,65 @@ function cancelSizeEdit(target) {
 	runtime.activeMode = null;
 }
 
+
 async function submitSizeEdit(target, order) {
 	const tbody = target.closest('tbody');
 		// get the rows
 	const rows = Array.from(tbody.querySelectorAll('tr'));
 		
 		// check which items have changed
-	let items = [];
+	const items = [];
+	const transfers = [];
 	rows.forEach((row) => {
-			// get the style
-		const styleID = Number(row.dataset.styleID);
-		const style = runtime.allStyles.getByID(styleID);
+			// first, we need to check if a row is for shirts or transfers
+		if (row.dataset.styleID) {
+				// get the style
+			const styleID = Number(row.dataset.styleID);
+				// we need the style to get the default color
+			const style = runtime.allStyles.getByID(styleID);
 
-			// get the inputs
-		const inputs = Array.from(row.querySelectorAll('input[type="number"]'));
-		inputs.forEach(input => {
+				// get the inputs
+			const inputs = Array.from(row.querySelectorAll('input[type="number"]'));
+			inputs.forEach(input => {
+					// if the value has been changed, add it to the array
+				let oValue = input.closest('td').dataset.oValue;
+				if (oValue === '-' || oValue === '') oValue = 0;
+				if (input.value != oValue) {
+					const sizeID = input.dataset.sizeID;
+						// get the item based on style/color/size
+					const item = runtime.allItems.getByStyleColorSize(style.id, style.defaultColor.id, sizeID);
+					const shirt = {
+						itemID: item.id,
+						quantity: input.value
+					};
+					items.push(shirt);
+				}
+			});
+		} else if (row.dataset.transferID) {
+				// get the input
+			const input = row.querySelector('input[type="number"]');
 				// if the value has been changed, add it to the array
 			let oValue = input.closest('td').dataset.oValue;
 			if (oValue === '-' || oValue === '') oValue = 0;
 			if (input.value != oValue) {
-				const sizeID = input.dataset.sizeID;
-					// get the item based on style/color/size
-				const item = runtime.allItems.getByStyleColorSize(style.id, style.defaultColor.id, sizeID);
-				const shirt = {
-					itemID: item.id,
+				const transfer = {
+					transferID: Number(row.dataset.transferID),
 					quantity: input.value
-				};
-				items.push(shirt);
+				}
+				transfers.push(transfer);
 			}
-		});
+		}
 	});
 	
 		// cancel if no thing was changed
-	if (items.length === 0) {
+	if (items.length === 0 && transfers.length === 0) {
 		cancelSizeEdit(target);
 		return;
 	}
 	
 		// send it to the server
-	const data = { 'orderID': order.id, 'items': items };	
+	const data = { 'orderID': order.id, 'items': items, 'transfers': transfers };	
+	console.log(data);
 	const request = new ActionRequest('editSizes', 'SchoolOrder', data);
 	let responseJSON = await myFetch(request);
 

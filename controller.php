@@ -54,11 +54,18 @@
 				// 	echo json_encode(['success' => false, 'eMessage' => $e->getMessage(), 'error' => $e]);
 				// }
 				} catch (Throwable $e) {
-					error_log($e->getMessage() . "\n" . $e->getTraceAsString());
+					error_log(
+						$e->getMessage() . "\n" .
+						$e->getFile() . ":" . $e->getLine() . "\n" .
+						$e->getTraceAsString()
+					);
 
 					echo json_encode([
 						'success' => false,
-						'message' => $e->getMessage()
+						'message' => $e->getMessage(),
+						'file' => $e->getFile(),
+						'line' => $e->getLine(),
+						'trace' => $e-getTraceAsString()
 					]);
 				}
 			} else {
@@ -66,5 +73,4 @@
 			}
 		}
 	}
-		// file was 370 lines before refactoring
 ?>

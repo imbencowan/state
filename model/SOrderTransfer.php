@@ -33,15 +33,36 @@ class SOrderTransfer extends BasicTableModel {
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		// // Database Functions
 	public static function addTransfers($db, $orderID, $addTransfers) {
-// Test::logX($addTransfers);
+		$data = [];
+
 			// match values to columns and insert
 		foreach ($addTransfers as $trnsfr) {
-			$data = ['schoolOrderID' => $orderID, 
+			$data[] = ['schoolOrderID' => $orderID, 
 						'transferID' => $trnsfr['transferID'], 
 						'sOrderTransfersQuantity' => $trnsfr['quantity']
 						];
-			self::insert($data);
 		}
+		
+		self::insertMany($data, $db);
+	}
+
+
+	public static function editTransfers($db, $orderID, $transfers) {
+		$data = [];
+
+			// match values to column names and upsert
+		foreach ($transfers as $t) {
+			$data[] = ['schoolOrderID' => $orderID,
+						'transferID' => $t['transferID'],
+						'sOrderTransfersQuantity' => $t['quantity']
+						];
+		}
+
+		self::upsertMany($data, ['sOrderTransfersQuantity'], $db);
+
+			// DELETE records that have been changed to 0
+		$stmt = $db->prepare("DELETE FROM sordertransfers WHERE schoolOrderID = :orderID AND sOrderTransfersQuantity = 0");
+		$stmt->execute([':orderID' => $orderID]);
 	}
 }
 ?>

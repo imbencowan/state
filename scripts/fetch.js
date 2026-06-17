@@ -26,9 +26,13 @@ export async function myFetch(request) {
         // if (json.success === false) throw new Error(json.eMessage || "Unknown server error");
             // Throw on HTTP-level errors
         // if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            
+            
+            // Throw on HTTP-level errors
         if (!response.ok) throw new Error(data?.error || data?.message || response.statusText);
+            // back end error
+        if (data?.success === false) throw new Error(data.message || "Unknown server error");
        
-      
 
         console.log(data);
         return data;

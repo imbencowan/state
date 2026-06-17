@@ -121,83 +121,6 @@ class SchoolOrder extends BasicTableModel {
 
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		// // Database Functions
-			// this will set due programatically by the sOrderItems currently in the db
-	public static function addAddOns($orderID, $addItems, $addTransfers) {
-
-		return Database::withDB(function($db) use ($orderID, $addItems, $addTransfers) {
-			SOrderItem::addItems($db, $orderID, $addItems);
-			SOrderTransfer::addTransfers($db, $orderID, $addTransfers);
-
-			SchoolOrder::updateDue($db, $orderID);
-			SchoolOrder::updateCompletenessIf($orderID, 1, 2);
-			SchoolOrder::updateByID($orderID, ['invoiceDate' => date('Y-m-d')]);
-			SchoolOrder::updateInvoiceVersion($orderID);
-
-			// return SchoolOrder::getByID($orderID);
-			return [ 'newOrder' => SchoolOrder::getByID($orderID), 'message' => 'Add-ons successfully added.' ];
-		});
-		
-
-
-		
-		// // $query = "SELECT itemID FROM sorderitems WHERE schoolOrderID = :schoolOrderID";
-		// // 	// use the parent method to get existing itemIDs for the order
-		// // $priorItems = SOrderItem::getFromDB($query, [':schoolOrderID' => $orderID]);
-		// // 	// make arrays of itemIDs
-		// // $priorItemIDs = array_column($priorItems, 'itemID');
-		// // $addItemIDs = array_column($addItems, 'itemID');
-		// // 	// check for duplicates between the arrays. don't *add* some thing that already exists
-		// // $duplicates = array_intersect($priorItemIDs, $addItemIDs);
-		
-		// // if ($duplicates) {
-		// // 		// bad request
-		// // 			// might be nice to check and return what conflicted here
-		// // 	http_response_code(400); 
-		// // 	return ['error' => "There is already an add on for at least one of the submitted items. 
-		// // 							Check the order. No items were added"];
-		// // 	exit;
-		// // } 
-		
-		// 	// INSERT now
-		// try {
-		// 	$db = Database::getDB();
-		// 		// using a transaction
-		// 	$db->beginTransaction();
-
-		// 	SOrderItem::addItems($orderID, $addItems);
-		// // SOrderTransfer::addTransfers($orderID, $addTransfers);
-
-		// 	// 	// add the items
-		// 	// foreach ($addItems as $item) {
-		// 	// 	$data = ['schoolOrderID' => $orderID, 
-		// 	// 				'itemID' => $item['itemID'], 
-		// 	// 				'sOrderItemsQuantity' => $item['quantity']
-		// 	// 				];
-		// 	// 	self::insert($data);
-		// 	// }
-			
-		// 		// UPDATE due
-		// 	SchoolOrder::updateDue($db, $orderID);
-		// 		// UPDATE completeness IF currently complete
-		// 	SchoolOrder::updateCompletenessIf($orderID, 1, 2);
-		// 		// UPDATE invoiceDate ($id, ['column': $value])
-		// 	SchoolOrder::updateByID($orderID, ['invoiceDate' => date('Y-m-d')]);
-		// 		// UPDATE invoiceVersion
-		// 	SchoolOrder::updateInvoiceVersion($orderID);
-
-		// 	$db->commit();
-
-		// 	return [ 'newOrder' => SchoolOrder::getByID($orderID), 'message' => 'Add-ons successfully added.' ];
-		// } catch (PDOException $e) {
-		// 	if ($db->inTransaction()) {
-		// 		$db->rollBack();
-		// 	}
-		// 	http_response_code(500);
-		// 	return ['error' => 'Database error: ' . $e->getMessage() ];
-		// 	exit;
-		// }
-	}
-
 	public static function updateDue($db, $orderID) {
 		$stmt = $db->prepare("UPDATE schoolorders
 					SET due = (
@@ -403,35 +326,35 @@ class SchoolOrder extends BasicTableModel {
 		$rowsAffected = self::updateByID($id, ['completeness' => $completeness]);
 		return ['rowsAffected' => $rowsAffected];
 	}
+
+			// this will set due programatically by the sOrderItems currently in the db
+	public static function addAddOns($orderID, $addItems, $addTransfers) {
+
+		return Database::withDB(function($db) use ($orderID, $addItems, $addTransfers) {
+			SOrderItem::addItems($db, $orderID, $addItems);
+			SOrderTransfer::addTransfers($db, $orderID, $addTransfers);
+
+			SchoolOrder::updateDue($db, $orderID);
+			SchoolOrder::updateCompletenessIf($orderID, 1, 2);
+			SchoolOrder::updateByID($orderID, ['invoiceDate' => date('Y-m-d')]);
+			SchoolOrder::updateInvoiceVersion($orderID);
+
+			return [ 'newOrder' => SchoolOrder::getByID($orderID), 'message' => 'Add-ons successfully added.' ];
+		});
+	}
 	
-	public static function editSizes($items, $orderID) {
+	public static function editSizes($orderID, $items, $transfers) {
 			// use withDB to avoid some thing like a partial update
-		return Database::withDB(function($db) use ($items, $orderID) {
-			
-				// this will UPDATE records for existing sizes, and create new records for nonexisting
-			$stmt = $db->prepare("INSERT INTO sorderitems (schoolOrderID, itemID, sOrderItemsQuantity)
-									VALUES (:orderID, :itemID, :quantity)
-									ON DUPLICATE KEY UPDATE sOrderItemsQuantity = VALUES(sOrderItemsQuantity)");
-			
-			foreach ($items as $item) {
-				$stmt->execute([
-					':orderID' => $orderID,
-					':itemID' => $item['itemID'],
-					':quantity' => (int) $item['quantity']
-				]);
-			}
-				// DELETE records that have been changed to 0
-			$stmt = $db->prepare("DELETE FROM sorderitems WHERE schoolOrderID = :orderID AND sOrderItemsQuantity = 0");
-			$stmt->execute([':orderID' => $orderID]);
-			
-				// UPDATE due
-			$due = self::updateDue($db, $orderID);
-				// UPDATE completeness IF currently complete to partial
-			self::updateCompletenessIf($orderID, 1, 2);
-				// UPDATE invoiceVersion
-			self::updateInvoiceVersion($orderID);
-	
-			return [ 'newOrder' => self::getByID($orderID) ];
+		return Database::withDB(function($db) use ($orderID, $items, $transfers) {
+			SOrderItem::editItems($db, $orderID, $items);
+			SOrderTransfer::editTransfers($db, $orderID, $transfers);
+
+			SchoolOrder::updateDue($db, $orderID);
+			SchoolOrder::updateCompletenessIf($orderID, 1, 2);
+			SchoolOrder::updateByID($orderID, ['invoiceDate' => date('Y-m-d')]);
+			SchoolOrder::updateInvoiceVersion($orderID);
+
+			return [ 'newOrder' => SchoolOrder::getByID($orderID), 'message' => 'Items successfully edited.' ];
 		});
 	}
 

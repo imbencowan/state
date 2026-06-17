@@ -34,14 +34,36 @@ class SOrderItem extends BasicTableModel {
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		// // Database Functions
 	public static function addItems($db, $orderID, $addItems) {
-			// match values to columns and insert
+		$data = [];
+
+			// match values to column names and insert
 		foreach ($addItems as $item) {
-			$data = ['schoolOrderID' => $orderID, 
+			$data[] = ['schoolOrderID' => $orderID, 
 						'itemID' => $item['itemID'], 
 						'sOrderItemsQuantity' => $item['quantity']
 						];
-			self::insert($data);
 		}
+		
+		self::insertMany($data, $db);
+	}
+
+
+	public static function editItems($db, $orderID, $items) {
+		$data = [];
+
+			// match values to column names and upsert
+		foreach ($items as $item) {
+			$data[] = ['schoolOrderID' => $orderID,
+						'itemID' => $item['itemID'],
+						'sOrderItemsQuantity' => $item['quantity']
+						];
+		}
+
+		self::upsertMany($data, ['sOrderItemsQuantity'], $db);
+
+			// DELETE records that have been changed to 0
+		$stmt = $db->prepare("DELETE FROM sorderitems WHERE schoolOrderID = :orderID AND sOrderItemsQuantity = 0");
+		$stmt->execute([':orderID' => $orderID]);
 	}
 
 	
