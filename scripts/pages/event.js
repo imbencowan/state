@@ -859,6 +859,7 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 function showAddOnInputs(order) {
 		// set mode. prevents edit being called while this is open
 	runtime.activeMode = 'add';
+
 		// get the parent element with the specified data attribute
 			// the parent is a tbody that can hold multiple rows
 	const prnt = document.querySelector(`[data-school-order-id="${order.id}"]`);
@@ -875,13 +876,11 @@ function showAddOnInputs(order) {
 			const valueType = parseAddOnOption(newSlct.value).table;
 			const valueID = parseAddOnOption(newSlct.value).id;
 			
-				// create the inputs for the middle columns
+				// create the tds for the middle columns 
 			if (valueType == 'styles') {
-				const styleSizes = runtime.styleMap[valueID].sizeMap;
+					// make tds for each size, put inputs in the ones that belong to this style/color combo
 				for (const s of sizeList) {
-					const td = buildElement("td", { title: s, dataset: { displayChar: s } });
-					if (s in styleSizes) td.appendChild(makeOrderInput(s));
-					tds.push(td);
+					tds.push(buildElement("td", { title: s, dataset: { displayChar: s } }));
 				}
 			}
 			
@@ -898,7 +897,11 @@ function showAddOnInputs(order) {
 
 				// Append the newly created <tr> to the <tbody>
 					// create a variable for focus
-			const newTR = buildElement("tr", { classes: 'addOnRow', children: tds })
+			const newTR = buildElement("tr", { classes: 'addOnRow', children: tds });
+
+				// now that we have a row, we can use the existing function to insert the inputs
+			makeSizeInputs(newTR, valueType, valueID);
+
 			prnt.appendChild(newTR);
 			
 				// give focus to the first input
@@ -932,16 +935,17 @@ async function submitAddOns(target, order) {
 				.filter(input => parseInt(input.value, 10) > 0);
 
 		if (tbl == 'styles') {
-			let style = runtime.sizeCodesByStyles.find(style => style.id === id);
+			const style = runtime.allStyles.getByID(id);
+
 				// get the inputs
-			
 			inputs.forEach((input) => {
 					// match quantities with itemIDs, then push them to an array
-				const sizeChar = input.dataset.sizeChar;
-
-				const itemID = style.sizeMap[sizeChar].id;
+				const sizeID = input.dataset.sizeID;
+					// get the item based on style/color/size
+				const item = runtime.allItems.getByStyleColorSize(style.id, style.defaultColor.id, sizeID);
 				const shirt = {
-					itemID: itemID,
+						// VARIABLE DERIVED FROM SIZECODESBYSTYLES
+					itemID: item.id,
 					quantity: input.value
 				};
 				addItems.push(shirt);
@@ -995,7 +999,8 @@ function buildAddOnSelect(prnt) {
 	
 	const newSlct = document.createElement('select');
 		//add styles to the select
-	runtime.sizeCodesByStyles.forEach((style) => {
+	const stylesArr = Object.values(runtime.allStyles.getSync());
+	stylesArr.forEach((style) => {
 			// exclude the preexisting styles
 		if (!preStyleIDs.includes(style.id)) {
 			const newOptn = document.createElement('option');
@@ -1031,32 +1036,33 @@ function buildAddOnSelect(prnt) {
 	return newSlct;
 }
 
-	// doesn't just make the inputs, but handles when which cells get inputs
+	// doesn't just make the inputs it's self, but handles when which cells get inputs
 function makeSizeInputs(row, tbl, id) {
 	if (tbl == 'styles') {
-		const styleSizes = runtime.styleMap[id].sizeMap;
+		const style = runtime.allStyles.getByID(id);
+		const defColorID = style.defaultColor.id;
+
+			// get the size displayChars for this style/color combo
+		const styleSizeDChars = runtime.allItems.getSizeDisplayCharsByStyleColor(id, defColorID);
+			// get the sizes for a style with default color
+		const styleSizes = runtime.allItems.getSizesByStyleColor(id, defColorID);
+
+		console.log(styleSizes);
 
 			// we want to distinguish between 'styles' and 'transfers'
-		const keys = Object.keys(styleSizes);
-
-		if (keys.length === 1 && keys[0] === 'O') {
+				// here we handle one size fits all items, placing the input in the smalls column
+					// in the else we'll handle regularly sized styles
+		if (styleSizes.length === 1 && styleSizes[0].displayChar === 'O') {
 			for (const td of row.querySelectorAll('td[data-display-char]')) {
 				if (td.dataset.displayChar == 'S' || td.dataset.displayChar == 'O') {
-						// clear the cell
-					td.textContent = '';
-						// make an input
-					const input = makeOrderInput('O');
 						// for *one-size* items, get the quantity from the total cell, if it exists
-					const tCell = row.querySelector('td[title=total]');
-					if (tCell) {
-						const q = tCell.textContent;
-						if (q) {
-							input.value = q;
-							td.dataset.oValue = q;
-						}
-					}
+					const totalTD = row.querySelector('td[title=total]');
+						// if totalTD exists, get it's value
+					const q = totalTD?.textContent || '';
 
-					td.appendChild(input);
+						// id is the styleID
+					makeOrderSizeInput(td, id, styleSizes[0], q);
+
 					td.dataset.displayChar = 'O';
 					td.title = 'O';
 				} else {
@@ -1071,24 +1077,16 @@ function makeSizeInputs(row, tbl, id) {
 				row.cells[1].title = 'S';
 			}
 			for (const td of row.querySelectorAll('td[data-display-char]')) {
-				const size = td.dataset.displayChar;
+				const sizeDC = td.dataset.displayChar;
+				const size = styleSizes.find(size => size.displayChar === sizeDC);
 
-				if (size in styleSizes) {
+				if (styleSizeDChars.includes(sizeDC)) {
 					const currentValue = td.textContent.trim();
-					const input = makeOrderInput(size);
-					td.textContent = ''; // Clear existing content
-					td.appendChild(input);
-					
-					if (currentValue) {
-							// Set initial value from current text in <td>
-						input.value = currentValue;
-							// also make a data-attribute to compare against on submit
-						td.dataset.oValue = currentValue;
-						td.appendChild(input);
-					}
+
+						// id is the styleID
+					makeOrderSizeInput(td, id, size, currentValue)
 				} else {
 						// if this size doesn't exist for this style, remove any existing input
-					// input?.remove();
 					td.textContent = '';
 				}
 			}
@@ -1096,6 +1094,8 @@ function makeSizeInputs(row, tbl, id) {
 	} else if (tbl == 'transfers') {
 		const inputTD = row.cells[1];
 		const totalTD = row.querySelector('td[title=total]');
+			// if totalTD exists, get it's value
+		const q = totalTD?.textContent || '';
 
 			// if we are in add mode, handle middle cells
 				// if we are in edit mode, row.cells[1] should colspan all those cells
@@ -1106,22 +1106,50 @@ function makeSizeInputs(row, tbl, id) {
 			})
 		}
 
-			// clear the first cell
-		inputTD.textContent = '';
-		inputTD.style.textAlign = 'left';
-			// make an input
-		const input = makeOrderInput('transfer:' + id);
-
-		if (totalTD) {
-			const q = totalTD.textContent;
-			if (q) {
-				input.value = q;
-				inputTD.dataset.oValue = q;
-			}
-		}
-		
-		inputTD.appendChild(input);
+			// build an input in the cell
+		makeOrderTransferInput(inputTD, id, q);
 	}
+}
+
+function makeOrderSizeInput(td, styleID, size, currentValue) {
+		// clear the destination, then align it
+	td.textContent = '';
+		// make the input
+	const input = makeOrderInput(currentValue);
+	input.name = `addOn:style:${styleID}:size:${size.displayChar}`;
+	input.dataset.sizeID = size.id;
+
+		// also make a data-attribute to compare against on submit
+	if (currentValue) td.dataset.oValue = currentValue;
+
+	td.appendChild(input);
+}
+
+function makeOrderTransferInput(td, id, currentValue) {
+		// clear the destination, then align it
+	td.textContent = '';
+	td.style.textAlign = 'left';
+		// make the input
+	const input = makeOrderInput(currentValue);
+	input.name = `addOn:transfer:${id}`;
+		// unnecessary, transferID is attached to the row it's self
+	// input.dataset.transferID = id;
+
+	if (currentValue) td.dataset.oValue = currentValue;
+
+	td.appendChild(input);
+}
+
+function makeOrderInput(currentValue) {
+	const input = document.createElement('input');
+	input.type = 'number';
+	input.min = 0; 
+	input.max = 99;
+	input.step = 1;
+		// set the initial value if it exists
+	if (currentValue) input.value = currentValue;
+
+	return input; 
 }
 
 	// takes the values of inputs, puts them directly in table cells
@@ -1204,17 +1232,6 @@ function parseAddOnOption(value) {
    return { table, id: Number(id) };
 }
 
-function makeOrderInput(s) {
-	const input = document.createElement('input');
-		input.type = 'number';
-		input.name = `addOn:${s}`;
-		input.min = 0; 
-		input.max = 99;
-		input.step = 1;
-		input.dataset.sizeChar = s;
-	return input;
-}
-
 
 
 function showEditSizeInputs(order) {
@@ -1286,19 +1303,21 @@ async function submitSizeEdit(target, order) {
 	let items = [];
 	rows.forEach((row) => {
 			// get the style
-		let styleID = Number(row.dataset.styleID);
-		let style = runtime.sizeCodesByStyles.find(style => style.id === styleID);
+		const styleID = Number(row.dataset.styleID);
+		const style = runtime.allStyles.getByID(styleID);
+
 			// get the inputs
-		let inputs = Array.from(row.querySelectorAll('input[type="number"]'));
+		const inputs = Array.from(row.querySelectorAll('input[type="number"]'));
 		inputs.forEach(input => {
 				// if the value has been changed, add it to the array
 			let oValue = input.closest('td').dataset.oValue;
 			if (oValue === '-' || oValue === '') oValue = 0;
 			if (input.value != oValue) {
-				const sizeChar = input.closest('td').title;
-				const itemID = style.sizeMap[sizeChar].id;
-				let shirt = {
-					itemID: itemID,
+				const sizeID = input.dataset.sizeID;
+					// get the item based on style/color/size
+				const item = runtime.allItems.getByStyleColorSize(style.id, style.defaultColor.id, sizeID);
+				const shirt = {
+					itemID: item.id,
 					quantity: input.value
 				};
 				items.push(shirt);

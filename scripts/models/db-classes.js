@@ -243,6 +243,7 @@ export class EventSite {
 
       for (const inv of this.inventory) {
          const sizeCat = inv.item.style.sizingCategoryID;
+            // collects Adult, Youth, Womens // omits One Size Fits All items
          if (sizeCat == 1 || sizeCat == 2 || sizeCat == 3) {
             const styleID = inv.item.style.id;
             const colorID = inv.item.color.id;
@@ -718,7 +719,7 @@ export class InventoryItem {
 
 export class Style {
    constructor({ id, code, name, inventoryName, shortName, vShortName, brand, sizingCategoryID, 
-               minSizeID, maxSizeID, listOrder, sizes = [] }) {
+               minSizeID, maxSizeID, defaultColor, listOrder, sizes = [] }) {
       this.id = id;
       this.code = code;
       this.name = name;
@@ -729,9 +730,9 @@ export class Style {
       this.sizingCategoryID = sizingCategoryID;
       this.minSizeID = minSizeID;
       this.maxSizeID = maxSizeID;
+      this.defaultColor = Utils.parseToInstance(defaultColor, Color);
       this.listOrder = listOrder;
       this.sizes = Array.isArray(sizes) ? sizes.map(size => size) : [];
-      // if (id === 9) console.log(sizes);
 
       this.sizeMap = {};
       for (const size of this.sizes) {

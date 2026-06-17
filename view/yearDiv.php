@@ -16,6 +16,7 @@
 	<select id="selectYear">
 		<option value=24 <?php if ($year == 24) echo'selected'?>>24-25</option>
 		<option value=25 <?php if ($year == 25) echo'selected'?>>25-26</option>
+		<option value=25 <?php if ($year == 26) echo'selected'?>>26-27</option>
 	</select>
 </div>
 

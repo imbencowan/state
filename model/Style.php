@@ -15,12 +15,15 @@ class Style extends BasicTableModel {
 					'sizingCategoryID' => 'sizingCategoryID',
 					'minSizeID' => 'minSizeID',
 					'maxSizeID' => 'maxSizeID',
+					'defaultColorID' => 'defaultColorID',
 					'listOrder' => 'listOrder']; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
 			// $interTable = null, $stopContexts = [])
 	protected static function getRelations(): array {
-      return [new Relation('brand', 'Brand', 'brandID', 'brandID', false, null, ['year', 'orders'])];
+      return [ new Relation('brand', 'Brand', 'brandID', 'brandID', false, null, ['year', 'orders']),
+					new Relation('defaultColor', 'Color', 'defaultColorID', 'colorID') 
+				];
    }
 	
 	
@@ -35,7 +38,9 @@ class Style extends BasicTableModel {
 		public readonly ?int $sizingCategoryID,
 		public readonly ?int $minSizeID,
 		public readonly ?int $maxSizeID,
+		public readonly ?int $defaultColorID,
 		public readonly ?int $listOrder,
+		public readonly ?Color $defaultColor = null,
 		public readonly ?Brand $brand = null,
 		private array $sizes = []
    ) {}
@@ -52,6 +57,8 @@ class Style extends BasicTableModel {
 			'sizingCategoryID' => $this->sizingCategoryID,
 			'minSizeID' => $this->minSizeID,
 			'maxSizeID' => $this->maxSizeID,
+			'defaultColorID' => $this->defaultColorID,
+			'defaultColor' => $this->defaultColor,
 			'listOrder' => $this->listOrder,
 			'sizes' => array_values($this->sizes)
 		];

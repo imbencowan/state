@@ -27,15 +27,9 @@ export async function init() {
 
 		// add the file submit listenter
 	document.getElementById('fileInput').addEventListener('change', submitOrderFiles);
-
-		// load size codes
-	let request = new ActionRequest('loadSizeCodesByStyle', 'Item');
-	let sizeData = await myFetch(request);
-		// i don't know that we need this. is sizeCodesByStyles used for any thing but making styleMap?
-	runtime.sizeCodesByStyles = sizeData.data.map(styleData => Style.fromJSON(styleData));
-	runtime.styleMap = mapObjsBy(runtime.sizeCodesByStyles);
 	
 		// initial load
+			// Sizes, Colors, Styles, and Transfers are all terminal objects with no runtime.all* children
 	await Promise.all([
 		runtime.allSizes.load(),
 		runtime.allColors.load(),
@@ -46,7 +40,7 @@ export async function init() {
 
 
 		// display next event
-	request = new ActionRequest('showEventByDate', 'Event');
+	let request = new ActionRequest('showEventByDate', 'Event');
 	
 	let responseJSON = await myFetch(request);
 	
