@@ -34,13 +34,28 @@ class SOrderItem extends BasicTableModel {
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		// // Database Functions
 	public static function addItems($db, $orderID, $addItems) {
-		$data = [];
+		if (empty($addItems)) return;
+			// first we need to get the prices
 
-			// match values to column names and insert
+			// collect itemIDs
+		$itemIDs = array_column($addItems, 'itemID');
+
+		$inPlaceholders = implode(',', array_fill(0, count($itemIDs), '?'));
+			// fetch current prices
+		$stmt = $db->prepare("SELECT itemID, price FROM apparel WHERE itemID IN ($inPlaceholders)");
+		$stmt->execute($itemIDs);
+
+			// [itemID => price]
+		$prices = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+		
+
+		$data = [];
+			// now match values to column names and insert
 		foreach ($addItems as $item) {
 			$data[] = ['schoolOrderID' => $orderID, 
 						'itemID' => $item['itemID'], 
-						'sOrderItemsQuantity' => $item['quantity']
+						'sOrderItemsQuantity' => $item['quantity'],
+           			'orderPrice' => $prices[$item['itemID']] ?? 0
 						];
 		}
 		

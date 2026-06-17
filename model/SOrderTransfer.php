@@ -33,13 +33,29 @@ class SOrderTransfer extends BasicTableModel {
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		// // Database Functions
 	public static function addTransfers($db, $orderID, $addTransfers) {
+		if (empty($addTransfers)) return;
+			// first we need to get the prices
+
+			// collect transferIDs
+		$transferIDs = array_column($addTransfers, 'transferID');
+
+		$inPlaceholders = implode(',', array_fill(0, count($transferIDs), '?'));
+			// fetch current prices
+		$stmt = $db->prepare("SELECT transferID, price FROM transfers WHERE transferID IN ($inPlaceholders)");
+		$stmt->execute($transferIDs);
+
+			// [transferID => price]
+		$prices = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+
 		$data = [];
 
 			// match values to columns and insert
 		foreach ($addTransfers as $trnsfr) {
 			$data[] = ['schoolOrderID' => $orderID, 
 						'transferID' => $trnsfr['transferID'], 
-						'sOrderTransfersQuantity' => $trnsfr['quantity']
+						'sOrderTransfersQuantity' => $trnsfr['quantity'],
+						'orderPrice' => $prices[$trnsfr['transferID']] ?? 0
 						];
 		}
 		

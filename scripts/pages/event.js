@@ -884,8 +884,8 @@ function showAddOnInputs(order) {
 				}
 			}
 			
-				// submit/cancel td
-			const btnTD = buildElement("td");
+				// submit/cancel td	// this goes in the 'total' column, and we need that title later for editing quantities
+			const btnTD = buildElement("td", { title: 'total' });
 				// put submit and cancel buttons in the btnTD, unless there already is one
 			if (prnt.querySelector('button.submitAddOns') === null) {
 				makeSubmitCancelButtons(btnTD, prnt, 'order', 'AddOns');
@@ -944,7 +944,6 @@ async function submitAddOns(target, order) {
 					// get the item based on style/color/size
 				const item = runtime.allItems.getByStyleColorSize(style.id, style.defaultColor.id, sizeID);
 				const shirt = {
-						// VARIABLE DERIVED FROM SIZECODESBYSTYLES
 					itemID: item.id,
 					quantity: input.value
 				};
@@ -966,7 +965,6 @@ async function submitAddOns(target, order) {
 	
 		// send it to the server
 	const data = {'orderID': order.id, 'addItems': addItems, 'addTransfers': addTransfers };
-	console.log(data);
 	let request = new ActionRequest('addAddOns', 'SchoolOrder', data);
 	let responseJSON = await myFetch(request);
 	
@@ -1046,8 +1044,6 @@ function makeSizeInputs(row, tbl, id) {
 		const styleSizeDChars = runtime.allItems.getSizeDisplayCharsByStyleColor(id, defColorID);
 			// get the sizes for a style with default color
 		const styleSizes = runtime.allItems.getSizesByStyleColor(id, defColorID);
-
-		console.log(styleSizes);
 
 			// we want to distinguish between 'styles' and 'transfers'
 				// here we handle one size fits all items, placing the input in the smalls column
@@ -1176,20 +1172,16 @@ function cleanInputRows(rows) {
 
 				// be sure to set the data-attribute
 			if (tbl == 'styles') {
-				cells[0].textContent = slct.options[slct.selectedIndex].text;
 				row.dataset.styleID = id;
+				cells[0].textContent = slct.options[slct.selectedIndex].text;
 			} else if (tbl == 'transfers') {
 				row.dataset.transferID = id;
 				cells[0].textContent = 'Transfer - ' + slct.options[slct.selectedIndex].text;
-					// get the total, if any
-				const input = cells[1].querySelector('input');
-				if (input) total = parseInt(input.value) || 0;
-					// clear the cell regardless
-				cells[1].textContent = '';
 			}
 		}
 
-		if (cells[1].dataset.displayChar == 'O') {
+			// handle quantity tds
+		if (cells[1].dataset.displayChar == 'O' || row.dataset.transferID) {
 				// get the total, if any
 			const input = cells[1].querySelector('input');
 			if (input) total = parseInt(input.value) || 0;
@@ -1366,7 +1358,6 @@ async function submitSizeEdit(target, order) {
 	
 		// send it to the server
 	const data = { 'orderID': order.id, 'items': items, 'transfers': transfers };	
-	console.log(data);
 	const request = new ActionRequest('editSizes', 'SchoolOrder', data);
 	let responseJSON = await myFetch(request);
 
