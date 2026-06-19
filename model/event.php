@@ -11,7 +11,8 @@ class Event extends BasicTableModel {
 					'endDate' => 'endDate',
 					'year' => 'eventYear'];
 	}
-		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
+			// $interTable = null, $stopContexts = [])
 	protected static function getRelations(): array {
       return [new Relation('eventSites', 'EventSite', 'eventID', 'eventID', true), 
 					new Relation('sport', 'Sport', 'sportID', 'sportID', false)];
@@ -117,6 +118,8 @@ class Event extends BasicTableModel {
 	}
 	
 	
+
+
 		//////////////////////////////////////////////////
 		// Database functions	
 	public static function getOrdersBySportAndYear(int $sportID, int $year): ?static {
@@ -289,6 +292,15 @@ class Event extends BasicTableModel {
 			// sort and return
 		ksort($merged);
 		return array_values($merged);
+	}
+
+
+		// get all years that there are events for
+	public static function getAllYears() {
+		$db = Database::getDB();
+		$stmt = $db->prepare("SELECT DISTINCT eventYear FROM events	ORDER BY eventYear");
+		$stmt->execute();
+		return $stmt->fetchAll(PDO::FETCH_COLUMN);
 	}
 	
 	

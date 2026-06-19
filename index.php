@@ -23,10 +23,14 @@
 	<header id="pageHeader">
 		<h1 id="pageHeaderText">State Stuff</h1>
 		<div id="pageHeaderRight">
-			<?php
-				include 'view/yearDiv.php';
-				include 'view/addOrdersDiv.php';
-			?>
+			<div id="yearDiv">
+				<label>View Year: </label>
+				<select id="selectYear"></select>
+			</div>
+			<div id="addOrdersDiv">
+				<label for="fileInput">Upload an order here</label><br />
+				<input id="fileInput" type="file" accept=".txt" multiple>
+			</div>
 		</div>
 	</header>
 	<div id="navContainer">

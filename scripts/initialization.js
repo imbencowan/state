@@ -1,16 +1,12 @@
 import { runtime } from './runtime.js';
 import { myFetch } from './fetch.js';
-import { ActionRequest } from './models/other-classes.js'; 
-import { StateEvent, Style, Item } from './models/db-classes.js'  
+import { ActionRequest } from './models/other-classes.js';
     // function to be attached to a listener
 import { submitOrderFiles } from './order-submission.js';
-	// utilities?
+	// utility for building the nav bar
 import { buildElement } from './utilities.js';
     // modal initializaion
 import { init as modalInit } from './modal.js';
-    // function for a listener
-import { goToEventPage, buildEventPage, addEventPageFunctionality } from './pages/event.js';
-
 import { navigate } from './navigation.js';
 
 
@@ -18,10 +14,14 @@ import { navigate } from './navigation.js';
 	// init is called onload() and does stuff after the script and html is in place
 		// importantly it adds event listeners after the elements exist
 export async function init() {
+		// add options to the year select
+	fillYearSelect();
+
 		// build the nav bar i guess
 	buildNavList();
 	buildNavList2();
 
+		// after the nav is build attach a listener
 	document.getElementById('navContainer').addEventListener('click', async (e) => {
 			// get the function to call from. nav2Handlers is a constant of this module
       const li = e.target.closest('li');
@@ -52,8 +52,29 @@ export async function init() {
 	modalInit();
 }
 
+async function fillYearSelect() {
+	let request = new ActionRequest('getAllYears', 'Event');
+	let years = (await myFetch(request)).data;
+
+	const currentDate = new Date();
+	const currentYear = currentDate.getFullYear() % 100;
+
+		// only add if June or later (month >= 5)
+	if (currentDate.getMonth() >= 5 && !years.includes(currentYear)) {
+		years.push(currentYear);
+	}
+
+	console.log(years);
+	const slct = document.getElementById('selectYear');
+
+	years.forEach(year => {
+		slct.appendChild(buildElement("option", { text: (year + "-" + (year + 1)), attrs: { value: year } }));
+	});
+}
+
 function buildNavList() {
 	const sportList = [
+			// [<li> text, slug for routing]
 		['Golf', 'golf'],
 		['Soccer', 'soccer'],
 		['Volleyball', 'volleyball'],
