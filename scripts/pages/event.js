@@ -12,16 +12,27 @@ import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoic
 import { buildActionButton, buildIcon, makeSubmitCancelButtons } from './page-utils.js';
 
 
-export async function goToEventPage(sportID) {
-		// get the current school year
-	const sixMonthsAgo = new Date();
-	sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-	let year = sixMonthsAgo.getFullYear() % 100;
-		// but reset it based off the select. the previous year calculation is really a fall back
-	if (document.getElementById("selectYear")) year = document.getElementById("selectYear").value;
+export async function goToEventPage(sportID = null, tab = 'orders', year = null) {
+	let request;
+		// if no sport provided, get the next/most recent Event
+	if(!sportID) {
+		request = new ActionRequest('showEventByDate', 'Event', { 'date': null });
+	} else {
+		if (!year) {
+				// if no year was sent, get it from the select
+			if (document.getElementById("selectYear")) year = document.getElementById("selectYear").value;
+
+				// if there was a problem with the select, get the current school year
+			if (!year) {
+				const sixMonthsAgo = new Date();
+				sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+				year = sixMonthsAgo.getFullYear() % 100;
+			}
+		}
+		request = new ActionRequest('showEventBySportAndYear', 'Event', { 'year': year, 'sportID': sportID });
+	}
 
 		// pull data
-	let request = new ActionRequest('showEventBySportAndYear', 'Event', { 'year': year, 'sportID': sportID });
 	let responseJSON = await myFetch(request);
 	
 		// reset mode on load
@@ -37,25 +48,8 @@ export async function goToEventPage(sportID) {
 
 			// ATTACH EVENT LISTENERS 
 		addEventPageFunctionality();
-	}	
-}
-
-	// display next event // Event::showEventByDate returns the next or most recent event if no date is providedd
-export async function showEventByDate(date = null) {
-	let request = new ActionRequest('showEventByDate', 'Event', { 'date': date });
-	let responseJSON = await myFetch(request);
-	
-	document.getElementById("display").innerHTML = responseJSON.html;
-		// if we returned an event, not an empty display
-	if (responseJSON.data !== null) {
-			// put the event in working memory
-		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
-
-		const pageContent = buildEventPage(runtime.stateEvent);
-		document.getElementById("display").replaceChildren(pageContent);
-
-			// attach event listeners to the html in "display"
-		addEventPageFunctionality();
+	} else {
+		showNoEvent(sportID, year);
 	}
 }
 
@@ -495,6 +489,15 @@ function attachCommentTable(cntnr, data) {
 }
 
 
+function showNoEvent(sport, year) {
+	const msg = `There is currently no information for the 20${year}-20${(Number(year) + 1)} school year.`;
+	const p = buildElement("p", { text: msg });
+	const div = buildElement("div", { children: p });
+	document.getElementById('display').replaceChildren(div);
+}
+
+
+	//////////////// INVENTORY PANEL STUFF //////////////////////////////////////////////////////////
 async function attachInventoryPanel(panel) {
 	attachInventoryTopButtons(panel);
 

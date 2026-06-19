@@ -2,7 +2,7 @@
    // translates urls to js functions to navigate to correct displays //
 import { runtime } from "./runtime.js";
 
-import { goToEventPage, showEventByDate } from './pages/event.js';
+import { goToEventPage } from './pages/event.js';
 import { goToItemsPage } from "./pages/items.js";
 import { goToSchoolsPage } from "./pages/schools.js";
 import { goToYearPage } from "./pages/year.js";
@@ -11,7 +11,7 @@ import { goToYearPage } from "./pages/year.js";
    // define valid routes
 const routes = [
       // handler in this first one creates an anonymous function to avoid passing (parts, match) as arguments
-   { match: parts => (parts.length === 0), handler: () => showEventByDate() },
+   { match: parts => (parts.length === 0), handler: () => goToEventPage() },
    { match: parts => (runtime.allSports.getBySlug(parts[0])), handler: handleSport }, 
    { match: parts => (parts[0] === 'items' && parts.length === 1), handler: goToItemsPage },
    { match: parts => (parts[0] === 'schools' && parts.length === 1), handler: goToSchoolsPage },
@@ -40,7 +40,6 @@ export async function router() {
 
 
 function handleSport(parts, sport) {
-   console.log(sport);
    goToEventPage(sport.id);
 }
 

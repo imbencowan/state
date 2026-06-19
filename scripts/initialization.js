@@ -70,6 +70,8 @@ async function fillYearSelect() {
 	years.forEach(year => {
 		slct.appendChild(buildElement("option", { text: (year + "-" + (year + 1)), attrs: { value: year } }));
 	});
+
+	slct.value = String(currentYear);
 }
 
 function buildNavList() {

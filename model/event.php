@@ -208,7 +208,6 @@ class Event extends BasicTableModel {
 	}
 
 	public static function getInventoryItems($eSiteIDs) {
-		// Test::logX($eSiteIDs);
 			// Where __construct(string $column, mixed $value, string $operator = '=', array $path = [])
                 // $path specifies the table JOIN path to the target table, ie ['events', 'eventsites', 'sites']
 		$whereInvntry = new Where('eventSiteID', $eSiteIDs, 'IN', ['eventsiteinventories']);
@@ -315,7 +314,10 @@ class Event extends BasicTableModel {
 		if($event) {
 			include 'view/event.php';
 		} else {
-			include 'view/noevent.php';
+			// find a new way to indicate no event was found
+				// may be, currently 'data' being null tells us
+
+			// include 'view/noevent.php';
 		}
 			// Get the buffered content as a string
 		$html = ob_get_clean(); 
