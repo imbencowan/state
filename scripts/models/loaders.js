@@ -1,5 +1,5 @@
 import { makeDataLoader } from "../utilities.js";
-import { Item } from "../models/db-classes.js";
+import { Item, Sport } from "../models/db-classes.js";
 
 
    // a specific loader for Items that gives a getByStyleColorSize() method
@@ -70,8 +70,48 @@ export function makeItemLoader() {
 }
 
 
-// export function makeSizeLoader() {
-//       // start with our basic loader. // gives methods for accessing all Items from the db
-//    const loader = makeDataLoader('Item', Item);
+export function makeSportLoader() {
+      // start with our basic loader. // gives methods for accessing all Items from the db
+   const loader = makeDataLoader('Sport', Sport);
 
-// }
+      // a cache for a lookup
+   let slugLookup = null;
+
+      // build the lookup
+   function buildSlugLookup(sports) {
+      const lookup = {}
+
+      for (const s of Object.values(sports)) { lookup[s.slug] = s; }
+
+      return lookup;
+   }
+
+
+      // returns the basic load(), getSync(), getByID(), adds a lookup method, over writes refresh() and clear()
+   return {
+         // spreads the og methods to the return
+      ...loader,
+
+         // over ride to load the lookup on initialization
+      async load() {
+         const sports = await loader.load();
+         slugLookup = buildSlugLookup(sports);
+         return sports;
+      },
+
+      getBySlug(slug) {
+         // if (!slugLookup) await this.load();
+         return slugLookup?.[slug];
+      },
+
+      async refresh() {
+         slugLookup = null;
+         return loader.refresh();
+      },
+
+      clear() {
+         slugLookup = null;
+         loader.clear();
+      }
+   };
+}

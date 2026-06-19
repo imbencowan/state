@@ -11,6 +11,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<base href="/state/">
 	<title>State</title>
 	<link rel="stylesheet" href="everycss.css">
 	<link rel="stylesheet" href="styles.css">
@@ -28,8 +29,10 @@
 			?>
 		</div>
 	</header>
-	<nav id="stateNav"><ul id="stateNavList"><!-- nav list built in js to attach click listeners --></ul></nav>
-	<nav id="nav2"><ul id="nav2List"><!-- nav list built in js to attach click listeners --></ul></nav>
+	<div id="navContainer">
+		<nav id="stateNav"><ul id="stateNavList"><!-- nav list built in js to attach click listeners --></ul></nav>
+		<nav id="nav2"><ul id="nav2List"><!-- nav list built in js to attach click listeners --></ul></nav>
+	</div>
 	<section id="display"></section>
 
 	<div id="myModal" class="modal">

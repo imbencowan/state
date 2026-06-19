@@ -159,6 +159,8 @@ export class Sport {
    constructor({ id, name, isGendered, isIndividualed, maxTeamSize, minDiv, labelColor }) {
       this.id = id;
       this.name = name;
+         // url path. // replaces ' ' with '-', so Boys  Basketball => boys-basketball
+      this.slug = name.toLowerCase().trim().replace(/\s+/g, '-');
       this.isGendered = isGendered;
       this.isIndividualed = isIndividualed;
       this.maxTeamSize = maxTeamSize;

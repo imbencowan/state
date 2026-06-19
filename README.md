@@ -46,6 +46,16 @@ This is the current practical setup process:
 
 This project is not yet packaged for clean public deployment. Local XAMPP usage is the intended workflow for now.
 
+## Routing / Apache setup
+
+This project is a client-side routed SPA. Apache must be configured to always serve index.php for non-file routes so the frontend router can handle navigation.
+
+In httpd.conf, you must have:
+1. LoadModule rewrite_module modules/mod_rewrite.so (uncommented)
+2. AllowOverride All in the project directory like: <Directory "C:/xampp/htdocs">AllowOverride All</Directory>
+
+The .htaccess file is also necessary
+
 ## Architecture notes
 
 The project started with an MVC-style structure, because that was the pattern I originally learned and started from. Parts of that structure are still visible in files and folders like:

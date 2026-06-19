@@ -1,0 +1,10 @@
+RewriteEngine On
+
+RewriteBase /state/
+
+# Don't rewrite real files or folders
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Send everything else to the app entry point
+RewriteRule . index.php [L]

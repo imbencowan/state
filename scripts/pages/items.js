@@ -1,19 +1,16 @@
-// import { showPage } from './page-handling.js';
 import { runtime } from '../runtime.js';
 import { buildElement } from '../utilities.js';
 import { sizeList } from '../constants.js';
 import { ActionRequest } from '../models/other-classes.js';
 import { myFetch } from '../fetch.js';
 import { buildActionButton, makeSubmitCancelButtons } from './page-utils.js';
+import { navigate } from '../navigation.js';
+
 
 export async function goToItemsPage() {
-   // await showPage('showItems', 'Item');
-
    const allItems = await runtime.allItems.load();
 
-   const groupedItems = {
-      garments: groupItemsByStyleByColor(allItems)
-   };
+   const groupedItems = { garments: groupItemsByStyleByColor(allItems) };
 
    buildItemsPage(groupedItems);
 }

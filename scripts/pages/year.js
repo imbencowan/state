@@ -372,7 +372,7 @@ function showAddYear() {
    textarea.cols = 50;
    textarea.placeholder = "Paste PDF text here...";
 
-   // submit button
+      // submit button
    const submitBtn = document.createElement("button");
    submitBtn.textContent = "Parse";
    submitBtn.style.display = "block";

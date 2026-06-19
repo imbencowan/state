@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 // js functions for the event page
 import { runtime } from '../runtime.js';
-import { myFetch } from '../fetch.js';
 import { sizeList } from '../constants.js';
+import { myFetch } from '../fetch.js';
 import { ActionRequest } from '../models/other-classes.js';
 import { StateEvent, SchoolOrder, InventoryTransfer } from '../models/db-classes.js';
 import { openModal, closeModal } from '../modal.js';
@@ -12,7 +12,7 @@ import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoic
 import { buildActionButton, buildIcon, makeSubmitCancelButtons } from './page-utils.js';
 
 
-export async function goToEventPage(sport) {
+export async function goToEventPage(sportID) {
 		// get the current school year
 	const sixMonthsAgo = new Date();
 	sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
@@ -20,17 +20,12 @@ export async function goToEventPage(sport) {
 		// but reset it based off the select. the previous year calculation is really a fall back
 	if (document.getElementById("selectYear")) year = document.getElementById("selectYear").value;
 
-	let sportID = sport[1];
-
 		// pull data
 	let request = new ActionRequest('showEventBySportAndYear', 'Event', { 'year': year, 'sportID': sportID });
 	let responseJSON = await myFetch(request);
 	
-	// document.getElementById("display").innerHTML = responseJSON.html;
-	
 		// reset mode on load
 	runtime.activeMode = null;
-	
 
 	if (responseJSON.data !== null) {
 		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
@@ -38,12 +33,30 @@ export async function goToEventPage(sport) {
 		const pageContent = buildEventPage(runtime.stateEvent);
 		// console.log(pageContent);
 
-		// document.getElementById("display2").replaceChildren(pageContent);
 		document.getElementById("display").replaceChildren(pageContent);
 
 			// ATTACH EVENT LISTENERS 
 		addEventPageFunctionality();
 	}	
+}
+
+	// display next event // Event::showEventByDate returns the next or most recent event if no date is providedd
+export async function showEventByDate(date = null) {
+	let request = new ActionRequest('showEventByDate', 'Event', { 'date': date });
+	let responseJSON = await myFetch(request);
+	
+	document.getElementById("display").innerHTML = responseJSON.html;
+		// if we returned an event, not an empty display
+	if (responseJSON.data !== null) {
+			// put the event in working memory
+		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
+
+		const pageContent = buildEventPage(runtime.stateEvent);
+		document.getElementById("display").replaceChildren(pageContent);
+
+			// attach event listeners to the html in "display"
+		addEventPageFunctionality();
+	}
 }
 
 export function buildEventPage(data) {

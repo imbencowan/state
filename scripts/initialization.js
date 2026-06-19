@@ -5,17 +5,14 @@ import { StateEvent, Style, Item } from './models/db-classes.js'
     // function to be attached to a listener
 import { submitOrderFiles } from './order-submission.js';
 	// utilities?
-import { mapObjsBy, buildElement } from './utilities.js';
+import { buildElement } from './utilities.js';
     // modal initializaion
 import { init as modalInit } from './modal.js';
     // function for a listener
 import { goToEventPage, buildEventPage, addEventPageFunctionality } from './pages/event.js';
-import { goToYearPage } from './pages/year.js';
-import { goToItemsPage } from './pages/items.js';
-import { goToSchoolsPage } from './pages/schools.js';
 
+import { navigate } from './navigation.js';
 
-const nav2Handlers = { goToYearPage, goToItemsPage, goToSchoolsPage };
 
 
 	// init is called onload() and does stuff after the script and html is in place
@@ -24,6 +21,18 @@ export async function init() {
 		// build the nav bar i guess
 	buildNavList();
 	buildNavList2();
+
+	document.getElementById('navContainer').addEventListener('click', async (e) => {
+			// get the function to call from. nav2Handlers is a constant of this module
+      const li = e.target.closest('li');
+      if (!li) return;
+
+		const handler = navigate(li.dataset.route);
+		if (!handler) return;
+
+			// is await necessary?
+		await handler();
+   });
 
 		// add the file submit listenter
 	document.getElementById('fileInput').addEventListener('change', submitOrderFiles);
@@ -39,60 +48,38 @@ export async function init() {
 	await runtime.allItems.load();
 
 
-		// display next event
-	let request = new ActionRequest('showEventByDate', 'Event');
-	
-	let responseJSON = await myFetch(request);
-	
-	document.getElementById("display").innerHTML = responseJSON.html;
-		// if we returned an event, not an empty display
-	if (responseJSON.data !== null) {
-			// put the event in working memory
-		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
-
-		const pageContent = buildEventPage(runtime.stateEvent);
-		document.getElementById("display").replaceChildren(pageContent);
-
-			// attach event listeners to the html in "display"
-		addEventPageFunctionality();
-	}
-
 		// make the modal
 	modalInit();
 }
 
 function buildNavList() {
 	const sportList = [
-		['Golf', 1],
-		['Soccer', 2],
-		['Volleyball', 3],
-		['X-Country', 4],
-		['Swimming', 5],
-		['Football', 6],
-		['Drama', 7],
-		['G Basketball', 8],
-		['Wrestling', 9],
-		['Dance', 10],
-		['Cheer', 11],
-		['B Basketball', 12],
-		['Debate', 13],
-		['Speech', 14],
-		['Esports', 19],
-		['Softball', 15],
-		['Baseball', 16],
-		['Tennis', 17],
-		['Track', 18]
+		['Golf', 'golf'],
+		['Soccer', 'soccer'],
+		['Volleyball', 'volleyball'],
+		['X-Country', 'cross-country'],
+		['Swimming', 'swimming'],
+		['Football', 'football'],
+		['Drama', 'drama'],
+		['G Basketball', 'girls-basketball'],
+		['Wrestling', 'wrestling'],
+		['Dance', 'dance'],
+		['Cheer', 'cheer'],
+		['B Basketball', 'boys-basketball'],
+		['Debate', 'debate'],
+		['Speech', 'speech'],
+		['Esports', 'esports'],
+		['Softball', 'softball'],
+		['Baseball', 'baseball'],
+		['Tennis', 'tennis'],
+		['Track', 'track']
 	];
 		// get the nav bar
 	let navList = document.getElementById("stateNavList");
+			// create each element and append them to the nav
 	sportList.forEach((sport) => {
-			// create the element
-		let newLI = document.createElement("li");
-		newLI.innerHTML = sport[0];
-			// add a listener to load the appropriate content when clicked
-		newLI.addEventListener('click', function(){ goToEventPage(sport); });
-			// add it to the page
-		navList.appendChild(newLI);
+		navList.appendChild(buildElement("li", { text: sport[0], dataset: { route: sport[1] } }));
+
 	});
 }
 
@@ -100,28 +87,8 @@ function buildNavList2() {
 		// get the nav bar
 	let navList = document.getElementById("nav2List");
 
-		// [text, jsFunc]
-	const nav2Items = [
-		['Year', 'goToYearPage'],
-		['Items', 'goToItemsPage'],
-		['Schools', 'goToSchoolsPage']
-	];
-
 		// build each <li>, with a couple data-attrs, and append them to nav2
-	nav2Items.forEach((itm) => {
-      navList.appendChild(buildElement("li", { text: itm[0], dataset: { func: itm[1] } }));
-   });
-
-		// call a function specified in the nav li's dataset
-	navList.addEventListener('click', async (e) => {
-			// get the function to call from. nav2Handlers is a constant of this module
-      const li = e.target.closest('li');
-      if (!li) return;
-		const handler = nav2Handlers[li.dataset.func];
-
-		if (!handler) return;
-
-			// is await necessary?
-		await handler();
+	[ 'Year', 'Items', 'Schools'].forEach((itm) => {
+      navList.appendChild(buildElement("li", { text: itm, dataset: { route: itm.toLowerCase() } }));
    });
 }
