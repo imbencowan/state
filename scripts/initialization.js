@@ -1,6 +1,5 @@
 import { runtime } from './runtime.js';
-import { myFetch } from './fetch.js';
-import { ActionRequest } from './models/other-classes.js';
+import { actionFetch } from './fetch.js';
     // function to be attached to a listener
 import { submitOrderFiles } from './order-submission.js';
 	// utility for building the nav bar
@@ -53,8 +52,7 @@ export async function init() {
 }
 
 async function fillYearSelect() {
-	let request = new ActionRequest('getAllYears', 'Event');
-	let years = (await myFetch(request)).data;
+	let years = (await actionFetch('getAllYears', 'Event')).data;
 
 	const currentDate = new Date();
 	const currentYear = currentDate.getFullYear() % 100;
@@ -64,7 +62,6 @@ async function fillYearSelect() {
 		years.push(currentYear);
 	}
 
-	console.log(years);
 	const slct = document.getElementById('selectYear');
 
 	years.forEach(year => {

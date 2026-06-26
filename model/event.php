@@ -122,17 +122,17 @@ class Event extends BasicTableModel {
 
 		//////////////////////////////////////////////////
 		// Database functions	
-	public static function getOrdersBySportAndYear(int $sportID, int $year): ?static {
+	public static function getBySportAndYear(int $sportID, int $year, string $context = 'orders'): ?static {
 		$eventID = static::getIDBySportIDAndYear($sportID, $year);
 		if (!$eventID) return null;
-		// Test::logX($eventID);
+
 			// ($id, $context)
-		$event = self::getByID($eventID, 'orders');
+		$event = self::getByID($eventID, $context);
 		return $event ?? null;
 	}
 	
 
-	public static function getIDBySportIDAndYear($sportID, $year) {
+	public static function getIDBySportIDAndYear(int $sportID, int $year) {
 		$db = Database::getDB();
 		$query = 'SELECT eventID, startDate FROM events 
 					WHERE sportID = :sportID AND eventYear = :year';
@@ -307,37 +307,16 @@ class Event extends BasicTableModel {
 		
 	//////////////////////////////////////////////////
    // user actions
-		// takes us to the specified Event page
-	static function showEvent($event, $year = null, $sportID = null) {
-		ob_start(); 
-		
-		if($event) {
-			include 'view/event.php';
-		} else {
-			// find a new way to indicate no event was found
-				// may be, currently 'data' being null tells us
-
-			// include 'view/noevent.php';
-		}
-			// Get the buffered content as a string
-		$html = ob_get_clean(); 
-
-		return [ 'html' => $html, 'data' => $event ];
+	static function getEventBySportAndYear(int $year, int $sportID, string $context = 'orders') {
+		return [ 'data' => self::getBySportAndYear($sportID, $year, $context) ];
 	}
 
 
-	static function showEventBySportAndYear($year, $sportID) {
-		$event = self::getOrdersBySportAndYear($sportID, $year);
-		return self::showEvent($event, $year, $sportID);
-	}
-
-
-	static function showEventByDate(?string $date = null) {
+	static function getEventByDate(?string $date = null) {
 		if ($date == null) $date = date('Y-m-d');
 		$id = self::getNextIDByDate($date);
-		$event = self::getByID($id, 'orders');
 
-		return self::showEvent($event);
+		return [ 'data' => self::getByID($id, 'orders') ];
 	}
 	
 	

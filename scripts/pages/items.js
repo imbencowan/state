@@ -1,8 +1,7 @@
 import { runtime } from '../runtime.js';
 import { buildElement } from '../utilities.js';
 import { sizeList } from '../constants.js';
-import { ActionRequest } from '../models/other-classes.js';
-import { myFetch } from '../fetch.js';
+import { actionFetch } from '../fetch.js';
 import { buildActionButton, makeSubmitCancelButtons } from './page-utils.js';
 import { navigate } from '../navigation.js';
 
@@ -220,11 +219,10 @@ async function submitStockUpdate(btn) {
 
    	// if there are changes, send them to the server
 	if (updateItems.length) {
-		const data = { 'update': updateItems };	
-		const request = new ActionRequest('updateRowsByIDs', 'Item', data);
-		let responseJSON = await myFetch(request);
+		const data = { 'update': updateItems };
+      const response = await actionFetch('updateRowsByIDs', 'Item', data);
 
-		if (responseJSON.success) {
+		if (response.success) {
 				// update the cells
 			tds.forEach(td => {
 				td.textContent = td.querySelector('input').value;
@@ -286,11 +284,10 @@ async function submitStockIncrement(btn) {
    });
 
 	if (updateItems.length) {
-		const data = { 'update': updateItems };	
-		const request = new ActionRequest('updateRowsByIDs', 'Item', data);
-		let responseJSON = await myFetch(request);
+		const data = { 'update': updateItems };
+      const response = await actionFetch('updateRowsByIDs', 'Item', data);
 
-		if (responseJSON.success) {
+		if (response.success) {
 			tds.forEach(td => {
             const incrementValue = Number(td.querySelector('input').value);
             const newStock = Number(td.dataset.oStock) + incrementValue;

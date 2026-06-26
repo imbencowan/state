@@ -6,8 +6,7 @@
    // import helper functions
 import * as Utils from '../utilities.js';
 import { sizeList, ADULT_HOOD_STYLE_ID } from '../constants.js';
-import { ActionRequest } from "./other-classes.js";
-import { myFetch } from '../fetch.js';
+import { actionFetch } from '../fetch.js';
 // DO NOT IMPORT RUNTIME, no circular dependencies.
 
 
@@ -330,12 +329,11 @@ export class EventSite {
       if (missingSites.length === 0) return {};
 
          // fetch
-      const request = new ActionRequest('getInventoryItems', 'Event', { eSiteIDs: missingSites.map(s => s.id) });
-      const responseJSON = await myFetch(request);
+      const response = await actionFetch('getInventoryItems', 'Event', { eSiteIDs: missingSites.map(s => s.id) });
 
          // get and group the site's inventory items
       const itemsBySite = {};
-      for (const ii of Object.values(responseJSON.data.invItems)) {
+      for (const ii of Object.values(response.data.invItems)) {
          const invItem = Utils.parseToInstance(ii, InventoryItem);
          invItem.item = allItems.getByID(ii.itemID);
 
@@ -345,7 +343,7 @@ export class EventSite {
 
          // get the site's transfers
       const transfersBySite = {};
-      for (const t of Object.values(responseJSON.data.transfers)) {
+      for (const t of Object.values(response.data.transfers)) {
          const trnsfr = Utils.parseToInstance(t, InventoryTransfer);
          trnsfr.transfer = allTransfers.getByID(t.transferID);
 

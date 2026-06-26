@@ -2,7 +2,6 @@
 // js functions for the event page
 import { runtime } from '../runtime.js';
 import { myFetch } from '../fetch.js';
-import { ActionRequest } from '../models/other-classes.js';
 import { arraysEqualIgnoreOrder, buildElement } from '../utilities.js';
 import { openModal } from '../modal.js';
 import { EventSite, Season, Site } from '../models/db-classes.js';
@@ -295,10 +294,9 @@ async function submitRowEdit(target) {
       // if values were changed, update db, else cancel
    if (Object.keys(updateValues).length) {
       const data = { 'eventSiteID': row.dataset.eventSiteID, 'updateValues': updateValues };
-      const request = new ActionRequest('editEventSiteFromRow', 'EventSite', data);
-      let responseJSON = await myFetch(request);
+      const response = await actionFetch('editEventSiteFromRow', 'EventSite', data);
 
-      if (responseJSON.success) updateRow(tds, updateValues);
+      if (response.success) updateRow(tds, updateValues);
    } else {
       cancelRowEdit(target);
    }   
@@ -497,9 +495,11 @@ async function parseYear(txt) {
    
    console.log(newEvents);
    
-   const request = new ActionRequest('submitYear', 'Year', { events: newEvents });
-	const responseJSON = await myFetch(request);
+   const response = await actionFetch('submitYear', 'Year', { events: newEvents });
 
+   if (response.success) {
+      // some thing should happen here
+   }
    
 
             // helpers // parsers
@@ -746,11 +746,10 @@ async function showSeasonStock() {
    }
 
    const dateRange = getNextSeasonDateRange(season);
-   const request = new ActionRequest('getStockByDateRange', 'Event', dateRange);
-   const responseJSON = await myFetch(request);
-   if (!responseJSON?.success) return;
+   const response = await actionFetch('getStockByDateRange', 'Event', dateRange);
+   if (!response?.success) return;
 
-   printSeasonStockPDF(season, dateRange, responseJSON.data);
+   printSeasonStockPDF(season, dateRange, response.data);
 }
 
 function getNextSeasonDateRange(season) {

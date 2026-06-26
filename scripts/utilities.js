@@ -1,5 +1,4 @@
-import { myFetch } from "./fetch.js";
-import { ActionRequest } from "./models/other-classes.js";
+import { actionFetch } from "./fetch.js";
 
 
 
@@ -150,9 +149,8 @@ export function makeDataLoader(srvrClassName, jsClass = null, srvrFnctn = "getAl
 
       // private helper to fetch and map data
    async function fetchAndMap() {
-      const req = new ActionRequest(srvrFnctn, srvrClassName);
-      const res = await myFetch(req);
-      const raw = res.data || {};
+      const response = await actionFetch(srvrFnctn, srvrClassName);
+      const raw = response.data || {};
       let mapped = mapObjsBy(raw); // { id1: obj1, id2: obj2, ... }
 
       if (jsClass) {

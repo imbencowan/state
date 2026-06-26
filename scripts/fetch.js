@@ -2,6 +2,7 @@
  // all calls to the server, and the responses sent from it, are passed through this function
  
  import { openModal } from './modal.js';
+ import { ActionRequest } from './models/other-classes.js';
  
     // all fetch requests go to controller.php
 export async function myFetch(request) {
@@ -13,19 +14,6 @@ export async function myFetch(request) {
         });
             // get the response data
         const data = await response.json().catch(() => null);
-        // let json;
-        //     // convert to json or throw
-        // try {
-        //     // console.log(responseText);
-        //     json = JSON.parse(responseText);
-        // } catch {
-        //     throw new Error("Invalid JSON returned from server");
-        // }
-
-        //     // Treat any server-reported error as an exception
-        // if (json.success === false) throw new Error(json.eMessage || "Unknown server error");
-            // Throw on HTTP-level errors
-        // if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             
             
             // Throw on HTTP-level errors
@@ -41,4 +29,10 @@ export async function myFetch(request) {
         openModal("Fetch Error: " + error.message);
         return null;
     }
+}
+
+
+    // (php method, (of) php class, data sent along).   // utilize myFetch()
+export async function actionFetch(func, ssClass, data) {
+    return myFetch(new ActionRequest(func, ssClass, data));
 }

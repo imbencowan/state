@@ -142,8 +142,6 @@ abstract class BasicTableModel implements JsonSerializable {
 			// DO NOT allow id in inserts. remove it from column validator
 		unset($columns['id']); 
 
-Test::logX($rows);
-
 		$keys = array_keys($rows[0]);
 
 			// if any $rows keys do not match column names, throw
@@ -171,6 +169,7 @@ Test::logX($rows);
 	
 		// basic add. insert given properties. $data = {column => value}
 	public static function insert(object|array $data, ?PDO $db = null): ?int {
+		if (!$db) $db = Database::getDB();
 			// ensure an array
 		if (is_object($data)) $data = (array) $data;
 		if (empty($data)) return null;

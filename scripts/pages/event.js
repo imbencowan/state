@@ -2,8 +2,7 @@
 // js functions for the event page
 import { runtime } from '../runtime.js';
 import { sizeList } from '../constants.js';
-import { myFetch } from '../fetch.js';
-import { ActionRequest } from '../models/other-classes.js';
+import { actionFetch } from '../fetch.js';
 import { StateEvent, SchoolOrder, InventoryTransfer } from '../models/db-classes.js';
 import { openModal, closeModal } from '../modal.js';
 import { buildElement, parseToInstancesArr } from '../utilities.js';
@@ -12,12 +11,15 @@ import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoic
 import { buildActionButton, buildIcon, makeSubmitCancelButtons } from './page-utils.js';
 
 
-export async function goToEventPage(sportID = null, tab = 'orders', year = null) {
-	let request;
+	// leave the default parameters so we can access the next/most recent event
+export async function goToEventPage(sportID = null, year = null, tab = 'orders') {
+	let response;
+
 		// if no sport provided, get the next/most recent Event
 	if(!sportID) {
-		request = new ActionRequest('showEventByDate', 'Event', { 'date': null });
+		response = await actionFetch('getEventByDate', 'Event', { 'date': null });
 	} else {
+			// other wise look up the event by sport and year. // pass tab as context
 		if (!year) {
 				// if no year was sent, get it from the select
 			if (document.getElementById("selectYear")) year = document.getElementById("selectYear").value;
@@ -29,19 +31,17 @@ export async function goToEventPage(sportID = null, tab = 'orders', year = null)
 				year = sixMonthsAgo.getFullYear() % 100;
 			}
 		}
-		request = new ActionRequest('showEventBySportAndYear', 'Event', { 'year': year, 'sportID': sportID });
+		const data = { 'year': year, 'sportID': sportID, 'context': tab }
+		response = await actionFetch('getEventBySportAndYear', 'Event', data);
 	}
-
-		// pull data
-	let responseJSON = await myFetch(request);
 	
 		// reset mode on load
 	runtime.activeMode = null;
 
-	if (responseJSON.data !== null) {
-		runtime.stateEvent = StateEvent.fromJSON(responseJSON.data);
+	if (response.data !== null) {
+		runtime.stateEvent = StateEvent.fromJSON(response.data);
 
-		const pageContent = buildEventPage(runtime.stateEvent);
+		const pageContent = buildEventPage(runtime.stateEvent, tab);
 		// console.log(pageContent);
 
 		document.getElementById("display").replaceChildren(pageContent);
@@ -53,7 +53,7 @@ export async function goToEventPage(sportID = null, tab = 'orders', year = null)
 	}
 }
 
-export function buildEventPage(data) {
+export function buildEventPage(data, tab) {
 		// a container
 	const cntnr = buildElement("div", { id: "eventContainer" });
 
@@ -72,8 +72,9 @@ function attachSportHeader(cntnr, data) {
 	cntnr.appendChild(h);
 }
 
+	// this /just/ attaches the tabs, it doesn't actually fill them
+		// it attaches a build function to fill the tab if it's clicked.
 function attachTabs(parent, data) {
-
    const tabs = [
       { id: "orders", label: "Orders", build: attachOrdersPanel },
       { id: "inventory", label: "Inventory", build: attachInventoryPanel },
@@ -139,7 +140,7 @@ function attachTabs(parent, data) {
 
 
 function attachOrdersPanel(panel, data) {
-	attachOrdersTopButtons(panel, data);
+	attachOrdersTopButtons(panel);
 	attachNeededTable(panel, data);
 	attachOrders(panel, data);
 	attachCommentTable(panel, data);
@@ -489,8 +490,11 @@ function attachCommentTable(cntnr, data) {
 }
 
 
-function showNoEvent(sport, year) {
-	const msg = `There is currently no information for the 20${year}-20${(Number(year) + 1)} school year.`;
+function showNoEvent(sportID, year) {
+	const sport = runtime.allSports.getByID(sportID).name;
+
+	const msg = `There is currently no information for ${sport} for the ` 
+		+ `20${year}-20${(Number(year) + 1)} school year.`;
 	const p = buildElement("p", { text: msg });
 	const div = buildElement("div", { children: p });
 	document.getElementById('display').replaceChildren(div);
@@ -981,11 +985,12 @@ async function submitAddOns(target, order) {
 	
 		// send it to the server
 	const data = {'orderID': order.id, 'addItems': addItems, 'addTransfers': addTransfers };
-	let request = new ActionRequest('addAddOns', 'SchoolOrder', data);
-	let responseJSON = await myFetch(request);
+	const response = await actionFetch('addAddOns', 'SchoolOrder', data);
+
+	console.log('new fetch');
 	
-	if (responseJSON.success) {
-		order.updateFromJSON(responseJSON.data.newOrder);
+	if (response.success) {
+		order.updateFromJSON(response.data.newOrder);
 		cleanInputRows(rows);
 			// exit 'add' mode
 		runtime.activeMode = null;
@@ -1374,11 +1379,10 @@ async function submitSizeEdit(target, order) {
 	
 		// send it to the server
 	const data = { 'orderID': order.id, 'items': items, 'transfers': transfers };	
-	const request = new ActionRequest('editSizes', 'SchoolOrder', data);
-	let responseJSON = await myFetch(request);
+	const response = await actionFetch('editSizes', 'SchoolOrder', data);
 
-	if (responseJSON.success) {
-		order.updateFromJSON(responseJSON.data.newOrder);
+	if (response.success) {
+		order.updateFromJSON(response.data.newOrder);
 		cleanInputRows(rows);
 			// exit edit mode
 		runtime.activeMode = null;
@@ -1411,8 +1415,7 @@ async function toggleOrderCompleteness(box, order) {
 		let tbody = box.closest('tbody');
 		
 		const data = {'id': order.id, 'completeness': completeness};
-		let request = new ActionRequest('changeOrderCompleteness', 'SchoolOrder', data);
-		let responseJSON = await myFetch(request);
+		const responseJSON = await actionFetch('changeOrderCompleteness', 'SchoolOrder', data);
 		
 		if (responseJSON) {
 			if (completeness) {
@@ -1475,12 +1478,10 @@ function updateNeeded(order, add = true) {
 	// marks a comment as handled
 async function changeCommentHandled(box) {
 	const data = {'id': box.dataset.orderId, 'handled': box.checked};
-	console.log(data);
-	let request = new ActionRequest('changeCommentHandled', 'MessageOrder', data);
-	let responseJSON = await myFetch(request);
+	const response = await actionFetch('changeCommentHandled', 'MessageOrder', data);
 	
 		// remove the comment, or alert user of db failure
-	if (responseJSON.data.rowsAffected) {
+	if (response.data.rowsAffected) {
 		const table = box.closest('table');
 		const tbody = box.closest('tbody');
 
@@ -1577,8 +1578,9 @@ async function makeBlankOrder() {
 			openModal("This school is already in this event.");
 		} else {
 				// if not, add it
-			const request = new ActionRequest('addNewOrder', 'SchoolOrder', [esd.id, school.id, gender]);
-			const responseJSON = await myFetch(request);
+			const responseJSON = await actionFetch('addNewOrder', 'SchoolOrder', [esd.id, school.id, gender]);
+			console.log('new order');
+
 			const orderID = responseJSON.data;
                 // get the appropriate table to append this order to
 			let table = document.querySelector(`table.orderTable[data-event-site-division-id='${esd.id}']`);
@@ -1819,8 +1821,7 @@ async function uploadQualifiers() {
 	});
 
 	const data2 = {'upSchools': upSchools, 'esdIDs': esdIDs};
-	let request = new ActionRequest('uploadQualifiers', 'SchoolOrder', data2);
-	let responseJSON = await myFetch(request);
+	const responseJSON = await actionFetch('editSizes', 'SchoolOrder', data2);
 
 		// if school names didn't match, display them in the modal
 	if (Array.isArray(responseJSON.data.unmatchedSchools) && responseJSON.data.unmatchedSchools.length) {
@@ -1932,10 +1933,9 @@ async function submitInventoryEdit(btn) {
 		// if there are changes, send them to the server
 	if (updateInvItems.length || updateTransfers.length) {
 		const data = { 'eventSiteID': esID, 'updateItems': updateInvItems, 'updateTransfers': updateTransfers };	
-		const request = new ActionRequest('editEventSiteInventory', 'EventSite', data);
-		let responseJSON = await myFetch(request);
+		const response = await actionFetch('editEventSiteInventory', 'EventSite', data);
 
-		if (responseJSON.success) {
+		if (response.success) {
 				// update the cells
 			invTDs.forEach(td => {
 				updateTotalCell(td);
@@ -1965,8 +1965,6 @@ async function submitInventoryEdit(btn) {
 }
 
 function updateTotalCell(td) {
-	// console.log(td, td.querySelector('input'), td.querySelector('input').value);
-	console.log(td, td.querySelector('input'));
 	const newValue = Number(td.querySelector('input').value);
 	const oldValue = Number(td.dataset.oValue ?? td.textContent);
 	const diff = newValue - oldValue;
@@ -2114,10 +2112,10 @@ async function submitAddTransfer(e, form) {
 	
 	const update = { 'eventSiteID': esID, 'updateTransfers': updateTransfers };	
 	console.log(update);
-	const request = new ActionRequest('editEventSiteInventory', 'EventSite', update);
-	let responseJSON = await myFetch(request);
+	const response = await actionFetch('editEventSiteInventory', 'EventSite', update);
+	
 
-	if (responseJSON.success) {
+	if (response.success) {
 		closeModal();
 
 			// add the new transfers to the table
@@ -2142,7 +2140,6 @@ async function submitAddTransfer(e, form) {
 			// add the new transfers to runtime
 		const eSite = runtime.stateEvent.getEventSiteByID(esID);
 		eSite.transfers.push(...newTransfers);
-
 	}
 }
 

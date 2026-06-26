@@ -1,6 +1,5 @@
-import { myFetch } from '../fetch.js';
+import { actionFetch } from '../fetch.js';
 import { StateEvent } from './db-classes.js';
-import { ActionRequest } from './other-classes.js';
 
 export class EventCollection {
    constructor(events = []) {
@@ -30,11 +29,10 @@ export class EventCollection {
    }
 
    static async fetchDateRange(start, end) {
-      const request = new ActionRequest('fetchDateRange', 'Event', { start, end });
-      const responseJSON = await myFetch(request);
-      if (!responseJSON?.success || !Array.isArray(responseJSON.data)) return new EventCollection();
+      const response = await actionFetch('fetchDateRange', 'Event', { start, end });
+      if (!response?.success || !Array.isArray(response.data)) return new EventCollection();
 
-      const evnts = responseJSON.data.map(evnt => StateEvent.fromJSON(evnt));
+      const evnts = response.data.map(evnt => StateEvent.fromJSON(evnt));
       return new EventCollection(evnts);
    }
 }
