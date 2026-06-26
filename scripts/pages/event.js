@@ -18,6 +18,13 @@ export async function goToEventPage(sportID = null, year = null, tab = 'orders')
 		// if no sport provided, get the next/most recent Event
 	if(!sportID) {
 		response = await actionFetch('getEventByDate', 'Event', { 'date': null });
+	} else if (tab == 'reports') {
+			////////////////////////////////////////////////////////////////////
+			// THIS IS A PLACE HOLDER TO ALLOW THE REPORTS TAB TO FUNCTION FOR NOW
+				// it will need to be replaced with a different action to fetch
+				// reports will want aggregate data, not raw like orders/inventory
+		const data = { 'year': year, 'sportID': sportID, 'context': 'orders' }
+		response = await actionFetch('getEventBySportAndYear', 'Event', data);
 	} else {
 			// other wise look up the event by sport and year. // pass tab as context
 		if (!year) {
@@ -53,28 +60,28 @@ export async function goToEventPage(sportID = null, year = null, tab = 'orders')
 	}
 }
 
-export function buildEventPage(data, tab) {
+export function buildEventPage(sEvent, tab) {
 		// a container
 	const cntnr = buildElement("div", { id: "eventContainer" });
 
 		// attach a header, the buttons at the top of the page, tabs for viewing event data
-	attachSportHeader(cntnr, data);
-	attachTabs(cntnr, data);
+	attachSportHeader(cntnr, sEvent);
+	attachTabs(cntnr, sEvent, tab);
 
 	return cntnr;
 }
 
 	// builds the inner page header
-function attachSportHeader(cntnr, data) {
-	const sport = data.sport.name;
-	const year = data.startDate.toLocaleDateString("en-US", { year: "numeric" });
+function attachSportHeader(cntnr, sEvent) {
+	const sport = sEvent.sport.name;
+	const year = sEvent.startDate.toLocaleDateString("en-US", { year: "numeric" });
 	const h = buildElement("h1", { text: sport + " " + year});
 	cntnr.appendChild(h);
 }
 
 	// this /just/ attaches the tabs, it doesn't actually fill them
 		// it attaches a build function to fill the tab if it's clicked.
-function attachTabs(parent, data) {
+function attachTabs(parent, sEvent, tab) {
    const tabs = [
       { id: "orders", label: "Orders", build: attachOrdersPanel },
       { id: "inventory", label: "Inventory", build: attachInventoryPanel },
@@ -84,24 +91,24 @@ function attachTabs(parent, data) {
    const nav = buildElement("nav", { classes: ["eventTabNav"] });
    const panels = buildElement("div", { classes: ["tabPanels"] });
 
-   tabs.forEach((tab, i) => {
+   tabs.forEach(t => {
 			// a button for switching tabs
       const btn = buildElement("button", {
-         text: tab.label,
-         dataset: { tab: tab.id }
+         text: t.label,
+         dataset: { tab: t.id }
       });
 			// the panel that will hold the tab's display
       const panel = buildElement("div", {
          classes: ["tabPanel"],
-         dataset: { tab: tab.id }
+         dataset: { tab: t.id }
       });
 
-			// the first tab will be active and built
-      if (i === 0) {
+			// the passed tab will be active and built
+      if (t.id == tab) {
          btn.classList.add("active");
          panel.classList.add("active");
-         	// build first tab immediately
-         tab.build(panel, data);
+         	// build it immediately
+         t.build(panel, sEvent);
          panel.dataset.built = "true";
       }
 
@@ -129,7 +136,7 @@ function attachTabs(parent, data) {
       if (!panel.dataset.built) {
 				// get the tab and build the panel
          const tab = tabs.find(t => t.id === tabID);
-         tab.build(panel, data);
+         tab.build(panel, sEvent);
 				// mark built as true now
          panel.dataset.built = "true";
       }
@@ -139,11 +146,14 @@ function attachTabs(parent, data) {
 }
 
 
-function attachOrdersPanel(panel, data) {
+async function attachOrdersPanel(panel, sEvent) {
+		// first, ensure the appropriate data
+	await sEvent.loadOrders(runtime.allItems, runtime.allTransfers);
+
 	attachOrdersTopButtons(panel);
-	attachNeededTable(panel, data);
-	attachOrders(panel, data);
-	attachCommentTable(panel, data);
+	attachNeededTable(panel, sEvent);
+	attachOrders(panel, sEvent);
+	attachCommentTable(panel, sEvent);
 }
 
 	// builds buttons for the top of the page for various print options 
@@ -173,7 +183,7 @@ function attachOrdersTopButtons(cntnr) {
 }
 
 	// builds a table that displays how many shirts of each size are still incomplete
-function attachNeededTable(cntnr, data) {
+function attachNeededTable(cntnr, sEvent) {
 		// a list for the table headers
 	let thNames = [...sizeList, 'Total'];
 	let ths = [];
@@ -185,7 +195,7 @@ function attachNeededTable(cntnr, data) {
 	const thRow = buildElement("tr", { children: ths });
 	const thead = buildElement("thead", { children: thRow });
 
-	const needRow = buildNeedRow(data);
+	const needRow = buildNeedRow(sEvent);
 	const tbody = buildElement("tbody", { children: needRow });
 	
 		// build the table and a label
@@ -196,17 +206,17 @@ function attachNeededTable(cntnr, data) {
 	const div = buildElement("div", { id: "needContainer", children: [ p, t ] });
 		
 			// get quantities from the StateEvent
-	const needSizes = data.getNeededSizes();
+	const needSizes = sEvent.getNeededSizes();
 		// hide if empty
 	if (needSizes.total === 0) div.classList.add('hidden');
 
 	cntnr.appendChild(div);
 }
 
-function buildNeedRow(data) {
+function buildNeedRow(sEvent) {
 	let sizeChars = [...sizeList, 'total'];
 		// get quantities from the StateEvent
-	const needSizes = data.getNeededSizes();
+	const needSizes = sEvent.getNeededSizes();
 	let needTDs = [];
 		// build each td
 	sizeChars.forEach(n => {
@@ -221,12 +231,12 @@ function buildNeedRow(data) {
 }
 
 	// attach the actual orders. for each division for each site, make a table with a row for each school order
-function attachOrders(cntnr, data) {
+function attachOrders(cntnr, sEvent) {
 		// a container
 	const ordersDiv = buildElement("div", { id: "ordersContainer" });
 
 		// for each EventSite
-	data.eventSites.forEach(es => {
+	sEvent.eventSites.forEach(es => {
 			// a site header
 		const siteH2 = buildElement("h2", { text: es.site.name, dataset: { eventSiteId: es.id } });
 		ordersDiv.appendChild(siteH2);
@@ -251,7 +261,7 @@ function attachOrders(cntnr, data) {
 				// if there are orders, put them in a table
 			if (esd.schoolOrders.length) {	
 					// the table, empty
-				const table = buildOrdersTable(esd.schoolOrders, data.id, es.id, esd.id);
+				const table = buildOrdersTable(esd.schoolOrders, sEvent.id, es.id, esd.id);
 				
 					// put the table in a container
 				const tableDiv = buildElement("div", { classes: "table-container", children: table });
@@ -441,8 +451,8 @@ function makeRowIconButton(type, iClass, title) {
 	return buildElement("span", { classes: classes, title: title, text: type });
 }
 
-function attachCommentTable(cntnr, data) {
-	const unhandledComments = data.getUnhandledComments();
+function attachCommentTable(cntnr, sEvent) {
+	const unhandledComments = sEvent.getUnhandledComments();
 
 	if (unhandledComments.length) {
 		let chldrn = [];
@@ -502,11 +512,12 @@ function showNoEvent(sportID, year) {
 
 
 	//////////////// INVENTORY PANEL STUFF //////////////////////////////////////////////////////////
-async function attachInventoryPanel(panel) {
-	attachInventoryTopButtons(panel);
-
+async function attachInventoryPanel(panel, sEvent) {
 		// first, ensure the appropriate data
-	await runtime.stateEvent.loadInventories(runtime.allItems, runtime.allTransfers);
+	await sEvent.loadInventories(runtime.allItems, runtime.allTransfers);
+
+
+	attachInventoryTopButtons(panel);
 
 		// build inventory tables for each site
 	for (const es of runtime.stateEvent.eventSites) {
@@ -567,7 +578,7 @@ function buildInventoryTable(inventory, eventID, esID) {
 	buildInventoryGarmentsRows(tbody, inventory.garments);
 	buildInventoryAccessoriesRows(tbody, inventory.accessories);
 	buildInventoryTransfersRows(tbody, inventory.transfers);
-	console.log(inventory.transfers);
+	// console.log(inventory.transfers);
 		// the table, empty
 	const table = buildElement("table", { classes: "inventoryTable", children: [ thead, tbody ], 
 													dataset: { eventId: eventID, eventSiteID: esID } });

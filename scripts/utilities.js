@@ -273,6 +273,13 @@ export function giveFirstFocus(container = document) {
 }
 
 
+   // standards a string as a *slug* fit for urls
+      // lowercases. // trims.  // replaces ' ' with '-', so Boys  Basketball => boys-basketball
+export function slugify(str) {
+   return str.toLowerCase().trim().replace(/\s+/g, '-');
+}
+
+
 
 
 

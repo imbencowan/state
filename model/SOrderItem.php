@@ -7,8 +7,7 @@ class SOrderItem extends BasicTableModel {
    protected static function getColumns(): array { 
 		return ['id' => 'sOrderItemsID', 
 					'schoolOrderID' => 'schoolOrderID', 
-					'item' => 'itemID', 
-					'itemTypesID' => 'itemTypesID',
+					'itemID' => 'itemID', 
 					'quantity' => 'sOrderItemsQuantity',
 					'price' => 'orderPrice'
 					]; 
@@ -22,8 +21,8 @@ class SOrderItem extends BasicTableModel {
 	public function __construct(
       public readonly ?int $id,
       public readonly int $schoolOrderID,
+		public readonly int $itemID,
       public readonly ?Item $item,
-		public readonly int $itemTypesID,
       public readonly int $quantity,
 		public readonly float $price
    ) {}

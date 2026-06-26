@@ -21,7 +21,8 @@ class SchoolOrder extends BasicTableModel {
 	protected static function getRelations(): array {
     	return [ // new Relation('division', 'Division', 'divisionID', false), 
 					new Relation('school', 'School', 'schoolID', 'schoolID', false), 
-					new Relation('shirtsByStyle', 'SOrderItem', 'schoolOrderID', 'schoolOrderID', true), 
+					// new Relation('shirtsByStyle', 'SOrderItem', 'schoolOrderID', 'schoolOrderID', true), 
+					new Relation('oItems', 'SOrderItem', 'schoolOrderID', 'schoolOrderID', true), 
 					new Relation('oTransfers', 'SOrderTransfer', 'schoolOrderID', 'schoolOrderID', true),
 					new Relation('messageOrders', 'MessageOrder', 'schoolOrderID', 'schoolOrderID', true)];
    }
@@ -42,10 +43,11 @@ class SchoolOrder extends BasicTableModel {
 		string|DateTime|null $invoiceDate = null,
 		public readonly ?int $invoiceVersion = null,
 		private array $messageOrders = [],
-		array $shirtsByStyle = [],
+		// array $shirtsByStyle = [],
+		public readonly array $oItems =[],
 		public readonly array $oTransfers = []
    ) {
-		$this->shirtsByStyle = self::organizeOrderItems($shirtsByStyle);
+		$this->shirtsByStyle = self::organizeOrderItems($oItems);
 		$this->invoiceDate = is_string($invoiceDate) ? new DateTime($invoiceDate) : $invoiceDate;
 	}
 	
@@ -64,6 +66,7 @@ class SchoolOrder extends BasicTableModel {
 			'invoiceVersion' => $this->invoiceVersion,
 			'messageOrders' => $this->messageOrders,
 			'shirtsByStyle' => array_values($this->shirtsByStyle),
+			'oItems' => array_values($this->oItems),
 			'oTransfers' => array_values($this->oTransfers)
 		];
    }

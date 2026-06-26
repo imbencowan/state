@@ -152,14 +152,18 @@ export class StateEvent {
    async loadInventories(allItems, allTransfers) {
       await EventSite.fetchInventories(this.eventSites, allItems, allTransfers);  
    }
+
+   async loadOrders() {
+      console.log('load orders called');
+   }
 }
 
 export class Sport {
    constructor({ id, name, isGendered, isIndividualed, maxTeamSize, minDiv, labelColor }) {
       this.id = id;
       this.name = name;
-         // url path. // replaces ' ' with '-', so Boys  Basketball => boys-basketball
-      this.slug = name.toLowerCase().trim().replace(/\s+/g, '-');
+         // url path. 
+      this.slug = Utils.slugify(name);
       this.isGendered = isGendered;
       this.isIndividualed = isIndividualed;
       this.maxTeamSize = maxTeamSize;
@@ -319,14 +323,16 @@ export class EventSite {
    }
 
       // static batch fetch method
-   static async fetchInventories(eSites, allItems, allTransfers) {
+   static async fetchInventories(eSites, allItems, allTransfers) { 
+         // filter for sites missing inventory
+      const missingSites = eSites.filter(s => !s.inventoryLoaded);
+         // return early if no sites are missing inventory
+      if (missingSites.length === 0) return {};
+
+
          // make sure these are loaded
       await allItems.load();
       // await allTransfers.load();
-
-         // filter for sites missing inventory
-      const missingSites = eSites.filter(s => !s.inventoryLoaded);
-      if (missingSites.length === 0) return {};
 
          // fetch
       const response = await actionFetch('getInventoryItems', 'Event', { eSiteIDs: missingSites.map(s => s.id) });
@@ -459,7 +465,7 @@ export class Division {
 export class SchoolOrder {
    constructor({ id, eshdID, school, genderID, qualifiers = 0, completeness = 0, due = null, paid = null, 
                schoolOrderNote = null, invoiceDate = null, invoiceVersion = null, messageOrders = [], 
-               shirtsByStyle = [], oTransfers = [], site = undefined, sport = undefined }) {
+               shirtsByStyle = [], oItems = [], oTransfers = [], site = undefined, sport = undefined }) {
       this.id = id;
       this.eshdID = eshdID;
       this.school = Utils.parseToInstance(school, School);
@@ -475,6 +481,7 @@ export class SchoolOrder {
       this.shirtsByStyle = Array.isArray(shirtsByStyle)
          ? shirtsByStyle.map(style => style instanceof Style ? style : style != null ? Style.fromJSON(style) : null).filter(Boolean)
          : [];
+      this.oItems = Utils.parseToInstancesArr(oItems, SOrderItem);
       this.oTransfers = Utils.parseToInstancesArr(oTransfers, SOrderTransfer);
       this.site = site;
       this.sport = sport;
@@ -905,6 +912,25 @@ export class SOrderTransfer {
 
    static fromJSON(json) {
       return new SOrderTransfer(json);
+   }
+}
+
+export class SOrderItem {
+   constructor({ id, schoolOrderID, itemID, quantity, price, item }) {
+      this.id = id;
+      this.schoolOrderID = schoolOrderID;
+      this.itemID = itemID;
+      this.quantity = quantity;
+      this.price = price;
+      this.item = Utils.parseToInstance(item, Item);
+   }
+
+   static fromValues(id, schoolOrderID, itemID, quantity, price, item) {
+      return new SOrderItem({ id, schoolOrderID, itemID, quantity, price, item });
+   }
+
+   static fromJSON(json) {
+      return new SOrderItem(json);
    }
 }
 
