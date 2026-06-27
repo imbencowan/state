@@ -5,6 +5,7 @@
 
    // import helper functions
 import * as Utils from '../utilities.js';
+import { parseWithRegistry } from '../hydration.js';
 import { sizeList, ADULT_HOOD_STYLE_ID } from '../constants.js';
 import { actionFetch } from '../fetch.js';
 // DO NOT IMPORT RUNTIME, no circular dependencies.
@@ -153,8 +154,9 @@ export class StateEvent {
       await EventSite.fetchInventories(this.eventSites, allItems, allTransfers);  
    }
 
-   async loadOrders() {
-      console.log('load orders called');
+      // this is a convenience wrapper like loadInventories
+   async loadOrders(allItems, allTransfers) {
+      await EventSite.fetchOrders(this.eventSites, allItems, allTransfers);
    }
 }
 
@@ -181,11 +183,11 @@ export class Sport {
 }
 
 export class EventSite {
-   constructor({ id, eventID, site, managerName, gender, vehicle, employees, inventory, transfers, 
+   constructor({ id, eventID, site, siteID, managerName, gender, vehicle, employees, inventory, transfers, 
                esDivisions = [] }) {
 		this.id = id;
 		this.eventID = eventID;
-		this.site = Utils.parseToInstance(site, Site);
+		this.site = parseWithRegistry(site, Site, siteID);
 		this.managerName = managerName;
       this.gender = gender;
 		this.vehicle = Utils.parseToInstance(vehicle, Vehicle);
@@ -322,6 +324,29 @@ export class EventSite {
       });
    }
 
+   static async fetchOrders(eSites, allItems, allTransfers) {
+      const esds = eSites.flatMap(site => site.esDivisions);
+      const missingEsds = esds.filter(div => !div.ordersLoaded);
+
+         // return early if all esds have orders loaded
+      if (missingEsds.length === 0) return {};
+
+      const response = await actionFetch('getOrders', 'Event', { esdIDs: missingEsds.map(esd => esd.id) });
+
+      const ordersByESD = {};
+      for (const o of Object.values(response.data.orders)) {
+         const order = Utils.parseToInstance(o, SchoolOrder);
+         if (!ordersByESD[o.eshdID]) ordersByESD[o.eshdID] = [];
+         ordersByESD[o.eshdID].push(order);
+      }
+
+         // assign and mark loaded
+      for (const esd of missingEsds) {
+         esd.ordersLoaded = true;
+         esd.schoolOrders = ordersByESD[esd.id] || [];
+      }
+   }
+
       // static batch fetch method
    static async fetchInventories(eSites, allItems, allTransfers) { 
          // filter for sites missing inventory
@@ -357,7 +382,7 @@ export class EventSite {
          transfersBySite[t.eventSiteID].push(trnsfr);
       }
 
-         // mark loaded
+         // assign and mark loaded
       for (const es of missingSites) {
          es.inventoryLoaded = true;
          es.inventory = itemsBySite[es.id] || [];
@@ -383,6 +408,8 @@ export class Site {
 }
 
 export class Vehicle {
+   static registry = null;
+
    constructor({ id, name, isUnique }) {
       this.id = id;
       this.name = name;
@@ -399,11 +426,12 @@ export class Vehicle {
 }
 
 export class EventSiteDivision {
-   constructor({ id, eventSiteID, division, schoolOrders = [] }) {
+   constructor({ id, eventSiteID, divisionID, division, schoolOrders = [] }) {
       this.id = id;
       this.eventSiteID = eventSiteID;
-      this.division = Utils.parseToInstance(division, Division);
+      this.division = parseWithRegistry(division, Division, divisionID);
       this.schoolOrders = Utils.parseToInstancesArr(schoolOrders, SchoolOrder);
+      this.ordersLoaded = this.schoolOrders.length > 0;
    }
 
    static fromValues(id, eventSiteID, division, schoolOrders = []) {
@@ -446,6 +474,8 @@ export class EventSiteDivision {
 }
 
 export class Division {
+   static registry = null;
+
    constructor({ id, name, minPop, pre24Name }) {
       this.id = id;
       this.name = name;
@@ -463,12 +493,12 @@ export class Division {
 }
 
 export class SchoolOrder {
-   constructor({ id, eshdID, school, genderID, qualifiers = 0, completeness = 0, due = null, paid = null, 
-               schoolOrderNote = null, invoiceDate = null, invoiceVersion = null, messageOrders = [], 
+   constructor({ id, eshdID, schoolID, school, genderID, qualifiers = 0, completeness = 0, due = null, 
+               paid = null, schoolOrderNote = null, invoiceDate = null, invoiceVersion = null, messageOrders = [], 
                shirtsByStyle = [], oItems = [], oTransfers = [], site = undefined, sport = undefined }) {
       this.id = id;
       this.eshdID = eshdID;
-      this.school = Utils.parseToInstance(school, School);
+      this.school = parseWithRegistry(school, School, schoolID);
       this.genderID = genderID;
       this.qualifiers = qualifiers;
       this.completeness = completeness;
@@ -630,7 +660,10 @@ export class SchoolOrder {
 }
 
 export class School {
-   constructor({ id, name, shortName, addressPhysical, addressMailing, addressLine2, ad, district, division }) {
+   static registry = null;
+
+   constructor({ id, name, shortName, addressPhysical, addressMailing, addressLine2, ad, districtID, district, 
+               divisionID, division }) {
       this.id = id;
       this.name = name;
       this.shortName = shortName;
@@ -638,7 +671,7 @@ export class School {
       this.addressMailing = addressMailing;
       this.addressLine2 = addressLine2;
       this.ad = Utils.parseToInstance(ad, Person);
-      this.division = Utils.parseToInstance(division, Division);
+      this.division = parseWithRegistry(division, Division, divisionID);
    }
 
    static fromValues(id, name, shortName, addressPhysical, addressMailing, addressLine2, district, division) {
@@ -677,6 +710,8 @@ export class MessageOrder {
 }
 
 export class Item {
+   static registry = null;
+
    constructor({ id, price, stock, caseQ, inventoryMin, inventoryStep, color, size, style }) {
       this.id = id;
       this.price = price;
@@ -712,7 +747,7 @@ export class InventoryItem {
       this.addedQ = addedQ;
       this.removedQ = removedQ;
       this.price = price;
-      this.item = Utils.parseToInstance(item, Item);   
+      this.item = parseWithRegistry(item, Item, itemID);   
 	}
 
    static fromValues(id, eventSiteID, itemID, startQ, endQ, addedQ, removedQ, price, item) {
@@ -725,6 +760,8 @@ export class InventoryItem {
 }
 
 export class Style {
+   static registry = null;
+
    constructor({ id, code, name, inventoryName, shortName, vShortName, brand, sizingCategoryID, 
                minSizeID, maxSizeID, defaultColor, listOrder, sizes = [] }) {
       this.id = id;
@@ -772,6 +809,8 @@ export class Style {
 }
 
 export class Size {
+   static registry = null;
+
    constructor({ id, name, charName, displayChar, sizingCategoryID, quantity }) {
       this.id = id;
       this.name = name;
@@ -810,6 +849,8 @@ export class Person {
 }
 
 export class Employee {
+   static registry = null;
+
    constructor({ id, name, shortName, phone, email }) {
       this.id = id;
       this.name = name;
@@ -828,6 +869,8 @@ export class Employee {
 }
 
 export class Color {
+   static registry = null;
+
    constructor({ id, name }) {
       this.id = id;
       this.name = name;
@@ -877,6 +920,8 @@ export class Transfer {
 }
 
 export class InventoryTransfer {
+   static registry = null;
+
    constructor({ id, eventSiteID, transferID, startQ, soldQ, price, transfer }) {
       this.id = id;
       this.eventSiteID = eventSiteID;
@@ -922,7 +967,7 @@ export class SOrderItem {
       this.itemID = itemID;
       this.quantity = quantity;
       this.price = price;
-      this.item = Utils.parseToInstance(item, Item);
+      this.item = parseWithRegistry(item, Item, itemID);
    }
 
    static fromValues(id, schoolOrderID, itemID, quantity, price, item) {

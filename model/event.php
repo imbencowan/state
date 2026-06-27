@@ -208,8 +208,7 @@ class Event extends BasicTableModel {
 	}
 
 	public static function getInventoryItems($eSiteIDs) {
-			// Where __construct(string $column, mixed $value, string $operator = '=', array $path = [])
-                // $path specifies the table JOIN path to the target table, ie ['events', 'eventsites', 'sites']
+			// a where condition. // see Where.php for explanation
 		$whereInvntry = new Where('eventSiteID', $eSiteIDs, 'IN', ['eventsiteinventories']);
 		$whereTrnsfr = new Where('eventSiteID', $eSiteIDs, 'IN', ['eventsitetransfers']);
 
@@ -217,6 +216,14 @@ class Event extends BasicTableModel {
 		$transfers = EventSiteTransfer::getAllFromDB(context: 'inventory', where: $whereTrnsfr);
 
 		return [ 'invItems' => $invItems, 'transfers' => $transfers ];
+	}
+
+		// should return SchoolOrders for an Event
+	public static function getOrders($esdIDs) {
+			// a where condition. // see Where.php for explanation
+		$whr = new Where('eventSiteHasDivisionID', $esdIDs, 'IN', ['schoolorders']);
+
+		return ['orders' => SchoolOrder::getAllFromDB(where: $whr)];
 	}
 
 	public static function fetchDateRange(string $start, string $end): array {

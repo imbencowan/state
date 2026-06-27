@@ -26,3 +26,17 @@ export const runtime = {
 	allVehicles: makeDataLoader('Vehicle', Vehicle),
 	allSeasons: makeDataLoader('Season', Season)
 };
+
+
+	// define some look up info
+Color.registry = runtime.allColors;
+Division.registry = runtime.allDivisions;
+Employee.registry = runtime.allEmployees;
+Item.registry = runtime.allItems;
+School.registry = runtime.allSchools;
+Site.registry = runtime.allSites;
+Size.registry = runtime.allSizes;
+Sport.registry = runtime.allSports;
+Style.registry = runtime.allStyles;
+Transfer.registry = runtime.allTransfers;
+Vehicle.registry = runtime.allVehicles;

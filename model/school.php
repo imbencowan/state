@@ -7,8 +7,8 @@ class School extends BasicTableModel {
    protected static function getColumns(): array { 
 		return ['id' => 'schoolID', 
 					'name' => 'schoolName', 
-					'division' => 'divisionID', 
-					'district' => 'districtID',
+					'divisionID' => 'divisionID', 
+					'districtID' => 'districtID',
 					'addressPhysical' => 'schoolAddressPhysical',
 					'addressMailing' => 'schoolAddressMailing',
 					'addressLine2' => 'schoolAddressLine2',
@@ -32,7 +32,9 @@ class School extends BasicTableModel {
 		public readonly ?string $addressPhysical,
 		public readonly ?string $addressMailing,
 		public readonly ?string $addressLine2,
+		public readonly int $divisionID,
 		public readonly ?Division $division,
+		public readonly int $districtID,
 		public readonly ?District $district,
 		public readonly ?int $adID,
 		public readonly ?Person $ad = null

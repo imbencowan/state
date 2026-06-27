@@ -3,6 +3,7 @@
 import { runtime } from '../runtime.js';
 import { sizeList } from '../constants.js';
 import { actionFetch } from '../fetch.js';
+import { navigate } from '../navigation.js';
 import { StateEvent, SchoolOrder, InventoryTransfer } from '../models/db-classes.js';
 import { openModal, closeModal } from '../modal.js';
 import { buildElement, parseToInstancesArr } from '../utilities.js';
@@ -11,52 +12,65 @@ import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoic
 import { buildActionButton, buildIcon, makeSubmitCancelButtons } from './page-utils.js';
 
 
+
+	// define a little page structure, used in a couple functions
+const tabs = [
+	{ id: "orders", label: "Orders", build: attachOrdersPanel },
+	{ id: "inventory", label: "Inventory", build: attachInventoryPanel },
+	{ id: "reports", label: "Reports", build: attachReportsPanel }
+];
+
+
+
 	// leave the default parameters so we can access the next/most recent event
 export async function goToEventPage(sportID = null, year = null, tab = 'orders') {
-	let response;
-
-		// if no sport provided, get the next/most recent Event
-	if(!sportID) {
-		response = await actionFetch('getEventByDate', 'Event', { 'date': null });
-	} else if (tab == 'reports') {
-			////////////////////////////////////////////////////////////////////
-			// THIS IS A PLACE HOLDER TO ALLOW THE REPORTS TAB TO FUNCTION FOR NOW
-				// it will need to be replaced with a different action to fetch
-				// reports will want aggregate data, not raw like orders/inventory
-		const data = { 'year': year, 'sportID': sportID, 'context': 'orders' }
-		response = await actionFetch('getEventBySportAndYear', 'Event', data);
+		// check if we're just switching tabs for a single event
+	if (runtime.stateEvent && sportID == runtime.stateEvent.sport.id && year == runtime.stateEvent.year) {
+		switchTab(tab);
 	} else {
-			// other wise look up the event by sport and year. // pass tab as context
-		if (!year) {
-				// if no year was sent, get it from the select
-			if (document.getElementById("selectYear")) year = document.getElementById("selectYear").value;
+		let response;
 
-				// if there was a problem with the select, get the current school year
+			// if no sport provided, get the next/most recent Event
+		if(!sportID) {
+			response = await actionFetch('getEventByDate', 'Event', { 'date': null });
+		} else if (tab == 'reports') {
+				////////////////////////////////////////////////////////////////////
+				// THIS IS A PLACE HOLDER TO ALLOW THE REPORTS TAB TO FUNCTION FOR NOW
+					// it will need to be replaced with a different action to fetch
+					// reports will want aggregate data, not raw like orders/inventory
+			const data = { 'year': year, 'sportID': sportID, 'context': 'orders' }
+			response = await actionFetch('getEventBySportAndYear', 'Event', data);
+		} else {
+				// other wise look up the event by sport and year. // pass tab as context
 			if (!year) {
-				const sixMonthsAgo = new Date();
-				sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-				year = sixMonthsAgo.getFullYear() % 100;
+					// if no year was sent, get it from the select
+				if (document.getElementById("selectYear")) year = document.getElementById("selectYear").value;
+
+					// if there was a problem with the select, get the current school year
+				if (!year) {
+					const sixMonthsAgo = new Date();
+					sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+					year = sixMonthsAgo.getFullYear() % 100;
+				}
 			}
+			const data = { 'year': year, 'sportID': sportID, 'context': tab }
+			response = await actionFetch('getEventBySportAndYear', 'Event', data);
 		}
-		const data = { 'year': year, 'sportID': sportID, 'context': tab }
-		response = await actionFetch('getEventBySportAndYear', 'Event', data);
-	}
-	
-		// reset mode on load
-	runtime.activeMode = null;
+		
+			// reset mode on load
+		runtime.activeMode = null;
 
-	if (response.data !== null) {
-		runtime.stateEvent = StateEvent.fromJSON(response.data);
+		if (response.data !== null) {
+			runtime.stateEvent = StateEvent.fromJSON(response.data);
 
-		const pageContent = buildEventPage(runtime.stateEvent, tab);
-		// console.log(pageContent);
+			const pageContent = buildEventPage(runtime.stateEvent, tab);
+			document.getElementById("display").replaceChildren(pageContent);
 
-		document.getElementById("display").replaceChildren(pageContent);
-
-			// ATTACH EVENT LISTENERS 
-		addEventPageFunctionality();
-	} else {
-		showNoEvent(sportID, year);
+				// ATTACH EVENT LISTENERS 
+			addEventPageFunctionality();
+		} else {
+			showNoEvent(sportID, year);
+		}
 	}
 }
 
@@ -82,15 +96,10 @@ function attachSportHeader(cntnr, sEvent) {
 	// this /just/ attaches the tabs, it doesn't actually fill them
 		// it attaches a build function to fill the tab if it's clicked.
 function attachTabs(parent, sEvent, tab) {
-   const tabs = [
-      { id: "orders", label: "Orders", build: attachOrdersPanel },
-      { id: "inventory", label: "Inventory", build: attachInventoryPanel },
-      { id: "reports", label: "Reports", build: attachReportsPanel }
-   ];
+   const nav = buildElement("nav", { id: "eventTabNav", classes: ["eventTabNav"] });
+   const pnlsCntnr = buildElement("div", { id: "tabPnlsCntnr", classes: ["tabPnlsCntnr"] });
 
-   const nav = buildElement("nav", { classes: ["eventTabNav"] });
-   const panels = buildElement("div", { classes: ["tabPanels"] });
-
+		// tabs is a module level const
    tabs.forEach(t => {
 			// a button for switching tabs
       const btn = buildElement("button", {
@@ -113,7 +122,7 @@ function attachTabs(parent, sEvent, tab) {
       }
 
       nav.append(btn);
-      panels.append(panel);
+      pnlsCntnr.append(panel);
    });
 
 		// listener switches tabs, including building them on first access
@@ -122,27 +131,34 @@ function attachTabs(parent, sEvent, tab) {
       if (!e.target.matches("button")) return;
 
       const tabID = e.target.dataset.tab;
-
-			// remove active from any tab
-      nav.querySelectorAll("button").forEach(b => b.classList.remove("active"));
-      panels.querySelectorAll(".tabPanel").forEach(p => p.classList.remove("active"));
-
-			// mark the target as active
-      const panel = panels.querySelector(`[data-tab="${tabID}"]`);
-      e.target.classList.add("active");
-      panel.classList.add("active");
-
-      	// lazy build. calls the build function if the panel has not yet been built.
-      if (!panel.dataset.built) {
-				// get the tab and build the panel
-         const tab = tabs.find(t => t.id === tabID);
-         tab.build(panel, sEvent);
-				// mark built as true now
-         panel.dataset.built = "true";
-      }
+		navigate(`${sEvent.sport.slug}/${sEvent.year}/${tabID}`);
    });
 
-   parent.append(nav, panels);
+   parent.append(nav, pnlsCntnr);
+}
+
+function switchTab(tab) {
+	const nav = document.getElementById("eventTabNav");
+	const tabBtn = nav.querySelector(`[data-tab="${tab}"]`);
+	const pnlsCntnr = document.getElementById("tabPnlsCntnr");
+	const panel = pnlsCntnr.querySelector(`[data-tab="${tab}"]`);
+
+		// remove active from any tab
+	nav.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+	pnlsCntnr.querySelectorAll(".tabPanel").forEach(p => p.classList.remove("active"));
+
+		// mark the target as active
+	tabBtn.classList.add("active");
+	panel.classList.add("active");
+
+		// lazy build. calls the build function if the panel has not yet been built.
+	if (!panel.dataset.built) {
+			// find and call the build function
+	   const tabInfo = tabs.find(t => t.id === tab);
+	   tabInfo.build(panel, runtime.stateEvent);
+			// mark built as true now
+	   panel.dataset.built = "true";
+	}
 }
 
 

@@ -7,11 +7,15 @@
         public readonly string $valueStr;
 
         public function __construct(
+                // the column being referenced
             public readonly string $column,
+                // the value to compare each row's column value to
             public readonly mixed $value,
+                // how to compare
             public readonly string $operator = '=',
                 // specifies the table JOIN path the query takes to the target table ['events', 'eventsites', 'sites']
                     // necessary for table alias
+                        // if no tables are being JOINed, will simply be ['tablename']
             public readonly array $path = [] 
         ) {
             $this->tableAlias = BasicTableModel::buildAlias([...$path]);

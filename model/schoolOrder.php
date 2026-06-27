@@ -7,7 +7,7 @@ class SchoolOrder extends BasicTableModel {
    protected static function getColumns(): array { 
 		return ['id' => 'schoolOrderID', 
 					'eshdID' => 'eventSiteHasDivisionID', 
-					'school' => 'schoolID',
+					'schoolID' => 'schoolID',
 					'genderID' => 'genderID',
 					'qualifiers' => 'qualifiers',
 					'completeness' => 'completeness',
@@ -21,7 +21,6 @@ class SchoolOrder extends BasicTableModel {
 	protected static function getRelations(): array {
     	return [ // new Relation('division', 'Division', 'divisionID', false), 
 					new Relation('school', 'School', 'schoolID', 'schoolID', false), 
-					// new Relation('shirtsByStyle', 'SOrderItem', 'schoolOrderID', 'schoolOrderID', true), 
 					new Relation('oItems', 'SOrderItem', 'schoolOrderID', 'schoolOrderID', true), 
 					new Relation('oTransfers', 'SOrderTransfer', 'schoolOrderID', 'schoolOrderID', true),
 					new Relation('messageOrders', 'MessageOrder', 'schoolOrderID', 'schoolOrderID', true)];
@@ -33,6 +32,7 @@ class SchoolOrder extends BasicTableModel {
 	public function __construct(
 		public readonly ?int $id,
 		public readonly int $eshdID, 
+		public readonly int $schoolID,
 		public readonly School $school,
 		public readonly ?int $genderID = null,
 		public readonly ?int $qualifiers = null,

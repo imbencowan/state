@@ -22,7 +22,7 @@ export async function myFetch(request) {
         if (data?.success === false) throw new Error(data.message || "Unknown server error");
        
 
-        console.log(data);
+        console.log(request, data);
         return data;
     } catch (error) {
         console.error("Fetch Error:", error.message);

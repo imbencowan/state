@@ -16,7 +16,7 @@ const routes = [
    { match: parts => (runtime.allSports.getBySlug(parts[0])), handler: handleSport }, 
    { match: parts => (parts[0] === 'items' && parts.length === 1), handler: goToItemsPage },
    { match: parts => (parts[0] === 'schools' && parts.length === 1), handler: goToSchoolsPage },
-   { match: parts => (parts[0] === 'year' && parts.length === 1), handler: handleYear }
+   { match: parts => (parts[0] === 'year'), handler: handleYear }
 ];
 
 
@@ -26,7 +26,6 @@ export async function router() {
    const parts = path.split('/').filter(Boolean).map(p => p.trim());;
       // we need this to route sports
    await runtime.allSports.load();
-
 
    for (const route of routes) {
       const match = route.match(parts);
@@ -41,9 +40,37 @@ export async function router() {
 
 
    /////////////////////////////////////////////////////////////////////////////////////
-function handleYear() {
-   // set year
-   goToYearPage();
+function handleYear(parts, path) {
+   const parsed = parseYearParts(parts);
+
+   if (parsed.valid) {
+      history.replaceState(null, "", `/state/${parts[0]}/${parsed.year}`);
+      setYearSelect(parsed.year);
+      goToYearPage(parsed.year);
+   } else {
+      showNotFound(path);
+   }
+}
+
+function parseYearParts(parts) {
+   let valid = true;
+   let year;
+
+      // check if it's too long. // only allow '/year/##', no more
+   if (parts.length > 2) {
+      valid = false;
+   } else if (parts.length == 2) {
+      year = parts[1];
+      if(!isEventYear(year)) {
+         valid = false;
+      }
+   } else {
+      year = document.getElementById('selectYear').value;
+   }
+
+   year = Number(year);
+
+   return { valid, year };
 }
 
 

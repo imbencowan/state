@@ -9,7 +9,7 @@ class EventSiteDivision extends BasicTableModel {
    protected static function getPrimaryKey(): string { return 'eventSiteHasDivisionID'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
-		return ['id' => 'eventSiteHasDivisionID', 'eventSiteID' => 'eventSiteID', 'division' => 'divisionID']; 
+		return ['id' => 'eventSiteHasDivisionID', 'eventSiteID' => 'eventSiteID', 'divisionID' => 'divisionID']; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
 			// $interTable = null, $stopContexts = [])
@@ -27,6 +27,7 @@ class EventSiteDivision extends BasicTableModel {
 	public function __construct(
 		public readonly ?int $id,
 		public readonly int $eventSiteID,
+		public readonly int $divisionID,
 		public readonly Division $division,
 			// default empty array
 		array $schoolOrders = []
@@ -41,6 +42,7 @@ class EventSiteDivision extends BasicTableModel {
 			'id' => $this->id,
 			'name' => $this->name,
 			'eventSiteID' => $this->eventSiteID,
+			'divisionID' => $this->divisionID,
 			'division' => $this->division,
 			'schoolOrders' => array_values($this->schoolOrders)
 		];

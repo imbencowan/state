@@ -9,10 +9,10 @@ import { showPage } from './page-handling.js';
 import { printSeasonStockPDF } from '../print.js';
 
 
-export async function goToYearPage() {
-   const data = { year: document.getElementById('selectYear').value };
+export async function goToYearPage(year) {
+   if (!year) year = document.getElementById('selectYear').value;
 
-   await showPage('showYear', 'Year', data);
+   await showPage('showYear', 'Year', { year: year });
    await runtime.allSeasons.load();
 
    addShowYearFunctionality();

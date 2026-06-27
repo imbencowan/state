@@ -7,7 +7,7 @@ class EventSite extends BasicTableModel {
    protected static function getColumns(): array { 
 		return ['id' => 'eventSiteID', 
 					'eventID' => 'eventID', 
-					'site' => 'siteID',
+					'siteID' => 'siteID',
 					'managerName' => 'managerName',
 					'startDate' => 'startDate',
 					'endDate' => 'endDate'];
@@ -32,6 +32,7 @@ class EventSite extends BasicTableModel {
 	public function __construct(
 		public readonly ?int $id,
 		public readonly int $eventID,
+		public readonly int $siteID,
 		public readonly ?Site $site,
 		public readonly ?string $managerName,
 		string|DateTime|null $startDate, 
@@ -51,6 +52,7 @@ class EventSite extends BasicTableModel {
 			'id' => $this->id,
 			'eventID' => $this->eventID,
 			'site' => $this->site,
+			'siteID' => $this->siteID,
 			'gender' => $this->gender,
 			'managerName' => $this->managerName,
 			'vehicles' => $this->vehicles,
