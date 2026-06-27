@@ -37,23 +37,5 @@ class Item extends BasicTableModel {
       public readonly ?Size $size = null,
       public readonly ?int $stock = 0
    ) {}
-	
-	
-	////////////////////////////////////////////////////////////////////////////////
-   // user actions
-		// takes us to the Items page, showing all Items
-	static function showItems() {
-		$items = Item::getAllFromDB();
-		$gItems = [];
-		foreach ($items as $item) {
-			$styleKey = $item->style->shortName; 
-			$gItems[$styleKey][] = $item;
-		}
-		ob_start();
-		include 'view/items.php';
-		$htmlContent = ob_get_clean();
-		
-		return [ 'html' => $htmlContent, 'data' => $gItems ];
-	}
 }
 ?>
