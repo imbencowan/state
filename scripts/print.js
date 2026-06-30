@@ -20,9 +20,7 @@ export function printBoxLabel(order) {
 	genBoxLabel(doc, order, 0);
 	
 		// Generate a Blob URL and open it in a new tab
-	const pdfBlob = doc.output("blob");
-	const url = URL.createObjectURL(pdfBlob);
-	window.open(url, "_blank", "noopener");
+	Helpers.openBlobInNewTab(doc);
 }
 
 	// prints labels for all orders not marked complete
@@ -43,10 +41,8 @@ export function printUndoneBoxLabels() {
             
             if (((totalPageLabels % 4) === 0) && (i < orders.length - 1)) doc.addPage();
         }
-            // Generate a Blob URL and open it in a new tab
-        const pdfBlob = doc.output("blob");
-        const url = URL.createObjectURL(pdfBlob);
-        window.open(url, "_blank", "noopener");
+         	// Generate a Blob URL and open it in a new tab
+			Helpers.openBlobInNewTab(doc);
     } else {
             // if no incomplete orders, alert the user
         openModal("There are no incomplete orders.")
@@ -244,9 +240,7 @@ export function printAllSoSPDF() {
 	}
 	
 		// Generate a Blob URL and open it in a new tab
-	const pdfBlob = doc.output("blob");
-	const url = URL.createObjectURL(pdfBlob);
-	window.open(url, "_blank", "noopener");
+	Helpers.openBlobInNewTab(doc);
 }
 
 	// print a single sign off sheet
@@ -259,9 +253,7 @@ export function printSoSPDF(div) {
 	genSoS(doc, div);
 	
 		// Generate a Blob URL and open it in a new tab
-	const pdfBlob = doc.output("blob");
-	const url = URL.createObjectURL(pdfBlob);
-	window.open(url, "_blank", "noopener");
+	Helpers.openBlobInNewTab(doc);
 }
 
 	// actually generate each sign off sheet
@@ -477,13 +469,6 @@ export async function downloadInvoicePDF(order, type = "Invoice") {
    const doc = new jsPDF('p', 'mm', 'letter');
 	
 	genInvoicePDF(doc, order, type);
-	
-		// download the pdf
-	const pdfBlob = doc.output("blob");
-	const url = URL.createObjectURL(pdfBlob);
-
-	const a = document.createElement("a");
-	a.href = url;
 
 	// let genderName = '';
 	// if (runtime.stateEvent.sport.name.toLowerCase() === "soccer") genderName
@@ -491,41 +476,41 @@ export async function downloadInvoicePDF(order, type = "Invoice") {
 	let suffix = '';
 	if (type !== "Invoice") suffix = ` - ${type}`;
 
-	a.download = `${order.school.shortName} ${runtime.stateEvent.sport.name} ${runtime.stateEvent.getRealYear()} Add Ons${suffix}`;
+	const fileName = `${order.school.shortName} ${runtime.stateEvent.sport.name} ${runtime.stateEvent.getRealYear()} Add Ons${suffix}`;
 
-	document.body.appendChild(a); // Required for Firefox
-	a.click();
-	document.body.removeChild(a);
-	URL.revokeObjectURL(url); // Clean up
+	Helpers.downloadPDF(doc, fileName);
 }
 
     // as named
 export function printAllInvoices() {
 	if (!runtime.stateEvent) return;
-	
-		// Access jsPDF from the global object
-	const { jsPDF } = window.jspdf; 
-    const doc = new jsPDF('p', 'mm', 'letter');
-	
+
+	const invoices = [];
 		// foreach site, foreach division, for each order, check order for add ons, collect if found
 	runtime.stateEvent.eventSites.forEach(es => {
 		es.esDivisions.forEach(esd => {
 			esd.schoolOrders.forEach(so => {
-				if (so.getAddedStyles().length !== 0) {
-					genInvoicePDF(doc, so);
-					doc.addPage();
-				}
+				if (so.getAddedStyles().length !== 0) invoices.push(so);
 			});
 		});
 	});
-		// delete the blank page added last
-	doc.deletePage(doc.getNumberOfPages());
-	
-	
-		// Generate a Blob URL and open it in a new tab
-	const pdfBlob = doc.output("blob");
-	const url = URL.createObjectURL(pdfBlob);
-	window.open(url, "_blank", "noopener");
+
+
+	if ( invoices.length === 0) {
+		openModal("This event has no invoices");
+	} else {
+			// Access jsPDF from the global object
+		const { jsPDF } = window.jspdf; 
+		const doc = new jsPDF('p', 'mm', 'letter');
+
+		invoices.forEach((so, index) => {
+			genInvoicePDF(doc, so);
+			if (index < invoices.length - 1) doc.addPage();
+		});
+
+			// Generate a Blob URL and open it in a new tab
+		Helpers.openBlobInNewTab(doc);
+	}
 }
 
     // actual invoice generation
@@ -697,9 +682,7 @@ export async function printInventories({ pages = 3, eSites = runtime.stateEvent.
 	});
 
 		// Generate a Blob URL and open it in a new tab
-	const pdfBlob = doc.output("blob");
-	const url = URL.createObjectURL(pdfBlob);
-	window.open(url, "_blank", "noopener");
+	Helpers.openBlobInNewTab(doc);
 }
 
 function genInventoryPDF(doc, eSite, pages) {
@@ -1013,10 +996,8 @@ export function printOMessages() {
 	doc.deletePage(doc.getNumberOfPages());
     
     
-        // Generate a Blob URL and open it in a new tab
-    const pdfBlob = doc.output("blob");
-    const url = URL.createObjectURL(pdfBlob);
-    window.open(url, "_blank", "noopener");
+   	// Generate a Blob URL and open it in a new tab
+	Helpers.openBlobInNewTab(doc);
 }
 
 
@@ -1061,9 +1042,8 @@ export function printSeasonStockPDF(season, dateRange, stockRows) {
 	page.addPage();
 	writeSeasonHoodSizeTable(doc, page, rows);
 
-	const pdfBlob = doc.output("blob");
-	const url = URL.createObjectURL(pdfBlob);
-	window.open(url, "_blank", "noopener");
+		// Generate a Blob URL and open it in a new tab
+	Helpers.openBlobInNewTab(doc);
 }
 
 function buildSeasonStockRows(stockRows) {

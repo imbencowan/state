@@ -40,7 +40,8 @@ function buildTopButtons() {
    const buttons = [
       { type: "editStock", title: "edit stock", icon: "edit", text: " Stock", classes: ["editStock"] },
       { type: "incrementStock", title: "increment stock", icon: "add", text: " Stock", classes: ["incrementStock"] },
-      { type: "editPrices", title: "edit prices", icon: "edit", text: " Prices", classes: ["editPrices"] }
+      { type: "editPrices", title: "edit prices", icon: "edit", text: " Prices", classes: ["editPrices"] },
+      { type: "editBase", title: "", icon: "edit", text: " Base Inventory", classes: ["editBaseInventory"] }
    ];
 
    return buttons.map(buildActionButton);
@@ -129,8 +130,9 @@ export function addItemsPageFunctionality() {
          'button.incrementStock': () => showIncrementStock(target),
          'button.editPrices': () => showEditPrices(target),
          'button.submitStockUpdate': () => submitStockUpdate(target),
+         'button.cancelStockUpdate': () => cancelStockUpdate(target),
          'button.submitStockIncrement': () => submitStockIncrement(target),
-         'button.cancelStockUpdate': () => cancelStockUpdate(target)
+         'button.cancelStockIncrement': () => cancelStockUpdate(target)
       };
 
       for (const sel in topLevelActions) {
@@ -149,6 +151,10 @@ export function addItemsPageFunctionality() {
       }
    });
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// UI functionality
 
 function showEditStock(btn) {
       // set mode. prevents addOns being activated while edit is in progress
@@ -246,20 +252,20 @@ async function submitStockUpdate(btn) {
 }
 
 function cancelStockUpdate(btn) {
-      // get the right table
-      const tbl = document.getElementById('allGarmentsTable');
-   
-         // clear the tds
-      tbl.querySelectorAll('td[data-o-stock]').forEach(td => {
-         td.innerHTML = '';
-         td.textContent = td.dataset.oStock;
-      });
-   
-         // reset the buttons
-      resetTopButtons(btn);
-   
+   // get the right table
+   const tbl = document.getElementById('allGarmentsTable');
+
+      // clear the tds
+   tbl.querySelectorAll('td[data-o-stock]').forEach(td => {
+      td.innerHTML = '';
+      td.textContent = td.dataset.oStock;
+   });
+
+      // reset the buttons
+   resetTopButtons(btn);
+
       // unset activeMode
-      runtime.activeMode = null;
+   runtime.activeMode = null;
 }
 
 async function submitStockIncrement(btn) {

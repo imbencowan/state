@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // js functions for the event page
 import { runtime } from '../runtime.js';
-import { myFetch } from '../fetch.js';
+import { actionFetch, myFetch } from '../fetch.js';
 import { arraysEqualIgnoreOrder, buildElement } from '../utilities.js';
 import { openModal } from '../modal.js';
 import { EventSite, Season, Site } from '../models/db-classes.js';

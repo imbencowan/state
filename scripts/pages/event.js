@@ -20,6 +20,24 @@ const tabs = [
 	{ id: "reports", label: "Reports", build: attachReportsPanel }
 ];
 
+const topOrderButtons = [
+		{ action: "genBoxLabels", title: "print all undone box labels", icon: "print", text: " Undone Labels", 
+			classes: ["genUndoneBoxLabelsBtn"] },
+		{ action: "printAllSoSPDF", title: "print all site's sign off sheets", icon: "print", text: " All SoS", 
+			classes: ["printAllSoSPDF"] },
+		{ action: "printInvoices", title: "print all invoices", icon: "print", text: " Invoices", 
+			classes: ["printInvoicesBtn"] },
+		{ action: "printMessages", title: "print order messages", icon: "print", text: " Messages", 
+			classes: ["printMessagesBtn"] },
+		{ action: "printTotals", title: "print shirt totals", icon: "print", text: " Totals", 
+			classes: ["printTotalsBtn"] },
+		{ action: "newOrder", title: "add an order", text: "+ Order", classes: ["newOrderBtn"] },
+		{ action: "uploadQlfrs", title: "upload qualifiers", icon: "upload", text: " Qualifiers", 
+			classes: ["uploadQlfrs"] },
+		{ action: "showAllSchoolsAZ", title: "show A-Z list of all schools", icon: "visibility", text: " A-Z Schools", 
+			classes: ["showAllSchoolsAZ"] }
+	];
+
 
 
 	// leave the default parameters so we can access the next/most recent event
@@ -174,25 +192,7 @@ async function attachOrdersPanel(panel, sEvent) {
 
 	// builds buttons for the top of the page for various print options 
 function attachOrdersTopButtons(cntnr) {
-	const buttons = [
-		{ type: "genBoxLabels", title: "print all undone box labels", icon: "print", text: " Undone Labels", 
-			classes: ["genUndoneBoxLabelsBtn"] },
-		{ type: "printAllSoSPDF", title: "print all site's sign off sheets", icon: "print", text: " All SoS", 
-			classes: ["printAllSoSPDF"] },
-		{ type: "printInvoices", title: "print all invoices", icon: "print", text: " Invoices", 
-			classes: ["printInvoicesBtn"] },
-		{ type: "printMessages", title: "print order messages", icon: "print", text: " Messages", 
-			classes: ["printMessagesBtn"] },
-		{ type: "printTotals", title: "print shirt totals", icon: "print", text: " Totals", 
-			classes: ["printTotalsBtn"] },
-		{ type: "newOrder", title: "add an order", text: "+ Order", classes: ["newOrderBtn"] },
-		{ type: "uploadQlfrs", title: "upload qualifiers", icon: "upload", text: " Qualifiers", 
-			classes: ["uploadQlfrs"] },
-		{ type: "showAllSchoolsAZ", title: "show A-Z list of all schools", icon: "visibility", text: " A-Z Schools", 
-			classes: ["showAllSchoolsAZ"] }
-	];
-
-	const btnElements = buttons.map(buildActionButton);
+	const btnElements = topOrderButtons.map(buildActionButton);
 	const h = buildElement("h1", { children: btnElements });
 	const btnCntnr = buildElement("div", { classes: "buttonContainer", children: [h] });
 	cntnr.appendChild(btnCntnr);
@@ -712,12 +712,6 @@ function attachReportsPanel(tab, data) {
 
 	// attaches event listeners
 export function addEventPageFunctionality() {
-	// taking this out. it should be in initialization.js now and unnecessary. leaving commented just in case
-		// PRE LOAD 
-	// runtime.allItems.load();
-
-
-
 	const container = document.getElementById('eventContainer');
 
 		// this is one listener that handles clicks for all buttons on the event page
@@ -2169,21 +2163,3 @@ async function submitAddTransfer(e, form) {
 		eSite.transfers.push(...newTransfers);
 	}
 }
-
-
-
-
-
-	// helper
-// function buildActionButton({ type, title = "", icon = null, text = "", classes = [], datasetExtra = {} }) {
-//     const children = [];
-//     if (icon) children.push(buildIcon(icon));
-//     if (text) children.push(text);
-
-//     return buildElement("button", {
-//         classes: ["topLevelButton", "clickable", ...classes],
-//         dataset: { btnType: type, ...datasetExtra },
-//         title,
-//         children
-//     });
-// }
