@@ -1,14 +1,14 @@
 import { buildElement } from "../utilities.js";
 
     // builds a semi specific type of button. this condenses some styling used repeatedly
-export function buildActionButton({ type, title = "", icon = null, text = "", classes = [], datasetExtra = {} }) {
+export function buildActionButton({ action, title = "", icon = null, text = "", classes = [], datasetExtra = {} }) {
     const children = [];
     if (icon) children.push(buildIcon(icon));
     if (text) children.push(text);
 
     return buildElement("button", {
         classes: ["topLevelButton", "clickable", ...classes],
-        dataset: { btnType: type, ...datasetExtra },
+        dataset: { action: action, ...datasetExtra },
         title,
         children
     });
@@ -28,11 +28,11 @@ export function makeSubmitCancelButtons(btnCntnr, lstnrCntnr, type, action, id =
         // make the buttons // secondary classes guide listeners handling
     const submitButton = buildElement('button', { text: 'Submit', type: 'button',
         classes: ['addOnButton', `${type}-action`, `submit${action}`], 
-        dataset: { id: id }
+        dataset: { id: id, action: makeSubmitCancelAction('submit', action) }
     });
-    const cancelButton = buildElement('button', { text: 'X',	type: 'button',
+    const cancelButton = buildElement('button', { text: 'X', type: 'button',
         classes: ['addOnButton', `${type}-action`, `cancel${action}`], 
-        dataset: { id: id }
+        dataset: { id: id, action: makeSubmitCancelAction('cancel', action) }
     });
         // append them
     btnCntnr.append(submitButton, cancelButton);
@@ -57,4 +57,9 @@ export function makeSubmitCancelButtons(btnCntnr, lstnrCntnr, type, action, id =
             lstnrCntnr.removeEventListener('keydown', keyHandler);
         }
     }
+}
+
+export function makeSubmitCancelAction(type, action) {
+    const capAction = action[0].toUpperCase() + action.slice(1);
+    return type + capAction;
 }

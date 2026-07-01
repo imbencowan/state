@@ -40,8 +40,21 @@ class EventSiteInventoryItem extends BasicTableModel {
 	) {}
 	
 	
-	//////////////////////////////////////////////////////
-	// Database functions	
-	
+		//////////////////////////////////////////////////////
+		// Database functions	
+	public static function editItems($db, $eventSiteID, $items) {
+		$rows = array_map(fn($row) => [
+			'eventSiteID' => $eventSiteID,
+			'itemID'      => $row['itemID'],
+			'startQ'      => $row['quantity'],
+			'price'       => $row['price']
+		], $items);
+
+		self::upsertMany($rows, ['startQ'], $db);
+
+			// DELETE records that have been changed to 0
+		$stmt = $db->prepare("DELETE FROM eventsiteinventories WHERE eventSiteID = :eventSiteID AND startQ = 0");
+		$stmt->execute([':eventSiteID' => $eventSiteID]);
+	}
 }
 ?>

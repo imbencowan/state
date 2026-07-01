@@ -177,67 +177,75 @@ class EventSite extends BasicTableModel {
 		// return $data;
 	}
 
+	// public static function editEventSiteInventory($eventSiteID, $updateItems = [], $updateTransfers = []) {
+	// 	$db = Database::getDB();
+
+	// 	$affected = [
+	// 		'invItems'  => 0,
+	// 		'transfers' => 0
+	// 	];
+
+	// 	try {
+	// 		$db->beginTransaction();
+
+	// 		// --- inventory items ---
+	// 		$sqlInv = "
+	// 				INSERT INTO eventsiteinventories (eventSiteID, itemID, startQ, price)
+	// 				VALUES (:eventSiteID, :itemID, :startQ, :price)
+	// 				ON DUPLICATE KEY UPDATE
+	// 					startQ = VALUES(startQ),
+	// 					price  = VALUES(price)
+	// 		";
+	// 		$stmtInv = $db->prepare($sqlInv);
+
+	// 		foreach ($updateItems as $row) {
+	// 				$stmtInv->execute([
+	// 					':eventSiteID' => $eventSiteID,
+	// 					':itemID'      => $row['itemID'],
+	// 					':startQ'      => $row['quantity'],
+	// 					':price'       => $row['price']    
+	// 				]);
+	// 				$affected['invItems'] += ($stmtInv->rowCount() > 0) ? 1 : 0;
+	// 		}
+
+	// 		// --- transfers ---
+	// 		if (!empty($updateTransfers)) {
+	// 				$sqlTrf = "
+	// 					INSERT INTO eventsitetransfers (eventSiteID, transferID, startQ, price)
+	// 					VALUES (:eventSiteID, :transferID, :startQ, :price)
+	// 					ON DUPLICATE KEY UPDATE
+	// 						startQ = VALUES(startQ),
+	// 						price  = VALUES(price)
+	// 				";
+	// 				$stmtTrf = $db->prepare($sqlTrf);
+
+	// 				foreach ($updateTransfers as $row) {
+	// 					$stmtTrf->execute([
+	// 						':eventSiteID' => $eventSiteID,
+	// 						':transferID'  => $row['transferID'],
+	// 						':startQ'      => $row['quantity'],
+	// 						':price'       => $row['price']
+	// 					]);
+	// 					$affected['transfers'] += ($stmtTrf->rowCount() > 0) ? 1 : 0;
+	// 				}
+	// 		}
+
+	// 		$db->commit();
+
+	// 	} catch (Exception $e) {
+	// 		$db->rollBack();
+	// 		throw $e;
+	// 	}
+
+	// 	return (object) [ 'affected' => (object) $affected ];
+	// }
+
 	public static function editEventSiteInventory($eventSiteID, $updateItems = [], $updateTransfers = []) {
-		$db = Database::getDB();
-
-		$affected = [
-			'invItems'  => 0,
-			'transfers' => 0
-		];
-
-		try {
-			$db->beginTransaction();
-
-			// --- inventory items ---
-			$sqlInv = "
-					INSERT INTO eventsiteinventories (eventSiteID, itemID, startQ, price)
-					VALUES (:eventSiteID, :itemID, :startQ, :price)
-					ON DUPLICATE KEY UPDATE
-						startQ = VALUES(startQ),
-						price  = VALUES(price)
-			";
-			$stmtInv = $db->prepare($sqlInv);
-
-			foreach ($updateItems as $row) {
-					$stmtInv->execute([
-						':eventSiteID' => $eventSiteID,
-						':itemID'      => $row['itemID'],
-						':startQ'      => $row['quantity'],
-						':price'       => $row['price']    
-					]);
-					$affected['invItems'] += ($stmtInv->rowCount() > 0) ? 1 : 0;
-			}
-
-			// --- transfers ---
-			if (!empty($updateTransfers)) {
-					$sqlTrf = "
-						INSERT INTO eventsitetransfers (eventSiteID, transferID, startQ, price)
-						VALUES (:eventSiteID, :transferID, :startQ, :price)
-						ON DUPLICATE KEY UPDATE
-							startQ = VALUES(startQ),
-							price  = VALUES(price)
-					";
-					$stmtTrf = $db->prepare($sqlTrf);
-
-					foreach ($updateTransfers as $row) {
-						$stmtTrf->execute([
-							':eventSiteID' => $eventSiteID,
-							':transferID'  => $row['transferID'],
-							':startQ'      => $row['quantity'],
-							':price'       => $row['price']
-						]);
-						$affected['transfers'] += ($stmtTrf->rowCount() > 0) ? 1 : 0;
-					}
-			}
-
-			$db->commit();
-
-		} catch (Exception $e) {
-			$db->rollBack();
-			throw $e;
-		}
-
-		return (object) [ 'affected' => (object) $affected ];
+			// use withDB to avoid some thing like a partial update
+		return Database::withDB(function($db) use ($eventSiteID, $updateItems, $updateTransfers) {
+			EventSiteInventoryItem::editItems($db, $eventSiteID, $updateItems);
+			EventSiteTransfer::editTransfers($db, $eventSiteID, $updateTransfers);
+		});
 	}
 }
 ?>

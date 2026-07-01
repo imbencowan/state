@@ -8,7 +8,7 @@ import * as Helpers from './printHelpers.js';
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // generating box labels
 	// prints a single order's label
-export function printBoxLabel(order) {
+export function printBoxLabel({ order }) {
 	// console.log(order);
 	if (!order.shirtsByStyle || order.shirtsByStyle.length === 0) {
 		openModal("This order is empty");
@@ -655,6 +655,7 @@ function getItemByStyleIDSizeChar(styleID, displayChar) {
    }
    return null;
 }
+
 
 
 

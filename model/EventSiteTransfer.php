@@ -29,5 +29,24 @@ class EventSiteTransfer extends BasicTableModel {
       public readonly float $price,
 		public readonly ?Transfer $transfer = null
 	) {}
+
+
+		//////////////////////////////////////////////////////
+		// Database functions	
+	public static function editTransfers($db, $eventSiteID, $transfers) {
+			// match values to column names and upsert
+		$rows = array_map(fn($row) => [
+			'eventSiteID' => $eventSiteID,
+			'transferID'  => $row['transferID'],
+			'startQ'      => $row['quantity'],
+			'price'       => $row['price']
+		], $transfers);
+
+		self::upsertMany($rows, ['startQ'], $db);
+
+			// DELETE records that have been changed to 0
+		$stmt = $db->prepare("DELETE FROM eventsitetransfers WHERE eventSiteID = :eventSiteID AND startQ = 0");
+		$stmt->execute([':eventSiteID' => $eventSiteID]);
+	}
 }
 ?>

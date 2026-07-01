@@ -41,7 +41,6 @@ export function downloadPDF(doc, filename) {
 
    // generate a blob url
 export function getPDFURL(doc) {
-   console.log('help')
    const pdfBlob = doc.output("blob");
    return URL.createObjectURL(pdfBlob);
 }
