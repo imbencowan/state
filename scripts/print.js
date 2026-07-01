@@ -458,9 +458,8 @@ function makeSoSGridVert(doc, sos, topY, cursor) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // generating invoices
 	// as named
-export async function downloadInvoicePDF(order, type = "Invoice") {
+export async function downloadInvoicePDF({ order, type = "Invoice" }) {
 	if (!order) order = runtime.activeOrder;
-	console.log(order);
 
 		// if there are no add ons, don't do any thing
 	if (!order.hasAddOns()) return;

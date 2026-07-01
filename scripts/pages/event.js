@@ -38,15 +38,6 @@ const topOrderButtons = [
 		handler: showQlfrsUpld },
 	{ action: "showAllSchoolsAZ", title: "show A-Z list of all schools", icon: "visibility", text: " A-Z Schools",
 		handler: showAllSchoolsAZ }
-	,
-		// this one still needs runtime context
-	{
-		action: "printSoSPDF",
-		title: "print sign off sheet",
-		icon: "print",
-		text: " SoS",
-		handler: (target) => printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid))
-	}
 ];
 const topInventoryButtons = [
 	{ action: "printAllInventoriesPage1", title: "print all starting inventories", icon: "print", 
@@ -62,7 +53,7 @@ const topInventoryActions = Object.fromEntries(
     topInventoryButtons.map(b => [b.action, b.handler])
 );
 const topActions = {
-	printSoSPDF: (target) => printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid)),
+	printSoSPDF: ({ target }) => printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid)),
 	...topOrderActions,
 	...topInventoryActions
 };
@@ -120,8 +111,6 @@ const inventorySiteActions = Object.fromEntries(
 		return entries;
 	})
 );
-
-console.log(inventorySiteActions);
 
 		
 
@@ -777,56 +766,31 @@ export function addEventPageFunctionality() {
 			// may be should move top level buttons to a more specific listener
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 	container.addEventListener('click', function(event) {
-			// qualify the target, some buttons have span children
-		const btn = event.target.closest('button');
-		const spn = event.target.closest('span');
+			// some buttons have span children for icons. some naked icons are treated like buttons
+				// prioritize buttons if found. if not, use the naked span
+		const target = event.target.closest("button") ?? event.target.closest("span");
 
-			// prioritize buttons if found. if not, we've got a naked span to use
-		const target = btn || spn;
 		if (!target) return;
 
+		const args = { target };
+		const action = target.dataset.action;
+		let handler;
+
+
 			////////////////// call the correct function for the click by checking the target ////////////////////
-			
 			// order-action related. buttons for: AddOns, Editing, ShowingMessage, PrintingLabel, DownloadingInvoice 
 				// also Submitting and Canceling those actions
-		if (target.classList.contains('order-action')) {
-				// get the order to pass
-			const order = getOrderFromTableButton(target);
-
-			const action = target.dataset.action;
-			const handler = orderActions[action];
-
-			if (handler) {
-				handler({ order, target });
-				return;
-			}
-
-			return; // nothing matched, exit. this will skip the rest of the listener
-		} else if (target.classList.contains('inventory-action')) {
-				// get the eSite to pass
-			const eSite = runtime.stateEvent.getEventSiteByID(target.dataset.eventSiteID);
-
-			const action = target.dataset.action;
-			const handler = inventorySiteActions[action];
-
-			// console.log(target, action, handler);
-
-			if (handler) {
-				handler({ eSite, target });
-				return;
-			}
-
-
-			return; // nothing matched, exit. this will skip the rest of the listener
+		if (target.classList.contains("order-action")) {
+			args.order = getOrderFromTableButton(target);
+			handler = orderActions[action];
+		} else if (target.classList.contains("inventory-action")) {
+			args.eSite = runtime.stateEvent.getEventSiteByID(target.dataset.eventSiteID);
+			handler = inventorySiteActions[action];
 		} else {
-			const action = target.dataset.action;
-			const handler = topActions[action];
-
-			if (handler) {
-				handler(target);
-				return;
-			}
+			handler = topActions[action];
 		}
+
+		if (handler) handler(args);
 	});
 
 	
@@ -851,8 +815,9 @@ export function addEventPageFunctionality() {
 	modal.addEventListener('click', function(event) {
 		const target = event.target;
 		const rowOptions = {
-			'button.quote' : () => { downloadInvoicePDF(null, "Quote"); },
-			'button.receipt' : () => { downloadInvoicePDF(null, "Receipt"); }
+				// pulls the order from runtime.activeOrder in the called function
+			'button.quote' : () => { downloadInvoicePDF({ type: "Quote" }); },
+			'button.receipt' : () => { downloadInvoicePDF({ type: "Receipt" }); }
 		};
 
 		for (const sel in rowOptions) {
@@ -1737,6 +1702,9 @@ function showMoreRowOptions({ order }) {
 	runtime.activeOrder = order
 
 	const wrapper = document.createElement('div');
+
+	// if (order.hasAddOns())
+
 	let html = `<button class="clickable quote" title="download add on quote">Quote</button>`;
 	html += `<label>Download the invoice as a quote</label><br />
 				<button class="clickable receipt" title="download add on receipt">Receipt</button>`;
@@ -1940,7 +1908,7 @@ async function submitInventoryEdit({ target }) {
 	const itemsMap = runtime.allItems.getSync();
 	const transfersMap = runtime.allTransfers.getSync();
 
-	const esID = target.dataset.id;
+	const esID = target.dataset.id
 	const tbl = getInventoryTable(esID);
 	const invTDs = tbl.querySelectorAll('td[data-inv-item-i-d]');
 	const trnsfrTDs = tbl.querySelectorAll('td[data-inv-transfer-i-d]');
@@ -2093,24 +2061,18 @@ function makeTransferInput(td) {
 	return input;
 }
 
-function showAddItem({ target }) {
+function showAddItem({ target, eSite }) {
 	console.log('show')
 }
 
 function showAddTransfer({ target, eSite }) {
 	runtime.activeMode = 'addInventoryTransfer';
 
-	// const eSite = runtime.stateEvent.getEventSiteByID(target.dataset.eventSiteID);
-	console.log('chang', eSite)
-
-		// bring in a couple things
-	// const esID = target.dataset.eventSiteID
-	// const eSite = runtime.stateEvent.getEventSiteByID(esID);
+		// bring in allTransfers
 	const allTransfers = runtime.allTransfers.getSync();
-	const eSiteTransfers = eSite.transfers;
 
 		// make a Set of existing transferIDs
-	const existingIDs = new Set(eSiteTransfers.map(t => t.transferID));
+	const existingIDs = new Set(eSite.transfers.map(t => t.transferID));
 		// filter out matches
 	const unTransfers = Object.values(allTransfers).filter(t => !existingIDs.has(t.id));
 
