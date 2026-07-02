@@ -37,5 +37,6 @@ class Item extends BasicTableModel {
       public readonly ?Size $size = null,
       public readonly ?int $stock = 0
    ) {}
+
 }
 ?>

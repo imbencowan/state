@@ -2,8 +2,38 @@ import { runtime } from '../runtime.js';
 import { buildElement } from '../utilities.js';
 import { sizeList } from '../constants.js';
 import { actionFetch } from '../fetch.js';
-import { buildActionButton, makeSubmitCancelButtons } from './page-utils.js';
+import { buildActionButton, makeSubmitCancelButtons, makeSubmitCancelAction } from './page-utils.js';
 import { navigate } from '../navigation.js';
+
+
+
+   // define the pages buttons
+const topItemsButtons = [
+	{ action: "editStock", title: "edit stock", icon: "edit", text: " Stock", handler: showEditStock, 
+		submitHandler: submitEditStock, cancelHandler: cancelStockUpdate },
+	{ action: "incrementStock", title: "increment stock", icon: "add", text: " Stock", handler: showIncrementStock,
+      submitHandler: submitIncrementStock, cancelHandler: cancelStockUpdate },
+	{ action: "editPrices", title: "edit prices", icon: "edit", text: " Prices", handler: showEditPrices },
+	{ action: "editBase", title: "edit base inventory", icon: "edit", text: " Base", handler: showEditBaseInventory,
+      submitHandler: submitEditBaseInventory, cancelHandler: cancelStockUpdate }
+];
+
+const topItemsActions = Object.fromEntries(
+	topItemsButtons.flatMap(btn => {
+      const entries = [[btn.action, btn.handler]];
+
+      if (btn.submitHandler) entries.push([ makeSubmitCancelAction("submit", btn.action), btn.submitHandler ]);
+      if (btn.cancelHandler) entries.push([ makeSubmitCancelAction("cancel", btn.action), btn.cancelHandler ]);
+
+      return entries;
+   })
+);
+
+console.log(topItemsActions)
+
+
+
+
 
 
 export async function goToItemsPage() {
@@ -31,20 +61,12 @@ function buildItemsPage(items) {
 
 function buildTopBtnCntnr() {   
    const h = buildElement("h1", { children: buildTopButtons() });
-
    const btnCntnr = buildElement("div", { classes: "buttonContainer", children: [h] });
    return btnCntnr;
 }
 
 function buildTopButtons() {
-   const buttons = [
-      { type: "editStock", title: "edit stock", icon: "edit", text: " Stock", classes: ["editStock"] },
-      { type: "incrementStock", title: "increment stock", icon: "add", text: " Stock", classes: ["incrementStock"] },
-      { type: "editPrices", title: "edit prices", icon: "edit", text: " Prices", classes: ["editPrices"] },
-      { type: "editBase", title: "", icon: "edit", text: " Base Inventory", classes: ["editBaseInventory"] }
-   ];
-
-   return buttons.map(buildActionButton);
+   return topItemsButtons.map(buildActionButton)
 }
 
 function buildGarmentsTable(garments) {
@@ -114,33 +136,11 @@ export function addItemsPageFunctionality() {
       // this is one listener that handles clicks for all buttons on the event page
       //////////////////////////////////////////////////////////////////////////////////////////////////////
    container.addEventListener('click', function(event) {
-         // qualify the target, some buttons have span children
-      const btn = event.target.closest('button');
-      const spn = event.target.closest('span');
-
-         // prioritize buttons if found. if not, we've got a naked span to use
-      const target = btn || spn;
+      const target = event.target.closest("button");
       if (!target) return;
 
-      ////////////////// call the correct function for the click by checking the target ////////////////////
-         // top-level buttons. 'selector': function to call
-      const topLevelActions = {
-            // orders panel actions
-         'button.editStock': () => showEditStock(target),
-         'button.incrementStock': () => showIncrementStock(target),
-         'button.editPrices': () => showEditPrices(target),
-         'button.submitStockUpdate': () => submitStockUpdate(target),
-         'button.cancelStockUpdate': () => cancelStockUpdate(target),
-         'button.submitStockIncrement': () => submitStockIncrement(target),
-         'button.cancelStockIncrement': () => cancelStockUpdate(target)
-      };
-
-      for (const sel in topLevelActions) {
-         if (target.matches(sel)) {
-            topLevelActions[sel]();
-            return;
-         }
-      }
+      const handler = topItemsActions[target.dataset.action];
+      if (handler) handler({ target });
    });
 
    
@@ -156,9 +156,8 @@ export function addItemsPageFunctionality() {
 ////////////////////////////////////////////////////////////////////////////////////////////
 // UI functionality
 
-function showEditStock(btn) {
-      // set mode. prevents addOns being activated while edit is in progress
-   runtime.activeMode = 'edit';
+function showEditStock({ target }) {
+   runtime.activeMode = 'editStock';
 
    const tbl = document.getElementById('allGarmentsTable');
    const tds = tbl.querySelectorAll('td[data-o-stock]');
@@ -172,11 +171,11 @@ function showEditStock(btn) {
    tds[0]?.querySelector('input')?.focus();
 
       // function(buttonContainer, listenerContainer, type, action, id = null)
-   makeSubmitCancelButtons(btn.parentElement, tbl, 'items', 'StockUpdate');
+   makeSubmitCancelButtons(target.parentElement, tbl, 'items', target.dataset.action);
 }
 
-function showIncrementStock(btn) {
-   runtime.activeMode = 'edit';
+function showIncrementStock({ target }) {
+   runtime.activeMode = 'incrementStock';
 
    const tbl = document.getElementById('allGarmentsTable');
    const tds = tbl.querySelectorAll('td[data-o-stock]');
@@ -189,7 +188,7 @@ function showIncrementStock(btn) {
 
    tds[0]?.querySelector('input')?.focus();
 
-   makeSubmitCancelButtons(btn.parentElement, tbl, 'items', 'StockIncrement');
+   makeSubmitCancelButtons(target.parentElement, tbl, 'items', target.dataset.action);
 }
 
 function makeStockInput(td, value = td.dataset.oStock) {
@@ -203,9 +202,7 @@ function makeStockInput(td, value = td.dataset.oStock) {
 	return input;
 }
 
-async function submitStockUpdate(btn) {
-	const itemsMap = runtime.allItems.getSync();
-
+async function submitEditStock({ target }) {
    const tbl = document.getElementById('allGarmentsTable');
    const tds = tbl.querySelectorAll('td[data-o-stock]');
 
@@ -220,8 +217,6 @@ async function submitStockUpdate(btn) {
 			});
 		}
    });
-
-   console.log(updateItems);
 
    	// if there are changes, send them to the server
 	if (updateItems.length) {
@@ -239,7 +234,7 @@ async function submitStockUpdate(btn) {
 			runtime.allItems.refresh();
 
 				// reset the buttons
-			resetTopButtons(btn);
+			resetTopButtons(target);
 
 				// unset activeMode
 			runtime.activeMode = null;
@@ -247,11 +242,11 @@ async function submitStockUpdate(btn) {
 			openModal("there was a problem submitting the inventory edit");
 		}
 	} else {
-		cancelStockUpdate(btn);
+		cancelStockUpdate(target);
 	}
 }
 
-function cancelStockUpdate(btn) {
+function cancelStockUpdate({ target }) {
    // get the right table
    const tbl = document.getElementById('allGarmentsTable');
 
@@ -262,13 +257,13 @@ function cancelStockUpdate(btn) {
    });
 
       // reset the buttons
-   resetTopButtons(btn);
+   resetTopButtons(target);
 
       // unset activeMode
    runtime.activeMode = null;
 }
 
-async function submitStockIncrement(btn) {
+async function submitIncrementStock({ target }) {
 	const itemsMap = runtime.allItems.getSync();
 
    const tbl = document.getElementById('allGarmentsTable');
@@ -302,13 +297,13 @@ async function submitStockIncrement(btn) {
 			});
 
 			runtime.allItems.refresh();
-			resetTopButtons(btn);
+			resetTopButtons(target);
 			runtime.activeMode = null;
 		} else {
 			openModal("there was a problem submitting the stock increment");
 		}
 	} else {
-		cancelStockUpdate(btn);
+		cancelStockUpdate(target);
 	}
 }
 
@@ -324,6 +319,64 @@ function resetTopButtons(btn) {
 
 function showEditPrices() {
    console.log('edit prices');
+}
+
+
+function showEditBaseInventory({ target }) {
+   runtime.activeMode = 'editBaseInventory';
+
+   const tbl = document.getElementById('allGarmentsTable');
+   const tds = tbl.querySelectorAll('td[data-o-stock]');
+
+   tds.forEach(td => {
+      const item = runtime.allItems.getByID(td.closest("tr").dataset.itemID);
+      console.log(item);
+      const inpt = makeStockInput(td, item.inventoryMin);
+      td.textContent = '';
+      td.appendChild(inpt);
+   });
+
+   tds[0]?.querySelector('input')?.focus();
+
+   makeSubmitCancelButtons(target.parentElement, tbl, 'items', target.dataset.action);
+}
+
+async function submitEditBaseInventory({ target }) {
+   const tbl = document.getElementById('allGarmentsTable');
+   const tds = tbl.querySelectorAll('td[data-o-stock]');
+
+   const updateItems = [];
+
+   tds.forEach(td => {
+      const item = runtime.allItems.getByID(td.closest("tr").dataset.itemID);
+      const inputValue = Number(td.querySelector('input').value);
+		if (item.inventoryMin !== inputValue) {
+			updateItems.push({
+				itemID: Number(td.parentElement.dataset.itemID), 
+				inventoryMinimum: inputValue,
+			});
+		}
+   });
+
+   	// if there are changes, send them to the server
+	if (updateItems.length) {
+		const data = { 'update': updateItems };
+      const response = await actionFetch('updateRowsByIDs', 'Item', data);
+
+		if (response.success) {
+				// update runtime
+			runtime.allItems.refresh();
+				// unset activeMode
+			runtime.activeMode = null;
+
+				// reset the table
+         cancelStockUpdate({ target })
+		} else {
+			openModal("there was a problem submitting the inventory edit");
+		}
+	} else {
+		cancelStockUpdate({ target });
+	}
 }
 
 

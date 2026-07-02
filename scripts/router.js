@@ -2,7 +2,7 @@
    // translates urls to js functions to navigate to correct displays //
 import { runtime } from "./runtime.js";
 
-import { goToEventPage } from './pages/event.js';
+import { goToEventPage } from './pages/event/eventMain.js';
 import { goToItemsPage } from "./pages/items.js";
 import { goToSchoolsPage } from "./pages/schools.js";
 import { goToYearPage } from "./pages/year.js";
