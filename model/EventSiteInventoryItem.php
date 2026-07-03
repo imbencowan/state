@@ -16,7 +16,8 @@ class EventSiteInventoryItem extends BasicTableModel {
          'startQ' => 'startQ',
          'endQ' => 'endQ',
          'addedQ' => 'addedQ',
-         'removedQ' => 'removedQ', 
+         'writeOffQ' => 'writeOffQ', 
+			'sponsorQ' => 'sponsorQ',
          'price' => 'price'
       ]; 
 	}
@@ -32,12 +33,27 @@ class EventSiteInventoryItem extends BasicTableModel {
 		public readonly int $eventSiteID,
 		public readonly int $itemID,
       public readonly ?int $startQ,
-      public readonly ?int $endQ,
-      public readonly ?int $addedQ,
-      public readonly ?int $removedQ,
-      public readonly float $price,
+      public readonly ?int $endQ = null,
+      public readonly int $addedQ = 0,
+      public readonly int $writeOffQ = 0,
+		public readonly int $sponsorQ = 0,
+      public readonly ?float $price = null,
 		public readonly ?Item $item = null
 	) {}
+
+
+
+		// alternate creation path from Item instance
+	public static function fromItem(Item $item, int $eventSiteID): self {
+		return new self(
+			id: null,
+			eventSiteID: $eventSiteID,
+			itemID: $item->id,
+			startQ: $item->inventoryMin,
+			price: $item->price,
+			item: $item
+		);
+	}
 	
 	
 		//////////////////////////////////////////////////////

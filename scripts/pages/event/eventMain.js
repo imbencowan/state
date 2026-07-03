@@ -3,13 +3,16 @@
 import { runtime } from '../../runtime.js';
 import { actionFetch } from '../../fetch.js';
 import { navigate } from '../../navigation.js';
+import { splitPath } from '../../routerHelpers.js';
+import { parseEventRoute } from './routeHelpers.js';
 import { StateEvent } from '../../models/db-classes.js';
 import { buildElement } from '../../utilities.js';
 import { downloadInvoicePDF, printSoSPDF } from '../../print.js';
-import { makeSubmitCancelAction } from '../page-utils.js';
+import { buildActionButton, makeSubmitCancelAction } from '../page-utils.js';
 import { topOrderButtons, orderRowButtons, attachOrdersPanel } from './orders.js';
 import { topInventoryButtons, inventorySiteButtons, attachInventoryPanel } from './inventory.js';
 import { attachReportsPanel } from './reports.js';
+import { openModal } from '../../modal.js';
 
 
 
@@ -20,8 +23,17 @@ const tabs = [
 	{ id: "reports", label: "Reports", build: attachReportsPanel }
 ];
 
+	// define a pair of buttons to navigate next/previous event
+const prevNextEventButtons = [
+	{ action: "prevEvent", title: "show previous event", text: "◀", handler: () => showPrevNextEvent('prev') },
+	{ action: "nextEvent", title: "show next event", text: "▶", handler: () => showPrevNextEvent('next') }
+];
+
 
 	// build a lookup for the top button handlers
+const prevNextActions = Object.fromEntries(
+	prevNextEventButtons.map(b => [b.action, b.handler])
+)
 const topOrderActions = Object.fromEntries(
     topOrderButtons.map(b => [b.action, b.handler])
 );
@@ -30,6 +42,7 @@ const topInventoryActions = Object.fromEntries(
 );
 const topActions = {
 	printSoSPDF: ({ target }) => printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid)),
+	...prevNextActions,
 	...topOrderActions,
 	...topInventoryActions
 };
@@ -126,13 +139,18 @@ export function buildEventPage(sEvent, tab) {
 
 	// builds the inner page header
 function attachSportHeader(cntnr, sEvent) {
+	const arrowButtons = prevNextEventButtons.map(buildActionButton);
+
 	const sport = sEvent.sport.name;
 	const year = sEvent.startDate.toLocaleDateString("en-US", { year: "numeric" });
-	const h = buildElement("h1", { text: sport + " " + year});
-	cntnr.appendChild(h);
+	const h = buildElement("h1", { text: (sport + " " + year) });
+
+	const bDiv = buildElement("div", { classes: 'prevNextCntnr', children: arrowButtons });
+	const hDiv = buildElement("div", { children: [ h, bDiv ], classes: 'prevNextDiv' });
+	cntnr.appendChild(hDiv);
 }
 
-	// this /just/ attaches the tabs, it doesn't actually fill them
+	// this *just* attaches the tabs, and only fills the passed tab
 		// it attaches a build function to fill the tab if it's clicked.
 function attachTabs(parent, sEvent, tab) {
    const nav = buildElement("nav", { id: "eventTabNav", classes: ["eventTabNav"] });
@@ -197,6 +215,34 @@ function switchTab(tab) {
 	   tabInfo.build(panel, runtime.stateEvent);
 			// mark built as true now
 	   panel.dataset.built = "true";
+	}
+}
+
+async function showPrevNextEvent(drctn) {
+		// get the tab from the url to pass as context for the event
+			// prevents memory error trying to grab all an event's data at once.
+	const parts = splitPath();
+	const tab = parseEventRoute(parts).tab;
+
+	const data = { drctn: drctn, eventID: runtime.stateEvent.id, context: tab };
+	const response =  await actionFetch('getPrevNextSportEvent', 'Event', data);
+
+	if (response.success) {
+		if (response.data.event == null) {
+			openModal("No event was found that direction");
+		} else {
+				// assign the new runtime event
+			const sEvent = StateEvent.fromJSON(response.data.event);
+			runtime.stateEvent = sEvent;
+			runtime.activeMode = null;
+			
+				// load the new display
+			const pageContent = buildEventPage(sEvent, tab);
+			document.getElementById("display").replaceChildren(pageContent);
+
+				// ATTACH EVENT LISTENERS 
+			addEventPageFunctionality();
+		}
 	}
 }
 

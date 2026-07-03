@@ -7,6 +7,9 @@ import { goToItemsPage } from "./pages/items.js";
 import { goToSchoolsPage } from "./pages/schools.js";
 import { goToYearPage } from "./pages/year.js";
 
+import { splitPath } from "./routerHelpers.js";
+import { parseEventRoute, isEventTab, isEventYear } from "./pages/event/routeHelpers.js";
+
 
    // define valid routes
       // home, sports, items, schools, year
@@ -21,18 +24,15 @@ const routes = [
 
 
 export async function router() {
-   const path = location.pathname.replace('/state', '');
-      // make an array, splitting the path at '/'s. // remove falsy parts. // trim()
-   const parts = path.split('/').filter(Boolean).map(p => p.trim());;
+   const path = location.pathname.replace('/state', '')
+      // make an array, splitting the url at '/'s. // remove falsy parts. // trim()
+   const parts = splitPath(path);
       // we need this to route sports
    await runtime.allSports.load();
 
    for (const route of routes) {
       const match = route.match(parts);
-
-      if (match) {
-         return route.handler(parts, match, path);
-      }
+      if (match) return route.handler(parts, match, path);
    }
 
    return showNotFound(path);
@@ -95,57 +95,7 @@ function handleSport(parts, sport, path) {
    }
 }
 
-function parseEventRoute(parts) {
-   let valid = true;
-   let year, tab;
 
-      // check if it's too long first
-   if (parts.length > 3) {
-      valid = false;
-   } else if (parts.length > 1) {
-         // if there were 3 parts, assume /sport/year/tab
-      if (parts.length === 3) {
-         year = parts[1];
-         tab = parts[2];
-         if (!isEventYear(year) || !isEventTab(tab)) {
-            valid = false;
-         }
-      } else {
-            // if there were two parts, check if the second is a year or a tab
-         if (isEventTab(parts[1])) {
-            tab = parts[1];
-         } else if (isEventYear(parts[1])) {
-            year = parts[1];
-         } else {
-            valid = false;
-         }
-      }
-   } 
-   
-      // if a part was missing, assign a default
-   if (!year) year = document.getElementById('selectYear').value;
-   if (!tab) tab = 'orders';
-
-   //    // double check them just cuz
-   // if (!isEventYear(year) || !isEventTab(tab)) {
-   //    valid = false;
-   // }
-   
-
-      // coerce year in case it's a string
-   year = Number(year);
-
-   return { valid, year, tab };
-}
-
-function isEventTab(x) {
-   const tabs = ['orders', 'inventory', 'reports'];
-   return tabs.includes(x);
-}
-
-function isEventYear(y) {
-   return /^\d{2}$/.test(String(y));
-}
 
    // use this to maintain a selected year on refresh
       // html won't set the value to an invalid year (nonexistent option) *shrug*

@@ -192,7 +192,7 @@ export class EventSite {
       this.gender = gender;
 		this.vehicle = Utils.parseToInstance(vehicle, Vehicle);
       this.employees = Utils.parseToInstancesArr(employees, Employee);
-      this.inventory = inventory;
+      this.inventory = Utils.parseToInstancesArr(inventory, InventoryItem);
       this.transfers = transfers;
       this.inventoryLoaded = false;
 		this.esDivisions = Utils.parseToInstancesArr(esDivisions, EventSiteDivision);
@@ -738,14 +738,15 @@ export class Item {
 }
 
 export class InventoryItem {
-   constructor({ id, eventSiteID, itemID, startQ, endQ, addedQ, removedQ, price, item }) {
+   constructor({ id, eventSiteID, itemID, startQ, endQ, addedQ, writeOffQ, sponsorQ, price, item }) {
 		this.id = id;
 		this.eventSiteID = eventSiteID;
 		this.itemID = itemID;
       this.startQ = startQ;
       this.endQ = endQ;
       this.addedQ = addedQ;
-      this.removedQ = removedQ;
+      this.writeOffQ = writeOffQ;
+      this.sponsorQ = sponsorQ;
       this.price = price;
       this.item = parseWithRegistry(item, Item, itemID);   
 	}
@@ -756,6 +757,12 @@ export class InventoryItem {
 
    static fromJSON(json) {
       return new InventoryItem(json);
+   }
+
+   getSoldQ() {
+      if (this.endQ == null) return 0;
+
+      return this.startQ + this.addedQ - this.endQ - this.writeOffQ - this.sponsorQ;
    }
 }
 

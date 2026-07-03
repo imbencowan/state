@@ -41,6 +41,18 @@ abstract class BasicTableModel implements JsonSerializable {
 	public function jsonSerialize(): mixed {
 		return get_object_vars($this);
 	}
+
+		// creates an assoc array from an instance to work with db functions that expect that format
+	public function toRow(): array {
+		$row = [];
+
+		foreach (static::getColumns() as $prop => $col) {
+			if ($prop === 'id') continue;
+			$row[$col] = $this->$prop;
+		}
+
+		return $row;
+	}
 	
 		////////////////////////////////////////// MAKING NESTED OBJECTS FROM DB SELECTS //////////////////
 		// builds a new object from $rows returned from a db call
@@ -142,7 +154,7 @@ abstract class BasicTableModel implements JsonSerializable {
 			// DO NOT allow id in inserts. remove it from column validator
 		unset($columns['id']); 
 
-		$keys = array_keys($rows[0]);
+		$keys = array_keys(reset($rows));
 
 			// if any $rows keys do not match column names, throw
 		$invalidKeys = array_diff($keys, $columns);
@@ -569,7 +581,7 @@ protected static function getFromDB(string $query, array $params = []): array {
 			// this and buildJoins() got a little messy in needing to build a query with unique table aliases for JOINs, and
 				// unique column aliases. this is so we can join the same table to different tables, and have the returned
 				// associative array know what is what. those constructed aliases are deconstructed in buildFromRow()
-	protected static function buildSelect(?string $context = null, ?string $columns = null): string {
+	protected static function buildSelect(?string $context = null, ?array $columns = null): string {
 			// allow specific columns to be provided, or get all by default
 		if (!$columns) $columns = static::getColumns();
 		$table = static::getTableName();

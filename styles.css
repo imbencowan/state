@@ -529,3 +529,30 @@ tr.addOnRow {
     text-align: center;
 }
 
+
+.inventoryFillTable {
+	background-color: white;
+	color: black;
+}
+
+.inventoryFillTable td {
+	border-top: 1px solid black;
+}
+
+	/* right align quantity columns */
+.inventoryFillTable td.qCol {
+    text-align: right;
+}
+
+
+
+
+.prevNextDiv {
+    display: flex;
+    align-items: center;
+}
+
+.prevNextCntnr {
+    margin-left: auto;
+	 font-size: 180%;
+}

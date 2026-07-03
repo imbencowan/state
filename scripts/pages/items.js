@@ -29,8 +29,6 @@ const topItemsActions = Object.fromEntries(
    })
 );
 
-console.log(topItemsActions)
-
 
 
 

@@ -119,6 +119,37 @@ class Event extends BasicTableModel {
 	
 	
 
+		////////////////////////////////////////////////////////////////////////////////////////
+		// user function
+	public static function getPrevNextSportEvent(int $eventID, string $drctn, string $context) {
+		$db = Database::getDB();
+		
+			// assign query to get the appropriate event
+		if ($drctn === 'next') {
+			$query = "SELECT e2.eventID FROM events e1
+					JOIN events e2 ON e2.sportID = e1.sportID AND e2.startDate > e1.startDate
+					WHERE e1.eventID = :eventID
+					ORDER BY e2.startDate ASC
+					LIMIT 1
+			";
+		} elseif ($drctn === 'prev') { 
+			$query = "SELECT e2.eventID FROM events e1
+					JOIN events e2 ON e2.sportID = e1.sportID AND e2.startDate < e1.startDate
+					WHERE e1.eventID = :eventID
+					ORDER BY e2.startDate DESC
+					LIMIT 1
+			";
+		}
+
+		$statement = $db->prepare($query);
+		$statement->execute([ ':eventID' => $eventID ]);
+		$adjacentID = $statement->fetchColumn();
+
+		if ($adjacentID === false) return [ 'event' => null ];
+
+		return [ 'event' => self::getByID($adjacentID, $context) ];
+	}
+
 
 		//////////////////////////////////////////////////
 		// Database functions	

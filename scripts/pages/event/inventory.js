@@ -1,11 +1,12 @@
 // rendering and interaction functions for the inventory tab of the event page
 
 import { runtime } from '../../runtime.js';
-import { sizeList } from '../../constants.js';
-import { actionFetch } from '../../fetch.js';
+import { sizeList, DAIRY_STYLE_ID } from '../../constants.js';
+import { actionFetch, myFetch } from '../../fetch.js';
 import { openModal, closeModal } from '../../modal.js';
-import { buildElement } from '../../utilities.js';
+import { buildElement, parseToInstancesArr } from '../../utilities.js';
 import { buildActionButton, makeSubmitCancelButtons } from '../page-utils.js';
+import { InventoryItem } from '../../models/db-classes.js';
 import { printInventories } from '../../print.js';
 
 
@@ -25,9 +26,10 @@ export const inventorySiteButtons = [
    { action: "editInventory", icon: "edit", title: "edit inventory", text: " Edit", handler: showEditInventory,
       submitHandler: submitInventoryEdit, cancelHandler: cancelInventoryEdit },
    { action: "fillInventory", icon: "edit", title: "fill inventory", text: " Fill", handler: showFillInventory,
-      submitHandler: submitInventoryFill, cancelHandler: cancelInventoryFill },
+      submitHandler: submitFillInventory, cancelHandler: cancelFillInventory },
    { action: "addItem", title: "add an item", text: "+ Item", handler: showAddItem },
-   { action: "addTransfer", title: "add a transfer type", text: "+ Transfer", handler: showAddTransfer }
+   { action: "addTransfer", title: "add a transfer type", text: "+ Transfer", handler: showAddTransfer },
+   { action: "genBaseInventory", title: "generate a base inventory", text: "+ Inventory", handler: genBaseInventory }
 ];
 
 
@@ -37,13 +39,12 @@ export async function attachInventoryPanel(panel, sEvent) {
 		// first, ensure the appropriate data
 	await sEvent.loadInventories(runtime.allItems, runtime.allTransfers);
 
-
 	attachInventoryTopButtons(panel);
 
 		// build inventory tables for each site
 	for (const es of runtime.stateEvent.eventSites) {
 			// some buttons for each inventory, to edit, and to fill
-		const btns = buildInventorySiteButtons(es.id);
+		const btns = buildInventorySiteButtons(es);
 			// a button container
 		const btnDiv = buildElement("div", { classes: [ 'invntryBtnCntnr', 'inline' ], children: btns });
 
@@ -54,14 +55,11 @@ export async function attachInventoryPanel(panel, sEvent) {
 			// the table
 		const tbl = buildInventoryTable(es.getStructuredInventory(), runtime.stateEvent.id, es.id);
 		
-
 		const cntnr = buildElement("div", { children: [ siteH2, tbl ], classes: [ 'siteContainer' ] });
 		
 		panel.appendChild(cntnr);
-			
 	}
 }
-console.log('y')
 
 	// builds buttons for the top of the page for various print options 
 function attachInventoryTopButtons(cntnr) {
@@ -71,24 +69,27 @@ function attachInventoryTopButtons(cntnr) {
 	cntnr.appendChild(btnCntnr);
 }
 
-function buildInventorySiteButtons(esID) {
-	return inventorySiteButtons.map(btn =>
-		buildActionButton({ ...btn, classes: [ "inventory-action" ], datasetExtra: { eventSiteID: esID } })
-	);
+function buildInventorySiteButtons(eSite) {
+      // if there is already an inventory, exclude the genBaseInventory button
+   const btns = inventorySiteButtons.filter(btn => {
+      if (eSite.inventory?.length && btn.action === 'genBaseInventory') return false;
+
+      return true;
+   });
+
+	return btns.map(btn => 
+		buildActionButton({ ...btn, classes: [ "inventory-action" ], datasetExtra: { eventSiteID: eSite.id } })
+   );
 }
 
 
 function buildInventoryTable(inventory, eventID, esID) {
 	const thead = buildInventoryThead();
-	const tbody = buildElement("tbody");		
-		// fill the table body
-	buildInventoryGarmentsRows(tbody, inventory.garments);
-	buildInventoryAccessoriesRows(tbody, inventory.accessories);
-	buildInventoryTransfersRows(tbody, inventory.transfers);
-	// console.log(inventory.transfers);
-		// the table, empty
+	const tbody = buildInventoryTbody(inventory);
+	
+		// the table
 	const table = buildElement("table", { classes: "inventoryTable", children: [ thead, tbody ], 
-													dataset: { eventId: eventID, eventSiteID: esID } });
+										dataset: { eventSiteID: esID } });
 
 	return table;
 }
@@ -105,6 +106,16 @@ function buildInventoryThead() {
 	const thRow = buildElement("tr", { children: ths });
 	
 	return buildElement("thead", { children: thRow });
+}
+
+function buildInventoryTbody(inventory) {
+   const tbody = buildElement("tbody");		
+		// fill the table body
+	buildInventoryGarmentsRows(tbody, inventory.garments);
+	buildInventoryAccessoriesRows(tbody, inventory.accessories);
+	buildInventoryTransfersRows(tbody, inventory.transfers);
+
+   return tbody;
 }
 
 	// build garment rows with style, color, size quantities and total
@@ -141,10 +152,7 @@ function buildInventoryGarmentsRows(tbody, garments) {
 					const qStr = size.startQ || '';
 						// "size" here is representing an InventoryItem. size.id is the id for a row in the apparel db table
 					tds.push(buildElement("td", { text: qStr, classes: 'right', title: char, dataset: { 
-						itemID: size.item.id, 
-						invItemID: size.id, 
-						oValue: qStr 
-					} }));
+						      itemID: size.item.id, invItemID: size.id, oValue: qStr } }));
 				} else {
 						// if there isn't a size for this style (youth)
 					tds.push(buildElement("td", { text: "---", classes: "center" }));
@@ -313,6 +321,19 @@ function updateTotalCell(td) {
 	if (totalCell) totalCell.textContent = Number(totalCell.textContent) + diff;
 }
 
+function makeInventoryInput(td) {
+	const input = document.createElement('input');
+		input.type = 'number';
+		input.name = `inventory${td.dataset.invItemId}`;
+		input.value = td.dataset.oValue;
+		input.min = 0; 
+		input.max = 1000;
+		input.step = 1;
+		input.dataset.sizeChar = td.dataset.title;
+	return input;
+}
+
+
 function cancelInventoryEdit({ target }) {
 		// get the right table
 	const tbl = getInventoryTable(target.dataset.id);
@@ -341,19 +362,150 @@ function resetInventoryButtons(btn) {
 function showFillInventory({ target }) {
 	runtime.activeMode = 'fill';
 
-	const strtTbl = getInventoryTable(target.dataset.eventSiteID);
+   const esID = target.dataset.eventSiteID;
+   const eSite = runtime.stateEvent.getEventSiteByID(esID);
+
+	const strtTbl = getInventoryTable(esID);
 	const prnt = strtTbl.parentElement;
 	
 	strtTbl.hidden = true;
-	prnt.appendChild(buildElement("p", { text: "a new element" }));
+
+   const tbl = buildFillTable(eSite);
+	prnt.appendChild(tbl);
+   
+		// function(buttonContainer, listenerContainer, type, action, id)
+	makeSubmitCancelButtons(target.parentElement, tbl, 'inventory', target.dataset.action, target.dataset.eventSiteID);
+   
+      // give focus
+	tbl?.querySelector('input')?.focus();
 }
 
-async function submitInventoryFill({ target }) {
+function buildFillTable(eSite) {
+   const thead = buildFillTHead();
+   const rows = buildFillRows(eSite);
+   const tbody = buildElement('tbody', { children: rows });
 
+   const table = buildElement("table", { classes: "inventoryFillTable", children: [ thead, tbody ], 
+										dataset: { eventSiteID: eSite.id } });
+
+	return table;
 }
 
-function cancelInventoryFill({ target }) {
+function buildFillTHead() {
+   const cols = [ "Style", "Color", "Size", "Starting", "Ending", "Added", "Mess Ups", "Dairy", "Sold" ];
+   const ths = [];
+
+	cols.forEach(c => {
+		ths.push(buildElement("th", { text: c, classes: 'center' }));
+	});
+
+	const thRow = buildElement("tr", { children: ths });
 	
+	return buildElement("thead", { children: thRow });
+}
+
+function buildFillRows(eSite) {
+   const inventory = eSite.getStructuredInventory();
+   
+   const rows = [];
+
+   rows.push(...buildFillGarmentRows(inventory.garments));
+   
+
+
+   return rows;
+}
+
+function buildFillGarmentRows(garments) {
+   const rows = [];
+
+   let firstStyleRow = true;
+
+   for (const style of garments) {
+      const align = style.sizingCategoryID === 2 ? "right" : "left";
+      const colors = Object.values(style.colors);
+
+         // total rows this style occupies
+      const styleRowspan = colors.reduce((sum, color) => sum + Object.keys(color.sizes).length, 0);
+
+      for (const color of colors) {
+         const invItems = Object.values(color.sizes);
+
+         for (let i = 0; i < invItems.length; i++) {
+               const invItem = invItems[i];
+               const tds = [];
+
+                  // only on the very first row of the style
+               if (firstStyleRow) {
+                  tds.push(buildElement("td", { text: style.shortName, attrs: { rowspan: styleRowspan }, 
+                           classes: align}));
+                  firstStyleRow = false;
+               }
+                  // only on the first row of this color
+               if (i === 0) {
+                  tds.push(buildElement("td", { text: color.name, classes: [ 'center' ], 
+                           attrs: { rowspan: invItems.length } }));
+               }
+
+               tds.push(buildElement("td", { text: invItem.item.size.displayChar, classes: [ 'center' ] }));
+
+                  // start columns
+               const startQ = invItem.startQ;
+               tds.push(buildElement("td", { text: startQ, classes: [ 'qCol' ], 
+                        dataset: { fillType: 'startQ', oValue: startQ } }));
+
+                  // input columns
+               const inputCols = [ 'endQ', 'addedQ', 'writeOffQ', 'dairyQ' ];
+               inputCols.forEach(col => {
+                  tds.push(buildElement("td", { children: [makeFillInput(invItem[col], col)], classes: ['qCol'] }));
+               });
+
+                  // sold column
+               const soldQ = invItem.getSoldQ();
+               tds.push(buildElement("td", { text:soldQ, classes: [ 'qCol' ] }));
+
+
+
+               rows.push(buildElement("tr", { children: tds, classes: "shirtRow" }));
+         }
+      }
+         // reset for the next style
+      firstStyleRow = true;
+   }
+
+   return rows;
+}
+
+function makeFillInput(oValue, type) {
+   const input = document.createElement('input');
+		input.type = 'number';
+         // if 0, make it blank. all the 0s crowd the view
+		input.value = oValue ?? '';
+		input.min = 0; 
+		input.max = 1000;
+		input.step = 1;
+      input.dataset.fillable = true;
+      input.dataset.oValue = oValue;
+      input.dataset.fillType = type
+	return input;
+}
+
+
+async function submitFillInventory({ target }) {
+
+}
+
+function cancelFillInventory({ target }) {
+   const el = document.querySelector('.inventoryFillTable');
+   if (el) el.remove();
+
+   getInventoryTable(target.dataset.id).hidden = false;
+
+		// reset the buttons
+	resetInventoryButtons(target);
+
+		// unset activeMode
+	runtime.activeMode = null;
 }
 
 function getInventoryTable(esID) {
@@ -369,18 +521,6 @@ function getInventoryTable(esID) {
 	}
 
 	return tbl;
-}
-
-function makeInventoryInput(td) {
-	const input = document.createElement('input');
-		input.type = 'number';
-		input.name = `inventory${td.dataset.invItemId}`;
-		input.value = td.dataset.oValue;
-		input.min = 0; 
-		input.max = 1000;
-		input.step = 1;
-		input.dataset.sizeChar = td.dataset.title;
-	return input;
 }
 
 function makeTransferInput(td) {
@@ -489,4 +629,28 @@ async function submitAddTransfer(e, form) {
 		const eSite = runtime.stateEvent.getEventSiteByID(esID);
 		eSite.transfers.push(...newTransfers);
 	}
+}
+
+
+	////////////////////////////////////////////////////////////////
+	// this may never be necessary again once every thing catches up
+async function genBaseInventory({ target }) {
+   const esID = target.dataset.eventSiteID
+
+   const response = await actionFetch('genBaseInventory', 'EventSite', { esID: esID });
+
+   if (response.success) {
+      const tbl = getInventoryTable(esID);
+      const eSite = runtime.stateEvent.getEventSiteByID(esID);
+
+      eSite.inventory = parseToInstancesArr(response.data.items, InventoryItem);
+      
+      const tbody = buildInventoryTbody(eSite.getStructuredInventory());
+
+      tbl.appendChild(tbody);
+
+      target.remove();
+   } else {
+      openModal("There was a problem generating the inventory");
+   }
 }
