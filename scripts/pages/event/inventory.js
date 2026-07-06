@@ -1,12 +1,12 @@
 // rendering and interaction functions for the inventory tab of the event page
 
 import { runtime } from '../../runtime.js';
-import { sizeList, DAIRY_STYLE_ID } from '../../constants.js';
+import { sizeList, DAIRY_STYLE_ID, ADULT_HOOD_STYLE_ID } from '../../constants.js';
 import { actionFetch, myFetch } from '../../fetch.js';
 import { openModal, closeModal } from '../../modal.js';
 import { buildElement, parseToInstancesArr } from '../../utilities.js';
-import { buildActionButton, makeSubmitCancelButtons } from '../page-utils.js';
-import { InventoryItem } from '../../models/db-classes.js';
+import { buildActionButton, makeSubmitCancelButtons, makeTypeActionLabel } from '../page-utils.js';
+import { InventoryItem, InventoryTransfer } from '../../models/db-classes.js';
 import { printInventories } from '../../print.js';
 
 
@@ -26,7 +26,7 @@ export const inventorySiteButtons = [
    { action: "editInventory", icon: "edit", title: "edit inventory", text: " Edit", handler: showEditInventory,
       submitHandler: submitInventoryEdit, cancelHandler: cancelInventoryEdit },
    { action: "fillInventory", icon: "edit", title: "fill inventory", text: " Fill", handler: showFillInventory,
-      submitHandler: submitFillInventory, cancelHandler: cancelFillInventory },
+		addedHandlers: { submit: submitFillInventory, cancel: cancelFillInventory } },
    { action: "addItem", title: "add an item", text: "+ Item", handler: showAddItem },
    { action: "addTransfer", title: "add a transfer type", text: "+ Transfer", handler: showAddTransfer },
    { action: "genBaseInventory", title: "generate a base inventory", text: "+ Inventory", handler: genBaseInventory }
@@ -138,7 +138,7 @@ function buildInventoryGarmentsRows(tbody, garments) {
 				classes: align
 			}));
 				// color td
-			tds.push(buildElement("td", { text: color.name }));
+			tds.push(buildElement("td", { text: color.name, style: { backgroundColor: color.hex } }));
 
 				// container to increment
 			let total = 0;
@@ -151,16 +151,19 @@ function buildInventoryGarmentsRows(tbody, garments) {
 					total += q;
 					const qStr = size.startQ || '';
 						// "size" here is representing an InventoryItem. size.id is the id for a row in the apparel db table
-					tds.push(buildElement("td", { text: qStr, classes: 'right', title: char, dataset: { 
-						      itemID: size.item.id, invItemID: size.id, oValue: qStr } }));
+					tds.push(buildElement("td", { text: qStr, classes: 'right', title: char, 
+								dataset: { itemID: size.item.id, invItemID: size.id, oValue: qStr }, 
+								style: { backgroundColor: color.hex } }));
 				} else {
 						// if there isn't a size for this style (youth)
-					tds.push(buildElement("td", { text: "---", classes: "center" }));
+					tds.push(buildElement("td", { text: "---", classes: "center", 
+								style: { backgroundColor: color.hex } }));
 				}
 			});
 
 				// finally the total
-			tds.push(buildElement("td", { text: total, dataset: { totalCell: true } }));
+			tds.push(buildElement("td", { text: total, dataset: { totalCell: true }, 
+						style: { backgroundColor: color.hex } }));
 
 				// attach the row
 			const tr = buildElement("tr", { children: tds, classes: 'shirtRow' });
@@ -355,14 +358,14 @@ function resetInventoryButtons(btn) {
 	const prnt = btn.parentElement;
 	prnt.innerHTML = '';
 
-	const newBtns = buildInventorySiteButtons(btn.dataset.id);
+	const newBtns = buildInventorySiteButtons(runtime.stateEvent.getEventSiteByID(Number(btn.dataset.id)));
 	prnt.append(...newBtns);
 }
 
 function showFillInventory({ target }) {
 	runtime.activeMode = 'fill';
 
-   const esID = target.dataset.eventSiteID;
+   const esID = Number(target.dataset.eventSiteID);
    const eSite = runtime.stateEvent.getEventSiteByID(esID);
 
 	const strtTbl = getInventoryTable(esID);
@@ -376,6 +379,15 @@ function showFillInventory({ target }) {
 		// function(buttonContainer, listenerContainer, type, action, id)
 	makeSubmitCancelButtons(target.parentElement, tbl, 'inventory', target.dataset.action, target.dataset.eventSiteID);
    
+
+	tbl.addEventListener('input', e => {
+		if (!e.target.matches('input')) return;
+
+		const row = e.target.closest('tr');
+		updateFillRow(row);
+	});
+
+
       // give focus
 	tbl?.querySelector('input')?.focus();
 }
@@ -409,16 +421,16 @@ function buildFillRows(eSite) {
    
    const rows = [];
 
-   rows.push(...buildFillGarmentRows(inventory.garments));
-   
+	const rowCount = eSite.inventory.length
+
+   buildFillGarmentRows(inventory.garments, rows, rowCount);
+   buildFillAccessoryRows(inventory.accessories, rows, rowCount);
 
 
    return rows;
 }
 
-function buildFillGarmentRows(garments) {
-   const rows = [];
-
+function buildFillGarmentRows(garments, rows, rowCount) {
    let firstStyleRow = true;
 
    for (const style of garments) {
@@ -447,33 +459,62 @@ function buildFillGarmentRows(garments) {
                            attrs: { rowspan: invItems.length } }));
                }
 
+						// size char
                tds.push(buildElement("td", { text: invItem.item.size.displayChar, classes: [ 'center' ] }));
 
-                  // start columns
-               const startQ = invItem.startQ;
-               tds.push(buildElement("td", { text: startQ, classes: [ 'qCol' ], 
-                        dataset: { fillType: 'startQ', oValue: startQ } }));
+						// end, added, writeOff, dairy column tds
+               buildItemFillTDs(tds, invItem, rowCount, rows.length);
 
-                  // input columns
-               const inputCols = [ 'endQ', 'addedQ', 'writeOffQ', 'dairyQ' ];
-               inputCols.forEach(col => {
-                  tds.push(buildElement("td", { children: [makeFillInput(invItem[col], col)], classes: ['qCol'] }));
-               });
+					const row = buildElement("tr", { children: tds, dataset: { id: invItem.id } });
 
-                  // sold column
-               const soldQ = invItem.getSoldQ();
-               tds.push(buildElement("td", { text:soldQ, classes: [ 'qCol' ] }));
-
-
-
-               rows.push(buildElement("tr", { children: tds, classes: "shirtRow" }));
+               rows.push(row);
          }
       }
          // reset for the next style
       firstStyleRow = true;
    }
+}
 
-   return rows;
+function buildFillAccessoryRows(accessories, rows, rowCount) {
+	accessories.forEach(a => {
+		const tds = [];
+
+		tds.push(buildElement("td", { text: a.item.style.shortName }));
+		tds.push(buildElement("td", { text: a.item.color.name }));
+			// empty cell where size char would go
+		tds.push(buildElement("td"));
+		
+		buildItemFillTDs(tds, a, rowCount, rows.length);
+
+		rows.push(buildElement("tr", { children: tds, dataset: { id: a.id } }));
+	});
+}
+
+	// append the final cells to tds
+function buildItemFillTDs(tds, invItem, rowCount, row) {
+	   // start columns
+	const startQ = invItem.startQ;
+	tds.push(buildElement("td", { text: startQ, classes: [ 'qCol' ], 
+				dataset: { fillType: 'startQ', oValue: startQ } }));
+
+		// input columns
+	const inputCols = [ 'endQ', 'addedQ', 'writeOffQ', 'sponsorQ' ];
+	inputCols.forEach((col, i) => {
+			// make an empty td in the dairy column for all but adult hoods
+		if ((col == 'sponsorQ') && (invItem.item.style.id != ADULT_HOOD_STYLE_ID)) {
+			tds.push(buildElement("td"));
+		} else {
+			const input = makeFillInput(invItem[col], col);
+				// set tab index so we can tab by column rather than row
+			input.tabIndex = (i * rowCount) + row + 1;
+			tds.push(buildElement("td", { children: [ input ], classes: ['qCol'] }));
+		}
+	});
+
+		// sold column
+	const soldQ = invItem.getSoldQ();
+	tds.push(buildElement("td", { text: soldQ, classes: [ 'qCol' ], 
+				dataset: { fillType: 'soldQ', oValue: soldQ } }));
 }
 
 function makeFillInput(oValue, type) {
@@ -490,8 +531,109 @@ function makeFillInput(oValue, type) {
 	return input;
 }
 
+	 // takes a container, clears it, inserts a submit and cancel button
+		  // the listener container fires a submit or cancel click when 'ENTER' or 'ESC' are pressed
+function makeFillHandlerButtons(btnCntnr, lstnrCntnr, type, action, id = null) {
+		  // first, clear the destination
+	 btnCntnr.innerHTML = '';
+
+		  // make the buttons // secondary classes guide listeners handling
+	 const submitButton = buildElement('button', { text: 'Submit', type: 'button',
+		  classes: ['addOnButton', `${type}-action`, `submit${action}`], 
+		  dataset: { id: id, action: makeTypeActionLabel('submit', action) }
+	 });
+	 const updateSoldButton = buildElement('button', { text: 'Update Sold', type: 'button',
+		  classes: ['addOnButton', `${type}-action`, `update${action}`], 
+		  dataset: { id: id, action: makeTypeActionLabel('update', action) }
+	 });
+	 const cancelButton = buildElement('button', { text: 'X', type: 'button',
+		  classes: ['addOnButton', `${type}-action`, `cancel${action}`], 
+		  dataset: { id: id, action: makeTypeActionLabel('cancel', action) }
+	 });
+		  // append them
+	 btnCntnr.append(submitButton, updateSoldButton, cancelButton);
+
+		  // add event listeners for ESC and ENTER
+	 if (lstnrCntnr) {
+				// define the listener as a named function
+		  const keyHandler = function(e) {
+				if (e.key === 'Escape') {
+						  cancelButton.click();
+						  cleanup();
+				} else if (e.key === 'Enter') {
+						  updateSoldButton.click();
+						  cleanup();
+				}
+		  };
+
+		  lstnrCntnr.addEventListener('keydown', keyHandler);
+
+				// define a cleanup helper
+		  function cleanup() {
+				lstnrCntnr.removeEventListener('keydown', keyHandler);
+		  }
+	 }
+}
+
+function updateFillRow(row) {
+	const start = row.querySelector('[data-fill-type="startQ"]')?.textContent ?? 0;
+	const end = row.querySelector('[data-fill-type="endQ"]')?.value ?? 0;
+	const added = row.querySelector('[data-fill-type="addedQ"]')?.value ?? 0;
+	const removed = row.querySelector('[data-fill-type="writeOffQ"]')?.value ?? 0;
+	const dairy = row.querySelector('[data-fill-type="sponsorQ"]')?.value ?? 0;
+
+	const soldCell = row.querySelector('[data-fill-type="soldQ"]');
+
+	const sold = Number(start) + Number(added) - Number(removed) - Number(dairy) - Number(end);
+
+	if (soldCell) soldCell.textContent = sold;
+}
 
 async function submitFillInventory({ target }) {
+		// define a pair of helpers
+	function valueChanged(el) {
+		if (!el) return false;
+		if (el.value === '' && el.dataset.oValue === 'null') return false;
+		return Number(el.value) !== Number(el.dataset.oValue);
+	}
+	function getValue(el) {
+		return Number(el?.value ?? el?.dataset.oValue ?? 0);
+	}
+
+	const tbl = document.querySelector('.inventoryFillTable');
+	const rows = tbl.querySelectorAll('tbody tr');
+
+	const update = []
+
+	for (const row of rows) {
+		const end = row.querySelector('[data-fill-type="endQ"]');
+		const added = row.querySelector('[data-fill-type="addedQ"]');
+		const writeOff = row.querySelector('[data-fill-type="writeOffQ"]');
+		const dairy = row.querySelector('[data-fill-type="sponsorQ"]');
+
+		const changed =
+			valueChanged(end) ||
+			valueChanged(added) ||
+			valueChanged(writeOff) ||
+			valueChanged(dairy);
+
+		if (!changed) continue;
+
+		update.push({
+			eventSiteInventoryID: row.dataset.id,
+			endQ: getValue(end),
+			addedQ: getValue(added),
+			writeOffQ: getValue(writeOff),
+			sponsorQ: getValue(dairy),
+		});
+	}
+
+	const response = await actionFetch('updateRowsByIDs', 'EventSiteInventoryItem', { update });
+
+	if (response.success) {
+		openModal("Success");
+	}
+	
 
 }
 
@@ -509,6 +651,7 @@ function cancelFillInventory({ target }) {
 }
 
 function getInventoryTable(esID) {
+	esID = Number(esID);
 		// grab the inventory container
 	const cntnr = document.querySelector('.tabPanel.active[data-tab="inventory"]');
 		// select the table with the matching data attribute
@@ -535,7 +678,102 @@ function makeTransferInput(td) {
 }
 
 function showAddItem({ target, eSite }) {
-	console.log('show')
+	runtime.activeMode = 'addInventoryItem';
+
+		// bring in allTransfers
+	let allItems = Object.values(runtime.allItems.getSync());
+		// don't add sponsored hoods to inventory
+	allItems = allItems.filter(i => i.style.id != DAIRY_STYLE_ID);
+
+		// make a Set of existing transferIDs
+	const existingIDs = new Set(eSite.inventory.map(ii => ii.itemID));
+		// filter out matches
+	const unItems = allItems.filter(i => !existingIDs.has(i.id));
+
+		// build a form to add items not already part of the event
+	const frm = buildElement("form", { id: 'addItemForm', dataset: { esID: eSite.id } });
+	frm.append(buildElement("p", { text: "Enter quantities for additional items:" }));
+	frm.addEventListener("submit", function(e) { submitAddItems(e, frm); });
+
+		// fill labels/inputs in the form
+	unItems.forEach(i => {
+		const inpt = buildElement("input", { id: `addItem${i.id}`, 
+						attrs: { name: i.id, type: 'number', min: 0, max: 2000, step: 1 } });
+
+		const span = buildElement("span", { text: `${i.getInternalName()}: `, 
+						style: { backgroundColor: i.color.hex } });
+		if (i.color.name == 'white') span.style.border = '2px solid black';
+		if (i.color.name == 'assorted') span.style.border = '3ps solid red';
+
+		const lbl = buildElement("label", { children: span, attrs: { for:`addItems${i.id}` } });
+		frm.appendChild(buildElement("fieldset", { children: [ lbl, inpt ] }));
+	});
+
+		// make a label, a button, put them in the modal
+	frm.appendChild(buildElement("button", { text: "SUBMIT", classes: 'block' }));
+
+	openModal(frm);
+}
+
+async function submitAddItems(e, form) {
+		// stop page refresh
+	e.preventDefault();
+	
+		// ensure necessary data loaded
+	await runtime.allItems.load();
+
+	const esID = form.dataset.esID;
+
+		// handle your form data here
+	const data = new FormData(form);
+	const updateItems = [];
+
+	for (const [key, value] of data) {
+		if (value > 0) {
+			const i = runtime.allItems.getByID(key);
+			updateItems.push({ 
+				invItemID: null, 
+				itemID: Number(i.id), 
+				quantity: Number(value), 
+				price: i.price
+			});
+		}
+	}
+	
+	const update = { 'eventSiteID': esID, 'updateItems': updateItems };	
+	// console.log(update);
+	const response = await actionFetch('editEventSiteInventory', 'EventSite', update);
+	
+
+	if (response.success) {
+		closeModal();
+
+			// add the new transfers to the table
+		const tbl = getInventoryTable(esID);
+		const tbody = tbl.querySelector("tbody");
+
+		const newItems = [];
+		updateItems.forEach(it => {
+			newItems.push(InventoryItem.fromJSON({ 
+				id: null,
+				eventSiteID: esID,
+				itemID: it.transferID,
+				startQ: it.quantity,
+				endQ: null,
+				addedQ: 0,
+				writeOffQ: 0,
+				sponsorQ: 0,
+				price: it.price,
+				item: runtime.allItems.getByID(it.itemID)
+			}))
+		});
+
+			// add the new transfers to runtime
+		const eSite = runtime.stateEvent.getEventSiteByID(esID);
+		eSite.inventory.push(...newItems);
+
+		tbl.replaceWith(buildInventoryTable(eSite.getStructuredInventory(), runtime.stateEvent.id, esID));
+	}
 }
 
 function showAddTransfer({ target, eSite }) {

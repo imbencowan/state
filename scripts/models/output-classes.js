@@ -51,6 +51,7 @@ export const labelPage = labelPage4;
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // THE CLASSES
 class MyPDF {
+        // set up a basic pdf on a standard piece of paper
     constructor(doc) {
         this.doc = doc;
         this.width = 215.9;
@@ -98,25 +99,41 @@ class MyPDF {
         this.cursor.x = this.alignX;
         this.cursor.y = this.startY;
     }
-    
-    textToCell(txt, align = 'center', font = 'normal') {
+
+    textToCell({ text = '', align = 'center', font = 'normal', color, bgColor } = {}) {
         this.doc.setFont(undefined, font);
 
-        if (typeof txt === 'number') txt = String(txt);
-        if (!txt) txt = '';
-        
+            // coerce
+        text = String(text);
+
         const colWidth = this.colsX[this.col + 1] - this.colsX[this.col];
-        let x = this.colsX[this.col];
-        let offset = ((colWidth - this.doc.getTextWidth(txt)) / 2);
-        
-        if (align == 'left') offset = 2;
-        if (align == 'right') offset = (colWidth - 2 - this.doc.getTextWidth(txt));
-        
-        this.doc.text(String(txt), (x + offset), this.cursor.y);
+        const x = this.colsX[this.col];
+
+        if (bgColor) {
+            this.doc.setFillColor(...bgColor);
+            this.doc.rect(
+                x,
+                this.cursor.y - this.rowHeight + this.padding,
+                colWidth,
+                this.rowHeight,
+                'F'
+            );
+        }
+
+        if (color) this.doc.setTextColor(color);
+
+        let offset = (colWidth - this.doc.getTextWidth(text)) / 2;
+
+        if (align === 'left') offset = 2;
+        if (align === 'right') offset = colWidth - 2 - this.doc.getTextWidth(text);
+
+        this.doc.text(text, x + offset, this.cursor.y);
+
         ++this.col;
 
-            // unset font style
+        // restore defaults
         this.doc.setFont(undefined, 'normal');
+        this.doc.setTextColor(0);
     }
 }
 

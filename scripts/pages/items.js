@@ -2,7 +2,7 @@ import { runtime } from '../runtime.js';
 import { buildElement } from '../utilities.js';
 import { sizeList } from '../constants.js';
 import { actionFetch } from '../fetch.js';
-import { buildActionButton, makeSubmitCancelButtons, makeSubmitCancelAction } from './page-utils.js';
+import { buildActionButton, makeSubmitCancelButtons, makeTypeActionLabel } from './page-utils.js';
 import { navigate } from '../navigation.js';
 
 
@@ -22,8 +22,8 @@ const topItemsActions = Object.fromEntries(
 	topItemsButtons.flatMap(btn => {
       const entries = [[btn.action, btn.handler]];
 
-      if (btn.submitHandler) entries.push([ makeSubmitCancelAction("submit", btn.action), btn.submitHandler ]);
-      if (btn.cancelHandler) entries.push([ makeSubmitCancelAction("cancel", btn.action), btn.cancelHandler ]);
+      if (btn.submitHandler) entries.push([ makeTypeActionLabel("submit", btn.action), btn.submitHandler ]);
+      if (btn.cancelHandler) entries.push([ makeTypeActionLabel("cancel", btn.action), btn.cancelHandler ]);
 
       return entries;
    })

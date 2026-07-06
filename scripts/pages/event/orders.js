@@ -31,11 +31,9 @@ export const topOrderButtons = [
 ];
    // define the order table row actions and their handlers
 export const orderRowButtons = [
-   { action: "addAddOns", icon: "add", title: "add add ons", 
-      handler: (args) => { if (!runtime.activeMode || runtime.activeMode === "add") showAddOnInputs(args); }, 
+   { action: "addAddOns", icon: "add", title: "add add ons", handler: showAddOnInputs, 
       submitHandler: submitAddOns, cancelHandler: cancelAddOns },
-   { action: "editSizes", icon: "edit", title: "edit the quantities", 
-      handler: (args) => { if (!runtime.activeMode) showEditSizeInputs(args); },
+   { action: "editSizes", icon: "edit", title: "edit the quantities", handler: showEditSizeInputs,
       submitHandler: submitSizeEdit, cancelHandler: cancelSizeEdit },
    { action: "showMessage", icon: "mail", title: "view the original message", handler: showOMessage },
    { action: "printLabel", icon: "article", title: "print box label", handler: printBoxLabel },
@@ -161,7 +159,7 @@ function buildOrdersTable(orders, eventID, esID, esdID) {
    const thead = buildOrdersThead();		
       // the table, empty
    const table = buildElement("table", { classes: "orderTable", children: thead, 
-                  dataset: { eventId: eventID, eventSiteId: esID, eventSiteDivisionId: esdID } });
+                  dataset: { eventID: eventID, eventSiteID: esID, eventSiteDivisionID: esdID } });
       // fill the table body
    buildOrdersTbodies(table, orders);
 
@@ -233,7 +231,7 @@ function buildOrdersTbodies(table, orders) {
       const tbody = buildElement("tbody", { 
          id: ('row' + so.id),
          classes: getRowCompletenessClass(so), 
-         dataset: { schoolOrderId: so.id },
+         dataset: { schoolOrderID: so.id },
          children: trs 
       });
       table.appendChild(tbody);
@@ -755,15 +753,20 @@ function printTotals() {
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////// ROW BUTTONS
 function showAddOnInputs({ target, order }) {
+	if (runtime.activeMode && runtime.activeMode !== "add") return;
+	if (runtime.activeOrder && runtime.activeOrder.id !== order.id) return;
+
 		// set mode. prevents edit being called while this is open
 	runtime.activeMode = 'add';
+		// set active order. prevents add being opened on a different order while this is open
+	runtime.activeOrder = order;
 
 		// get the parent element with the specified data attribute
 			// the parent is a tbody that can hold multiple rows
-	const prnt = document.querySelector(`[data-school-order-id="${order.id}"]`);
+	const prnt = document.querySelector(`[data-school-order-i-d="${order.id}"]`);
 	if (prnt) {
-			// don't add more rows than there are styles (9)
-		if (prnt.querySelectorAll('tr').length < 9) {
+			// don't add more rows than there are styles+accessories+transfers (24)
+		if (prnt.querySelectorAll('tr').length < 24) {
 			const tds = [];
 			
 				// create the style select
@@ -785,7 +788,7 @@ function showAddOnInputs({ target, order }) {
 				// submit/cancel td	// this goes in the 'total' column, and we need that title later for editing quantities
 			const btnTD = buildElement("td", { title: 'total' });
 				// put submit and cancel buttons in the btnTD, unless there already is one
-			if (prnt.querySelector('button.submitAddOns') === null) {
+			if (prnt.querySelector('button.submitaddAddOns') === null) {
 				makeSubmitCancelButtons(btnTD, prnt, 'order', target.dataset.action);
 			}
 			tds.push(btnTD);
@@ -806,7 +809,7 @@ function showAddOnInputs({ target, order }) {
 			newTR.querySelector('input')?.focus();
 		}
 	} else {
-		console.error(`Element with data-school-order-id="${order.id}" not found.`);
+		console.error(`Element with data-school-order-i-d="${order.id}" not found.`);
 	}
 }
 
@@ -872,6 +875,7 @@ async function submitAddOns({ target, order }) {
 		cleanInputRows(rows);
 			// exit 'add' mode
 		runtime.activeMode = null;
+		runtime.activeOrder = null;
 	}
 }
 
@@ -886,6 +890,7 @@ function cancelAddOns({ target }) {
    });
 		// exit add on mode
 	runtime.activeMode = null;
+	runtime.activeOrder = null;
 }
 
 function buildAddOnSelect(prnt) {
@@ -1141,9 +1146,10 @@ function parseAddOnOption(value) {
 
 function showEditSizeInputs({ target, order }) {
 		// set mode. prevents addOns being activated while edit is in progress
+	if (runtime.activeMode) return;
 	runtime.activeMode = 'edit';
 		// get the parent element with the specified data attribute
-	const prnt = document.querySelector(`[data-school-order-id="${order.id}"]`);
+	const prnt = document.querySelector(`[data-school-order-i-d="${order.id}"]`);
 	if (prnt) {
 			// get the rows for the order
 		const rows = Array.from(prnt.children);
@@ -1274,7 +1280,6 @@ function showOMessage({ order }) {
 		openModal("No order message");
 	} else {
 		let mText = order.messageOrders[0].orderText;
-		console.log(order);
 			// if there is a second messageOrder, append it's text
 		if (order.messageOrders[1]) mText += "\n\n" + order.messageOrders[1].orderText;
 			// display it
@@ -1284,7 +1289,7 @@ function showOMessage({ order }) {
 
 
 	// toggles an order as done / not done
-async function toggleOrderCompleteness(box, order) {
+export async function toggleOrderCompleteness(box, order) {
 	if (order.shirtsByStyle.length === 0) {
 		openModal("You can not mark an order with no shirts complete");
 		box.checked = false;
@@ -1354,7 +1359,7 @@ function updateNeeded(order, add = true) {
 
 
 	// marks a comment as handled
-async function changeCommentHandled(box) {
+export async function changeCommentHandled(box) {
 	const data = {'id': box.dataset.orderId, 'handled': box.checked};
 	const response = await actionFetch('changeCommentHandled', 'MessageOrder', data);
 	

@@ -28,11 +28,11 @@ export function makeSubmitCancelButtons(btnCntnr, lstnrCntnr, type, action, id =
         // make the buttons // secondary classes guide listeners handling
     const submitButton = buildElement('button', { text: 'Submit', type: 'button',
         classes: ['addOnButton', `${type}-action`, `submit${action}`], 
-        dataset: { id: id, action: makeSubmitCancelAction('submit', action) }
+        dataset: { id: id, action: makeTypeActionLabel('submit', action) }
     });
     const cancelButton = buildElement('button', { text: 'X', type: 'button',
         classes: ['addOnButton', `${type}-action`, `cancel${action}`], 
-        dataset: { id: id, action: makeSubmitCancelAction('cancel', action) }
+        dataset: { id: id, action: makeTypeActionLabel('cancel', action) }
     });
         // append them
     btnCntnr.append(submitButton, cancelButton);
@@ -59,7 +59,7 @@ export function makeSubmitCancelButtons(btnCntnr, lstnrCntnr, type, action, id =
     }
 }
 
-export function makeSubmitCancelAction(type, action) {
+export function makeTypeActionLabel(type, action) {
     const capAction = action[0].toUpperCase() + action.slice(1);
     return type + capAction;
 }

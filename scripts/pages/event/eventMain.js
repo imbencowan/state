@@ -8,8 +8,9 @@ import { parseEventRoute } from './routeHelpers.js';
 import { StateEvent } from '../../models/db-classes.js';
 import { buildElement } from '../../utilities.js';
 import { downloadInvoicePDF, printSoSPDF } from '../../print.js';
-import { buildActionButton, makeSubmitCancelAction } from '../page-utils.js';
-import { topOrderButtons, orderRowButtons, attachOrdersPanel } from './orders.js';
+import { buildActionButton, makeTypeActionLabel } from '../page-utils.js';
+import { topOrderButtons, orderRowButtons, attachOrdersPanel, toggleOrderCompleteness, 
+			changeCommentHandled } from './orders.js';
 import { topInventoryButtons, inventorySiteButtons, attachInventoryPanel } from './inventory.js';
 import { attachReportsPanel } from './reports.js';
 import { openModal } from '../../modal.js';
@@ -53,8 +54,8 @@ const orderRowActions = Object.fromEntries(
 	orderRowButtons.flatMap(btn => {
 		const entries = [[btn.action, btn.handler]];
 
-		if (btn.submitHandler) entries.push([ makeSubmitCancelAction('submit', btn.action), btn.submitHandler ]);
-		if (btn.cancelHandler) entries.push([ makeSubmitCancelAction('cancel', btn.action), btn.cancelHandler ]);
+		if (btn.submitHandler) entries.push([ makeTypeActionLabel('submit', btn.action), btn.submitHandler ]);
+		if (btn.cancelHandler) entries.push([ makeTypeActionLabel('cancel', btn.action), btn.cancelHandler ]);
 
 		return entries;
 	})
@@ -63,8 +64,15 @@ const inventorySiteActions = Object.fromEntries(
 	inventorySiteButtons.flatMap(btn => {
 		const entries = [[btn.action, btn.handler]];
 
-		if (btn.submitHandler) entries.push([ makeSubmitCancelAction("submit", btn.action), btn.submitHandler ]);
-		if (btn.cancelHandler) entries.push([ makeSubmitCancelAction("cancel", btn.action), btn.cancelHandler ]);
+		if (btn.addedHandlers) {
+			console.log('added');
+			for (const [type, fn] of Object.entries(btn.addedHandlers)) {
+				entries.push([	makeTypeActionLabel(type, btn.action), fn ]);
+			}
+		}
+
+		if (btn.submitHandler) entries.push([ makeTypeActionLabel("submit", btn.action), btn.submitHandler ]);
+		if (btn.cancelHandler) entries.push([ makeTypeActionLabel("cancel", btn.action), btn.cancelHandler ]);
 
 		return entries;
 	})
@@ -229,10 +237,18 @@ async function showPrevNextEvent(drctn) {
 
 	if (response.success) {
 		if (response.data.event == null) {
-			openModal("No event was found that direction");
+				// this presumes drctn can only be 'prev' or 'next'
+			const qlfr = drctn === 'prev' ? 'earlier' : 'later';
+			openModal(`There is no ${qlfr} event for ${runtime.stateEvent.sport.name}`);
 		} else {
 				// assign the new runtime event
 			const sEvent = StateEvent.fromJSON(response.data.event);
+
+			if (sEvent.year !== runtime.stateEvent.year) {
+				history.pushState({}, '', `/state/${sEvent.sport.slug}/${sEvent.year}/${tab}`);
+				document.getElementById('selectYear').value = sEvent.year;
+			}
+
 			runtime.stateEvent = sEvent;
 			runtime.activeMode = null;
 			
@@ -326,25 +342,19 @@ export function addEventPageFunctionality() {
 		// get an order from the big ol runtime.stateEvent object
 function getOrderFromTableButton(target) {
 	if (runtime.stateEvent) {
-			// get ids from data-attributes
-		const orderID = Number(target.closest('tbody').getAttribute('data-school-order-id'));
-		const divID = Number(target.closest('table').getAttribute('data-event-site-division-id'));
-		const eventSiteID = Number(target.closest('table').getAttribute('data-event-site-id'));
-	
-		return getOrderByIDs(eventSiteID, divID, orderID);
-	}
-}
-		
-function getOrderByIDs(eventSiteID, divID, orderID) {
-	if (runtime.stateEvent) {
+		const order = runtime.stateEvent.getOrderByID(Number(target.closest('tbody').dataset.schoolOrderID));
+		if (!order) return null;
+
+		const esdID = Number(target.closest('table').dataset.eventSiteDivisionID);
+		const eventSiteID = Number(target.closest('table').dataset.eventSiteID);
+
 			// get the site, then division, then order. return null if not found
-		const eventSite = runtime.stateEvent.eventSites.find(eSite => eSite.id === eventSiteID);
+		const eventSite = runtime.stateEvent.getEventSiteByID(eventSiteID);
 		if (!eventSite) return null;
 		
-		const division = eventSite.esDivisions.find(div => div.id === divID);
-		if (!division) return null;
+		const esd = eventSite.esDivisions.find(div => div.id === esdID);
+		if (!esd) return null;
 
-		const order = division.schoolOrders.find(order => order.id === orderID);
 
 			// make add on gender strings if necessary
 		let divGenderStr = '';
@@ -358,11 +368,11 @@ function getOrderByIDs(eventSiteID, divID, orderID) {
 			// hacky
 				// but may be not in a bad way? how else would i transmit all this? sending div, site, and sport args also?
 				// this is actually kind of clean considering the alternatives for getting this info where it needs to be.
-		order.division = division.division.name + divGenderStr;
+		order.division = esd.division.name + divGenderStr;
 		order.site = eventSite.site.name;
 		order.sportStr =  sportGenderStr + runtime.stateEvent.sport.name;
 		order.sportLblClr = runtime.stateEvent.sport.labelColor;
-		
-		return order || null;
+	
+		return order;
 	}
 }

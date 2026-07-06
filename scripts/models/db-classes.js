@@ -20,6 +20,9 @@ export class StateEvent {
       this.endDate = Utils.safeParseDate(endDate.date);
       this.year = year;
 		this.eventSites = Utils.parseToInstancesArr(eventSites, EventSite);
+      this.esMap = null;
+      this.esdMap = null;
+      this.orderMap = null;
    }
 
    static fromValues(id, sport, startDate, endDate, year, eventSites = []) {
@@ -35,7 +38,15 @@ export class StateEvent {
 	}
 	
 	getEventSiteByID(id) {
-		return this.eventSites.find(es => es.id === Number(id));
+		if (!this.esMap) {
+         this.esMap = new Map();
+
+         for (const eSite of this.eventSites) {
+                  this.esMap.set(eSite.id, eSite);
+         }
+      }
+
+      return this.esMap.get(id);
 	}
 	
 	getDivisionByID(id) {
@@ -60,6 +71,22 @@ export class StateEvent {
 		}
 		return null;
 	}
+
+   getOrderByID(id) {
+      if (!this.orderMap) {
+         this.orderMap = new Map();
+
+         for (const eSite of this.eventSites) {
+            for (const d of eSite.esDivisions) {
+               for (const o of d.schoolOrders) {
+                  this.orderMap.set(o.id, o);
+               }
+            }
+         }
+      }
+
+      return this.orderMap.get(id);
+   }
 
       // returns an object with props for each size named by displayChar and a total prop
    getNeededSizes() {
@@ -193,7 +220,7 @@ export class EventSite {
 		this.vehicle = Utils.parseToInstance(vehicle, Vehicle);
       this.employees = Utils.parseToInstancesArr(employees, Employee);
       this.inventory = Utils.parseToInstancesArr(inventory, InventoryItem);
-      this.transfers = transfers;
+      this.transfers = Utils.parseToInstancesArr(transfers, InventoryTransfer);
       this.inventoryLoaded = false;
 		this.esDivisions = Utils.parseToInstancesArr(esDivisions, EventSiteDivision);
 	}
@@ -731,9 +758,13 @@ export class Item {
    static fromJSON(json) {
       return new Item(json);
    }
+
+   getInternalName() {
+      return `${this.style.vShortName} - ${this.color.name} - ${this.size.charName}`;
+   }
 	
 	getInvoiceName() {
-		return this.style.brand.shortName + " " + this.style.vShortName + " - " + this.color.name + " - " + this.size.name;
+		return `${this.style.brand.shortName} ${this.style.vShortName} - ${this.color.name} - ${this.size.name}`;
 	}
 }
 
@@ -878,13 +909,14 @@ export class Employee {
 export class Color {
    static registry = null;
 
-   constructor({ id, name }) {
+   constructor({ id, name, hex }) {
       this.id = id;
       this.name = name;
+      this.hex = `#${hex}`;
    }
 
-   static fromValues(id, name) {
-      return new Color({ id, name });
+   static fromValues(id, name, hex) {
+      return new Color({ id, name, hex });
    }
 
    static fromJSON(json) {

@@ -548,11 +548,30 @@ tr.addOnRow {
 
 
 .prevNextDiv {
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 .prevNextCntnr {
-    margin-left: auto;
-	 font-size: 180%;
+	margin-left: auto;
+	font-size: 180%;
+}
+
+#addItemForm fieldset {
+   display: flex;
+   align-items: center; 
+   gap: 0.5em;          
+   margin-bottom: 1em;
+}
+
+#addItemForm label {
+   width: 270px;
+   text-align: right;
+} 
+
+#addItemForm label span {
+	/* border: 2px solid black; */
+	border-radius: 4px;
+	font-size: 115%;
+	padding: 3px 8px;
 }

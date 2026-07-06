@@ -45,7 +45,7 @@ export function safeParseDate(input) {
 
 
 
-export function buildElement(tag, { text, html, classes, id, title, attrs, dataset, on, children } = {}) {
+export function buildElement(tag, { text, html, classes, id, title, attrs, dataset, style, on, children } = {}) {
    const el = document.createElement(tag);
 
    if (text != null) el.textContent = text;
@@ -70,6 +70,12 @@ export function buildElement(tag, { text, html, classes, id, title, attrs, datas
    if (dataset) {
       for (const [k, v] of Object.entries(dataset)) {
          el.dataset[k] = v;
+      }
+   }
+
+   if (style) {
+      for (const [k, v] of Object.entries(style)) {
+         el.style[k] = v;
       }
    }
 

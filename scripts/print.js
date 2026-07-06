@@ -309,9 +309,9 @@ function genSoS(doc, div) {
 			doc.line(sos.alignX, (sos.cursor.y + 1), sos.colsX[sos.colsX.length - 2], (sos.cursor.y + 1));
 			sos.newLine();
 		}
-		sos.textToCell(i, 'right');
+		sos.textToCell({ text: i, align: 'right' });
 		const name = order.school.shortName;
-		sos.textToCell(name, 'left');
+		sos.textToCell({ text: name, align: 'left' });
 		if (order.hasAddOns()) {
 			addOnOrders.push(order);
 			doc.setTextColor(red);
@@ -326,7 +326,7 @@ function genSoS(doc, div) {
 			doc.setTextColor(black);
 		}
 		let total = (order.getTeamStyle()) ? order.getTeamStyle().getTotalQuantity() : order.qualifiers;
-		sos.textToCell(total);
+		sos.textToCell({ text: total });
 		let teamStyle = order.getTeamStyle();
 		if (teamStyle) {
 			let shirts = teamStyle.sizeMap;
@@ -336,7 +336,7 @@ function genSoS(doc, div) {
 					q = shirts[size].quantity;
 					sizeTotals[size] += shirts[size].quantity;
 				}
-				sos.textToCell(q);
+				sos.textToCell({ text: q });
 			});
 		}
 			// draw a grid line
@@ -349,16 +349,14 @@ function genSoS(doc, div) {
 
 		// totals line. probably unnecessary on the actual SoS?
 	sos.newLine();
-	doc.setTextColor(red);
 	sos.col = 2;
-	sos.textToCell('total', 'right');
+	sos.textToCell({ text: 'total', align: 'right', color: red });
 	const totalSum = Object.values(sizeTotals).reduce((sum, val) => sum + val, 0);
 		// the actual totals
-	doc.setTextColor(blue);
 	sos.col = 3;
-	sos.textToCell(totalSum);
+	sos.textToCell({ text: totalSum, color: blue });
 	sos.sizeList.forEach(size => {
-		sos.textToCell(sizeTotals[size]);
+		sos.textToCell({ text: sizeTotals[size] });
 	});
 	
 		// add ons
@@ -367,11 +365,10 @@ function genSoS(doc, div) {
 	if (cursor.y > sos.pageBreakY) sos.addPage();
 
 	sos.lineStep = 5.5;
-	doc.setTextColor(black);
 	doc.text("add ons:", sos.alignX, cursor.y);
 	sos.col = 4;
 	sos.sizeList.forEach(s => {
-		sos.textToCell(s);
+		sos.textToCell({ text: s });
 	});
 	sos.newLine();
 
@@ -383,14 +380,14 @@ function genSoS(doc, div) {
 			doc.text("add ons:", sos.alignX, cursor.y);
 			sos.col = 4;
 			sos.sizeList.forEach(s => {
-				sos.textToCell(s);
+				sos.textToCell({ text: s });
 			});
 			sos.newLine();
 		}
 
 			// print the school name
 		const name = order.school.shortName;
-		sos.textToCell(name, 'left');
+		sos.textToCell({ text: name, align: 'left' });
 			// print the amount due, or 'PAID'
 		doc.setTextColor(red);
 		let redText;
@@ -404,10 +401,11 @@ function genSoS(doc, div) {
 			// reset to black
 		doc.setTextColor(black);
 		
-		order.getAddedStyles().forEach(style => {
-			if (style.id != ADULT_HOOD_STYLE_ID) {
+		const addedStyles = order.getAddedStyles();
+		addedStyles.forEach(style => {
+			if ((style.id != ADULT_HOOD_STYLE_ID) || (addedStyles.length > 1)) {
 				sos.col = 3;
-				sos.textToCell(style.shortName, 'right');
+				sos.textToCell({ text: style.shortName, align: 'right' });
 			}
 			sos.col = 4;
 			let shirts = style.sizeMap;
@@ -417,16 +415,16 @@ function genSoS(doc, div) {
 					q = shirts[size].quantity;
 					sizeTotals[size] += shirts[size].quantity;
 				}
-				sos.textToCell(q);
+				sos.textToCell({ text: q });
 			});
 			sos.newLine();
 		});
 
 		if (order.oTransfers.length) {
 			sos.col = 3;
-			sos.textToCell('Transfers', 'right');
+			sos.textToCell({ text: 'Transfers', align: 'right' });
 			sos.col = 4;
-			sos.textToCell(order.getTotalTransfers());
+			sos.textToCell({ text: order.getTotalTransfers() });
 			sos.newLine();
 		}
 	});
@@ -437,9 +435,9 @@ function makeSoSGridHead(doc, sos, y){
 
 	sos.newLine();
 	sos.col = 3;
-	sos.textToCell('total');
+	sos.textToCell({ text: 'total' });
 	sos.sizeList.forEach(s => {
-		sos.textToCell(s);
+		sos.textToCell({ text: s });
 	});
 
 		// draw the first grid line
@@ -723,7 +721,7 @@ function genInventoryPDF(doc, eSite, pages) {
 function writeInventoryHeader(doc, page, cursor, eSite, sheet) {
 		// write Inventory - /SHEET/, with an underline and selectie bolding
 	let txt = 'Inventory - ';
-	page.textToCell(txt, 'left');
+	page.textToCell({ text: txt, align: 'left' });
 	let w = doc.getTextWidth(txt);
 	doc.setFont(undefined, 'bold');
 	doc.text(sheet, (page.alignX + w + 2), cursor.y);
@@ -736,12 +734,12 @@ function writeInventoryHeader(doc, page, cursor, eSite, sheet) {
 	siteStr += ' ' + eSite.getDivisionsString();
 	siteStr += ' / ' + eSite.site.name;
 	page.col = 10;
-	page.textToCell(siteStr, 'right', 'bold');
+	page.textToCell({ text: siteStr, align: 'right', font: 'bold' });
 	
 	page.newLine();
 	page.col = 10;
 		// write the employees for the site, a new line on the right of the page
-	page.textToCell(eSite.getEmployeesString(), 'right');
+	page.textToCell({ text: eSite.getEmployeesString(), align: 'right' });
 }
 
 function buildInventoryTable(doc, page, cursor, eSite) {
@@ -752,13 +750,13 @@ function buildInventoryTable(doc, page, cursor, eSite) {
 	page.newLine();
 
 		// head the table
-	page.textToCell('item');
-	page.textToCell('style');
-	page.textToCell('color');
+	page.textToCell({ text: 'item' });
+	page.textToCell({ text: 'style' });
+	page.textToCell({ text: 'color' });
 	invSizeList.forEach(s => {
-		page.textToCell(s);
+		page.textToCell({ text: s });
 	});
-	page.textToCell('total');
+	page.textToCell({ text: 'total' });
 
 	page.hr();
 		// a small step to divide the head of the table
@@ -773,20 +771,25 @@ function buildInventoryTable(doc, page, cursor, eSite) {
 
 		page.hr(.4);
 		page.newLine();
-		page.textToCell(s.inventoryName, align);
-		page.textToCell(s.code);
+		page.textToCell({ text: s.inventoryName, align: align });
+		page.textToCell({ text: s.code });
 
 		Object.values(s.colors).forEach((c, i) => {
-			page.textToCell(c.name);
+				// color the row for the garment color // x1, y1, x2, y2
+			doc.setFillColor(c.hex);
+			const w = page.colsX[11] - page.colsX[page.col];
+			doc.rect(page.colsX[page.col], (page.cursor.y + 2), w, -page.lineStep, "F");
+
+			page.textToCell({ text: c.name });
 
 				// skip the Small column for youth hoods
-			if (s.id === 7) page.textToCell('---');
+			if (s.id === 7) page.textToCell({ text: '---' });
 
 				// shift the cell over to '---' non existent youth sizes
 			page.col += Object.keys(c.sizes).length;
 				// '---' non existent youth sizes
 			if (youth) {
-				for (; page.col < 10;) { page.textToCell('---'); }
+				for (; page.col < 10;) { page.textToCell({ text: '---' }); }
 			}
 
 				// if there are multiple colors, start the next color at column 3
@@ -808,7 +811,7 @@ function buildInventoryTable(doc, page, cursor, eSite) {
 
 		// a row for garments total
 	page.newLine();
-	page.textToCell('total', 'right', 'bold');
+	page.textToCell({ text: 'total', align: 'right', font: 'bold' });
 
 		// put in a separator
 	page.hr();
@@ -819,7 +822,7 @@ function buildInventoryTable(doc, page, cursor, eSite) {
 	for (const a of structInventory.accessories) {
 		page.hr();
 		page.newLine();
-		page.textToCell(a.item.style.inventoryName, 'left');
+		page.textToCell({ text: a.item.style.inventoryName, align: 'left' });
 	}
 
 		// close the table
@@ -853,12 +856,12 @@ function fillInventoryTable(doc, page, cursor, eSite) {
 
 				// put in values for each size
 			Object.values(c.sizes).forEach(z => {
-				page.textToCell(z.startQ);
+				page.textToCell({ text: z.startQ });
 				total += z.startQ;
 			});
 				// put in the total
 			page.col = 10;
-			page.textToCell(total);
+			page.textToCell({ text: total });
 			gTotal += total;
 
 				// if there are multiple colors, start the next color at column 3
@@ -870,7 +873,7 @@ function fillInventoryTable(doc, page, cursor, eSite) {
 	page.newLine();
 		// move to the last column
 	page.col = 10;
-	page.textToCell(gTotal);
+	page.textToCell({ text: gTotal });
 
 		// put in a separator
 	cursor.y += 1.5;
@@ -879,7 +882,7 @@ function fillInventoryTable(doc, page, cursor, eSite) {
 	for (const a of structInventory.accessories) {
 		page.newLine();
 		page.col = 10;
-		page.textToCell(a.startQ);
+		page.textToCell({ text: a.startQ });
 	}
 }
 
@@ -892,20 +895,16 @@ function inventoryStartAddendum(doc, page, cursor, eSite) {
 
 		const qtyText = (t.startQ < 10) ? t.startQ + ' SET' : t.startQ;
 
-		page.textToCell(name, 'left');
-		page.textToCell(qtyText);
+		page.textToCell({ text: name, align: 'left' });
+		page.textToCell({ text: qtyText });
 		page.newLine();
 	});
 }
 
 function inventoryEndAddendum(page) {
 	page.newLine(3);
-	page.textToCell('List any misprints below (style / color / size / quantity):', 'left');
+	page.textToCell({ text: 'List any misprints below (style / color / size / quantity):', align: 'left' });
 	page.hr();
-	// page.textToCell('STYLE');
-	// page.textToCell('COLOR');
-	// page.textToCell('SIZE');
-	// page.textToCell();
 }
 
 function inventorySoldAddendum(page, eSite) {
@@ -916,48 +915,47 @@ function inventorySoldAddendum(page, eSite) {
 
 		// print the transfers to record how many sold
 	page.newLine(2);
-	page.textToCell('transfers', 'right');
+	page.textToCell({ text: 'transfers', align: 'right' });
 
 		// no site should have 'champion', or 'back to back', etc without 'champoins'. 
 			// check for 'champions', print them all
 	if (tNames.has("state champions")) {
 		page.newLine(1.6);
-		page.textToCell('STATE CHAMPION(S)', 'right');
+		page.textToCell({ text: 'STATE CHAMPION(S)', align: 'right' });
 		page.newLine(1.6);
-		page.textToCell('BACK TO BACK /', 'right');
+		page.textToCell({ text: 'BACK TO BACK /', align: 'right' });
 		page.newLine(.8);
-		page.textToCell('3-PEAT', 'right');
+		page.textToCell({ text: '3-PEAT', align: 'right' });
 	}
 
 	if (tNames.has("#s") && tNames.has("positions")) {
 		page.newLine(1.6);
-		page.textToCell('#s / positions', 'right');
-		console.log("positions");
+		page.textToCell({ text: '#s / positions', align: 'right' });
 	} else if (tNames.has("#s")) {
 		page.newLine(1.6);
-		page.textToCell('#s', 'right');
+		page.textToCell({ text: '#s', align: 'right' });
 	}
 
 		// group the misc $5 transfers
 	page.newLine(1.6);
-	page.textToCell('MOM, DAD, (tub)', 'right');
+	page.textToCell({ text: 'MOM, DAD, (tub)', align: 'right' });
 	if (trnsfrs.some(t => t.transfer.transferName === "small event logo")) {
 		page.newLine(.8);
-		page.textToCell('small logos', 'right');
+		page.textToCell({ text: 'small logos', align: 'right' });
 	}
 	if (trnsfrs.some(t => t.transfer.transferName === "sub events")) {
 		page.newLine(.8);
-		page.textToCell(`${runtime.stateEvent.sport.name.toLowerCase()} events`, 'right');
+		page.textToCell({ text: `${runtime.stateEvent.sport.name.toLowerCase()} events`, align: 'right' });
 	}
 
 	page.newLine(1.6);
-	page.textToCell('school names', 'right');
+	page.textToCell({ text: 'school names', align: 'right' });
 
 	page.newLine(2);
-	page.textToCell('Total $$', 'right');
+	page.textToCell({ text: 'Total $$', align: 'right' });
 
 	page.newLine(2);
-	page.textToCell('hours', 'right');
+	page.textToCell({ text: 'hours', align: 'right' });
 
 }
 
@@ -1087,11 +1085,11 @@ function buildSeasonStockRows(stockRows) {
 
 function writeSeasonStockHeader(doc, page, season, dateRange) {
 	doc.setFont(undefined, 'bold');
-	page.textToCell(`${season.name} Stock`, 'left');
+	page.textToCell({ text: `${season.name} Stock`, align: 'left' });
 	doc.setFont(undefined, 'normal');
 
 	page.newLine();
-	page.textToCell(`${dateRange.start} to ${dateRange.end}`, 'left');
+	page.textToCell({ text: `${dateRange.start} to ${dateRange.end}`, align: 'left' });
 	page.newLine(2);
 }
 
@@ -1101,10 +1099,10 @@ function writeSeasonStockTable(doc, page, rows) {
 		headers: ['Style', 'Color', 'Size', 'Stock', 'Needed', 'Delta Cases'],
 		colPositions: [1, 2, 3, 4, 5, 6],
 		writeRow(page, row) {
-			page.textToCell(getSeasonStockSizeCell(row));
-			page.textToCell(row.stock);
-			page.textToCell(row.needed);
-			page.textToCell(row.order);
+			page.textToCell({ text: getSeasonStockSizeCell(row) });
+			page.textToCell({ text: row.stock });
+			page.textToCell({ text: row.needed });
+			page.textToCell({ text: row.order });
 		}
 	});
 }
@@ -1115,8 +1113,8 @@ function writeSeasonOrderTable(doc, page, rows) {
 		headers: ['Style', 'Color', 'Size', 'Order'],
 		colPositions: [1, 2, 3, 4],
 		writeRow(page, row) {
-			page.textToCell(getSeasonStockSizeCell(row));
-			page.textToCell(row.order);
+			page.textToCell({ text: getSeasonStockSizeCell(row) });
+			page.textToCell({ text: row.order });
 		}
 	});
 }
@@ -1227,7 +1225,7 @@ function writeSeasonHoodSizeTable(doc, page, rows) {
 	page.lineStep = 6;
 
 	doc.setFont(undefined, 'bold');
-	page.textToCell('Hood Size Summary', 'left');
+	page.textToCell({ text: 'Hood Size Summary', align: 'left' });
 	doc.setFont(undefined, 'normal');
 	page.newLine(2);
 
@@ -1238,8 +1236,9 @@ function writeSeasonHoodSizeTable(doc, page, rows) {
 	page.hr(.2, xStart, xEnd);
 	page.newLine();
 	page.col = 1;
-	page.textToCell('');
-	hoodSizes.forEach(size => page.textToCell(size));
+		// why?
+	page.textToCell({ text: '' });
+	hoodSizes.forEach(size => page.textToCell({ text: size }));
 	page.hr(.2, xStart, xEnd);
 
 	const rowLabels = [
@@ -1255,10 +1254,10 @@ function writeSeasonHoodSizeTable(doc, page, rows) {
 	rowLabels.forEach(([key, label]) => {
 		page.newLine();
 		page.col = 1;
-		page.textToCell(label, 'left');
+		page.textToCell({ text: label, align: 'left' });
 		hoodSizes.forEach(size => {
 			const value = hoodData[key][size];
-			page.textToCell(value === 0 ? '' : value);
+			page.textToCell({ text: (value === 0 ? '' : value) });
 		});
 		page.hr(.2, xStart, xEnd);
 	});
@@ -1348,7 +1347,7 @@ function writeSeasonTable(doc, page, rows, config) {
 	let lastRowY = null;
 
 	doc.setFont(undefined, 'bold');
-	page.textToCell(config.title, 'left');
+	page.textToCell({ text: config.title, align: 'left' });
 	doc.setFont(undefined, 'normal');
 	page.newLine(2);
 
@@ -1359,7 +1358,7 @@ function writeSeasonTable(doc, page, rows, config) {
 			closeSeasonStockSpans(doc, page, config.colPositions, currentStyleID, currentColorKey, styleStartY, colorStartY, lastRowY);
 			page.addPage();
 			doc.setFont(undefined, 'bold');
-			page.textToCell(config.title, 'left');
+			page.textToCell({ text: config.title, align: 'left' });
 			doc.setFont(undefined, 'normal');
 			page.newLine(2);
 			writeSeasonStockTableHead(doc, page, config.headers, config.colPositions);
@@ -1387,7 +1386,8 @@ function writeSeasonTable(doc, page, rows, config) {
 			currentStyleID = row.style.id;
 			styleStartY = page.cursor.y;
 			page.col = config.colPositions[0];
-			page.textToCell(row.style.shortName, row.style.sizingCategoryID === 2 ? 'right' : 'left');
+			page.textToCell({ text: row.style.shortName, 
+					align: (row.style.sizingCategoryID === 2 ? 'right' : 'left') });
 		} else {
 			page.col = config.colPositions[1];
 		}
@@ -1400,7 +1400,7 @@ function writeSeasonTable(doc, page, rows, config) {
 			currentColorKey = colorKey;
 			colorStartY = page.cursor.y;
 			page.col = config.colPositions[1];
-			page.textToCell(row.color.name, 'left');
+			page.textToCell({ text: row.color.name, align: 'left' });
 		} else {
 			page.col = config.colPositions[2];
 		}
@@ -1424,7 +1424,7 @@ function writeSeasonStockTableHead(doc, page, headers, colPositions) {
 	page.newLine();
 	headers.forEach((th, i) => {
 		page.col = colPositions[i];
-		page.textToCell(th);
+		page.textToCell({ text: th });
 	});
 	page.hr(.2, page.colsX[colPositions[0]], page.colsX[colPositions[colPositions.length - 1] + 1]);
 

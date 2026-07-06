@@ -190,6 +190,15 @@ class EventSite extends BasicTableModel {
 		$where = new Where('inventoryMinimum', 0, '>', ['apparel']);
 		$minInvItems = Item::getAllFromDB(null, null, $where);
 
+			// remove this after the first year events are filled.
+		$minInvItems = array_filter($minInvItems, function (Item $item) {
+				// remove: colorID == 4 AND styleID != 8
+			if ($item->colorID == 4 && $item->styleID != 8) {
+				return false;
+			}
+			return true;
+		});
+
 		$inventoryItems = array_map(fn(Item $item) => 
 								EventSiteInventoryItem::fromItem($item, $esID), $minInvItems);
 
