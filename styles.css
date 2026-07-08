@@ -368,6 +368,12 @@ tr.addOnRow {
 	border-radius: 8px;
 }
 
+/* allow a wider modal */
+.modal-content.full {
+    max-width: 1400px;
+    width: 90%;
+}
+
 /* Close Button */
 .close {
 	color: #aaa;
@@ -574,4 +580,24 @@ tr.addOnRow {
 	border-radius: 4px;
 	font-size: 115%;
 	padding: 3px 8px;
+}
+
+
+.reportTable {
+	background-color: white;
+	color: black;
+}
+
+.reportTable td {
+	border-top: 1px solid black;
+}
+
+	/* right align quantity columns */
+.reportTable th:not(:first-child), 
+.reportTable td:not(:first-child) {
+    text-align: right;
+}
+
+.topRow {
+	border-top: 3px solid black;
 }

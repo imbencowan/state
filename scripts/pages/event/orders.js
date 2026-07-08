@@ -5,14 +5,14 @@ import { sizeList } from '../../constants.js';
 import { actionFetch } from '../../fetch.js';
 import { openModal, closeModal } from '../../modal.js';
 import { buildElement } from '../../utilities.js';
-import { buildIcon, buildActionButton, makeSubmitCancelButtons } from '../page-utils.js';
+import { buildIcon, buildActionButton, makeTypeActionLabel, makeSubmitCancelButtons } from '../page-utils.js';
 import { SchoolOrder } from '../../models/db-classes.js';
 import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoices, printSoSPDF, printAllSoSPDF, 
 			printOMessages, genIHSAATotals } from '../../print.js';
 
 
    // define the top orders tab buttons. what they say, and who they call
-export const topOrderButtons = [
+const topOrderButtons = [
    { action: "genBoxLabels", title: "print all undone box labels", icon: "print", text: " Undone Labels",
       handler: printUndoneBoxLabels }, 
    { action: "printAllSoSPDF", title: "print all sites' sign offz sheets", icon: "print", text: " All SoS",
@@ -29,8 +29,11 @@ export const topOrderButtons = [
    { action: "showAllSchoolsAZ", title: "show A-Z list of all schools", icon: "visibility", text: " A-Z Schools",
       handler: showAllSchoolsAZ }
 ];
+export const topOrderActions = Object.fromEntries(
+    topOrderButtons.map(b => [b.action, b.handler])
+);
    // define the order table row actions and their handlers
-export const orderRowButtons = [
+const orderRowButtons = [
    { action: "addAddOns", icon: "add", title: "add add ons", handler: showAddOnInputs, 
       submitHandler: submitAddOns, cancelHandler: cancelAddOns },
    { action: "editSizes", icon: "edit", title: "edit the quantities", handler: showEditSizeInputs,
@@ -40,6 +43,17 @@ export const orderRowButtons = [
    { action: "dlInvoice", icon: "request_quote", title: "download invoice", handler: downloadInvoicePDF },
    { action: "showMore", icon: "more_horiz", title: "show more options", handler: showMoreRowOptions }
 ];
+	// build a couple more look ups for the listener
+export const orderRowActions = Object.fromEntries(
+	orderRowButtons.flatMap(btn => {
+		const entries = [[btn.action, btn.handler]];
+
+		if (btn.submitHandler) entries.push([ makeTypeActionLabel('submit', btn.action), btn.submitHandler ]);
+		if (btn.cancelHandler) entries.push([ makeTypeActionLabel('cancel', btn.action), btn.cancelHandler ]);
+
+		return entries;
+	})
+);
 
 
 
@@ -374,15 +388,7 @@ function attachCommentTable(cntnr, sEvent) {
 }
 
 
-function showNoEvent(sportID, year) {
-   const sport = runtime.allSports.getByID(sportID).name;
 
-   const msg = `There is currently no information for ${sport} for the ` 
-      + `20${year}-20${(Number(year) + 1)} school year.`;
-   const p = buildElement("p", { text: msg });
-   const div = buildElement("div", { children: p });
-   document.getElementById('display').replaceChildren(div);
-}
 
 
 
@@ -789,7 +795,7 @@ function showAddOnInputs({ target, order }) {
 			const btnTD = buildElement("td", { title: 'total' });
 				// put submit and cancel buttons in the btnTD, unless there already is one
 			if (prnt.querySelector('button.submitaddAddOns') === null) {
-				makeSubmitCancelButtons(btnTD, prnt, 'order', target.dataset.action);
+				makeSubmitCancelButtons({ btnCntnr: btnTD, lstnrCntnr: prnt, type: 'order', action: target.dataset.action });
 			}
 			tds.push(btnTD);
 			
@@ -1177,7 +1183,7 @@ function showEditSizeInputs({ target, order }) {
 		const firstCells = rows[0].querySelectorAll('td');
 		const btnTD = firstCells[firstCells.length - 2];
 			// function(btnCntnr, lstnrCntnr, type, action)
-		makeSubmitCancelButtons(btnTD, prnt, 'order', target.dataset.action);
+		makeSubmitCancelButtons({ btnCntnr: btnTD, lstnrCntnr: prnt, type: 'order', action: target.dataset.action });
 
 			// give focus to the first input
 		rows[0].querySelector('input')?.focus();

@@ -10,7 +10,13 @@ class EventSite extends BasicTableModel {
 					'siteID' => 'siteID',
 					'managerName' => 'managerName',
 					'startDate' => 'startDate',
-					'endDate' => 'endDate'];
+					'endDate' => 'endDate',
+					'cost2X' => 'cost2X',
+					'price2X' => 'price2X',
+					'cost3X' => 'cost3X',
+					'price3X' => 'price3X',
+					'cost4X' => 'cost4X',
+					'price4X' => 'price4X'];
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
 			// $interTable = null, $stopContexts = [])
@@ -38,6 +44,12 @@ class EventSite extends BasicTableModel {
 		string|DateTime|null $startDate, 
 		string|DateTime|null $endDate, 
 		public readonly ?Gender $gender, 
+		public readonly ?float $price2X,
+		public readonly ?float $cost2X,
+		public readonly ?float $price3X,
+		public readonly ?float $cost3X,
+		public readonly ?float $price4X,
+		public readonly ?float $cost4X,
     	public readonly array $vehicles = [],
 		array $esDivisions = [],
 		public readonly array $employees = [],
@@ -59,7 +71,8 @@ class EventSite extends BasicTableModel {
 			'esDivisions' => array_values($this->esDivisions),
 			'employees' => $this->employees,
 			'inventory' => $this->inventory,
-			'transfers' => $this->transfers
+			'transfers' => $this->transfers,
+			'plusSizePricing' => $this->getPlusSizePricing()
 		];
 	}
 	
@@ -121,6 +134,23 @@ class EventSite extends BasicTableModel {
 
 	public function getVehicleNames(): array {
 		return array_map(fn($v) => $v->name, $this->vehicles);
+	}
+
+	public function getPlusSizePricing(): mixed {
+		return [
+			'2X' => [
+				'price' => $this->price2X,
+				'cost' => $this->cost2X
+			],
+			'3X' => [
+				'price' => $this->price3X,
+				'cost' => $this->cost3X
+			],
+			'4X' => [
+				'price' => $this->price4X,
+				'cost' => $this->cost4X
+			]
+		];
 	}
 
 

@@ -100,6 +100,14 @@ export function buildElement(tag, { text, html, classes, id, title, attrs, datas
    return el;
 }
 
+export function buildTD(text) {
+   return buildElement("td", { text: text });
+}
+
+export function buildDollarTD(value) {
+   return buildTD(formatCurrency(value));
+}
+
 
 
 
@@ -283,6 +291,11 @@ export function giveFirstFocus(container = document) {
       // lowercases. // trims.  // replaces ' ' with '-', so Boys  Basketball => boys-basketball
 export function slugify(str) {
    return str.toLowerCase().trim().replace(/\s+/g, '-');
+}
+
+   // standardize printing $ amounts
+export function formatCurrency(value) {
+	return `${(value ?? 0).toFixed(2)}`;
 }
 
 

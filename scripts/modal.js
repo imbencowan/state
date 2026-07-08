@@ -5,18 +5,23 @@ import { giveFirstFocus } from './utilities.js';
 
 
 let modal;
+let modalBox;
 let modalContent;
 let closeBtn;
 
 function init() {
    modal = document.getElementById("myModal");
+   modalBox = document.querySelector(".modal-content");
    modalContent = document.getElementById("modalContent");
    closeBtn = document.querySelector(".close");
 
    closeBtn.addEventListener("click", closeModal);
 }
 
-function openModal(content) {
+function openModal(content, size = "") {
+   modalBox.classList.remove("wide", "full");
+   if (size) modalBox.classList.add(size);   
+   
    modalContent.innerHTML = "";
 
    if (typeof content === "string") {

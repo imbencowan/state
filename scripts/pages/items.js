@@ -9,13 +9,16 @@ import { navigate } from '../navigation.js';
 
    // define the pages buttons
 const topItemsButtons = [
-	{ action: "editStock", title: "edit stock", icon: "edit", text: " Stock", handler: showEditStock, 
-		submitHandler: submitEditStock, cancelHandler: cancelStockUpdate },
+	{ action: "editStock", title: "edit stock", icon: "edit", text: " Stock", datasetExtra: { column: 'stock' },
+      handler: showUpdateItems, submitHandler: submitEditStock, cancelHandler: cancelItemsUpdate },
 	{ action: "incrementStock", title: "increment stock", icon: "add", text: " Stock", handler: showIncrementStock,
-      submitHandler: submitIncrementStock, cancelHandler: cancelStockUpdate },
-	{ action: "editPrices", title: "edit prices", icon: "edit", text: " Prices", handler: showEditPrices },
+      submitHandler: submitIncrementStock, cancelHandler: cancelItemsUpdate },
+	{ action: "editPrices", title: "edit prices", icon: "edit", text: " Prices", datasetExtra: { column: 'price' },
+      handler: showUpdateItems, submitHandler: submitEditPrices, cancelHandler: cancelItemsUpdate },
 	{ action: "editBase", title: "edit base inventory", icon: "edit", text: " Base", handler: showEditBaseInventory,
-      submitHandler: submitEditBaseInventory, cancelHandler: cancelStockUpdate }
+      submitHandler: submitEditBaseInventory, cancelHandler: cancelItemsUpdate },
+   { action: "editMcUCost", title: "edit McU cost", icon: "edit", text: " Costs", datasetExtra: { column: 'cost' }, 
+      handler: showUpdateItems, submitHandler: submitEditCosts, cancelHandler: cancelItemsUpdate }
 ];
 
 const topItemsActions = Object.fromEntries(
@@ -38,6 +41,7 @@ export async function goToItemsPage() {
    const allItems = await runtime.allItems.load();
 
    const groupedItems = { garments: groupItemsByStyleByColor(allItems) };
+   console.log(groupedItems);
 
    buildItemsPage(groupedItems);
 }
@@ -86,7 +90,7 @@ function buildGarmentsTable(garments) {
 }
 
 function buildGarmentsTHead() {
-   const thTexts = [ 'Style', 'Color', 'ID', 'Size', 'Price', 'Stock' ];
+   const thTexts = [ 'Style', 'Color', 'ID', 'Size', 'Price', 'McU Cost', 'Stock' ];
    const thRow = buildElement("tr");
 
    thTexts.forEach(t => {
@@ -108,6 +112,7 @@ function buildGarmentRows(garments) {
             tds.push(buildElement("td", { text: item.id }));
             tds.push(buildElement("td", { text: item.size.displayChar }));
             tds.push(buildElement("td", { text: item.price, dataset: { oPrice: item.price } }));
+            tds.push(buildElement("td", { text: item.cost, dataset: { oCost: item.cost } }));
             tds.push(buildElement("td", { text: item.stock, dataset: { oStock: item.stock } }));
 
             rows.push(buildElement("tr", { children: tds, dataset: { itemID: item.id } }));
@@ -154,11 +159,14 @@ export function addItemsPageFunctionality() {
 ////////////////////////////////////////////////////////////////////////////////////////////
 // UI functionality
 
-function showEditStock({ target }) {
-   runtime.activeMode = 'editStock';
+function showUpdateItems({ target }) {
+   const column = target.dataset.column;
+   if (!column) return;
+
+   runtime.activeMode = `editItems${column}`;
 
    const tbl = document.getElementById('allGarmentsTable');
-   const tds = tbl.querySelectorAll('td[data-o-stock]');
+   const tds = tbl.querySelectorAll(`td[data-o-${column}]`);
 
    tds.forEach(td => {
       const inpt = makeStockInput(td);
@@ -168,8 +176,10 @@ function showEditStock({ target }) {
 
    tds[0]?.querySelector('input')?.focus();
 
-      // function(buttonContainer, listenerContainer, type, action, id = null)
-   makeSubmitCancelButtons(target.parentElement, tbl, 'items', target.dataset.action);
+      // function({ btnCntnr, lstnrCntnr, type, action, datasetExtra = {} })
+   makeSubmitCancelButtons({ btnCntnr: target.parentElement, lstnrCntnr: tbl, type: 'items', 
+         action: target.dataset.action, datasetExtra: { column: target.dataset.column } });
+   console.log('change')
 }
 
 function showIncrementStock({ target }) {
@@ -186,7 +196,8 @@ function showIncrementStock({ target }) {
 
    tds[0]?.querySelector('input')?.focus();
 
-   makeSubmitCancelButtons(target.parentElement, tbl, 'items', target.dataset.action);
+   makeSubmitCancelButtons({ btnCntnr: target.parentElement, lstnrCntnr: tbl, type: 'items', 
+         action: target.dataset.action });
 }
 
 function makeStockInput(td, value = td.dataset.oStock) {
@@ -240,18 +251,21 @@ async function submitEditStock({ target }) {
 			openModal("there was a problem submitting the inventory edit");
 		}
 	} else {
-		cancelStockUpdate(target);
+		cancelItemsUpdate(target);
 	}
 }
 
-function cancelStockUpdate({ target }) {
-   // get the right table
+function cancelItemsUpdate({ target }) {
+      // get the right table
    const tbl = document.getElementById('allGarmentsTable');
+   
+   const column = target.dataset.column;
+   const datasetKey = `o${column.charAt(0).toUpperCase()}${column.slice(1)}`;
 
       // clear the tds
-   tbl.querySelectorAll('td[data-o-stock]').forEach(td => {
+   tbl.querySelectorAll(`td[data-o-${column}]`).forEach(td => {
       td.innerHTML = '';
-      td.textContent = td.dataset.oStock;
+      td.textContent = td.dataset[datasetKey];
    });
 
       // reset the buttons
@@ -301,8 +315,12 @@ async function submitIncrementStock({ target }) {
 			openModal("there was a problem submitting the stock increment");
 		}
 	} else {
-		cancelStockUpdate(target);
+		cancelItemsUpdate(target);
 	}
+}
+
+function submitEditPrices({ target }) {
+   console.log("sub price")
 }
 
 function resetTopButtons(btn) {
@@ -314,9 +332,8 @@ function resetTopButtons(btn) {
 }
 
 
+async function submitEditCosts({ target }) {
 
-function showEditPrices() {
-   console.log('edit prices');
 }
 
 
@@ -336,7 +353,8 @@ function showEditBaseInventory({ target }) {
 
    tds[0]?.querySelector('input')?.focus();
 
-   makeSubmitCancelButtons(target.parentElement, tbl, 'items', target.dataset.action);
+   makeSubmitCancelButtons({ btnCntnr: target.parentElement, lstnrCntnr: tbl, type: 'items', 
+         action: target.dataset.action });
 }
 
 async function submitEditBaseInventory({ target }) {
@@ -368,12 +386,12 @@ async function submitEditBaseInventory({ target }) {
 			runtime.activeMode = null;
 
 				// reset the table
-         cancelStockUpdate({ target })
+         cancelItemsUpdate({ target })
 		} else {
 			openModal("there was a problem submitting the inventory edit");
 		}
 	} else {
-		cancelStockUpdate({ target });
+		cancelItemsUpdate({ target });
 	}
 }
 

@@ -17,8 +17,12 @@ export const topInventoryButtons = [
    { action: "printAllInventories", title: "print all full inventories", icon: "print", text: " All Full",
       handler: () => printInventories({ pages: 3 }) }
 ];
+	// an array of action/handler pairs based on buttons to be used the page's event listener
+export const topInventoryActions = Object.fromEntries(
+    topInventoryButtons.map(b => [b.action, b.handler])
+);
    // define per site inventory buttons
-export const inventorySiteButtons = [
+const inventorySiteButtons = [
    { action: "printSiteInventoryPage1", icon: "print", title: "print site's starting inventory", text: " Page 1",
       handler: ({ eSite }) => printInventories({ pages: 1, eSites: [eSite] }) },
    { action: "printSiteInventory", icon: "print", title: "print site's inventory sheets", text: " Full",
@@ -31,6 +35,24 @@ export const inventorySiteButtons = [
    { action: "addTransfer", title: "add a transfer type", text: "+ Transfer", handler: showAddTransfer },
    { action: "genBaseInventory", title: "generate a base inventory", text: "+ Inventory", handler: genBaseInventory }
 ];
+	// action/handler array
+export const inventorySiteActions = Object.fromEntries(
+	inventorySiteButtons.flatMap(btn => {
+		const entries = [[btn.action, btn.handler]];
+
+		if (btn.addedHandlers) {
+			for (const [type, fn] of Object.entries(btn.addedHandlers)) {
+				entries.push([	makeTypeActionLabel(type, btn.action), fn ]);
+			}
+		}
+
+		if (btn.submitHandler) entries.push([ makeTypeActionLabel("submit", btn.action), btn.submitHandler ]);
+		if (btn.cancelHandler) entries.push([ makeTypeActionLabel("cancel", btn.action), btn.cancelHandler ]);
+
+		return entries;
+	})
+);
+
 
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -238,8 +260,9 @@ function showEditInventory({ target }) {
 		// give focus
 	invTDs[0]?.querySelector('input')?.focus();
 
-		// function(buttonContainer, listenerContainer, type, action, id)
-	makeSubmitCancelButtons(btn.parentElement, invTbl, 'inventory', btn.dataset.action, btn.dataset.eventSiteID);
+		
+	makeSubmitCancelButtons({ btnCntnr: btn.parentElement, lstnrCntnr: invTbl, type: 'inventory', 
+         action: btn.dataset.action, datasetExtra: { id: btn.dataset.eventSiteID } });
 }
 
 async function submitInventoryEdit({ target }) {
@@ -358,7 +381,7 @@ function resetInventoryButtons(btn) {
 	const prnt = btn.parentElement;
 	prnt.innerHTML = '';
 
-	const newBtns = buildInventorySiteButtons(runtime.stateEvent.getEventSiteByID(Number(btn.dataset.id)));
+	const newBtns = buildInventorySiteButtons(runtime.stateEvent.getEventSiteByID(btn.dataset.id));
 	prnt.append(...newBtns);
 }
 
@@ -377,8 +400,8 @@ function showFillInventory({ target }) {
 	prnt.appendChild(tbl);
    
 		// function(buttonContainer, listenerContainer, type, action, id)
-	makeSubmitCancelButtons(target.parentElement, tbl, 'inventory', target.dataset.action, target.dataset.eventSiteID);
-   
+	makeSubmitCancelButtons({ btnCntnr: target.parentElement, lstnrCntnr: tbl, type: 'inventory', 
+         action: target.dataset.action, datasetExtra: { id: target.dataset.eventSiteID } });
 
 	tbl.addEventListener('input', e => {
 		if (!e.target.matches('input')) return;
@@ -392,7 +415,7 @@ function showFillInventory({ target }) {
 	tbl?.querySelector('input')?.focus();
 }
 
-function buildFillTable(eSite) {
+export function buildFillTable(eSite) {
    const thead = buildFillTHead();
    const rows = buildFillRows(eSite);
    const tbody = buildElement('tbody', { children: rows });
@@ -494,7 +517,7 @@ function buildFillAccessoryRows(accessories, rows, rowCount) {
 function buildItemFillTDs(tds, invItem, rowCount, row) {
 	   // start columns
 	const startQ = invItem.startQ;
-	tds.push(buildElement("td", { text: startQ, classes: [ 'qCol' ], 
+	tds.push(buildElement("td", { text: startQ, title: 'start', classes: [ 'qCol' ], 
 				dataset: { fillType: 'startQ', oValue: startQ } }));
 
 		// input columns
@@ -507,13 +530,13 @@ function buildItemFillTDs(tds, invItem, rowCount, row) {
 			const input = makeFillInput(invItem[col], col);
 				// set tab index so we can tab by column rather than row
 			input.tabIndex = (i * rowCount) + row + 1;
-			tds.push(buildElement("td", { children: [ input ], classes: ['qCol'] }));
+			tds.push(buildElement("td", { title: (col.slice(0, -1)), children: [ input ], classes: ['qCol'] }));
 		}
 	});
 
 		// sold column
 	const soldQ = invItem.getSoldQ();
-	tds.push(buildElement("td", { text: soldQ, classes: [ 'qCol' ], 
+	tds.push(buildElement("td", { text: soldQ, title: 'sold', classes: [ 'qCol' ], 
 				dataset: { fillType: 'soldQ', oValue: soldQ } }));
 }
 
@@ -531,49 +554,49 @@ function makeFillInput(oValue, type) {
 	return input;
 }
 
-	 // takes a container, clears it, inserts a submit and cancel button
-		  // the listener container fires a submit or cancel click when 'ENTER' or 'ESC' are pressed
-function makeFillHandlerButtons(btnCntnr, lstnrCntnr, type, action, id = null) {
-		  // first, clear the destination
-	 btnCntnr.innerHTML = '';
+// 	 // takes a container, clears it, inserts a submit and cancel button
+// 		  // the listener container fires a submit or cancel click when 'ENTER' or 'ESC' are pressed
+// function makeFillHandlerButtons(btnCntnr, lstnrCntnr, type, action, id = null) {
+// 		  // first, clear the destination
+// 	 btnCntnr.innerHTML = '';
 
-		  // make the buttons // secondary classes guide listeners handling
-	 const submitButton = buildElement('button', { text: 'Submit', type: 'button',
-		  classes: ['addOnButton', `${type}-action`, `submit${action}`], 
-		  dataset: { id: id, action: makeTypeActionLabel('submit', action) }
-	 });
-	 const updateSoldButton = buildElement('button', { text: 'Update Sold', type: 'button',
-		  classes: ['addOnButton', `${type}-action`, `update${action}`], 
-		  dataset: { id: id, action: makeTypeActionLabel('update', action) }
-	 });
-	 const cancelButton = buildElement('button', { text: 'X', type: 'button',
-		  classes: ['addOnButton', `${type}-action`, `cancel${action}`], 
-		  dataset: { id: id, action: makeTypeActionLabel('cancel', action) }
-	 });
-		  // append them
-	 btnCntnr.append(submitButton, updateSoldButton, cancelButton);
+// 		  // make the buttons // secondary classes guide listeners handling
+// 	 const submitButton = buildElement('button', { text: 'Submit', type: 'button',
+// 		  classes: ['addOnButton', `${type}-action`, `submit${action}`], 
+// 		  dataset: { id: id, action: makeTypeActionLabel('submit', action) }
+// 	 });
+// 	 const updateSoldButton = buildElement('button', { text: 'Update Sold', type: 'button',
+// 		  classes: ['addOnButton', `${type}-action`, `update${action}`], 
+// 		  dataset: { id: id, action: makeTypeActionLabel('update', action) }
+// 	 });
+// 	 const cancelButton = buildElement('button', { text: 'X', type: 'button',
+// 		  classes: ['addOnButton', `${type}-action`, `cancel${action}`], 
+// 		  dataset: { id: id, action: makeTypeActionLabel('cancel', action) }
+// 	 });
+// 		  // append them
+// 	 btnCntnr.append(submitButton, updateSoldButton, cancelButton);
 
-		  // add event listeners for ESC and ENTER
-	 if (lstnrCntnr) {
-				// define the listener as a named function
-		  const keyHandler = function(e) {
-				if (e.key === 'Escape') {
-						  cancelButton.click();
-						  cleanup();
-				} else if (e.key === 'Enter') {
-						  updateSoldButton.click();
-						  cleanup();
-				}
-		  };
+// 		  // add event listeners for ESC and ENTER
+// 	 if (lstnrCntnr) {
+// 				// define the listener as a named function
+// 		  const keyHandler = function(e) {
+// 				if (e.key === 'Escape') {
+// 						  cancelButton.click();
+// 						  cleanup();
+// 				} else if (e.key === 'Enter') {
+// 						  updateSoldButton.click();
+// 						  cleanup();
+// 				}
+// 		  };
 
-		  lstnrCntnr.addEventListener('keydown', keyHandler);
+// 		  lstnrCntnr.addEventListener('keydown', keyHandler);
 
-				// define a cleanup helper
-		  function cleanup() {
-				lstnrCntnr.removeEventListener('keydown', keyHandler);
-		  }
-	 }
-}
+// 				// define a cleanup helper
+// 		  function cleanup() {
+// 				lstnrCntnr.removeEventListener('keydown', keyHandler);
+// 		  }
+// 	 }
+// }
 
 function updateFillRow(row) {
 	const start = row.querySelector('[data-fill-type="startQ"]')?.textContent ?? 0;
@@ -589,7 +612,7 @@ function updateFillRow(row) {
 	if (soldCell) soldCell.textContent = sold;
 }
 
-async function submitFillInventory({ target }) {
+export async function submitFillInventory({ target }) {
 		// define a pair of helpers
 	function valueChanged(el) {
 		if (!el) return false;
@@ -780,12 +803,18 @@ function showAddTransfer({ target, eSite }) {
 	runtime.activeMode = 'addInventoryTransfer';
 
 		// bring in allTransfers
-	const allTransfers = runtime.allTransfers.getSync();
+	const allTransfers = Object.values(runtime.allTransfers.getSync());
+		//filter out three transfers
+	const psblTransfers = allTransfers.filter(transfer => {
+		return ![ 'custom', 'misc $5 transfers', 'misc $7 transfers' ].includes(transfer.transferName);
+	});
+
+	console.log(psblTransfers);
 
 		// make a Set of existing transferIDs
 	const existingIDs = new Set(eSite.transfers.map(t => t.transferID));
 		// filter out matches
-	const unTransfers = Object.values(allTransfers).filter(t => !existingIDs.has(t.id));
+	const unTransfers = psblTransfers.filter(t => !existingIDs.has(t.id));
 
 		// build a form to add transfers not already part of the event
 	const frm = buildElement("form", { id: 'addTransferForm', dataset: { esID: eSite.id } });

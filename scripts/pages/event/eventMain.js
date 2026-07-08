@@ -8,12 +8,13 @@ import { parseEventRoute } from './routeHelpers.js';
 import { StateEvent } from '../../models/db-classes.js';
 import { buildElement } from '../../utilities.js';
 import { downloadInvoicePDF, printSoSPDF } from '../../print.js';
-import { buildActionButton, makeTypeActionLabel } from '../page-utils.js';
-import { topOrderButtons, orderRowButtons, attachOrdersPanel, toggleOrderCompleteness, 
+import { buildActionButton } from '../page-utils.js';
+import { topOrderActions, orderRowActions, attachOrdersPanel, toggleOrderCompleteness, 
 			changeCommentHandled } from './orders.js';
-import { topInventoryButtons, inventorySiteButtons, attachInventoryPanel } from './inventory.js';
-import { attachReportsPanel } from './reports.js';
+import { topInventoryActions, inventorySiteActions, attachInventoryPanel } from './inventory.js';
+import { attachReportsPanel, reportSiteActions } from './reports.js';
 import { openModal } from '../../modal.js';
+
 
 
 
@@ -30,53 +31,16 @@ const prevNextEventButtons = [
 	{ action: "nextEvent", title: "show next event", text: "▶", handler: () => showPrevNextEvent('next') }
 ];
 
-
-	// build a lookup for the top button handlers
+	// build lookups for the top button handlers
 const prevNextActions = Object.fromEntries(
 	prevNextEventButtons.map(b => [b.action, b.handler])
 )
-const topOrderActions = Object.fromEntries(
-    topOrderButtons.map(b => [b.action, b.handler])
-);
-const topInventoryActions = Object.fromEntries(
-    topInventoryButtons.map(b => [b.action, b.handler])
-);
 const topActions = {
 	printSoSPDF: ({ target }) => printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid)),
 	...prevNextActions,
 	...topOrderActions,
 	...topInventoryActions
 };
-
-
-	// build a couple more look ups for the listener
-const orderRowActions = Object.fromEntries(
-	orderRowButtons.flatMap(btn => {
-		const entries = [[btn.action, btn.handler]];
-
-		if (btn.submitHandler) entries.push([ makeTypeActionLabel('submit', btn.action), btn.submitHandler ]);
-		if (btn.cancelHandler) entries.push([ makeTypeActionLabel('cancel', btn.action), btn.cancelHandler ]);
-
-		return entries;
-	})
-);
-const inventorySiteActions = Object.fromEntries(
-	inventorySiteButtons.flatMap(btn => {
-		const entries = [[btn.action, btn.handler]];
-
-		if (btn.addedHandlers) {
-			console.log('added');
-			for (const [type, fn] of Object.entries(btn.addedHandlers)) {
-				entries.push([	makeTypeActionLabel(type, btn.action), fn ]);
-			}
-		}
-
-		if (btn.submitHandler) entries.push([ makeTypeActionLabel("submit", btn.action), btn.submitHandler ]);
-		if (btn.cancelHandler) entries.push([ makeTypeActionLabel("cancel", btn.action), btn.cancelHandler ]);
-
-		return entries;
-	})
-);
 
 		
 
@@ -93,13 +57,6 @@ export async function goToEventPage(sportID = null, year = null, tab = 'orders')
 			// if no sport provided, get the next/most recent Event
 		if(!sportID) {
 			response = await actionFetch('getEventByDate', 'Event', { 'date': null });
-		} else if (tab == 'reports') {
-				////////////////////////////////////////////////////////////////////
-				// THIS IS A PLACE HOLDER TO ALLOW THE REPORTS TAB TO FUNCTION FOR NOW
-					// it will need to be replaced with a different action to fetch
-					// reports will want aggregate data, not raw like orders/inventory
-			const data = { 'year': year, 'sportID': sportID, 'context': 'orders' }
-			response = await actionFetch('getEventBySportAndYear', 'Event', data);
 		} else {
 				// other wise look up the event by sport and year. // pass tab as context
 			if (!year) {
@@ -262,6 +219,16 @@ async function showPrevNextEvent(drctn) {
 	}
 }
 
+function showNoEvent(sportID, year) {
+   const sport = runtime.allSports.getByID(sportID).name;
+
+   const msg = `There is currently no information for ${sport} for the ` 
+      + `20${year}-20${(Number(year) + 1)} school year.`;
+   const p = buildElement("p", { text: msg });
+   const div = buildElement("div", { children: p });
+   document.getElementById('display').replaceChildren(div);
+}
+
 
 
 
@@ -291,8 +258,11 @@ export function addEventPageFunctionality() {
 			args.order = getOrderFromTableButton(target);
 			handler = orderRowActions[action];
 		} else if (target.classList.contains("inventory-action")) {
+			console.log(target);
 			args.eSite = runtime.stateEvent.getEventSiteByID(target.dataset.eventSiteID);
 			handler = inventorySiteActions[action];
+		} else if (target.classList.contains("report-action")) {
+			handler = reportSiteActions[action];
 		} else {
 			handler = topActions[action];
 		}

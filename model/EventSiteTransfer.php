@@ -11,7 +11,8 @@ class EventSiteTransfer extends BasicTableModel {
          'transferID' => 'transferID',
          'startQ' => 'startQ',
 			'soldQ' => 'soldQ',
-         'price' => 'price'
+         'price' => 'price',
+			'cost' => 'mcuCost'
       ]; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
@@ -27,6 +28,7 @@ class EventSiteTransfer extends BasicTableModel {
       public readonly ?int $startQ,
 		public readonly ?int $soldQ,
       public readonly float $price,
+		public readonly float $cost,
 		public readonly ?Transfer $transfer = null
 	) {}
 

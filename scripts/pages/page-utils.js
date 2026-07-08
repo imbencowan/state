@@ -2,6 +2,8 @@ import { buildElement } from "../utilities.js";
 
     // builds a semi specific type of button. this condenses some styling used repeatedly
 export function buildActionButton({ action, title = "", icon = null, text = "", classes = [], datasetExtra = {} }) {
+    if (typeof classes === "string") classes = [classes];
+    
     const children = [];
     if (icon) children.push(buildIcon(icon));
     if (text) children.push(text);
@@ -21,18 +23,18 @@ export function buildIcon(type) {
 
     // takes a container, clears it, inserts a submit and cancel button
         // the listener container fires a submit or cancel click when 'ENTER' or 'ESC' are pressed
-export function makeSubmitCancelButtons(btnCntnr, lstnrCntnr, type, action, id = null) {
+export function makeSubmitCancelButtons({ btnCntnr, lstnrCntnr, type, action, datasetExtra = {} }) {
         // first, clear the destination
     btnCntnr.innerHTML = '';
 
         // make the buttons // secondary classes guide listeners handling
     const submitButton = buildElement('button', { text: 'Submit', type: 'button',
         classes: ['addOnButton', `${type}-action`, `submit${action}`], 
-        dataset: { id: id, action: makeTypeActionLabel('submit', action) }
+        dataset: { action: makeTypeActionLabel('submit', action), ...datasetExtra }
     });
     const cancelButton = buildElement('button', { text: 'X', type: 'button',
         classes: ['addOnButton', `${type}-action`, `cancel${action}`], 
-        dataset: { id: id, action: makeTypeActionLabel('cancel', action) }
+        dataset: { action: makeTypeActionLabel('cancel', action), ...datasetExtra }
     });
         // append them
     btnCntnr.append(submitButton, cancelButton);

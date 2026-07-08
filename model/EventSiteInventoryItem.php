@@ -18,14 +18,15 @@ class EventSiteInventoryItem extends BasicTableModel {
          'addedQ' => 'addedQ',
          'writeOffQ' => 'writeOffQ', 
 			'sponsorQ' => 'sponsorQ',
-         'price' => 'price'
+         'price' => 'price',
+			'cost' => 'mcuCost'
       ]; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
 			// $interTable = null, $stopContexts = [])
 	protected static function getRelations(): array { 
 		// return [ new Relation('item', 'Item', 'itemID', 'itemID') ];
-		return [ new Relation('item', 'Item', 'itemID', 'itemID', false, null, ['inventory']) ];
+		return [ new Relation('item', 'Item', 'itemID', 'itemID', false, null, [ 'inventory', 'reports' ]) ];
 	}
 	
 	public function __construct(
@@ -38,6 +39,7 @@ class EventSiteInventoryItem extends BasicTableModel {
       public readonly int $writeOffQ = 0,
 		public readonly int $sponsorQ = 0,
       public readonly ?float $price = null,
+		public readonly ?float $cost = null,
 		public readonly ?Item $item = null
 	) {}
 

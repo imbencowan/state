@@ -9,7 +9,8 @@ class SOrderTransfer extends BasicTableModel {
 					'schoolOrderID' => 'schoolOrderID', 
 					'transferID' => 'transferID', 
 					'quantity' => 'sOrderTransfersQuantity',
-					'price' => 'orderPrice'
+					'price' => 'orderPrice',
+					'cost' => 'mcuCost'
 					]; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
@@ -24,7 +25,8 @@ class SOrderTransfer extends BasicTableModel {
 		public readonly int $transferID,
       public readonly ?Transfer $transfer,
       public readonly int $quantity,
-		public readonly float $price
+		public readonly float $price,
+		public readonly float $cost
    ) {}
 	
 

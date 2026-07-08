@@ -9,6 +9,7 @@ class Transfer extends BasicTableModel {
 					'transferName' => 'transferName', 
 					'inventoryName' => 'inventoryName', 
 					'price' => 'price',
+               'cost' => 'mcuCost',
                'listOrder' => 'listOrder'
             ]; 
 	}
@@ -22,6 +23,7 @@ class Transfer extends BasicTableModel {
       public readonly ?string $transferName,
       ?string $inventoryName,
       public readonly ?float $price,
+      public readonly ?float $cost,
       public readonly ?int $listOrder
    ) {
          // If $inventoryName is null, fallback to $transferName

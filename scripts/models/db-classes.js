@@ -6,7 +6,7 @@
    // import helper functions
 import * as Utils from '../utilities.js';
 import { parseWithRegistry } from '../hydration.js';
-import { sizeList, ADULT_HOOD_STYLE_ID } from '../constants.js';
+import { sizeList, ADULT_HOOD_STYLE_ID, DAIRY_STYLE_ID } from '../constants.js';
 import { actionFetch } from '../fetch.js';
 // DO NOT IMPORT RUNTIME, no circular dependencies.
 
@@ -38,6 +38,7 @@ export class StateEvent {
 	}
 	
 	getEventSiteByID(id) {
+      id = Number(id);
 		if (!this.esMap) {
          this.esMap = new Map();
 
@@ -211,7 +212,7 @@ export class Sport {
 
 export class EventSite {
    constructor({ id, eventID, site, siteID, managerName, gender, vehicle, employees, inventory, transfers, 
-               esDivisions = [] }) {
+               plusSizePricing, esDivisions = [] }) {
 		this.id = id;
 		this.eventID = eventID;
 		this.site = parseWithRegistry(site, Site, siteID);
@@ -221,6 +222,7 @@ export class EventSite {
       this.employees = Utils.parseToInstancesArr(employees, Employee);
       this.inventory = Utils.parseToInstancesArr(inventory, InventoryItem);
       this.transfers = Utils.parseToInstancesArr(transfers, InventoryTransfer);
+      this.plusSizePricing = plusSizePricing;
       this.inventoryLoaded = false;
 		this.esDivisions = Utils.parseToInstancesArr(esDivisions, EventSiteDivision);
 	}
@@ -282,28 +284,14 @@ export class EventSite {
             const styleID = inv.item.style.id;
             const colorID = inv.item.color.id;
 
-               // initialize style container
-            if (!styles[styleID]) {
-                  styles[styleID] = {
-                     ...inv.item.style,
-                     colors: {}
-                  };
-            }
-
-               // initialize color container
-            if (!styles[styleID].colors[colorID]) {
-                  styles[styleID].colors[colorID] = {
-                     ...inv.item.color,
-                     sizes: {}
-                  };
-            }
+               // initialize style/color containers if they don't exist (??=)
+            styles[styleID] ??= { ...inv.item.style, colors: {} };
+            styles[styleID].colors[colorID] ??= { ...inv.item.color, sizes: {} };
 
                // push the inventory item
             styles[styleID].colors[colorID].sizes[inv.item.size.displayChar] = inv;
          }
       }
-
-      // console.log(styles);
 
          // convert styles object → ordered array
       const orderedStyles = Object.values(styles)
@@ -349,6 +337,86 @@ export class EventSite {
          const invItem = this.inventory.find(ii => ii.id === u.invItemID);
          invItem.startQ = Number(u.quantity);
       });
+   }
+
+   getReportInventory() {
+      const PLUS_SIZECHARS = new Set([ '2X', '3X', '4X' ]);
+      const plusSizes = { '2X': 0, '3X': 0, '4X': 0 }
+
+      const transfers = this.getInventoryTransfers();
+      const accessories = [];
+      let garments = {};
+
+      for (const inv of this.inventory) {
+         const sizeCat = inv.item.style.sizingCategoryID;
+         const styleID = inv.item.style.id;
+            // handle 'one size fits all' items first
+         if (sizeCat == 4) {
+            accessories.push(inv);
+               // handle garments
+         } else if (sizeCat == 1 || sizeCat == 2 || sizeCat == 3) {
+            const colorID = inv.item.color.id;
+            const sChar = inv.item.size.displayChar;
+            const sold = inv.getSoldQ();
+
+               // initialize style/color containers if they
+            garments[styleID] ??= { ...inv.item.style, colors: {} };
+            garments[styleID].colors[colorID] ??= { ...inv.item.color, retailTotal: 0, sOrderTotal: 0, 
+                                                   cost: null, price: null };
+
+               // add the inventory item
+            garments[styleID].colors[colorID].retailTotal += sold;
+               // ??= allows assigning once
+            if (!PLUS_SIZECHARS.has(sChar)) {
+               garments[styleID].colors[colorID].cost ??= inv.cost;
+               garments[styleID].colors[colorID].price ??= inv.price;
+            } else {
+               plusSizes[sChar] += sold;
+            }
+         }
+      }
+
+         // add add ons from school orders
+      for (const esd of this.esDivisions) {
+         for (const so of esd.schoolOrders) {
+            for (const soi of so.oItems) {
+               const styleID = soi.item.style.id;
+               const colorID = soi.item.color.id;
+               const sChar = soi.item.size.displayChar;
+               if (styleID === DAIRY_STYLE_ID) continue;
+
+               garments[styleID] ??= { ...soi.item.style, colors: {} };
+               garments[styleID].colors[colorID] ??= { ...soi.item.color, retailTotal: 0, sOrderTotal: 0, 
+                                                   cost: 0, price: 0 };
+               
+                  // add the quantity
+               garments[styleID].colors[colorID].sOrderTotal += soi.quantity;  
+               
+                  // track plus sizes
+               if (PLUS_SIZECHARS.has(sChar)) plusSizes[sChar] += sold;
+            }
+         }
+      }
+
+
+      // convert styles object → ordered array
+      garments = Object.values(garments)
+         .sort((a, b) => a.listOrder - b.listOrder)
+         .map(style => {
+               // convert colors object → array (optional sort)
+            const orderedColors = Object.values(style.colors)
+               // .sort((a, b) => a.listOrder - b.listOrder) // optional if you add listOrder for colors
+            
+            return {
+               ...style,
+               colors: orderedColors
+            };
+         });
+      accessories.sort((a, b) => 
+         a.item.style.listOrder - b.item.style.listOrder
+      );
+
+      return { garments, accessories, transfers, plusSizes };
    }
 
    static async fetchOrders(eSites, allItems, allTransfers) {
@@ -739,9 +807,10 @@ export class MessageOrder {
 export class Item {
    static registry = null;
 
-   constructor({ id, price, stock, caseQ, inventoryMin, inventoryStep, color, size, style }) {
+   constructor({ id, price, cost, stock, caseQ, inventoryMin, inventoryStep, color, size, style }) {
       this.id = id;
       this.price = price;
+      this.cost = cost;
       this.stock = stock;
       this.caseQ = caseQ;
       this.inventoryMin = inventoryMin;
@@ -751,8 +820,8 @@ export class Item {
       this.style = Utils.parseToInstance(style, Style);
    }
 
-   static fromValues(id, price, stock, caseQ, inventoryMin, inventoryStep, color, size, style) {
-      return new Item({ id, price, stock, caseQ, inventoryMin, inventoryStep, color, size, style });
+   static fromValues(id, price, cost, stock, caseQ, inventoryMin, inventoryStep, color, size, style) {
+      return new Item({ id, price, cost, stock, caseQ, inventoryMin, inventoryStep, color, size, style });
    }
 
    static fromJSON(json) {
@@ -769,7 +838,7 @@ export class Item {
 }
 
 export class InventoryItem {
-   constructor({ id, eventSiteID, itemID, startQ, endQ, addedQ, writeOffQ, sponsorQ, price, item }) {
+   constructor({ id, eventSiteID, itemID, startQ, endQ, addedQ, writeOffQ, sponsorQ, price, cost, item }) {
 		this.id = id;
 		this.eventSiteID = eventSiteID;
 		this.itemID = itemID;
@@ -779,11 +848,12 @@ export class InventoryItem {
       this.writeOffQ = writeOffQ;
       this.sponsorQ = sponsorQ;
       this.price = price;
+      this.cost = cost;
       this.item = parseWithRegistry(item, Item, itemID);   
 	}
 
-   static fromValues(id, eventSiteID, itemID, startQ, endQ, addedQ, removedQ, price, item) {
-      return new InventoryItem({ id, eventSiteID, itemID, startQ, endQ, addedQ, removedQ, price, item });
+   static fromValues(id, eventSiteID, itemID, startQ, endQ, addedQ, removedQ, price, cost, item) {
+      return new InventoryItem({ id, eventSiteID, itemID, startQ, endQ, addedQ, removedQ, price, cost, item });
    }
 
    static fromJSON(json) {
@@ -941,16 +1011,17 @@ export class Brand {
 }
 
 export class Transfer {
-   constructor({ id, transferName, inventoryName, price, listOrder }) {
+   constructor({ id, transferName, inventoryName, price, cost, listOrder }) {
       this.id = id;
       this.transferName = transferName;
       this.inventoryName = inventoryName ?? transferName;
       this.price = price;
+      this.cost = cost;
       this.listOrder = listOrder;
    }
 
-   static fromValues(id, transferName, inventoryName, price, listOrder) {
-      return new Transfer({ id, transferName, inventoryName, price, listOrder });
+   static fromValues(id, transferName, inventoryName, price, cost, listOrder) {
+      return new Transfer({ id, transferName, inventoryName, price, cost, listOrder });
    }
 
    static fromJSON(json) {
@@ -961,18 +1032,19 @@ export class Transfer {
 export class InventoryTransfer {
    static registry = null;
 
-   constructor({ id, eventSiteID, transferID, startQ, soldQ, price, transfer }) {
+   constructor({ id, eventSiteID, transferID, startQ, soldQ, price, cost, transfer }) {
       this.id = id;
       this.eventSiteID = eventSiteID;
       this.transferID = transferID;
       this.startQ = startQ;
       this.soldQ = soldQ;
       this.price = price;
+      this.cost = cost;
       this.transfer = Utils.parseToInstance(transfer, Transfer);
    }
 
-   static fromValues(id, eventSiteID, transferID, startQ, soldQ, price, transfer) {
-      return new InventoryTransfer({ id, eventSiteID, transferID, startQ, soldQ, price, transfer });
+   static fromValues(id, eventSiteID, transferID, startQ, soldQ, price, cost, transfer) {
+      return new InventoryTransfer({ id, eventSiteID, transferID, startQ, soldQ, price, cost, transfer });
    }
 
    static fromJSON(json) {
@@ -981,17 +1053,18 @@ export class InventoryTransfer {
 }
 
 export class SOrderTransfer {
-   constructor({ id, schoolOrderID, transferID, quantity, price, transfer }) {
+   constructor({ id, schoolOrderID, transferID, quantity, price, cost, transfer }) {
       this.id = id;
       this.schoolOrderID = schoolOrderID;
       this.transferID = transferID;
       this.quantity = quantity;
       this.price = price;
+      this.cost = cost;
       this.transfer = Utils.parseToInstance(transfer, Transfer);
    }
 
-   static fromValues(id, schoolOrderID, transferID, quantity, price, transfer) {
-      return new SOrderTransfer({ id, schoolOrderID, transferID, quantity, price, transfer });
+   static fromValues(id, schoolOrderID, transferID, quantity, price, cost, transfer) {
+      return new SOrderTransfer({ id, schoolOrderID, transferID, quantity, price, cost, transfer });
    }
 
    static fromJSON(json) {
@@ -1000,17 +1073,18 @@ export class SOrderTransfer {
 }
 
 export class SOrderItem {
-   constructor({ id, schoolOrderID, itemID, quantity, price, item }) {
+   constructor({ id, schoolOrderID, itemID, quantity, price, cost, item }) {
       this.id = id;
       this.schoolOrderID = schoolOrderID;
       this.itemID = itemID;
       this.quantity = quantity;
       this.price = price;
+      this.cost = cost;
       this.item = parseWithRegistry(item, Item, itemID);
    }
 
-   static fromValues(id, schoolOrderID, itemID, quantity, price, item) {
-      return new SOrderItem({ id, schoolOrderID, itemID, quantity, price, item });
+   static fromValues(id, schoolOrderID, itemID, quantity, price, cost, item) {
+      return new SOrderItem({ id, schoolOrderID, itemID, quantity, price, cost, item });
    }
 
    static fromJSON(json) {

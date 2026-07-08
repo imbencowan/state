@@ -17,7 +17,7 @@ class EventSiteDivision extends BasicTableModel {
 		return [
 			new Relation('division', 'Division', 'divisionID', 'divisionID'), 
 			new Relation('schoolOrders', 'SchoolOrder', 'eventSiteHasDivisionID', 'eventSiteHasDivisionID', 
-						true, null, ['year', 'inventory'])
+						true, null, [ 'year', 'inventory', 'reports' ])
 		];
 	}
 		
