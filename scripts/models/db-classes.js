@@ -393,7 +393,7 @@ export class EventSite {
                garments[styleID].colors[colorID].sOrderTotal += soi.quantity;  
                
                   // track plus sizes
-               if (PLUS_SIZECHARS.has(sChar)) plusSizes[sChar] += sold;
+               if (PLUS_SIZECHARS.has(sChar)) plusSizes[sChar] += soi.quantity;
             }
          }
       }

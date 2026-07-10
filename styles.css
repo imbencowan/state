@@ -523,7 +523,7 @@ tr.addOnRow {
 	vertical-align: top;
 }
 
-.itemsTable td:last-child,
+/* .itemsTable td:last-child,
 .itemsTable th:last-child,
 .itemsTable td:nth-last-child(2),
 .itemsTable th:nth-last-child(2) {
@@ -533,7 +533,7 @@ tr.addOnRow {
 .itemsTable td:nth-last-child(3),
 .itemsTable th:nth-last-child(3) {
     text-align: center;
-}
+} */
 
 
 .inventoryFillTable {
@@ -599,5 +599,5 @@ tr.addOnRow {
 }
 
 .topRow {
-	border-top: 3px solid black;
+	border-top: 4px solid black;
 }

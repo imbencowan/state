@@ -3,7 +3,7 @@ import { actionFetch, myFetch } from '../../fetch.js';
 import { openModal, closeModal } from '../../modal.js';
 import { buildElement, buildTD, buildDollarTD, parseToInstancesArr } from '../../utilities.js';
 import { buildActionButton, makeSubmitCancelButtons, makeTypeActionLabel } from '../page-utils.js';
-import { buildFillTable } from './inventory.js';
+import { buildFillTable, submitFillInventory } from './inventory.js';
 import {  } from '../../models/db-classes.js';
 import {  } from '../../print.js';
 
@@ -11,7 +11,7 @@ import {  } from '../../print.js';
    // buttons for each site
 const reportSiteButtons = [
    { action: "fillInventory", title: "finalize the inventory", icon: "edit", text: " Inventory",
-      handler: showFillInventory }, 
+      handler: showFillInventory, submitHandler: submitFillInventory, cancelHandler: closeModal }, 
    { action: "fillTransfers", title: "enter sold transfers", icon: "edit", text: " Sold Transfers", 
       handler: showEnterSoldTransfers },
    { action: "editMcUCosts", title: "edit mcu costs", icon: "edit", text: " McU Costs", handler: showEditMcUCosts },
@@ -166,9 +166,23 @@ function showFillInventory({ target }) {
 
    const tbl = buildFillTable(eSite);
    const btnCntnr = buildElement("div");
+   makeSubmitCancelButtons({ btnCntnr, tbl, type: 'report', action: target.dataset.action, datasetExtra: { id: esID } });
+   
+
    const cntnr = buildElement("div", { children: [ tbl, btnCntnr ] });
 
-   openModal(tbl, 'full');
+   cntnr.addEventListener('click', function(event) {
+      const target = event.target;
+      const action = target.dataset.action;
+      if (!action) return; 
+      console.log(action);
+      console.log(reportSiteActions);
+      console.log(reportSiteActions[action]);
+
+      reportSiteActions[action]({ target });
+   });
+
+   openModal(cntnr, 'full');
 }
 
 

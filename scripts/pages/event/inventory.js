@@ -403,14 +403,6 @@ function showFillInventory({ target }) {
 	makeSubmitCancelButtons({ btnCntnr: target.parentElement, lstnrCntnr: tbl, type: 'inventory', 
          action: target.dataset.action, datasetExtra: { id: target.dataset.eventSiteID } });
 
-	tbl.addEventListener('input', e => {
-		if (!e.target.matches('input')) return;
-
-		const row = e.target.closest('tr');
-		updateFillRow(row);
-	});
-
-
       // give focus
 	tbl?.querySelector('input')?.focus();
 }
@@ -422,6 +414,13 @@ export function buildFillTable(eSite) {
 
    const table = buildElement("table", { classes: "inventoryFillTable", children: [ thead, tbody ], 
 										dataset: { eventSiteID: eSite.id } });
+
+	table.addEventListener('input', e => {
+		if (!e.target.matches('input')) return;
+
+		const row = e.target.closest('tr');
+		updateFillRow(row);
+	});
 
 	return table;
 }

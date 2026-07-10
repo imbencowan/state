@@ -5,6 +5,19 @@ import { actionFetch } from "./fetch.js";
 
 const FOCUSABLE_SELECTOR = 'input, button, select, textarea, a[href], [tabindex]:not([tabindex="-1"])';
 
+const booleanAttrs = new Set([
+   "hidden",
+   "disabled",
+   "checked",
+   "selected",
+   "multiple",
+   "required",
+   "readonly",
+   "autofocus",
+   "open",
+   "novalidate"
+]);
+
 
 
 
@@ -63,7 +76,11 @@ export function buildElement(tag, { text, html, classes, id, title, attrs, datas
 
    if (attrs) {
       for (const [k, v] of Object.entries(attrs)) {
-         el.setAttribute(k, v);
+         if (booleanAttrs.has(k)) {
+            if (v) el.setAttribute(k, "");
+         } else {
+            el.setAttribute(k, v);
+         }
       }
    }
 

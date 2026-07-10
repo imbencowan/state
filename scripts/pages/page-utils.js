@@ -24,6 +24,7 @@ export function buildIcon(type) {
     // takes a container, clears it, inserts a submit and cancel button
         // the listener container fires a submit or cancel click when 'ENTER' or 'ESC' are pressed
 export function makeSubmitCancelButtons({ btnCntnr, lstnrCntnr, type, action, datasetExtra = {} }) {
+    console.log({ btnCntnr, lstnrCntnr, type, action, datasetExtra })
         // first, clear the destination
     btnCntnr.innerHTML = '';
 

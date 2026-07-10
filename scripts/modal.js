@@ -51,6 +51,8 @@ function closeModal() {
    document.removeEventListener('keydown', escListener);
    document.removeEventListener('click', windowListener);
    modal.style.display = "none";
+      // clear the modal
+   modalContent.replaceChildren();
 }
 
 export { init, openModal, closeModal };
