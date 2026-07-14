@@ -108,7 +108,7 @@ function buildNavList2() {
 	let navList = document.getElementById("nav2List");
 
 		// build each <li>, with a couple data-attrs, and append them to nav2
-	[ 'Year', 'Items', 'Schools'].forEach((itm) => {
+	[ 'Year', 'Items', 'Transfers', 'Costs', 'Schools' ].forEach((itm) => {
       navList.appendChild(buildElement("li", { text: itm, dataset: { route: itm.toLowerCase() } }));
    });
 }

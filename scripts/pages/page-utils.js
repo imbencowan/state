@@ -24,7 +24,6 @@ export function buildIcon(type) {
     // takes a container, clears it, inserts a submit and cancel button
         // the listener container fires a submit or cancel click when 'ENTER' or 'ESC' are pressed
 export function makeSubmitCancelButtons({ btnCntnr, lstnrCntnr, type, action, datasetExtra = {} }) {
-    console.log({ btnCntnr, lstnrCntnr, type, action, datasetExtra })
         // first, clear the destination
     btnCntnr.innerHTML = '';
 
@@ -65,4 +64,31 @@ export function makeSubmitCancelButtons({ btnCntnr, lstnrCntnr, type, action, da
 export function makeTypeActionLabel(type, action) {
     const capAction = action[0].toUpperCase() + action.slice(1);
     return type + capAction;
+}
+
+export function makeLabelInputList({ list, getName, getID, getValue }) {
+    const children = [];
+
+    for (const i of list) {
+        const id = getID(i);
+
+        const input = buildElement("input", {
+            attrs: {
+                name: id,
+                type: "number",
+                min: 0,
+                max: 2000,
+                step: 1,
+                value: getValue?.(i) ?? ""
+            }
+        });
+
+        const span = buildElement("span", { text: `${getName(i)}: ` });
+
+        const lbl = buildElement("label", { children: span, attrs: { for: id } });
+
+        children.push(lbl, input);
+    }
+
+    return buildElement("fieldset", { classes: 'labelInputList', children });
 }

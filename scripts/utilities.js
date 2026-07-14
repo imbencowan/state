@@ -176,6 +176,7 @@ export function distributeElementsToRows(containerSelector, minItemWidth = 100) 
       // intended for use with the runtime object
 export function makeDataLoader(srvrClassName, jsClass = null, srvrFnctn = "getAllFromDB") {
    let cache = null;          // resolved data
+   let nameLookup = null;
    let loadPromise = null;    // promise for first-time load
 
       // private helper to fetch and map data
@@ -191,6 +192,14 @@ export function makeDataLoader(srvrClassName, jsClass = null, srvrFnctn = "getAl
       }
 
       return mapped;
+   }
+
+   function buildNameLookup() {
+      nameLookup = {};
+
+      for (const obj of Object.values(cache)) {
+         if (obj.name) nameLookup[obj.name] = obj;
+      }
    }
 
    return {
@@ -209,6 +218,7 @@ export function makeDataLoader(srvrClassName, jsClass = null, srvrFnctn = "getAl
       async refresh() {
          loadPromise = fetchAndMap().then(data => {
             cache = data;
+            nameLookup = null;
             return cache;
          });
          return loadPromise;
@@ -223,6 +233,13 @@ export function makeDataLoader(srvrClassName, jsClass = null, srvrFnctn = "getAl
       getByID(id) {
          if (!cache) throw new Error("Data not loaded yet");
          return cache[id];
+      },
+
+      getByName(name) {
+         if (!cache) throw new Error("Data not loaded yet");
+         if (!nameLookup) buildNameLookup();
+
+         return nameLookup[name];
       },
 
          // clear everything

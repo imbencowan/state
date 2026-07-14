@@ -74,6 +74,8 @@ export class StateEvent {
 	}
 
    getOrderByID(id) {
+      id = Number(id);
+      
       if (!this.orderMap) {
          this.orderMap = new Map();
 
@@ -179,7 +181,12 @@ export class StateEvent {
          // allItems must be passed in from runtime via the caller to avoid circular dependencies
          // you can't import runtime to this module
    async loadInventories(allItems, allTransfers) {
-      await EventSite.fetchInventories(this.eventSites, allItems, allTransfers);  
+         // filter for sites missing inventory
+      const missingSites = this.eventSites.filter(s => !s.inventoryLoaded);
+         // return early if no sites are missing inventory
+      if (missingSites.length === 0) return {};
+
+      await EventSite.fetchInventories(missingSites, allItems, allTransfers);  
    }
 
       // this is a convenience wrapper like loadInventories
@@ -211,24 +218,29 @@ export class Sport {
 }
 
 export class EventSite {
-   constructor({ id, eventID, site, siteID, managerName, gender, vehicle, employees, inventory, transfers, 
+   constructor({ id, eventID, site, siteID, managerName, gender, vehicles, employees, inventory, transfers, costs,
                plusSizePricing, esDivisions = [] }) {
 		this.id = id;
 		this.eventID = eventID;
 		this.site = parseWithRegistry(site, Site, siteID);
 		this.managerName = managerName;
       this.gender = gender;
-		this.vehicle = Utils.parseToInstance(vehicle, Vehicle);
-      this.employees = Utils.parseToInstancesArr(employees, Employee);
+		this.vehicles = Utils.parseToInstancesArr(vehicles, Vehicle);
+      this.employees = Utils.parseToInstancesArr(employees, EventSiteEmployee);
+      console.log(employees);
       this.inventory = Utils.parseToInstancesArr(inventory, InventoryItem);
       this.transfers = Utils.parseToInstancesArr(transfers, InventoryTransfer);
+      this.costs = Utils.parseToInstancesArr(costs, EventSiteCost);
       this.plusSizePricing = plusSizePricing;
       this.inventoryLoaded = false;
 		this.esDivisions = Utils.parseToInstancesArr(esDivisions, EventSiteDivision);
+      this.costMap = null;
 	}
 
-   static fromValues(id, eventID, site, managerName, vehicle, esDivisions = []) {
-      return new EventSite({ id, eventID, site, managerName, vehicle, esDivisions });
+   static fromValues(id, eventID, site, siteID, managerName, gender, vehicles, employees, inventory, transfers, 
+                     costs, plusSizePricing, esDivisions = []) {
+      return new EventSite({ id, eventID, site, siteID, managerName, gender, vehicles, employees, inventory, 
+                           transfers, costs, plusSizePricing, esDivisions });
    }
 
    static fromJSON(json) {
@@ -263,7 +275,37 @@ export class EventSite {
    getEmployeesString() {
       if (!this.employees || this.employees.length === 0) return '';
 
-      return this.employees.map(e => e.shortName).join(' / ');
+      return this.employees.map(e => e.employee.shortName).join(' / ');
+   }
+
+   getCostByID(id) {
+      id = Number(id);
+      if (!this.costMap) {
+         this.costMap = new Map();
+
+         for (const esc of this.costs) {
+            console.log(esc);
+            this.costMap.set(esc.cost.id, esc);
+         }
+      }
+
+      return this.costMap.get(id);
+   }
+
+      // used to prefill cost data in reports
+   getLikelyNumberPresses() {
+      return Math.min(this.employees.length, 4);
+   }
+
+   getMainTransfers() {
+      return this.transfers.find(t => t.transfer.transferName === "event transfers");
+   }
+
+   getStateChampQuantity() {
+      const champs = this.transfers.find(t => t.transfer.transferName === "state champions");
+      const champ = this.transfers.find(t => t.transfer.transferName === "state champion");
+         // use 0 when either isn't attached to the event
+      return (champs?.soldQ ?? 0) + (champ?.soldQ ?? 0);
    }
 
    getStructuredInventory() {
@@ -341,7 +383,7 @@ export class EventSite {
 
    getReportInventory() {
       const PLUS_SIZECHARS = new Set([ '2X', '3X', '4X' ]);
-      const plusSizes = { '2X': 0, '3X': 0, '4X': 0 }
+      const plusSizes = { '2X': { sold: 0, lost: 0 }, '3X': { sold: 0, lost: 0 }, '4X': { sold: 0, lost: 0 } };
 
       const transfers = this.getInventoryTransfers();
       const accessories = [];
@@ -361,17 +403,19 @@ export class EventSite {
 
                // initialize style/color containers if they
             garments[styleID] ??= { ...inv.item.style, colors: {} };
-            garments[styleID].colors[colorID] ??= { ...inv.item.color, retailTotal: 0, sOrderTotal: 0, 
+            garments[styleID].colors[colorID] ??= { ...inv.item.color, retailTotal: 0, sOrderTotal: 0, lostTotal: 0,
                                                    cost: null, price: null };
 
                // add the inventory item
             garments[styleID].colors[colorID].retailTotal += sold;
+            garments[styleID].colors[colorID].lostTotal += inv.writeOffQ;
                // ??= allows assigning once
             if (!PLUS_SIZECHARS.has(sChar)) {
                garments[styleID].colors[colorID].cost ??= inv.cost;
                garments[styleID].colors[colorID].price ??= inv.price;
             } else {
-               plusSizes[sChar] += sold;
+               plusSizes[sChar].sold += sold;
+               plusSizes[sChar].lost += inv.writeOffQ;
             }
          }
       }
@@ -419,6 +463,10 @@ export class EventSite {
       return { garments, accessories, transfers, plusSizes };
    }
 
+   async refreshInventory(allItems, allTransfers) {
+      await EventSite.fetchInventories([ this ], allItems, allTransfers);
+   }
+
    static async fetchOrders(eSites, allItems, allTransfers) {
       const esds = eSites.flatMap(site => site.esDivisions);
       const missingEsds = esds.filter(div => !div.ordersLoaded);
@@ -439,23 +487,19 @@ export class EventSite {
       for (const esd of missingEsds) {
          esd.ordersLoaded = true;
          esd.schoolOrders = ordersByESD[esd.id] || [];
+            // alphabetize the array
+         esd.sortSchoolOrders();
       }
    }
 
       // static batch fetch method
    static async fetchInventories(eSites, allItems, allTransfers) { 
-         // filter for sites missing inventory
-      const missingSites = eSites.filter(s => !s.inventoryLoaded);
-         // return early if no sites are missing inventory
-      if (missingSites.length === 0) return {};
-
-
          // make sure these are loaded
       await allItems.load();
       // await allTransfers.load();
 
          // fetch
-      const response = await actionFetch('getInventoryItems', 'Event', { eSiteIDs: missingSites.map(s => s.id) });
+      const response = await actionFetch('getInventoryItems', 'Event', { eSiteIDs: eSites.map(s => s.id) });
 
          // get and group the site's inventory items
       const itemsBySite = {};
@@ -478,10 +522,19 @@ export class EventSite {
       }
 
          // assign and mark loaded
-      for (const es of missingSites) {
+      for (const es of eSites) {
          es.inventoryLoaded = true;
          es.inventory = itemsBySite[es.id] || [];
          es.transfers = transfersBySite[es.id] || [];
+      }
+   }
+
+      // calls ss function to set InventoryItems pricing = Items pricing.  // then refreshes this.inventory
+   async updateCostAndPrice(allItems, allTransfers) {
+      const response = await actionFetch("syncInventoryPricing", "EventSite", { esID: this.id });
+      if (response.success) {
+         await this.refreshInventory(allItems, allTransfers);
+         return response;
       }
    }
 }
@@ -959,20 +1012,40 @@ export class Person {
 export class Employee {
    static registry = null;
 
-   constructor({ id, name, shortName, phone, email }) {
+   constructor({ id, name, shortName, phone, email, payRate }) {
       this.id = id;
       this.name = name;
       this.shortName = shortName;
       this.phone = phone;
       this.email = email;
+      this.payRate = payRate;
    }
 
-   static fromValues(id, name, email, phone, extension, fax) {
-      return new Employee({ id, name, email, phone, extension, fax });
+   static fromValues(id, name, shortName, phone, email, payRate) {
+      return new Employee({ id, name, phone, email, payRate });
    }
 
    static fromJSON(json) {
       return new Employee(json);
+   }
+}
+
+export class EventSiteEmployee {
+   constructor({ id, esID, employeeID, payRate, hours, employee }) {
+      this.id = id;
+      this.esID = esID;
+      this.employeeID = employeeID;
+      this.payRate = payRate;
+      this.hours = hours;
+      this.employee = Utils.parseToInstance(employee, Employee);
+   }
+
+   static fromValues(id, esID, employeeID, payRate, hours, employee) {
+      return new EventSiteEmployee({ id, esID, employeeID, payRate, hours, employee });
+   }
+
+   static fromJSON(json) {
+      return new EventSiteEmployee(json);
    }
 }
 
@@ -1013,6 +1086,7 @@ export class Brand {
 export class Transfer {
    constructor({ id, transferName, inventoryName, price, cost, listOrder }) {
       this.id = id;
+      this.name = transferName;
       this.transferName = transferName;
       this.inventoryName = inventoryName ?? transferName;
       this.price = price;
@@ -1049,6 +1123,31 @@ export class InventoryTransfer {
 
    static fromJSON(json) {
       return new InventoryTransfer(json);
+   }
+
+   static fromTransfer({ t, eventSiteID = null, startQ = 0, soldQ = 0 }) {
+      return new InventoryTransfer({
+         id: null,
+         eventSiteID,
+         transferID: t.id,
+         startQ,
+         soldQ,
+         price: t.price,
+         cost: t.cost,
+         transfer: t
+      });
+   }
+
+   toDB() {
+      return {
+         eventSiteTransferID: this.id,
+         eventSiteID: this.eventSiteID,
+         transferID: this.transferID,
+         startQ: this.startQ,
+         soldQ: this.soldQ,
+         price: this.price,
+         mcuCost: this.cost
+      };
    }
 }
 
@@ -1147,5 +1246,44 @@ export class Season {
 
       const nextI = (currentI + 1) % allSeasons.length;
       return allSeasons[nextI] || null;
+   }
+}
+
+export class Cost {
+   static registry = null;
+
+   constructor({ id, name, rate, units }) {
+      this.id = id;
+      this.name = name;
+      this.rate = rate;
+      this.units = units
+   }
+
+   static fromValues(id, name, rate, units) {
+      return new Cost({ id, name, rate, units });
+   }
+
+   static fromJSON(json) {
+      return new Cost(json);
+   }
+}
+
+export class EventSiteCost {
+   constructor({ id, esID, costID, rate, quantity, note, cost }) {
+      this.id = id;
+      this.esID = esID;
+      this.costID = costID;
+      this.rate = rate;
+      this.quantity = quantity;
+      this.note = note;
+      this.cost = Utils.parseToInstance(cost, Cost);
+   }
+
+   static fromValues(id, eventSiteID, costID, rate, quantity, note) {
+      return new EventSiteCost({ id, eventSiteID, costID, rate, quantity, note });
+   }
+
+   static fromJSON(json) {
+      return new EventSiteCost(json);
    }
 }

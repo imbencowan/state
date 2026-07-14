@@ -369,6 +369,11 @@ tr.addOnRow {
 }
 
 /* allow a wider modal */
+.modal-content.wide {
+    max-width: 800px;
+    width: 90%;
+}
+/* allow a widest modal */
 .modal-content.full {
     max-width: 1400px;
     width: 90%;
@@ -505,17 +510,16 @@ tr.addOnRow {
 }
 
 
-#addTransferForm fieldset {
-   display: flex;
-   align-items: center; 
-   gap: 0.5em;          
-   margin-bottom: 1em;
+.labelInputList {
+	display: grid;
+	grid-template-columns: max-content max-content;
+	align-items: center;
+	gap: .5em 1em;
 }
 
-#addTransferForm label {
-   width: 150px;        
+.labelInputList label {
    text-align: right;
-} 
+}
 
 
 .itemsTable td {
@@ -600,4 +604,12 @@ tr.addOnRow {
 
 .topRow {
 	border-top: 4px solid black;
+}
+
+
+#siteCostsForm fieldset {
+	display: grid;
+	grid-template-columns: max-content max-content max-content;
+	align-items: center;
+	gap: .5em 1em;
 }

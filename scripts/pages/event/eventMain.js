@@ -258,7 +258,6 @@ export function addEventPageFunctionality() {
 			args.order = getOrderFromTableButton(target);
 			handler = orderRowActions[action];
 		} else if (target.classList.contains("inventory-action")) {
-			console.log(target);
 			args.eSite = runtime.stateEvent.getEventSiteByID(target.dataset.eventSiteID);
 			handler = inventorySiteActions[action];
 		} else if (target.classList.contains("report-action")) {

@@ -4,6 +4,8 @@ import { runtime } from "./runtime.js";
 
 import { goToEventPage } from './pages/event/eventMain.js';
 import { goToItemsPage } from "./pages/items.js";
+import { goToTransfersPage } from './pages/transfers.js';
+import { goToCostsPage } from './pages/costs.js';
 import { goToSchoolsPage } from "./pages/schools.js";
 import { goToYearPage } from "./pages/year.js";
 
@@ -18,6 +20,8 @@ const routes = [
    { match: parts => (parts.length === 0), handler: () => goToEventPage() },
    { match: parts => (runtime.allSports.getBySlug(parts[0])), handler: handleSport }, 
    { match: parts => (parts[0] === 'items' && parts.length === 1), handler: goToItemsPage },
+   { match: parts => (parts[0] === 'transfers' && parts.length === 1), handler: goToTransfersPage },
+   { match: parts => (parts[0] === 'costs' && parts.length === 1), handler: goToCostsPage },
    { match: parts => (parts[0] === 'schools' && parts.length === 1), handler: goToSchoolsPage },
    { match: parts => (parts[0] === 'year'), handler: handleYear }
 ];

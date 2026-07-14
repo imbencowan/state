@@ -5,7 +5,8 @@ import { sizeList, DAIRY_STYLE_ID, ADULT_HOOD_STYLE_ID } from '../../constants.j
 import { actionFetch, myFetch } from '../../fetch.js';
 import { openModal, closeModal } from '../../modal.js';
 import { buildElement, parseToInstancesArr } from '../../utilities.js';
-import { buildActionButton, makeSubmitCancelButtons, makeTypeActionLabel } from '../page-utils.js';
+import { buildActionButton, makeSubmitCancelButtons, makeTypeActionLabel, 
+			makeLabelInputList } from '../page-utils.js';
 import { InventoryItem, InventoryTransfer } from '../../models/db-classes.js';
 import { printInventories } from '../../print.js';
 
@@ -142,6 +143,7 @@ function buildInventoryTbody(inventory) {
 
 	// build garment rows with style, color, size quantities and total
 function buildInventoryGarmentsRows(tbody, garments) {
+	let invTotal = 0;
 	for (const style of garments) {
 			// an identifier to right align youth styles
 		const align = style.sizingCategoryID === 2 ? 'right' : 'left';
@@ -184,6 +186,7 @@ function buildInventoryGarmentsRows(tbody, garments) {
 			});
 
 				// finally the total
+			invTotal += total;
 			tds.push(buildElement("td", { text: total, dataset: { totalCell: true }, 
 						style: { backgroundColor: color.hex } }));
 
@@ -192,6 +195,11 @@ function buildInventoryGarmentsRows(tbody, garments) {
 			tbody.appendChild(tr);
 		});
 	}
+		// a final total row
+	tbody.appendChild(buildElement("tr", { classes: [ 'right', 'bold' ], children: [
+		buildElement("td", { text: 'Total', attrs: { colspan: (2 + sizeList.length) } }),
+		buildElement("td", { text: invTotal })
+	] }));
 }
 
 function buildInventoryAccessoriesRows(tbody, accessories) {
@@ -227,6 +235,25 @@ function buildInventoryTransfersRows(tbody, transfers) {
 		const tr = buildElement("tr", { children: tds });
 		tbody.appendChild(tr);
 	}
+}
+
+
+
+
+function getInventoryTable(esID) {
+	esID = Number(esID);
+		// grab the inventory container
+	const cntnr = document.querySelector('.tabPanel.active[data-tab="inventory"]');
+		// select the table with the matching data attribute
+	const tbl = cntnr.querySelector(`table[data-event-site-i-d="${esID}"]`);
+
+		// if no table matches, alert
+	if (!tbl) {
+		openModal("Could not find inventory table for eventSiteID " + esID);
+		return;
+	}
+
+	return tbl;
 }
 
 
@@ -553,50 +580,6 @@ function makeFillInput(oValue, type) {
 	return input;
 }
 
-// 	 // takes a container, clears it, inserts a submit and cancel button
-// 		  // the listener container fires a submit or cancel click when 'ENTER' or 'ESC' are pressed
-// function makeFillHandlerButtons(btnCntnr, lstnrCntnr, type, action, id = null) {
-// 		  // first, clear the destination
-// 	 btnCntnr.innerHTML = '';
-
-// 		  // make the buttons // secondary classes guide listeners handling
-// 	 const submitButton = buildElement('button', { text: 'Submit', type: 'button',
-// 		  classes: ['addOnButton', `${type}-action`, `submit${action}`], 
-// 		  dataset: { id: id, action: makeTypeActionLabel('submit', action) }
-// 	 });
-// 	 const updateSoldButton = buildElement('button', { text: 'Update Sold', type: 'button',
-// 		  classes: ['addOnButton', `${type}-action`, `update${action}`], 
-// 		  dataset: { id: id, action: makeTypeActionLabel('update', action) }
-// 	 });
-// 	 const cancelButton = buildElement('button', { text: 'X', type: 'button',
-// 		  classes: ['addOnButton', `${type}-action`, `cancel${action}`], 
-// 		  dataset: { id: id, action: makeTypeActionLabel('cancel', action) }
-// 	 });
-// 		  // append them
-// 	 btnCntnr.append(submitButton, updateSoldButton, cancelButton);
-
-// 		  // add event listeners for ESC and ENTER
-// 	 if (lstnrCntnr) {
-// 				// define the listener as a named function
-// 		  const keyHandler = function(e) {
-// 				if (e.key === 'Escape') {
-// 						  cancelButton.click();
-// 						  cleanup();
-// 				} else if (e.key === 'Enter') {
-// 						  updateSoldButton.click();
-// 						  cleanup();
-// 				}
-// 		  };
-
-// 		  lstnrCntnr.addEventListener('keydown', keyHandler);
-
-// 				// define a cleanup helper
-// 		  function cleanup() {
-// 				lstnrCntnr.removeEventListener('keydown', keyHandler);
-// 		  }
-// 	 }
-// }
-
 function updateFillRow(row) {
 	const start = row.querySelector('[data-fill-type="startQ"]')?.textContent ?? 0;
 	const end = row.querySelector('[data-fill-type="endQ"]')?.value ?? 0;
@@ -650,10 +633,17 @@ export async function submitFillInventory({ target }) {
 		});
 	}
 
+	if (update.length === 0) { 
+		openModal("No items were changed");
+		return;
+	}
+
 	const response = await actionFetch('updateRowsByIDs', 'EventSiteInventoryItem', { update });
 
 	if (response.success) {
 		openModal("Success");
+		
+		return true;
 	}
 	
 
@@ -670,22 +660,6 @@ function cancelFillInventory({ target }) {
 
 		// unset activeMode
 	runtime.activeMode = null;
-}
-
-function getInventoryTable(esID) {
-	esID = Number(esID);
-		// grab the inventory container
-	const cntnr = document.querySelector('.tabPanel.active[data-tab="inventory"]');
-		// select the table with the matching data attribute
-	const tbl = cntnr.querySelector(`table[data-event-site-i-d="${esID}"]`);
-
-		// if no table matches, alert
-	if (!tbl) {
-		openModal("Could not find inventory table for eventSiteID " + esID);
-		return;
-	}
-
-	return tbl;
 }
 
 function makeTransferInput(td) {
@@ -731,9 +705,10 @@ function showAddItem({ target, eSite }) {
 		frm.appendChild(buildElement("fieldset", { children: [ lbl, inpt ] }));
 	});
 
-		// make a label, a button, put them in the modal
+		// attach a submit button
 	frm.appendChild(buildElement("button", { text: "SUBMIT", classes: 'block' }));
 
+		// put it all in the modal
 	openModal(frm);
 }
 
@@ -808,8 +783,6 @@ function showAddTransfer({ target, eSite }) {
 		return ![ 'custom', 'misc $5 transfers', 'misc $7 transfers' ].includes(transfer.transferName);
 	});
 
-	console.log(psblTransfers);
-
 		// make a Set of existing transferIDs
 	const existingIDs = new Set(eSite.transfers.map(t => t.transferID));
 		// filter out matches
@@ -821,17 +794,9 @@ function showAddTransfer({ target, eSite }) {
 	frm.addEventListener("submit", function(e) { submitAddTransfer(e, frm); });
 
 		// fill labels/inputs in the form
-	unTransfers.forEach(t => {
-		const inpt = buildElement("input", { id: `addTransfer${t.id}`, attrs: {
-			name: t.id,
-			type: 'number',
-			min: 0,
-			max: 2000,
-			step: 1
-		} });
-		const lbl = buildElement("label", { text: `${t.transferName}: `, attrs: { for:`addTransfer${t.id}` } });
-		frm.appendChild(buildElement("fieldset", { children: [ lbl, inpt ] }));
-	});
+	const fieldset = makeLabelInputList({ list: unTransfers, getName: (i => i.transferName), getID: (i => i.id) });
+	const div = buildElement("div", { children: fieldset });
+	frm.appendChild(div);
 
 		// make a label, a button, put them in the modal
 	frm.appendChild(buildElement("button", { text: "SUBMIT", classes: 'block' }));

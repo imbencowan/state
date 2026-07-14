@@ -86,7 +86,6 @@ function buildTopButtons() {
 }
 
     // builds a semi specific type of button. this condenses some styling used repeatedly
-// function buildItemsEditButton([key, col]) {
 function buildItemsEditButton(key, col) {
    if (col.editable) {
       return buildElement("button", {
@@ -116,7 +115,7 @@ function buildGarmentsTHead() {
       const hidden = !startColumns.includes(key);
       const text = col.hText;
       const classes = [ col.align ];
-      thRow.appendChild(buildElement("th", { text: col.hText, dataset: { column: key}, attrs: { hidden } }));
+      thRow.appendChild(buildElement("th", { text: col.hText, dataset: { column: key}, attrs: { hidden }, classes }));
    }
       
    return buildElement("thead", { children: [ thRow ] });
@@ -132,7 +131,7 @@ function buildGarmentRows(garments) {
             
             for (const [key, col] of Object.entries(columns)) {
                let data;
-               const classes = [];
+               const classes = [ col.align ];
                const hidden = !startColumns.includes(key);
 
                if (key == 'style') {
@@ -145,7 +144,6 @@ function buildGarmentRows(garments) {
                   }
                } else {
                   if (col.editable) data = { column: key, oValue: col.value(item) };
-                  classes.push(col.align);
                   tds.push(buildElement("td", { text: col.value(item), classes, dataset: data, attrs: { hidden } }));
                }
             }
@@ -333,8 +331,6 @@ function makeTableInput(td) {
 }
 
 async function submitUpdateItems({ target }) {
-   console.log('submit');
-
    const colKey = target.dataset.column;
 
    const tbl = document.getElementById('allGarmentsTable');
@@ -376,51 +372,7 @@ async function submitUpdateItems({ target }) {
 			openModal("there was a problem submitting the inventory edit");
 		}
 	} else {
-		cancelItemsUpdate(target);
-	}
-}
-
-async function submitEditStock({ target }) {
-   const tbl = document.getElementById('allGarmentsTable');
-   const tds = tbl.querySelectorAll('td[data-o-stock]');
-
-   const updateItems = [];
-
-   tds.forEach(td => {
-      const inputValue = Number(td.querySelector('input').value);
-		if (Number(td.dataset.oStock) !== inputValue) {
-			updateItems.push({
-				itemID: Number(td.parentElement.dataset.itemID), 
-				stock: inputValue,
-			});
-		}
-   });
-
-   	// if there are changes, send them to the server
-	if (updateItems.length) {
-		const data = { 'update': updateItems };
-      const response = await actionFetch('updateRowsByIDs', 'Item', data);
-
-		if (response.success) {
-				// update the cells
-			tds.forEach(td => {
-				td.textContent = td.querySelector('input').value;
-				td.dataset.oStock = td.textContent;
-			});
-
-				// update runtime
-			runtime.allItems.refresh();
-
-				// reset the buttons
-			resetTopButtons(target);
-
-				// unset activeMode
-			runtime.activeMode = null;
-		} else {
-			openModal("there was a problem submitting the inventory edit");
-		}
-	} else {
-		cancelItemsUpdate(target);
+		cancelUpdateItems({ target });
 	}
 }
 

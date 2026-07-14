@@ -149,19 +149,27 @@ abstract class BasicTableModel implements JsonSerializable {
 		
 		if (empty($rows)) return null;
 
+			// remove the primary key from rows if it exists. we don't insert that
+		$primaryKey = static::getPrimaryKey();
+
+		foreach ($rows as &$row) {
+			unset($row[$primaryKey]);
+		}
+		unset($row);
+
 			// get columns
 		$columns = static::getColumns();
 			// DO NOT allow id in inserts. remove it from column validator
 		unset($columns['id']); 
+
+		$pk = static::getPrimaryKey();
 
 		$keys = array_keys(reset($rows));
 
 			// if any $rows keys do not match column names, throw
 		$invalidKeys = array_diff($keys, $columns);
 		if (!empty($invalidKeys)) {
-			throw new InvalidArgumentException(
-					"Invalid column(s): " . implode(', ', array_keys($invalidKeys))
-			);
+			throw new InvalidArgumentException("Invalid column(s): " . implode(', ', $invalidKeys));
 		}
 
 			// build strings for the $query

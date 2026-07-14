@@ -4,7 +4,9 @@ class Color extends BasicTableModel {
 	protected static function getPrimaryKey(): string { return 'colorID'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
-		return ['id' => 'colorID', 'name' => 'colorName', 'hex' => 'hexColor'];
+		return ['id' => 'colorID', 
+					'name' => 'colorName', 
+					'hex' => 'hexColor'];
 	}
 		// no relations
 	protected static function getRelations(): array { return []; }

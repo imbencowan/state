@@ -25,11 +25,13 @@ class EventSite extends BasicTableModel {
 				new Relation('esDivisions', 'EventSiteDivision', 'eventSiteID', 'eventSiteID', true),
 				new Relation('gender', 'Gender', 'eventSiteID', 'genderID', false, 'eventsitehasgender'),
 				new Relation('vehicles', 'Vehicle', 'eventSiteID', 'vehicleID', true, 'eventsitehasvehicle'), 
-				new Relation('employees', 'Employee', 'eventSiteID', 'employeeID', true, 'eventsitehasemployee'), 
+				new Relation('employees', 'EventSiteEmployee', 'eventSiteID', 'eventSiteID', true), 
 				new Relation('inventory', 'EventSiteInventoryItem', 'eventSiteID', 'eventSiteID', true, null, 
 								['year', 'orders']),
 				new Relation('transfers', 'EventSiteTransfer', 'eventSiteID', 'eventSiteID', true, null, 
-								['year', 'orders'])
+								['year', 'orders']),
+				new Relation('costs', 'EventSitecost', 'eventSiteID', 'eventSiteID', true, null, 
+								['year'])
 				];
    }
 	
@@ -54,7 +56,8 @@ class EventSite extends BasicTableModel {
 		array $esDivisions = [],
 		public readonly array $employees = [],
 		public readonly array $inventory = [],
-		public readonly array $transfers = []
+		public readonly array $transfers = [],
+		public readonly array $costs = []
    ) {
 		$this->esDivisions = self::organizeDivisions($esDivisions);
 	}
@@ -72,6 +75,7 @@ class EventSite extends BasicTableModel {
 			'employees' => $this->employees,
 			'inventory' => $this->inventory,
 			'transfers' => $this->transfers,
+			'costs' => $this->costs,
 			'plusSizePricing' => $this->getPlusSizePricing()
 		];
 	}
@@ -129,7 +133,7 @@ class EventSite extends BasicTableModel {
 	}
 
 	public function getEmployeeShortNames(): array {
-		return array_map(fn($e) => $e->shortName, $this->employees);
+		return array_map(fn($e) => $e->employee->shortName, $this->employees);
 	}
 
 	public function getVehicleNames(): array {
@@ -236,6 +240,27 @@ class EventSite extends BasicTableModel {
 		EventSiteInventoryItem::insertMany($rows);
 
 		return [ 'items' => $inventoryItems ];
+	}
+
+		// update an eventSite's inventory and transfers cost/price
+	public static function syncInventoryPricing($esID) {
+		$db = Database::getDB();
+
+		$q1 = "UPDATE eventsiteinventories esi
+				JOIN apparel a ON esi.itemID = a.itemID
+				SET esi.price = a.price, esi.mcuCost = a.mcuCost
+				WHERE esi.eventSiteID = :esID";
+
+		$statement = $db->prepare($q1);
+		$statement->execute([ ':esID' => $esID ]);
+
+		$q2 = "UPDATE eventsitetransfers est
+				JOIN transfers t ON est.transferID = t.transferID
+				SET est.price = t.price, est.mcuCost = t.mcuCost
+				WHERE est.eventSiteID = :esID";
+
+		$statement = $db->prepare($q2);
+		$statement->execute([ ':esID' => $esID ]);
 	}
 }
 ?>

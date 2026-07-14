@@ -2,7 +2,7 @@
 	// holds page data, made available to the console
 import { makeDataLoader } from "./utilities.js";
 import { makeItemLoader, makeSportLoader } from "./models/loaders.js";
-import { Color, Division, Employee, Item, Person, School, Season, Site, Size, Sport, Style, Transfer, Vehicle } 
+import { Color, Cost, Division, Employee, Item, Person, School, Season, Site, Size, Sport, Style, Transfer, Vehicle } 
 			from "./models/db-classes.js";
 
 export const runtime = {
@@ -14,17 +14,18 @@ export const runtime = {
 		// makeDataLoader(srvrClassName, jsClass = null, srvrFnctn = "getAllFromDB")
 	allADs: makeDataLoader('Person', Person, "getAllADs"),
 	allColors: makeDataLoader('Color', Color),
+	allCosts: makeDataLoader('Cost', Cost),
 	allDivisions: makeDataLoader('Division', Division),
 	allEmployees: makeDataLoader('Employee', Employee),
 	allItems: makeItemLoader(),
 	allSchools: makeDataLoader('School', School),
+	allSeasons: makeDataLoader('Season', Season),
 	allSites: makeDataLoader('Site', Site),
 	allSizes: makeDataLoader('Size', Size),
 	allSports: makeSportLoader(),
 	allStyles: makeDataLoader('Style', Style),
 	allTransfers: makeDataLoader('Transfer', Transfer),
-	allVehicles: makeDataLoader('Vehicle', Vehicle),
-	allSeasons: makeDataLoader('Season', Season)
+	allVehicles: makeDataLoader('Vehicle', Vehicle)
 };
 
 

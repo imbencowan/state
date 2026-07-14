@@ -9,7 +9,8 @@ class Employee extends BasicTableModel {
 					'name' => 'employeeName', 
 					'shortName' => 'employeeShortName', 
 					'phone' => 'employeePhone', 
-					'email' => 'employeeEmail']; 
+					'email' => 'employeeEmail',
+					'payRate' => 'payRate']; 
 	}
 		// no relations
 	protected static function getRelations(): array { return []; }
@@ -19,7 +20,8 @@ class Employee extends BasicTableModel {
       public readonly ?string $name,
       public readonly ?string $shortName,
       public readonly ?string $phone,
-      public readonly ?string $email
+      public readonly ?string $email,
+		public readonly ?float $payRate
    ) {}
 }
 ?>

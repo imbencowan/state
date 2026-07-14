@@ -59,7 +59,7 @@ export const orderRowActions = Object.fromEntries(
 
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////// INVENTORY PANEL BUILDING //////////////////////////////////////////////////////////
+	//////////////// ORDERS PANEL BUILDING   //////////////////////////////////////////////////////////
 export async function attachOrdersPanel(panel, sEvent) {
       // first, ensure the appropriate data
    await sEvent.loadOrders(runtime.allItems, runtime.allTransfers);
@@ -170,12 +170,11 @@ function attachOrders(cntnr, sEvent) {
 }
 
 function buildOrdersTable(orders, eventID, esID, esdID) {
-   const thead = buildOrdersThead();		
-      // the table, empty
-   const table = buildElement("table", { classes: "orderTable", children: thead, 
+   const thead = buildOrdersThead();	
+	const tbodies = buildOrdersTbodies(orders);	
+      
+   const table = buildElement("table", { classes: "orderTable", children: [ thead, ...tbodies ], 
                   dataset: { eventID: eventID, eventSiteID: esID, eventSiteDivisionID: esdID } });
-      // fill the table body
-   buildOrdersTbodies(table, orders);
 
    return table;
 }
@@ -195,10 +194,12 @@ function buildOrdersThead() {
    return buildElement("thead", { children: thRow });
 }
 
-function buildOrdersTbodies(table, orders) {
+function buildOrdersTbodies(orders) {
       // we'll need this for a data- in the trs
    const allStyles = runtime.allStyles.getSync();
    const teamStyleID = Object.values(allStyles).find(style => style.shortName === "Dairy Hoods").id;
+
+	const tbodies = [];
 
    orders.forEach(so => {
       const teamShirts = so.getTeamStyle();
@@ -248,8 +249,10 @@ function buildOrdersTbodies(table, orders) {
          dataset: { schoolOrderID: so.id },
          children: trs 
       });
-      table.appendChild(tbody);
+      tbodies.push(tbody);
    });
+
+	return tbodies;
 }
 
    // returns an array of rows, one for each added style for a SchoolOrder
@@ -331,6 +334,14 @@ function getRowCompletenessClass(order) {
 
    return trClass;
 }
+
+function setCompletenessClass(so, tbody) {
+	tbody.classList.remove('doneRow', 'unDoneRow', 'partDoneRow', 'unOrderedRow', 'overRow');
+
+	const rowClass = getRowCompletenessClass(so);
+
+	tbody.classList.add(rowClass);
+}
    
 function makeRowIconButton(b) {
    let classes = [ 'material-icons', 'clickable', 'order-action' ];
@@ -393,7 +404,6 @@ function attachCommentTable(cntnr, sEvent) {
 
 
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //// functions for managing orders in the page
@@ -407,21 +417,7 @@ async function makeBlankOrder() {
 	allSchools.sort((a, b) => a.shortName.localeCompare(b.shortName));
 
 	    // Create content as a DOM fragment / wrapper
-	const wrapper = document.createElement('div');
-	wrapper.innerHTML = 
-      `<label for="schoolInput">Select School:</label>
-		<input list="schoolList" id="schoolInput" name="schoolInput" />
-		<datalist id="schoolList"></datalist>
-		<p id="schoolIDDisplay">Selected School ID: <span id="schoolID"></span></p>`;
-	if (runtime.stateEvent.sport.name.toLowerCase() === "soccer") {
-		wrapper.innerHTML += 
-			`<form class="genderRadio"d>
-				<p>Gender:</p>
-				<label><input type="radio" name="gender" value="1">Boys</label>
-				<label><input type="radio" name="gender" value="2">Girls</label>
-				<p id="gndrMsg"></p>
-			</form>`;
-	}
+	const wrapper = makeBlankOrderWrapper();
 	wrapper.innerHTML += `<button id="addSchoolBtn">Add School</button>`;
 
         // setTimeout() to delay the code that follows. give the DOM time to catch up
@@ -482,11 +478,11 @@ async function makeBlankOrder() {
 		} else {
 				// if not, add it
 			const responseJSON = await actionFetch('addNewOrder', 'SchoolOrder', [esd.id, school.id, gender]);
-			console.log('new order');
-
 			const orderID = responseJSON.data;
+
                 // get the appropriate table to append this order to
-			let table = document.querySelector(`table.orderTable[data-event-site-division-id='${esd.id}']`);
+			let table = document.querySelector(`table.orderTable[data-event-site-division-i-d='${esd.id}']`);
+			
 				// if it doesn't already exist, create it
 			if (!table) {
 				const table = document.createElement('table');
@@ -500,7 +496,7 @@ async function makeBlankOrder() {
 				table.dataset.eventSiteDivisionId = esd.id;
 				
 					// Find the h3 with the matching division id, so we can navigate the DOM to place the table
-				const h3 = document.querySelector(`h3[data-event-site-division-id='${esd.id}']`);
+				const h3 = document.querySelector(`h3[data-event-site-division-i-d='${esd.id}']`);
 				if (!h3) {
 					console.error(`Could not find h3 for division id ${esd.id}`);
 					return;
@@ -525,32 +521,14 @@ async function makeBlankOrder() {
 					// Insert the table after the h3
 				h3.insertAdjacentElement('afterend', table);
 			}
-    
-                // populate the new <tr>
-			const rowContent = `<tr data-style-id="9">
-					<td title="${orderID} / ">${schoolName}</td>
-					<td title="S">-</td>
-					<td title="M">-</td>
-					<td title="L">-</td>
-					<td title="XL">-</td>
-					<td title="2XL">-</td>
-					<td title="3XL">-</td>
-					<td title="total">-</td>
-					<td>
-						<span class="material-icons clickable order-action addAddOns" title="add add ons">add</span><span class="material-icons clickable order-action editSizes" title="edit the quantities">edit</span>
-						<span class="material-icons clickable order-action showMessage" title="view the original message">article</span>
-						<span class="material-icons clickable order-action printLabel" title="print box label">print</span>
-						<span class="material-icons clickable order-action dlInvoice" title="download invoice">request_quote</span>
-						<input class="orderChckBx" type="checkbox" id="" name="" 
-							value="${orderID}" title="mark order complete" />
-					</td>
-				</tr>`;
-                // make a new tbody to hold the new tr
-			const newTbody = document.createElement('tbody');
-			newTbody.innerHTML = rowContent;
-			newTbody.id = 'row' + orderID;
-			newTbody.className = 'unDoneRow';
-			newTbody.dataset.schoolOrderId = orderID;
+
+				// make a SchoolOrder to pass the table builder
+			const order = new SchoolOrder({ id: orderID, eshdID: esd.id, schoolID: school.id, genderID: gender, school });
+
+            // make a new tbody to hold the new tr
+					// the builder returns an array, so we access the first (only) element
+			const newTbody = buildOrdersTbodies([ order ])[0];
+
 
                 // we'll use these to place the new tbody at the right spot in the table
 			const tbodies = Array.from(table.querySelectorAll("tbody"));
@@ -570,20 +548,10 @@ async function makeBlankOrder() {
 				}
 			}
                 // fallback, append to end of the table
-			if (!inserted) {
-				table.appendChild(newTbody);  
-			}
+			if (!inserted) table.appendChild(newTbody);
+			
 
-                // finally, add the new order to the runtime
-                    // make the order object, use data from above
-                    //constructor({ id, eshdID, school, completeness = 0, due = null, paid = null, schoolOrderNote = null, 
-                    // invoiceSent = null, messageOrders = [], shirtsByStyle = [], site = undefined, sport = undefined }) 
-            const order = new SchoolOrder({
-                id: orderID,
-                eshdID: esd.id,
-                school: school
-            });
-
+               // finally, add the new order to the runtime
             esd.schoolOrders.push(order);
                 // sort the addition
             esd.sortSchoolOrders();
@@ -592,6 +560,27 @@ async function makeBlankOrder() {
 
         // finally attach everything
    openModal(wrapper); 
+}
+
+function makeBlankOrderWrapper() {
+	const w = document.createElement('div');
+	w.innerHTML = 
+      `<label for="schoolInput">Select School:</label>
+		<input list="schoolList" id="schoolInput" name="schoolInput" />
+		<datalist id="schoolList"></datalist>
+		<p id="schoolIDDisplay">Selected School ID: <span id="schoolID"></span></p>`;
+
+	if (runtime.stateEvent.sport.name.toLowerCase() === "soccer") {
+		w.innerHTML += 
+			`<form class="genderRadio"d>
+				<p>Gender:</p>
+				<label><input type="radio" name="gender" value="1">Boys</label>
+				<label><input type="radio" name="gender" value="2">Girls</label>
+				<p id="gndrMsg"></p>
+			</form>`;
+	}
+
+	return w;
 }
 
 
@@ -873,8 +862,6 @@ async function submitAddOns({ target, order }) {
 		// send it to the server
 	const data = {'orderID': order.id, 'addItems': addItems, 'addTransfers': addTransfers };
 	const response = await actionFetch('addAddOns', 'SchoolOrder', data);
-
-	console.log('new fetch');
 	
 	if (response.success) {
 		order.updateFromJSON(response.data.newOrder);
@@ -917,6 +904,8 @@ function buildAddOnSelect(prnt) {
 			newSlct.appendChild(newOptn);
 		}
 	});
+
+	newSlct.value = 'styles:6';
 
 		//add transfers to the select
 	const transferRows = Array.from(prnt.querySelectorAll('tr[data-transfer-i-d]'))
@@ -1062,11 +1051,15 @@ function makeOrderInput(currentValue) {
 function cleanInputRows(rows) {
 		// check if the row was marked complete. if so, change to partial. uncheck the box
 	const tbody = rows[0].closest('tbody');
-	if (tbody.classList.contains('doneRow')) {
-		tbody.classList.remove('doneRow');
-		tbody.classList.add('partDoneRow');
-		tbody.querySelector('input[type="checkbox"]').checked = false;
-	}
+	const soID = tbody.dataset.schoolOrderID;
+	const so = runtime.stateEvent.getOrderByID(soID);
+
+		// set the row's completeness class
+	setCompletenessClass(so, tbody);
+		// uncheck the 'complete' box
+	tbody.querySelector('input[type="checkbox"]').checked = false;
+
+
 		// actual cell cleaning
 	rows.forEach((row) => {
 		const cells = row.querySelectorAll('td');
