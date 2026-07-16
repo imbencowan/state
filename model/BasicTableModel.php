@@ -317,6 +317,17 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $affectedRows > 0; // return true if rows were affected
 	}
 
+		// delete records that match Conditions defined in a Where object
+	public static function deleteWhere(Where $where): int {
+		$query = "DELETE FROM " . static::getTableName() . $where->getWhereString();
+
+		$db = Database::getDB();
+		$stmt = $db->prepare($query);
+		$stmt->execute();
+
+		return $stmt->rowCount();
+	}
+
 		// updates given columns with given values, $updateValues is like ['column': value]
 			// can update multiple rows, but all will receive the same values
 	public static function updateByID(int|array $ids, array $updateValues): bool {
@@ -376,6 +387,46 @@ abstract class BasicTableModel implements JsonSerializable {
 		$stmt->closeCursor();
 
 		return $affectedRows > 0;
+	}
+
+	public static function updateWhere(Where $where, array $updateValues): bool {
+		if (empty($updateValues)) return false;
+
+		$db = Database::getDB();
+		$table = static::getTableName();
+		$columns = static::getColumns();
+
+		$invalidKeys = array_diff(array_keys($updateValues), $columns);
+
+		if (!empty($invalidKeys)) {
+			throw new InvalidArgumentException(
+					"Invalid column(s): " . implode(', ', $invalidKeys)
+			);
+		}
+
+		if (isset($updateValues['id'])) {
+			throw new InvalidArgumentException("Cannot update primary key 'id'");
+		}
+
+		$setClauses = [];
+
+		foreach ($updateValues as $col => $val) {
+			$setClauses[] = "$col = :$col";
+		}
+
+		$setString = implode(', ', $setClauses);
+
+		$query = "UPDATE $table SET $setString" . $where->getWhereString();
+
+		$stmt = $db->prepare($query);
+
+		foreach ($updateValues as $col => $val) {
+			$stmt->bindValue(":$col", $val);
+		}
+
+		$stmt->execute();
+
+		return $stmt->rowCount() > 0;
 	}
 
 		// $update should be an array of objects with an id property, and other props named for columns to update
@@ -440,6 +491,85 @@ abstract class BasicTableModel implements JsonSerializable {
 		}
 	}
 
+		// the use case for this function is like 'for this $parent, the only records should be these $rows.
+			// it will delete unmatched existing records, update existing matches, and insert new records
+				// $parent is an array of column=>value pairs so we can say 'for these columns with these values, only 
+				// these records should exists. $parent being an array allows supporting multi column definitions, 
+				// like 'WHERE evensiteID = x AND siteID = y', but most $parents will likely be one column.
+					// $keyColumns is a list of the columns in $rows that we care about updating, $path is necessary
+					// for defining Conditions
+	public static function syncByParent(array $parent, array $rows, array $keyColumns, array $path, 
+													?string $context = null) {
+			// a container
+		$prntCndtns = [];
+
+			// make a Condition for each $parent element. // will generate like `column = value`
+		foreach ($parent as $column => $value) {
+			$prntCndtns[] = new Condition($path, $column, $value);
+		}
+
+			// will be used to append a WHERE string in getAllFromDB()
+		$where = new Where($prntCndtns);
+
+
+		$query = "SELECT * FROM " . static::getTableName() . " " . $where->getWhereString();
+		$existing = self::getFromDB($query);
+
+		// $existing = self::getRowsFromDB(where: $where, context: $context);
+
+			// index existing rows.
+		$existingMap = [];
+		foreach ($existing as $row) {
+			$existingMap[self::buildKey($row, $keyColumns)] = $row;
+		}
+
+			// index incoming rows.
+		$incomingMap = [];
+		foreach ($rows as $row) {
+			$incomingMap[self::buildKey($row, $keyColumns)] = $row;
+		}
+
+		Test::logX($existingMap, $keyColumns);
+
+			// delete rows no longer present.
+		foreach ($existingMap as $key => $existingRow) {
+			if (!isset($incomingMap[$key])) {
+				$conditions = [...$prntCndtns];
+
+				foreach ($keyColumns as $column) {
+						$conditions[] = new Condition($path, $column, $existingRow[$column]);
+				}
+
+				self::deleteWhere(new Where($conditions));
+			}
+		}
+
+			// insert new rows or update existing ones.
+		foreach ($incomingMap as $key => $row) {
+
+			if (!isset($existingMap[$key])) {
+					self::insert(array_merge($parent, $row));
+			}
+			else {
+				$conditions = [...$prntCndtns];
+
+				foreach ($keyColumns as $column) {
+					$conditions[] = new Condition($path, $column, $row[$column]);
+				}
+
+				self::updateWhere(new Where($conditions),	$row);
+			}
+		}
+	}
+
+		// a helper
+	private static function buildKey(array $row, array $keyColumns): string {
+		return implode('|', array_map(
+			fn($col) => $row[$col] ?? '',
+			$keyColumns
+		));
+	}
+
 
 	public static function updateInterTable(array $primaryKey, array $secondaryKey): void {
 		$db = Database::getDB();
@@ -465,6 +595,7 @@ abstract class BasicTableModel implements JsonSerializable {
 		}
 
 		if (!$relation) {
+			Test::logX($primaryCol, $secondaryCol, $relations);
 			throw new InvalidArgumentException("No relation found for columns $primaryCol and $secondaryCol");
 		}
 
@@ -510,15 +641,21 @@ abstract class BasicTableModel implements JsonSerializable {
 
 
 		// SELECTs ////////////////////////////////////////////////////////////////////////////////////////////////////
-		// getAll and getByID both implement a pair of helper functions 
-			// (buildSelect() and buildJoins()) that do the heavy lifting
-		// pass $where if needed, a Where instance to build 
+		// getAll returns fully hydrated objects
+			// getAll and getByID both implement a pair of helper functions 
+				// (buildSelect() and buildJoins()) that do the heavy lifting
+			// pass $where if needed, a Where instance to build 
 	public static function getAllFromDB(?string $context = null, ?array $columns = null, ?Where $where = null): array {
+		$rows = static::getRowsFromDB($context, $columns, $where);
+		return static::groupAndBuild($rows, $context);
+	}
+
+		// returns db rows.
+	public static function getRowsFromDB(?string $context = null, ?array $columns = null, ?Where $where = null): array {
 		$query = static::buildSelect($context, $columns);
 			// if where, append it to the query
 		if ($where) $query .= $where->getWhereString();
-		$rows = static::getFromDB($query);
-		return static::groupAndBuild($rows, $context);
+		return static::getFromDB($query);
 	}
 
 		// see above
@@ -556,19 +693,17 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $value ?: null;
 	}
 
-
+	// executes 'arbitrary' sql. called by multiple functions above and in other classes
 protected static function getFromDB(string $query, array $params = []): array {
 	$db = Database::getDB();
-	// Test::logX($query);
 	$statement = $db->prepare($query);
 
-	// Bind parameters
+		// bind parameters
 	foreach ($params as $key => $value) {
 		$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
 	}
 
 	// $a = 'Memory before execute: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
-
 	$statement->execute();
 
 	// $b = 'Memory after execute, before fetch: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";

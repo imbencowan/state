@@ -21,17 +21,17 @@ class EventSite extends BasicTableModel {
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
 			// $interTable = null, $stopContexts = [])
 	protected static function getRelations(): array {
-      return [new Relation('site', 'Site', 'siteID', 'siteID', false),
-				new Relation('esDivisions', 'EventSiteDivision', 'eventSiteID', 'eventSiteID', true),
+      return [new Relation('site', 'Site', 'siteID', 'siteID', false, null, ['employees']),
+				new Relation('esDivisions', 'EventSiteDivision', 'eventSiteID', 'eventSiteID', true, null, ['employees']),
 				new Relation('gender', 'Gender', 'eventSiteID', 'genderID', false, 'eventsitehasgender'),
 				new Relation('vehicles', 'Vehicle', 'eventSiteID', 'vehicleID', true, 'eventsitehasvehicle'), 
 				new Relation('employees', 'EventSiteEmployee', 'eventSiteID', 'eventSiteID', true), 
 				new Relation('inventory', 'EventSiteInventoryItem', 'eventSiteID', 'eventSiteID', true, null, 
-								['year', 'orders']),
+								['year', 'orders', 'employees']),
 				new Relation('transfers', 'EventSiteTransfer', 'eventSiteID', 'eventSiteID', true, null, 
-								['year', 'orders']),
+								['year', 'orders', 'employees']),
 				new Relation('costs', 'EventSitecost', 'eventSiteID', 'eventSiteID', true, null, 
-								['year'])
+								['year', 'employees'])
 				];
    }
 	
@@ -176,7 +176,10 @@ class EventSite extends BasicTableModel {
 						break;
 
 					case 'employees':
-						self::updateInterTable(['eventSiteID' => $eventSiteID], ['employeeID' => $value]);
+						$rows = array_map(fn($employeeID) => ['employeeID' => $employeeID], $value);
+							// (array $parent, array $rows, array $keyColumns, array $path, ?string $context = null)
+						EventSiteEmployee::syncByParent(['eventSiteID' => $eventSiteID], $rows, ['employeeID'], 
+																	['eventsitehasemployee'], 'employees');
 						break;
 
 					case 'vehicles':
@@ -200,15 +203,6 @@ class EventSite extends BasicTableModel {
 			$events[] = Event::getByID($row['eventID'], 'inventory');
 		}
 		return $events;
-
-
-		// 	// Where: construct( string $column, mixed $value = null, string $operator = '=', array $path = [] )
-      //       // $path specifies the table JOIN path the query takes to the target table 
-		// 			// ex: ['events', 'eventsites', 'sites']
-		// $where = new Where('eventYear', $year, '=', ['events']);
-		// 	// getAllFromDB(?string $context = null, ?Where $where = null): array
-		// $data = Event::getAllFromDB('inventory', $where);
-		// return $data;
 	}
 
 	public static function editEventSiteInventory($eventSiteID, $updateItems = [], $updateTransfers = []) {
@@ -220,18 +214,9 @@ class EventSite extends BasicTableModel {
 	}
 
 	public static function genBaseInventory($esID) {
-			// a where condition.  // (col, value, comparison, path.  // see Where.php for explanation
-		$where = new Where('inventoryMinimum', 0, '>', ['apparel']);
+			// where conditions. // see Where.php and Condition.php for explanation
+		$where = new Where([ new Condition(['apparel'], 'inventoryMinimum', 0, '>') ]);
 		$minInvItems = Item::getAllFromDB(null, null, $where);
-
-			// remove this after the first year events are filled.
-		$minInvItems = array_filter($minInvItems, function (Item $item) {
-				// remove: colorID == 4 AND styleID != 8
-			if ($item->colorID == 4 && $item->styleID != 8) {
-				return false;
-			}
-			return true;
-		});
 
 		$inventoryItems = array_map(fn(Item $item) => 
 								EventSiteInventoryItem::fromItem($item, $esID), $minInvItems);

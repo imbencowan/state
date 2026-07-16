@@ -53,6 +53,7 @@ class EventSiteInventoryItem extends BasicTableModel {
 			itemID: $item->id,
 			startQ: $item->inventoryMin,
 			price: $item->price,
+			cost: $item->cost,
 			item: $item
 		);
 	}

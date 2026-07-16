@@ -41,7 +41,7 @@ class Year implements JsonSerializable {
 			// construct( string $column, mixed $value = null, string $operator = '=', array $path = [] )
             // $path specifies the table JOIN path the query takes to the target table 
 					// ex: ['events', 'eventsites', 'sites']
-		$where = new Where('eventYear', $year, '=', ['events']);
+		$where = new Where([ new Condition(['events'], 'eventYear', $year, '=') ]);
 
 		// $this->events = $this->getEventsForYear($year);
 			// "year" context stops JOINing of the schoolorders table via the Relation class

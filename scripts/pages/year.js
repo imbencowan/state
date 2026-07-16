@@ -98,7 +98,7 @@ async function showRowEdit(target) {
    row.querySelector('select')?.focus();
 }
 
-   // make a select for divisions
+   // make a select for sites
 async function makeSiteSlct(td) {
       // bring in the sites
    let allSites = await runtime.allSites.load();

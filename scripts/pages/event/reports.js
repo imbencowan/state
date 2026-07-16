@@ -15,10 +15,10 @@ const reportSiteButtons = [
       handler: showFillInventory, submitHandler: submitFillInventoryReport, cancelHandler: closeModal }, 
    { action: "fillTransfers", title: "enter sold transfers", icon: "edit", text: " Sold Transfers", 
       handler: showEnterSoldTransfers },
+   { action: "addCosts", title: "add additional costs", icon: "add", text: " Costs", handler: showAddCosts },
    { action: "editMcUCosts", title: "edit mcu costs", icon: "edit", text: " McU Costs", handler: showEditMcUCosts },
    { action: "updateCost/Price", title: "update cost/prices from default item data", icon: "refresh", text: "Cost/Price", 
-      handler: updateCostAndPrice },
-   { action: "addCosts", title: "add additional costs", icon: "add", text: " Costs", handler: showAddCosts }
+      handler: updateCostAndPrice }
 ];
    // an array of action/handler pairs based on buttons to be used the page's event listener
 export const reportSiteActions = Object.fromEntries(
@@ -522,7 +522,7 @@ async function submitAddCosts(e, frm, eSite) {
    
 
    if (responseCost.success && responsePay.success) {
-      // closeModal();
+      closeModal();
       // await eSite.refreshInventory(runtime.allItems, runtime.allTransfers);
       // refreshTable(eSite.id);
 

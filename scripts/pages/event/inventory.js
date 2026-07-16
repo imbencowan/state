@@ -875,10 +875,15 @@ async function genBaseInventory({ target }) {
       const eSite = runtime.stateEvent.getEventSiteByID(esID);
 
       eSite.inventory = parseToInstancesArr(response.data.items, InventoryItem);
+		console.log(eSite.inventory);
       
       const tbody = buildInventoryTbody(eSite.getStructuredInventory());
 
-      tbl.appendChild(tbody);
+      if (tbl.tBodies.length) {
+			tbl.tBodies[0].replaceWith(tbody);
+		} else {
+			tbl.appendChild(tbody);
+		}
 
       target.remove();
    } else {

@@ -17,8 +17,8 @@ import { parseEventRoute, isEventTab, isEventYear } from "./pages/event/routeHel
       // home, sports, items, schools, year
 const routes = [
       // handler in this first one creates an anonymous function to avoid passing (parts, match) as arguments
-   { match: parts => (parts.length === 0), handler: () => goToEventPage() },
-   { match: parts => (runtime.allSports.getBySlug(parts[0])), handler: handleSport }, 
+   { match: parts => (parts.length === 0), handler: () => goToEventPage(), isEvent: true },
+   { match: parts => (runtime.allSports.getBySlug(parts[0])), handler: handleSport, isEvent: true }, 
    { match: parts => (parts[0] === 'items' && parts.length === 1), handler: goToItemsPage },
    { match: parts => (parts[0] === 'transfers' && parts.length === 1), handler: goToTransfersPage },
    { match: parts => (parts[0] === 'costs' && parts.length === 1), handler: goToCostsPage },
@@ -36,9 +36,15 @@ export async function router() {
 
    for (const route of routes) {
       const match = route.match(parts);
-      if (match) return route.handler(parts, match, path);
+      if (match) {
+            // nullify runtime.stateEvent on non event pages. // prevents calling switchTab() when navigating from non event pages
+         if (!route.isEvent) runtime.stateEvent = null;
+
+         return route.handler(parts, match, path);
+      }
    }
 
+   runtime.stateEvent = null;
    return showNotFound(path);
 }
 

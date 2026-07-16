@@ -239,9 +239,9 @@ class Event extends BasicTableModel {
 	}
 
 	public static function getInventoryItems($eSiteIDs) {
-			// a where condition. // see Where.php for explanation
-		$whereInvntry = new Where('eventSiteID', $eSiteIDs, 'IN', ['eventsiteinventories']);
-		$whereTrnsfr = new Where('eventSiteID', $eSiteIDs, 'IN', ['eventsitetransfers']);
+			// where conditions. // see Where.php and Condition.php for explanation
+		$whereInvntry = new Where([ new Condition(['eventsiteinventories'], 'eventSiteID', $eSiteIDs, 'IN') ]);
+		$whereTrnsfr = new Where([ new Condition(['eventsitetransfers'], 'eventSiteID', $eSiteIDs, 'IN') ]);
 
 		$invItems = EventSiteInventoryItem::getAllFromDB(context: 'inventory', where: $whereInvntry);
 		$transfers = EventSiteTransfer::getAllFromDB(context: 'inventory', where: $whereTrnsfr);
@@ -251,14 +251,14 @@ class Event extends BasicTableModel {
 
 		// should return SchoolOrders for an Event
 	public static function getOrders($esdIDs) {
-			// a where condition. // see Where.php for explanation
-		$whr = new Where('eventSiteHasDivisionID', $esdIDs, 'IN', ['schoolorders']);
+			// where conditions. // see Where.php and Condition.php for explanation
+		$whr = new Where([ new Condition(['schoolorders'], 'eventSiteHasDivisionID', $esdIDs, 'IN') ]);
 
 		return ['orders' => SchoolOrder::getAllFromDB(where: $whr)];
 	}
 
 	public static function fetchDateRange(string $start, string $end): array {
-		$where = new Where('startDate', [$start, $end], 'BETWEEN', ['events']);
+		$where = new Where([ new Condition(['events'], 'startDate', [$start, $end], 'BETWEEN') ]);
 		$events = self::getAllFromDB(context: 'orders', where: $where);
 		usort($events, function($a, $b) { return $a->startDate <=> $b->startDate; });
 
@@ -268,7 +268,7 @@ class Event extends BasicTableModel {
 		// this function is to calculate what stock we need for a given season
 	public static function getStockByDateRange(string $start, string $end): array {
 			// build a WHERE to SELECT events between dates passed in.
-		$where = new Where('startDate', [$start, $end], 'BETWEEN', ['events']);
+		$where = new Where([ new Condition(['events'], 'startDate', [$start, $end], 'BETWEEN') ]);
 			// build a query to get the sum of eventsiteinventories for those events
 		$query = "SELECT eventsiteinventories.itemID,
 							SUM(eventsiteinventories.startQ) AS totalQ
@@ -286,7 +286,7 @@ class Event extends BasicTableModel {
 			// get the sum of sorderitems we did for this date range in the previous year
 		$priorStart = (new DateTime($start))->modify('-1 year')->format('Y-m-d');
 		$priorEnd = (new DateTime($end))->modify('-1 year')->format('Y-m-d');
-		$priorWhere = new Where('startDate', [$priorStart, $priorEnd], 'BETWEEN', ['events']);
+		$priorWhere = new Where([ new Condition(['events'], 'startDate', [$priorStart, $priorEnd], 'BETWEEN') ]);
 		$priorQuery = "SELECT sorderitems.itemID,
 								SUM(sorderitems.sOrderItemsQuantity) AS totalQ
 						FROM events

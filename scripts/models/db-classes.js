@@ -227,7 +227,6 @@ export class EventSite {
       this.gender = gender;
 		this.vehicles = Utils.parseToInstancesArr(vehicles, Vehicle);
       this.employees = Utils.parseToInstancesArr(employees, EventSiteEmployee);
-      console.log(employees);
       this.inventory = Utils.parseToInstancesArr(inventory, InventoryItem);
       this.transfers = Utils.parseToInstancesArr(transfers, InventoryTransfer);
       this.costs = Utils.parseToInstancesArr(costs, EventSiteCost);
@@ -375,8 +374,9 @@ export class EventSite {
    }
 
    updateInventory(update) {
+         console.log(update, this.inventory);
       update.forEach(u => {
-         const invItem = this.inventory.find(ii => ii.id === u.invItemID);
+         const invItem = this.inventory.find(ii => ii.item.id === u.itemID);
          invItem.startQ = Number(u.quantity);
       });
    }
