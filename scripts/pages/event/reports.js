@@ -3,7 +3,7 @@ import { actionFetch, myFetch } from '../../fetch.js';
 import { openModal, closeModal } from '../../modal.js';
 import { buildElement, buildTD, buildDollarTD, parseToInstancesArr } from '../../utilities.js';
 import { buildActionButton, makeSubmitCancelButtons, makeTypeActionLabel, 
-         makeLabelInputList } from '../page-utils.js';
+         makeLabelInputList, makeButtonActionMap } from '../page-utils.js';
 import { buildFillTable, submitFillInventory } from './inventory.js';
 import { InventoryTransfer } from '../../models/db-classes.js';
 import {  } from '../../print.js';
@@ -21,16 +21,7 @@ const reportSiteButtons = [
       handler: updateCostAndPrice }
 ];
    // an array of action/handler pairs based on buttons to be used the page's event listener
-export const reportSiteActions = Object.fromEntries(
-	reportSiteButtons.flatMap(btn => {
-		const entries = [[btn.action, btn.handler]];
-
-		if (btn.submitHandler) entries.push([ makeTypeActionLabel('submit', btn.action), btn.submitHandler ]);
-		if (btn.cancelHandler) entries.push([ makeTypeActionLabel('cancel', btn.action), btn.cancelHandler ]);
-
-		return entries;
-	})
-);
+export const reportSiteActions = makeButtonActionMap(reportSiteButtons);
 
 
 export async function attachReportsPanel(panel, sEvent) {

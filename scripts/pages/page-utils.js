@@ -92,3 +92,17 @@ export function makeLabelInputList({ list, getName, getID, getValue }) {
 
     return buildElement("fieldset", { classes: 'labelInputList', children });
 }
+
+export function makeButtonActionMap(btns) {
+    console.log('new mapper');
+    return Object.fromEntries(
+        btns.flatMap(btn => {
+            const entries = [[btn.action, btn.handler]];
+
+            if (btn.submitHandler) entries.push([ makeTypeActionLabel('submit', btn.action), btn.submitHandler ]);
+            if (btn.cancelHandler) entries.push([ makeTypeActionLabel('cancel', btn.action), btn.cancelHandler ]);
+
+            return entries;
+        })
+    )
+}

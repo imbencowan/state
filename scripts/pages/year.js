@@ -2,23 +2,109 @@
 // js functions for the event page
 import { runtime } from '../runtime.js';
 import { actionFetch, myFetch } from '../fetch.js';
-import { arraysEqualIgnoreOrder, buildElement } from '../utilities.js';
+import { arraysEqualIgnoreOrder, buildElement, getPropertyValues } from '../utilities.js';
+import { buildActionButton, makeTypeActionLabel, makeLabelInputList, 
+         makeButtonActionMap, buildIcon } from './page-utils.js';
 import { openModal } from '../modal.js';
-import { EventSite, Season, Site } from '../models/db-classes.js';
+import { EventSite, Season, Site, StateEvent } from '../models/db-classes.js';
 import { showPage } from './page-handling.js';
 import { printSeasonStockPDF } from '../print.js';
 
 
-export async function goToYearPage(year) {
-   if (!year) year = document.getElementById('selectYear').value;
 
-   await showPage('showYear', 'Year', { year: year });
-   await runtime.allSeasons.load();
+const topButtons = [
+   { action: "getSeasonStock", text: " Get Next Season Stock", handler: showSeasonStock }, 
+   { action: "addEvent", icon: "add", text: " Event", handler: showAddEvent }, 
+   { action: "addYear", icon: "add", text: " Year", handler: showAddYear }
+];
+
+
+export async function goToYearPage(year) {
+   await Promise.all([
+      runtime.allSites.load(),
+      runtime.allEmployees.load(),
+      runtime.allVehicles.load(),
+      runtime.allSeasons.load()
+   ]);
+
+   if (!year) year = document.getElementById('selectYear').value;
+   const response = await showPage('showYear', 'Year', { year: year });
+
+   console.log(response.data);
+   buildYearPage(response.data);
 
    addShowYearFunctionality();
 }
 
-export function addShowYearFunctionality() {
+function buildYearPage(y) {
+   const h2 = buildElement("h2", { text: `${y.year} - ${y.year + 1} Events` });
+   const topBtnElmnts = topButtons.map(buildActionButton);
+   const topDiv = buildElement("div", { children: [ h2, ...topBtnElmnts ], classes: "row" });
+
+   const thead = buildYearThead();
+   const tbody = buildYearTbody(y.events);
+   const tbl = buildElement("table", { id: 'eventsTable', classes: 'eventsTable', children: [ thead, tbody ] });
+   const tblCntnr = buildElement("div", { children: [ tbl ], classes: 'table-container' });
+
+   const yearDiv = buildElement("div", { id:'yearContainer', children: [ topDiv, tblCntnr ] });
+   document.getElementById('display').appendChild(yearDiv);
+}
+
+function buildYearThead() {
+   const thTexts = [ "Event", "Site", "Divisions", "Employees", "Vehicle" ];
+   
+   const ths = thTexts.map(t => buildElement("th", { text: t }));
+   ths.push(buildElement("th", { children: [ buildIcon('edit') ]}))
+
+   const tr = buildElement("tr", { children: ths });
+
+   return buildElement("thead", { children: [ tr ] });
+}
+
+function buildYearTbody(events) {
+   const rows = [];
+
+   for (const e of events) {
+      const sEvent = StateEvent.fromJSON(e);
+      const season = runtime.allSeasons.getByDate(sEvent.startDate);
+
+      for (const [i, es] of sEvent.eventSites.entries()) {
+            // a couple arrays for oValues to hold
+         const empIDsOV = JSON.stringify(es.employees.map(esE => esE.employee.id));
+         const divIDsOV = JSON.stringify(es.esDivisions.map(esd => esd.division.id));
+         const vhclIDsOV = JSON.stringify(es.vehicles.map(v => v.id));
+
+         const tds = [];
+
+         if (i === 0) {
+            const h2 = buildElement("h2", { text: sEvent.sport.name });
+            const txt = sEvent.getDateRangeString();
+            tds.push(buildElement("td", { children: [ h2, txt ], attrs: { rowspan: sEvent.eventSites.length } }));
+         }
+
+         tds.push(...[
+            buildElement("td", { text: es.site.name, dataset: { column: 'site', oValue: es.site.id } }),
+            buildElement("td", { text: es.getDivisionsString(), dataset: { column: 'divisions', oValue: divIDsOV } }),
+            buildElement("td", { text: es.getEmployeesString(), dataset: { column: 'employees', oValue: empIDsOV } }),
+            buildElement("td", { text: es.getVehicleString(), dataset: { column: 'vehicles', oValue: vhclIDsOV } }),
+            buildElement("td", { dataset: { column: 'buttons' }, children: buildElement("button", { title: 'edit row', 
+                                    children: buildIcon('edit'), dataset: { action: 'editRow' } }) }),
+         ]);
+
+         const row = buildElement("tr", { children: tds, dataset: { eventID: sEvent.id, eventSiteID: es.id } });
+         row.style.backgroundColor = season.color;
+         rows.push(row);
+      }
+   }
+
+   return buildElement("tbody", { children: rows });
+}
+
+
+
+
+
+function addShowYearFunctionality() {
    const container = document.getElementById('yearContainer');
 
       // click listener will only activate for elements with a data-action
@@ -45,6 +131,9 @@ export function addShowYearFunctionality() {
    });
 }
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 async function showRowEdit(target) {
       // prevent opening edits on multiple rows simultaneously
    runtime.activeMode = 'edit';
@@ -62,7 +151,7 @@ async function showRowEdit(target) {
          // use a switch to not rely on position
       switch (column) {
          case "site":
-            input = await makeSiteSlct(td);
+            input = makeSiteSlct(td);
             break;
          case "divisions":
                // put edit divisions on hold because it doesn't work with BasicTableModel's current update methods
@@ -77,10 +166,10 @@ async function showRowEdit(target) {
             input.placeholder = td.dataset.oValue;
             break;
          case "employees":
-            input = await makeEmplySlct(td);
+            input = makeEmplySlct(td);
             break;
          case "vehicles":
-            input = await makeVhclSlct(td);
+            input = makeVhclSlct(td);
             break;
          case "buttons":
                // pass the row for button event listeners
@@ -92,16 +181,15 @@ async function showRowEdit(target) {
          td.appendChild(input);
       }
    }
-   console.log(row);
 
       // give focus to the first select
    row.querySelector('select')?.focus();
 }
 
    // make a select for sites
-async function makeSiteSlct(td) {
+function makeSiteSlct(td) {
       // bring in the sites
-   let allSites = await runtime.allSites.load();
+   let allSites = runtime.allSites.getSync();
       // alphebetize the list
    allSites = Object.values(allSites).sort((x, y) => {
       return x.name.localeCompare(y.name); // or numeric comparison if needed
@@ -127,8 +215,8 @@ async function makeSiteSlct(td) {
 
    // make a select for divisions
       // omitted. editing divisions in row is currently prevented
-async function makeDvsnSlct(td) {
-   const allDivisions = await runtime.allDivisions.load();
+function makeDvsnSlct(td) {
+   const allDivisions = runtime.allDivisions.getSync();
 
    const newSlct = document.createElement('select');
    newSlct.multiple = true;
@@ -154,17 +242,14 @@ async function makeDvsnSlct(td) {
 }
 
    // make a select for employees
-async function makeEmplySlct(td) {
-   const allEmployees = await runtime.allEmployees.load();
-
-   const newSlct = document.createElement('select');
+function makeEmplySlct(td) {const newSlct = document.createElement('select');
    newSlct.multiple = true;
 
       // parse oValues from the data attribute to an array
    const oValues = JSON.parse(td.dataset.oValue || '[]'); // fallback to empty array
 
       // forEach div
-   Object.entries(allEmployees).forEach(([key, emp]) => {
+   Object.entries(runtime.allEmployees.getSync()).forEach(([key, emp]) => {
       const newOptn = document.createElement('option');
       newOptn.textContent = emp.shortName;
       newOptn.value = emp.id;
@@ -178,9 +263,7 @@ async function makeEmplySlct(td) {
 }
 
    // make a select for divisions
-async function makeVhclSlct(td) {
-   const allVehicles = await runtime.allVehicles.load();
-
+function makeVhclSlct(td) {
    const newSlct = document.createElement('select');
    newSlct.multiple = true;
 
@@ -188,7 +271,7 @@ async function makeVhclSlct(td) {
    const oValues = JSON.parse(td.dataset.oValue || '[]'); // fallback to empty array
 
       // forEach div
-   Object.entries(allVehicles).forEach(([key, v]) => {
+   Object.entries(runtime.allVehicles.getSync()).forEach(([key, v]) => {
       const newOptn = document.createElement('option');
       newOptn.textContent = v.name;
       newOptn.value = v.id;
@@ -202,6 +285,7 @@ async function makeVhclSlct(td) {
    return newSlct;
 }
 
+   // replace this with the function in page-utils.js?
 function makeSubmitCancelButtons(row) {
    const btnDiv = document.createElement('div');
 
@@ -311,7 +395,12 @@ function updateRow(tds, updateValues) {
          let slct = td.querySelector('select');
          if (slct) {
             const names = Array.from(slct.selectedOptions).map(opt => opt.textContent);
-            td.textContent = names.join(', ');
+            const namesStr = names.join(', ');
+            const idsArr = Array.from(slct.selectedOptions).map(opt => Number(opt.value));
+            console.log(idsArr);
+            td.textContent = namesStr;
+            td.dataset.oValue = JSON.stringify(idsArr);
+            td.dataset.oText = namesStr;
          } else {
             let input = td.querySelector('input');
             if (input) td.textContent = input.value

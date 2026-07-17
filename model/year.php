@@ -97,11 +97,8 @@ class Year implements JsonSerializable {
 		// takes us to the Year page, displaying all events for a given year
 	static function showYear($year) {
 		$yearsEvents = new Year($year, new DateTime());
-		ob_start();
-		include 'view/year.php';
-		$htmlContent = ob_get_clean(); // Get the buffered content as a string
 		
-		return [ 'html' => $htmlContent, 'data' => [ 'year' => $yearsEvents ] ];
+		return $yearsEvents;
 	}
 
 	static function submitYear($events) {

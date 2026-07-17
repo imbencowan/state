@@ -5,7 +5,8 @@ import { sizeList } from '../../constants.js';
 import { actionFetch } from '../../fetch.js';
 import { openModal, closeModal } from '../../modal.js';
 import { buildElement } from '../../utilities.js';
-import { buildIcon, buildActionButton, makeTypeActionLabel, makeSubmitCancelButtons } from '../page-utils.js';
+import { buildIcon, buildActionButton, makeTypeActionLabel, 
+			makeSubmitCancelButtons, makeButtonActionMap } from '../page-utils.js';
 import { SchoolOrder } from '../../models/db-classes.js';
 import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoices, printSoSPDF, printAllSoSPDF, 
 			printOMessages, genIHSAATotals } from '../../print.js';
@@ -29,9 +30,7 @@ const topOrderButtons = [
    { action: "showAllSchoolsAZ", title: "show A-Z list of all schools", icon: "visibility", text: " A-Z Schools",
       handler: showAllSchoolsAZ }
 ];
-export const topOrderActions = Object.fromEntries(
-    topOrderButtons.map(b => [b.action, b.handler])
-);
+export const topOrderActions = makeButtonActionMap(topOrderButtons);
    // define the order table row actions and their handlers
 const orderRowButtons = [
    { action: "addAddOns", icon: "add", title: "add add ons", handler: showAddOnInputs, 
@@ -44,16 +43,7 @@ const orderRowButtons = [
    { action: "showMore", icon: "more_horiz", title: "show more options", handler: showMoreRowOptions }
 ];
 	// build a couple more look ups for the listener
-export const orderRowActions = Object.fromEntries(
-	orderRowButtons.flatMap(btn => {
-		const entries = [[btn.action, btn.handler]];
-
-		if (btn.submitHandler) entries.push([ makeTypeActionLabel('submit', btn.action), btn.submitHandler ]);
-		if (btn.cancelHandler) entries.push([ makeTypeActionLabel('cancel', btn.action), btn.cancelHandler ]);
-
-		return entries;
-	})
-);
+export const orderRowActions = makeButtonActionMap(orderRowButtons);
 
 
 

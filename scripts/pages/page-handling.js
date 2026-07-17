@@ -7,4 +7,6 @@ export async function showPage(action, actionClass, data) {
 
 		// unset activeMode on new page
 	runtime.activeMode = null;
+
+	return response;
 }

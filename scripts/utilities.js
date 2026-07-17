@@ -333,6 +333,15 @@ export function formatCurrency(value) {
 }
 
 
+export function getPropertyValues(array, property = "id") {
+   if (!Array.isArray(array)) {
+      throw new Error("Expected an array");
+   }
+
+   return array.map(item => item[property]);
+}
+
+
 
 
 

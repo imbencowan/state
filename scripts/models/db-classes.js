@@ -36,6 +36,38 @@ export class StateEvent {
 	getRealYear() {
 		return this.startDate.getFullYear().toString().slice(-2);
 	}
+
+   getDateRangeString() {
+      const start = this.startDate.toLocaleDateString("en-US", {
+         month: "long",
+         day: "numeric"
+      });
+
+      // one-day event
+      if (this.startDate.getTime() === this.endDate.getTime()) {
+         return start;
+      }
+
+      let end;
+      let conjunction;
+
+      // same month
+      if (
+         this.startDate.getFullYear() === this.endDate.getFullYear() &&
+         this.startDate.getMonth() === this.endDate.getMonth()
+      ) {
+         end = this.endDate.getDate();
+         conjunction = "-";
+      } else {
+         end = this.endDate.toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric"
+         });
+         conjunction = " - ";
+      }
+
+      return (start + conjunction + end).replace(/ (\S+)$/, "\u00A0$1");
+   }
 	
 	getEventSiteByID(id) {
       id = Number(id);
@@ -249,18 +281,33 @@ export class EventSite {
    getDivisionsString() {
       if (!this.esDivisions || this.esDivisions.length === 0) return '';
 
-      let minDiv = this.esDivisions[0].division;
-      let maxDiv = this.esDivisions[0].division;
+         // create a map of id -> name (also removes duplicates)
+      const divs = new Map(
+         this.esDivisions.map(esd => [
+            esd.division.id,
+            esd.division.name
+         ])
+      );
 
-      this.esDivisions.forEach(esd => {
-         const div = esd.division;
-         if (div.id < minDiv.id) minDiv = div;
-         if (div.id > maxDiv.id) maxDiv = div;
-      });
+      const ids = [...divs.keys()].sort((a, b) => a - b);
 
-      let divStr = (minDiv.id === maxDiv.id)
-         ? minDiv.name
-         : `${minDiv.name}-${maxDiv.name}`;
+      let divStr;
+
+      if (ids.length === 1) {
+         divStr = divs.get(ids[0]);
+      } else {
+         const minId = ids[0];
+         const maxId = ids[ids.length - 1];
+
+         if ((maxId - minId + 1) === ids.length && ids.length > 2) {
+            divStr = `${divs.get(minId)} - ${divs.get(maxId)}`;
+         } else {
+            divStr = ids
+               .map(id => divs.get(id))
+               .sort()
+               .join(' / ');
+         }
+      }
 
       if (this.gender && this.gender.id !== 3) divStr += ' ' + this.gender.name;
 
@@ -275,6 +322,12 @@ export class EventSite {
       if (!this.employees || this.employees.length === 0) return '';
 
       return this.employees.map(e => e.employee.shortName).join(' / ');
+   }
+
+   getVehicleString() {
+      if (!this.vehicles || this.vehicles.length === 0) return '';
+
+      return this.vehicles.map(v => v.name).join(',  ');
    }
 
    getCostByID(id) {
@@ -1208,6 +1261,31 @@ export class Season {
 
    static fromJSON(json) {
       return new Season(json);
+   }
+
+   containsDate(date) {
+      let month, day;
+
+      if (date instanceof Date) {
+         month = date.getMonth() + 1;
+         day = date.getDate();
+      } else {
+         const d = new Date(date);
+         month = d.getUTCMonth() + 1;
+         day = d.getUTCDate();
+      }
+
+         // make an integer that sequences month-day in one value
+      const monthDay = (month * 100) + day;
+
+      const start = this.startMonth * 100 + this.startDay;
+      const end = this.endMonth * 100 + this.endDay;
+      
+         // Doesn't cross New Year's
+      if (start <= end) return monthDay >= start && monthDay <= end;
+
+         // Crosses New Year's
+      return monthDay >= start || monthDay <= end;
    }
 
    static sortByStartDate(allSeasons) {

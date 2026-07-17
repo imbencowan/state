@@ -1,5 +1,5 @@
 import { makeDataLoader } from "../utilities.js";
-import { Item, Sport } from "../models/db-classes.js";
+import { Item, Season, Sport } from "../models/db-classes.js";
 
 
    // a specific loader for Items that gives a getByStyleColorSize() method
@@ -112,6 +112,20 @@ export function makeSportLoader() {
       clear() {
          slugLookup = null;
          loader.clear();
+      }
+   };
+}
+
+export function makeSeasonLoader() {
+      // start with our basic loader. // gives methods for accessing all Seasons from the db
+   const loader = makeDataLoader('Season', Season);
+
+      // returns the basic load(), getSync(), getByID(), adds a date comparison method
+   return {
+      ...loader,
+
+      getByDate(date) {
+         return Object.values(loader.getSync()).find(season => season.containsDate(date));
       }
    };
 }
