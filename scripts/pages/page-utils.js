@@ -94,7 +94,6 @@ export function makeLabelInputList({ list, getName, getID, getValue }) {
 }
 
 export function makeButtonActionMap(btns) {
-    console.log('new mapper');
     return Object.fromEntries(
         btns.flatMap(btn => {
             const entries = [[btn.action, btn.handler]];

@@ -4,8 +4,6 @@ import { actionFetch } from './fetch.js';
 import { submitOrderFiles } from './order-submission.js';
 	// utility for building the nav bar
 import { buildElement } from './utilities.js';
-    // modal initializaion
-import { init as modalInit } from './modal.js';
 import { navigate } from './navigation.js';
 
 
@@ -45,10 +43,6 @@ export async function init() {
 		runtime.allTransfers.load()
 	]);
 	await runtime.allItems.load();
-
-
-		// make the modal
-	modalInit();
 }
 
 async function fillYearSelect() {

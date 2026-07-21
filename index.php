@@ -39,10 +39,16 @@
 	</div>
 	<section id="display"></section>
 
-	<div id="myModal" class="modal">
+	<div id="modal" class="modal">
+		<div class="modal-window">
+			<button class="close">&times;</button>
+			<div class="modal-content">This is the modal content!</div>
+		</div>
+	</div>
+	<div id="childModal" class="modal">
 		<div class="modal-content">
 			<span class="close">&times;</span>
-			<p id="modalContent">This is the modal content!</p>
+			<p id="childModalContent">This is the modal content!</p>
 		</div>
 	</div>
 	</main>

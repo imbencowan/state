@@ -1,7 +1,7 @@
 import { runtime } from './runtime.js';
 import { Label, InvoicePage, SoSPage, InventoryPage, labelPage } from './models/output-classes.js';
 import { sizeList, ADULT_HOOD_STYLE_ID } from './constants.js';
-import { openModal } from './modal.js';
+import { modal, childModal } from './modal.js';
 import { EventSite } from './models/db-classes.js';
 import * as Helpers from './printHelpers.js';
 

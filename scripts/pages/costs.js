@@ -5,7 +5,7 @@ import { actionFetch } from '../fetch.js';
 import { buildIcon, makeSubmitCancelButtons, makeTypeActionLabel, makeLabelInputList } from './page-utils.js';
 import { formatCurrency } from '../utilities.js';
 import { navigate } from '../navigation.js';
-import { openModal, closeModal } from '../modal.js';
+import { modal, childModal } from '../modal.js';
 
 
 

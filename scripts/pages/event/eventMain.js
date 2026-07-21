@@ -13,7 +13,7 @@ import { topOrderActions, orderRowActions, attachOrdersPanel, toggleOrderComplet
 			changeCommentHandled } from './orders.js';
 import { topInventoryActions, inventorySiteActions, attachInventoryPanel } from './inventory.js';
 import { attachReportsPanel, reportSiteActions } from './reports.js';
-import { openModal } from '../../modal.js';
+import { modal, childModal } from '../../modal.js';
 
 
 

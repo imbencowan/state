@@ -803,6 +803,7 @@ protected static function getFromDB(string $query, array $params = []): array {
 		// HELPERS /////////////////////////////////////////
 // this is currently not being used
 // WELL, now it is
+// and now it's not?
 			// returns ids of an array of objects held in a $property. applicable to any class with such properties
 	public function getChildIDs(string $property): array {
 			// check that this function will work. 

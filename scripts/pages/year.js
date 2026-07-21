@@ -5,7 +5,7 @@ import { actionFetch, myFetch } from '../fetch.js';
 import { arraysEqualIgnoreOrder, buildElement, getPropertyValues } from '../utilities.js';
 import { buildActionButton, makeTypeActionLabel, makeLabelInputList, 
          makeButtonActionMap, buildIcon } from './page-utils.js';
-import { openModal } from '../modal.js';
+import { modal, childModal } from '../modal.js';
 import { EventSite, Season, Site, StateEvent } from '../models/db-classes.js';
 import { showPage } from './page-handling.js';
 import { printSeasonStockPDF } from '../print.js';

@@ -4,7 +4,7 @@ import { sizeList, ihsaaSizeList } from './constants.js';
 import { myFetch } from './fetch.js';
     // classes to organize data to send to the server
 import { ActionRequest, InputOrder } from './models/other-classes.js';
-import { openModal } from './modal.js';
+import { modal, childModal } from './modal.js';
 
 export async function submitOrderFiles() {
 	let files = document.getElementById("fileInput").files;

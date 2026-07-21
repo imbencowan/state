@@ -1,7 +1,7 @@
  //////////////////////////////////////////////////
  // all calls to the server, and the responses sent from it, are passed through this function
  
- import { openModal } from './modal.js';
+ import { modal, childModal } from './modal.js';
  import { ActionRequest } from './models/other-classes.js';
  
     // all fetch requests go to controller.php

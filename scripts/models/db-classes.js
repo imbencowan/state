@@ -490,7 +490,7 @@ export class EventSite {
                garments[styleID].colors[colorID].sOrderTotal += soi.quantity;  
                
                   // track plus sizes
-               if (PLUS_SIZECHARS.has(sChar)) plusSizes[sChar] += soi.quantity;
+               if (PLUS_SIZECHARS.has(sChar)) plusSizes[sChar].sold += soi.quantity;
             }
          }
       }
@@ -589,6 +589,11 @@ export class EventSite {
          await this.refreshInventory(allItems, allTransfers);
          return response;
       }
+   }
+
+   async refreshCosts() {
+      const response = await actionFetch('getCosts', 'EventSite', { esID: this.id });
+      if (response.success) this.costs = Utils.parseToInstancesArr(response.data.costs, EventSiteCost);
    }
 }
 

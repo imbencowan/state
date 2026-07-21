@@ -1,6 +1,6 @@
 import { runtime } from '../../runtime.js';
 import { actionFetch, myFetch } from '../../fetch.js';
-import { openModal, closeModal } from '../../modal.js';
+import { modal, childModal } from '../../modal.js';
 import { buildElement, buildTD, buildDollarTD, parseToInstancesArr } from '../../utilities.js';
 import { buildActionButton, makeSubmitCancelButtons, makeTypeActionLabel, 
          makeLabelInputList, makeButtonActionMap } from '../page-utils.js';
@@ -263,6 +263,7 @@ function showFillInventory({ target }) {
 
 async function submitFillInventoryReport({ target }) {
    const success = await submitFillInventory({ target });
+   console.log('chang');
    if (success) await refreshTable(target.dataset.id);
 }
 
@@ -374,7 +375,6 @@ function showAddCosts({ target }) {
       // employees
    if (eSite.employees.length) {;
       eSite.employees.forEach(esEmp => {
-         console.log(esEmp);
          costs.push(...buildAddEmployeeRow({ eSite, esEmp }));
       });
    }
@@ -503,8 +503,6 @@ async function submitAddCosts(e, frm, eSite) {
       }
    }
 
-   console.log(updateCosts);
-
    const updateC = { rows: updateCosts, updateCols: [ 'rate', 'quantity' ] };
    const responseCost = await actionFetch('upsertMany', 'EventSiteCost', updateC);
 
@@ -514,12 +512,7 @@ async function submitAddCosts(e, frm, eSite) {
 
    if (responseCost.success && responsePay.success) {
       closeModal();
-      // await eSite.refreshInventory(runtime.allItems, runtime.allTransfers);
-      // refreshTable(eSite.id);
-
-      console.log('success');
-      
+      await eSite.refreshCosts();
+      refreshTable(eSite.id);
    }
 }
-
-

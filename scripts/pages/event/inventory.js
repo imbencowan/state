@@ -1,9 +1,9 @@
 // rendering and interaction functions for the inventory tab of the event page
 
 import { runtime } from '../../runtime.js';
-import { sizeList, DAIRY_STYLE_ID, ADULT_HOOD_STYLE_ID } from '../../constants.js';
+import { sizeList, DAIRY_STYLE_ID, DAIRY_COLOR_ID, ADULT_HOOD_STYLE_ID } from '../../constants.js';
 import { actionFetch, myFetch } from '../../fetch.js';
-import { openModal, closeModal } from '../../modal.js';
+import { modal, childModal } from '../../modal.js';
 import { buildElement, parseToInstancesArr } from '../../utilities.js';
 import { buildActionButton, makeSubmitCancelButtons, makeTypeActionLabel, 
 			makeLabelInputList } from '../page-utils.js';
@@ -550,7 +550,8 @@ function buildItemFillTDs(tds, invItem, rowCount, row) {
 	const inputCols = [ 'endQ', 'addedQ', 'writeOffQ', 'sponsorQ' ];
 	inputCols.forEach((col, i) => {
 			// make an empty td in the dairy column for all but adult hoods
-		if ((col == 'sponsorQ') && (invItem.item.style.id != ADULT_HOOD_STYLE_ID)) {
+		if ((col == 'sponsorQ') && ((invItem.item.style.id != ADULT_HOOD_STYLE_ID) 
+										|| (invItem.item.color.id != DAIRY_COLOR_ID))) {
 			tds.push(buildElement("td"));
 		} else {
 			const input = makeFillInput(invItem[col], col);
@@ -641,7 +642,8 @@ export async function submitFillInventory({ target }) {
 	const response = await actionFetch('updateRowsByIDs', 'EventSiteInventoryItem', { update });
 
 	if (response.success) {
-		openModal("Success");
+		// openModal("Success");
+		closeModal();
 		
 		return true;
 	}

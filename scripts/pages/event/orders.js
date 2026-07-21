@@ -3,7 +3,7 @@
 import { runtime } from '../../runtime.js';
 import { sizeList } from '../../constants.js';
 import { actionFetch } from '../../fetch.js';
-import { openModal, closeModal } from '../../modal.js';
+import { modal, childModal } from '../../modal.js';
 import { buildElement } from '../../utilities.js';
 import { buildIcon, buildActionButton, makeTypeActionLabel, 
 			makeSubmitCancelButtons, makeButtonActionMap } from '../page-utils.js';

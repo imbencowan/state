@@ -157,6 +157,13 @@ class EventSite extends BasicTableModel {
 		];
 	}
 
+	public static function getCosts($esID): array {
+			// where conditions. // see Where.php and Condition.php for explanation
+		$whr = new Where([ new Condition(['eventsitecosts'], 'eventSiteID', $esID) ]);
+
+		return ['costs' => EventSiteCost::getAllFromDB(where: $whr)];
+	}
+
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 		// user actions
