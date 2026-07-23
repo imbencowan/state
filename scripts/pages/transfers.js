@@ -226,7 +226,7 @@ async function submitUpdateTransfers({ target }) {
             // unset activeMode
          runtime.activeMode = null;
       } else {
-         openModal("there was a problem submitting the transfer edit");
+         modal.open("there was a problem submitting the transfer edit");
       }
    } else {
       cancelUpdateTransfers({ target });

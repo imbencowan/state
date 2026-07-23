@@ -336,7 +336,6 @@ export class EventSite {
          this.costMap = new Map();
 
          for (const esc of this.costs) {
-            console.log(esc);
             this.costMap.set(esc.cost.id, esc);
          }
       }

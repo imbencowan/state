@@ -346,7 +346,7 @@ tr.addOnRow {
 
 /* Modal stuff **********************************************************************************/
 /* Modal Content */
-.modal-content {
+.modal-window {
 	background-color: white;
 	color: black;
 	font-size: 70%;
@@ -360,14 +360,14 @@ tr.addOnRow {
 }
 
 /* allow a wider modal */
-.modal-content.wide {
-    max-width: 800px;
-    width: 90%;
+.modal-window.wide {
+	max-width: 800px;
+	width: 90%;
 }
 /* allow a widest modal */
-.modal-content.full {
-    max-width: 1400px;
-    width: 90%;
+.modal-window.full {
+	max-width: 1400px;
+	width: 90%;
 }
 
 /* Close Button */

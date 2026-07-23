@@ -254,5 +254,16 @@ class EventSite extends BasicTableModel {
 		$statement = $db->prepare($q2);
 		$statement->execute([ ':esID' => $esID ]);
 	}
+
+	public static function editCostAndPrice($updates) {
+		// Test::logX('here', $updates);
+			// use withDB to avoid some thing like a partial update
+		return Database::withDB(function($db) use ($updates) {
+			EventSiteInventoryItem::updateRowsByIDs($updates['garments'], $db);
+			EventSiteInventoryItem::updateRowsByIDs($updates['accessories'], $db);
+			EventSiteTransfer::updateRowsByIDs($updates['transfers'], $db);
+			EventSite::updateRowsByIDs($updates['plusSize'], $db);
+		});
+	}
 }
 ?>

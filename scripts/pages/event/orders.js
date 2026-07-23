@@ -120,6 +120,12 @@ function buildNeedRow(sEvent) {
 function attachOrders(cntnr, sEvent) {
       // a container
    const ordersDiv = buildElement("div", { id: "ordersContainer" });
+		// add a listener for the inputs to ensure integer values
+	ordersDiv.addEventListener('input', (e) => {
+		if (e.target.matches('input[type="number"]')) {
+			e.target.value = e.target.value.replace(/[^\d-]/g, '');
+		}
+	});
 
       // for each EventSite
    sEvent.eventSites.forEach(es => {
@@ -457,14 +463,14 @@ async function makeBlankOrder() {
 			}
 		}
             // close the modal on submit
-		closeModal();
+		modal.close();
 
             // get the eventSiteDivision so we can add this new order appropriately
 		const esd = runtime.stateEvent.getEsdByDivIDAndGenderID(school.division.id, gender);
 			// check if this school already has an order
 		if (esd.hasSchoolByID(school.id)) {
 				// if so, reopen modal just to show a message
-			openModal("This school is already in this event.");
+			modal.open("This school is already in this event.");
 		} else {
 				// if not, add it
 			const responseJSON = await actionFetch('addNewOrder', 'SchoolOrder', [esd.id, school.id, gender]);
@@ -549,7 +555,7 @@ async function makeBlankOrder() {
 	});
 
         // finally attach everything
-   openModal(wrapper); 
+   modal.open(wrapper); 
 }
 
 function makeBlankOrderWrapper() {
@@ -583,7 +589,7 @@ function showQlfrsUpld() {
 		<input type="file" id="qlfrsInput" accept=".xlsx,.xls" />`;
 
 		// open it in the modal
-	openModal(wrapper);
+	modal.open(wrapper);
 	
 		// add a listener to run when a file is selected
 	document.getElementById('qlfrsInput').addEventListener('change', uploadQualifiers);
@@ -629,7 +635,7 @@ async function uploadQualifiers() {
 
 			// if no school column found, exit
 		if (headerRowIndex === null) {
-			openModal("No 'School' column found, check the file");
+			modal.open("No 'School' column found, check the file");
 			return;
 		}
 		
@@ -643,7 +649,7 @@ async function uploadQualifiers() {
 
 			// check if schools and totals have the same number of columns, if not exit
 		if (schoolColsIndices.length !== totalColsIndices.length) {
-			openModal(`Hey, this file contains ${schoolColsIndices.length} SCHOOL column and ${totalColsIndices.length} TOTAL columns. Check it.`);
+			modal.open(`Hey, this file contains ${schoolColsIndices.length} SCHOOL column and ${totalColsIndices.length} TOTAL columns. Check it.`);
 			return;
 		}
 
@@ -698,10 +704,10 @@ async function uploadQualifiers() {
 			<ul>${schools.map(s => `<li>${s.name}</li>`).join('')}</ul>
 		`;
 
-		openModal(message);
+		modal.open(message);
 		// if all matched, close the modal
 	} else if (responseJSON) {
-		closeModal();
+		modal.close();
 	}
 }
 
@@ -725,7 +731,7 @@ function showAllSchoolsAZ() {
 		ul.appendChild(buildElement("li", { text: sn }));
 	});
 
-	openModal(ul);
+	modal.open(ul);
 }
 
 
@@ -804,7 +810,7 @@ async function submitAddOns({ target, order }) {
 	const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => row.querySelector('select'));
 		// check if the multiple styles are duplicate
 	if (checkDuplicateAddedStyles(rows)) {
-		openModal("Two of your styles to add are identical, fix this before submitting");
+		modal.open("Two of your styles to add are identical, fix this before submitting");
 		return;
 	}
 	
@@ -1266,13 +1272,13 @@ async function submitSizeEdit({ target, order }) {
 	// shows the original message
 function showOMessage({ order }) {
 	if (!order.messageOrders[0]) {
-		openModal("No order message");
+		modal.open("No order message");
 	} else {
 		let mText = order.messageOrders[0].orderText;
 			// if there is a second messageOrder, append it's text
 		if (order.messageOrders[1]) mText += "\n\n" + order.messageOrders[1].orderText;
 			// display it
-		openModal(mText);
+		modal.open(mText);
 	}
 }
 
@@ -1280,7 +1286,7 @@ function showOMessage({ order }) {
 	// toggles an order as done / not done
 export async function toggleOrderCompleteness(box, order) {
 	if (order.shirtsByStyle.length === 0) {
-		openModal("You can not mark an order with no shirts complete");
+		modal.open("You can not mark an order with no shirts complete");
 		box.checked = false;
 	} else {
 		let completeness = box.checked;
@@ -1364,7 +1370,7 @@ export async function changeCommentHandled(box) {
 			table.remove();
 		}
 	} else {
-		openModal('Something went wrong marking this comment as handled');
+		modal.open('Something went wrong marking this comment as handled');
 		box.checked = false;
 	}
 }
@@ -1384,5 +1390,5 @@ function showMoreRowOptions({ order }) {
 	html += `<label>Download the invoice as a Receipt</label><br />`;
 
 	wrapper.innerHTML = html;
-	openModal(wrapper);
+	modal.open(wrapper);
 }

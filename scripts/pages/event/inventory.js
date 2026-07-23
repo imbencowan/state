@@ -162,7 +162,7 @@ function buildInventoryGarmentsRows(tbody, garments) {
 				classes: align
 			}));
 				// color td
-			tds.push(buildElement("td", { text: color.name, style: { backgroundColor: color.hex } }));
+			tds.push(buildElement("td", { text: color.name, styles: { backgroundColor: color.hex } }));
 
 				// container to increment
 			let total = 0;
@@ -177,18 +177,18 @@ function buildInventoryGarmentsRows(tbody, garments) {
 						// "size" here is representing an InventoryItem. size.id is the id for a row in the apparel db table
 					tds.push(buildElement("td", { text: qStr, classes: 'right', title: char, 
 								dataset: { itemID: size.item.id, invItemID: size.id, oValue: qStr }, 
-								style: { backgroundColor: color.hex } }));
+								styles: { backgroundColor: color.hex } }));
 				} else {
 						// if there isn't a size for this style (youth)
 					tds.push(buildElement("td", { text: "---", classes: "center", 
-								style: { backgroundColor: color.hex } }));
+								styles: { backgroundColor: color.hex } }));
 				}
 			});
 
 				// finally the total
 			invTotal += total;
 			tds.push(buildElement("td", { text: total, dataset: { totalCell: true }, 
-						style: { backgroundColor: color.hex } }));
+						styles: { backgroundColor: color.hex } }));
 
 				// attach the row
 			const tr = buildElement("tr", { children: tds, classes: 'shirtRow' });
@@ -249,7 +249,7 @@ function getInventoryTable(esID) {
 
 		// if no table matches, alert
 	if (!tbl) {
-		openModal("Could not find inventory table for eventSiteID " + esID);
+		modal.open("Could not find inventory table for eventSiteID " + esID);
 		return;
 	}
 
@@ -355,7 +355,7 @@ async function submitInventoryEdit({ target }) {
 				// unset activeMode
 			runtime.activeMode = null;
 		} else {
-			openModal("there was a problem submitting the inventory edit");
+			modal.open("there was a problem submitting the inventory edit");
 		}
 	} else {
 		cancelInventoryEdit({ target });
@@ -635,15 +635,15 @@ export async function submitFillInventory({ target }) {
 	}
 
 	if (update.length === 0) { 
-		openModal("No items were changed");
+		modal.open("No items were changed");
 		return;
 	}
 
 	const response = await actionFetch('updateRowsByIDs', 'EventSiteInventoryItem', { update });
 
 	if (response.success) {
-		// openModal("Success");
-		closeModal();
+		// modal.open("Success");
+		modal.close();
 		
 		return true;
 	}
@@ -699,7 +699,7 @@ function showAddItem({ target, eSite }) {
 						attrs: { name: i.id, type: 'number', min: 0, max: 2000, step: 1 } });
 
 		const span = buildElement("span", { text: `${i.getInternalName()}: `, 
-						style: { backgroundColor: i.color.hex } });
+						styles: { backgroundColor: i.color.hex } });
 		if (i.color.name == 'white') span.style.border = '2px solid black';
 		if (i.color.name == 'assorted') span.style.border = '3ps solid red';
 
@@ -711,7 +711,7 @@ function showAddItem({ target, eSite }) {
 	frm.appendChild(buildElement("button", { text: "SUBMIT", classes: 'block' }));
 
 		// put it all in the modal
-	openModal(frm);
+	modal.open(frm);
 }
 
 async function submitAddItems(e, form) {
@@ -745,7 +745,7 @@ async function submitAddItems(e, form) {
 	
 
 	if (response.success) {
-		closeModal();
+		modal.close();
 
 			// add the new transfers to the table
 		const tbl = getInventoryTable(esID);
@@ -803,7 +803,7 @@ function showAddTransfer({ target, eSite }) {
 		// make a label, a button, put them in the modal
 	frm.appendChild(buildElement("button", { text: "SUBMIT", classes: 'block' }));
 
-	openModal(frm);
+	modal.open(frm);
 }
 
 async function submitAddTransfer(e, form) {
@@ -837,7 +837,7 @@ async function submitAddTransfer(e, form) {
 	
 
 	if (response.success) {
-		closeModal();
+		modal.close();
 
 			// add the new transfers to the table
 		const tbl = getInventoryTable(esID);
@@ -877,7 +877,6 @@ async function genBaseInventory({ target }) {
       const eSite = runtime.stateEvent.getEventSiteByID(esID);
 
       eSite.inventory = parseToInstancesArr(response.data.items, InventoryItem);
-		console.log(eSite.inventory);
       
       const tbody = buildInventoryTbody(eSite.getStructuredInventory());
 
@@ -889,6 +888,6 @@ async function genBaseInventory({ target }) {
 
       target.remove();
    } else {
-      openModal("There was a problem generating the inventory");
+      modal.open("There was a problem generating the inventory");
    }
 }

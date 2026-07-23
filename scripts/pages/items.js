@@ -369,7 +369,7 @@ async function submitUpdateItems({ target }) {
 				// unset activeMode
 			runtime.activeMode = null;
 		} else {
-			openModal("there was a problem submitting the inventory edit");
+			modal.open("there was a problem submitting the inventory edit");
 		}
 	} else {
 		cancelUpdateItems({ target });
@@ -432,7 +432,7 @@ function cancelUpdateItems({ target }) {
 // 			resetTopButtons(target);
 // 			runtime.activeMode = null;
 // 		} else {
-// 			openModal("there was a problem submitting the stock increment");
+// 			modal.open("there was a problem submitting the stock increment");
 // 		}
 // 	} else {
 // 		cancelItemsUpdate(target);

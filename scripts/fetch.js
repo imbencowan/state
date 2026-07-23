@@ -6,6 +6,7 @@
  
     // all fetch requests go to controller.php
 export async function myFetch(request) {
+    console.log(request);
     try {
         const response = await fetch('controller.php', {
             method: "POST", 
@@ -26,7 +27,7 @@ export async function myFetch(request) {
         return data;
     } catch (error) {
         console.error("Fetch Error:", error.message);
-        openModal("Fetch Error: " + error.message);
+        modal.open("Fetch Error: " + error.message);
         return null;
     }
 }

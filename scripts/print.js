@@ -11,7 +11,7 @@ import * as Helpers from './printHelpers.js';
 export function printBoxLabel({ order }) {
 	// console.log(order);
 	if (!order.shirtsByStyle || order.shirtsByStyle.length === 0) {
-		openModal("This order is empty");
+		modal.open("This order is empty");
 		return;
 	}
 		// Access jsPDF from the global object
@@ -45,7 +45,7 @@ export function printUndoneBoxLabels() {
 			Helpers.openBlobInNewTab(doc);
     } else {
             // if no incomplete orders, alert the user
-        openModal("There are no incomplete orders.")
+        modal.open("There are no incomplete orders.")
     }
 }
 
@@ -494,7 +494,7 @@ export function printAllInvoices() {
 
 
 	if ( invoices.length === 0) {
-		openModal("This event has no invoices");
+		modal.open("This event has no invoices");
 	} else {
 			// Access jsPDF from the global object
 		const { jsPDF } = window.jspdf; 
@@ -664,7 +664,7 @@ const inventoryStates = ['START', 'END', 'SOLD'];
 export async function printInventories({ pages = 3, eSites = runtime.stateEvent.eventSites }) {
 		// validate eSites is an array of EventSite objects
    if (!Array.isArray(eSites) || !eSites.every(es => es instanceof EventSite)) {
-      openModal("Invalid event sites data.");
+      modal.open("Invalid event sites data.");
       return;
    }
 
@@ -1012,13 +1012,13 @@ export function genIHSAATotals() {
 // season stock
 export function printSeasonStockPDF(season, dateRange, stockRows) {
 	if (!season || !Array.isArray(stockRows) || stockRows.length === 0) {
-		openModal("No season stock data found.");
+		modal.open("No season stock data found.");
 		return;
 	}
 
 	const rows = buildSeasonStockRows(stockRows);
 	if (rows.length === 0) {
-		openModal("No season stock data found.");
+		modal.open("No season stock data found.");
 		return;
 	}
 

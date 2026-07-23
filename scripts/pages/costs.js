@@ -168,7 +168,7 @@ function showAddCost() {
       // make a label, a button, put them in the modal
    frm.appendChild(buildElement("button", { text: "SUBMIT", classes: 'block' }));
 
-   openModal(frm);
+   modal.open(frm);
 }
 
 function buildAddCostFieldset() {
@@ -206,7 +206,7 @@ async function submitAddCost(e, frm) {
 
       // ensure this is a new cost
    if (runtime.allCosts.getByName(data.costName)) {
-    openModal("That cost already exists.");
+    modal.open("That cost already exists.");
     return;
 }
    
@@ -214,7 +214,7 @@ async function submitAddCost(e, frm) {
    
 
    if (response.success) {
-      closeModal();
+      modal.close();
       // refreshTable(eSite.id);
    }
 }
@@ -249,8 +249,8 @@ function makeTableInput(td) {
    const col = columns[td.dataset.column];
    const type = (col.align === "right") ? "number" : "text";
 
-   const input = document.createElement('input');
-   input.type = type;
+   const input = buildElement("input", { attrs: { type: type } });
+   // input.type = type;
    input.name = td.parentElement.dataset.costID;
    input.value = td.dataset.oValue;
 
@@ -304,7 +304,7 @@ async function submitUpdateCosts({ target }) {
             // unset activeMode
          runtime.activeMode = null;
       } else {
-         openModal("there was a problem submitting the cost edit");
+         modal.open("there was a problem submitting the cost edit");
       }
    } else {
       cancelUpdateCosts({ target });
@@ -319,8 +319,7 @@ function cancelUpdateCosts({ target }) {
 
       // clear the tds
    tbl.querySelectorAll(`td[data-column=${key}]`).forEach(td => {
-      td.innerHTML = '';
-      td.textContent = td.dataset.oValue;
+      td.replaceChildren(td.dataset.oValue);
    });
 
       // reset the buttons

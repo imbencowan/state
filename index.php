@@ -46,9 +46,9 @@
 		</div>
 	</div>
 	<div id="childModal" class="modal">
-		<div class="modal-content">
-			<span class="close">&times;</span>
-			<p id="childModalContent">This is the modal content!</p>
+		<div class="modal-window">
+			<button class="close">&times;</button>
+			<div class="modal-content">This is the child modal content!</div>
 		</div>
 	</div>
 	</main>

@@ -430,10 +430,12 @@ abstract class BasicTableModel implements JsonSerializable {
 	}
 
 		// $update should be an array of objects with an id property, and other props named for columns to update
-	public static function updateRowsByIDs(array $update): bool {
+	public static function updateRowsByIDs(array $update, ?PDO $db = null): bool {
 		if (empty($update)) return false;
 
-		$db = Database::getDB();
+			// if no $db passed in (for transactions), create a new connection
+		$db = $db ?? Database::getDB();
+
 		$table = static::getTableName();
 		$columns = static::getColumns();
 		$idCol = $columns['id'];
@@ -441,7 +443,12 @@ abstract class BasicTableModel implements JsonSerializable {
 		$stmt = null;
 		$affected = 0;
 
-		$db->beginTransaction();
+		$ownsTransaction = false;
+
+		if (!$db->inTransaction()) {
+			$db->beginTransaction();
+			$ownsTransaction = true;
+		}
 
 		try {
 			foreach ($update as $row) {
@@ -482,7 +489,8 @@ abstract class BasicTableModel implements JsonSerializable {
 				$affected += $stmt->rowCount();
 			}
 
-			$db->commit();
+			if ($ownsTransaction) $db->commit();
+			
 			return $affected > 0;
 
 		} catch (Throwable $e) {
@@ -528,8 +536,6 @@ abstract class BasicTableModel implements JsonSerializable {
 		foreach ($rows as $row) {
 			$incomingMap[self::buildKey($row, $keyColumns)] = $row;
 		}
-
-		Test::logX($existingMap, $keyColumns);
 
 			// delete rows no longer present.
 		foreach ($existingMap as $key => $existingRow) {

@@ -196,7 +196,7 @@ async function showPrevNextEvent(drctn) {
 		if (response.data.event == null) {
 				// this presumes drctn can only be 'prev' or 'next'
 			const qlfr = drctn === 'prev' ? 'earlier' : 'later';
-			openModal(`There is no ${qlfr} event for ${runtime.stateEvent.sport.name}`);
+			modal.open(`There is no ${qlfr} event for ${runtime.stateEvent.sport.name}`);
 		} else {
 				// assign the new runtime event
 			const sEvent = StateEvent.fromJSON(response.data.event);
@@ -268,14 +268,7 @@ export function addEventPageFunctionality() {
 
 		if (handler) handler(args);
 	});
-
 	
-		// next a listener for the inputs to ensure integer values
-	container.addEventListener('input', (e) => {
-		if (e.target.matches('input[type="number"]')) {
-			e.target.value = e.target.value.replace(/[^\d-]/g, '');
-		}
-	});
 	
 		// toggleOrderCompleteness listeners
 	container.addEventListener('change', function(event) {
@@ -287,7 +280,7 @@ export function addEventPageFunctionality() {
 	});
 
 
-	const modal = document.getElementById('myModal');
+	const modal = document.getElementById('modal');
 	modal.addEventListener('click', function(event) {
 		const target = event.target;
 		const rowOptions = {

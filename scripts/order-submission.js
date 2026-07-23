@@ -21,7 +21,7 @@ export async function submitOrderFiles() {
 	let responseJSON = await myFetch(request);
 
 	// document.getElementById("display").innerHTML = responseJSON.html;
-	openModal(responseJSON.html);
+	modal.open(responseJSON.html);
 		// add event listener for comment table checkboxes
 	const commentsContainer = document.getElementById('commentsTable');
 	if (commentsContainer) {

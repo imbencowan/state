@@ -1,8 +1,9 @@
 import { runtime } from '../../runtime.js';
 import { actionFetch, myFetch } from '../../fetch.js';
 import { modal, childModal } from '../../modal.js';
-import { buildElement, buildTD, buildDollarTD, parseToInstancesArr } from '../../utilities.js';
-import { buildActionButton, makeSubmitCancelButtons, makeTypeActionLabel, 
+import { buildElement, buildTD, buildDollarTD, parseToInstancesArr, formatCurrency, 
+         giveFirstFocus } from '../../utilities.js';
+import { buildActionButton, buildIcon, makeSubmitCancelButtons, makeTypeActionLabel, 
          makeLabelInputList, makeButtonActionMap } from '../page-utils.js';
 import { buildFillTable, submitFillInventory } from './inventory.js';
 import { InventoryTransfer } from '../../models/db-classes.js';
@@ -12,11 +13,12 @@ import {  } from '../../print.js';
    // buttons for each site
 const reportSiteButtons = [
    { action: "fillInventory", title: "finalize the inventory", icon: "edit", text: " Inventory",
-      handler: showFillInventory, submitHandler: submitFillInventoryReport, cancelHandler: closeModal }, 
+      handler: showFillInventory, submitHandler: submitFillInventoryReport, cancelHandler: modal.close }, 
    { action: "fillTransfers", title: "enter sold transfers", icon: "edit", text: " Sold Transfers", 
       handler: showEnterSoldTransfers },
    { action: "addCosts", title: "add additional costs", icon: "add", text: " Costs", handler: showAddCosts },
-   { action: "editMcUCosts", title: "edit mcu costs", icon: "edit", text: " McU Costs", handler: showEditMcUCosts },
+   { action: "editCostAndPrice", title: "edit cost/price", icon: "edit", text: " Cost/Price", 
+      handler: showEditCostAndPrice, submitHandler: submitEditCostAndPrice, cancelHandler: cancelEditCostAndPrice },
    { action: "updateCost/Price", title: "update cost/prices from default item data", icon: "refresh", text: "Cost/Price", 
       handler: updateCostAndPrice }
 ];
@@ -36,7 +38,7 @@ export async function attachReportsPanel(panel, sEvent) {
             // a site header
          const hTxt = es.site.name + ' ' + es.getDivisionsString();
          const siteH2 = buildElement("h2", { text: hTxt, dataset: { eventSiteId: es.id } });
-         const btns = buildSiteBtns(es);
+         const btns = attachSiteBtns(es.id);
          const tbl = buildSiteTable(es);
    
             
@@ -45,12 +47,16 @@ export async function attachReportsPanel(panel, sEvent) {
       });
 }
 
-function buildSiteBtns(eSite) {
-   const btns = reportSiteButtons.map(b => 
-      buildActionButton({ ...b, classes: "report-action", datasetExtra: { eventSiteID: eSite.id } })
-   );
+function attachSiteBtns(esID) {
+   const btns = buildSiteBtns(esID);
 
    return buildElement("div", { classes: "buttonContainer", children: btns });
+}
+
+function buildSiteBtns(esID) {
+   return reportSiteButtons.map(b => 
+      buildActionButton({ ...b, classes: "report-action", datasetExtra: { eventSiteID: esID } })
+   );
 }
 
 function buildSiteTable(es) {
@@ -88,7 +94,8 @@ function buildSiteTbody(es) {
          const price = color.price;
          const lost = color.lostTotal;
 
-         rows.push(makeRow(name, sold, cost, price, lost, first, total));
+         const rowData = { type: 'garments', colorID: color.id, styleID: style.id };
+         rows.push(makeRow(name, sold, cost, price, lost, first, total, rowData));
          first = false;
       }
    }
@@ -102,7 +109,8 @@ function buildSiteTbody(es) {
          const price = es.plusSizePricing[size].price;
          const lost = inventory.plusSizes[size].lost;
 
-         rows.push(makeRow(`${size} merch`, sold, cost, price, lost, first, total));
+         const rowData = { type: 'plusSize', size: size, esID: es.id };
+         rows.push(makeRow(`${size} merch`, sold, cost, price, lost, first, total, rowData));
          first = false;
       }
    }
@@ -114,7 +122,8 @@ function buildSiteTbody(es) {
       const cost = a.cost;
       const price = a.price;
 
-      rows.push(makeRow(a.item.style.vShortName, sold, cost, price, '', first, total));
+      const rowData = { type: 'accessories', iiID: a.id };
+      rows.push(makeRow(a.item.style.vShortName, sold, cost, price, '', first, total, rowData));
       first = false;
    }
 
@@ -122,7 +131,8 @@ function buildSiteTbody(es) {
    first = true;
    for (const t of inventory.transfers) {
       if (t.soldQ > 0) {
-         rows.push(makeRow(t.transfer.transferName, t.soldQ, t.cost, t.price, '', first, total));
+         const rowData = { type: 'transfers', eventTransferID: t.id };
+         rows.push(makeRow(t.transfer.transferName, t.soldQ, t.cost, t.price, '', first, total, rowData));
          first = false;
       }
    }
@@ -130,14 +140,16 @@ function buildSiteTbody(es) {
       // costs
    first = true;
    for (const c of es.costs) {
-      rows.push(makeCostRow(c.cost.name, c.quantity, c.rate, first, total));
+      const rowData = { type: 'cost', costID: c.id };
+      rows.push(makeCostRow(c.cost.name, c.quantity, c.rate, first, total, rowData));
       first = false;
    }
 
       // employees
    for (const e of es.employees) {
       const name = `employee pay - ${e.employee.shortName}`;
-      rows.push(makeCostRow(name, e.hours, e.payRate, first, total));
+      const rowData = { type: 'employeePay', employeeID: e.employee.id };
+      rows.push(makeCostRow(name, e.hours, e.payRate, first, total, 'employeePay'));
    }
 
       // total rows
@@ -158,7 +170,7 @@ function buildSiteTbody(es) {
    return buildElement("tbody", { children: rows });
 }
 
-function makeRow(name, sold, cost, price, lost, first, total) {
+function makeRow(name, sold, cost, price, lost, first, total, rowData) {
    const tCost = (sold * cost);
    const tResale = (sold * price);
    const tProfit = tResale - tCost;
@@ -173,8 +185,8 @@ function makeRow(name, sold, cost, price, lost, first, total) {
    const tds = [
       buildTD(name),
       buildTD(sold),
-      buildDollarTD(cost),
-      buildDollarTD(price),
+      buildElement("td", { text: formatCurrency(cost), dataset: { column: 'cost' } }),
+      buildElement("td", { text: formatCurrency(price), dataset: { column: 'price' } }),
       buildDollarTD(tCost),
       buildDollarTD(tResale),
       buildDollarTD(tProfit),
@@ -182,10 +194,10 @@ function makeRow(name, sold, cost, price, lost, first, total) {
       buildDollarTD(lostTotal)
    ];
 
-   return buildElement("tr", { children: tds, classes: classes });
+   return buildElement("tr", { children: tds, classes: classes, dataset: rowData });
 }
 
-function makeCostRow(name, quantity, rate, first, total) {
+function makeCostRow(name, quantity, rate, first, total, rowData) {
    total.cost += (quantity * rate);
       // if this is the first row, assign a class for a thicker border
    const classes = first ? ['topRow'] : [];
@@ -201,10 +213,6 @@ function makeCostRow(name, quantity, rate, first, total) {
    ];
 
    return buildElement("tr", { children: tds, classes: classes });
-}
-
-function makeTotalRow() {
-
 }
 
 async function refreshTable(esID) {
@@ -228,7 +236,7 @@ function getReportTable(esID) {
 
 		// if no table matches, alert
 	if (!tbl) {
-		openModal("Could not find inventory table for eventSiteID " + esID);
+		modal.open("Could not find inventory table for eventSiteID " + esID);
 		return;
 	}
 
@@ -258,7 +266,7 @@ function showFillInventory({ target }) {
       reportSiteActions[action]({ target });
    });
 
-   openModal(cntnr, 'full');
+   modal.open(cntnr, 'full');
 }
 
 async function submitFillInventoryReport({ target }) {
@@ -292,7 +300,7 @@ function showEnterSoldTransfers({ target }) {
       // make a label, a button, put them in the modal
    frm.appendChild(buildElement("button", { text: "SUBMIT", classes: 'block' }));
 
-   openModal(frm);
+   modal.open(frm);
 }
 
 async function submitSoldTransfers(e, frm, listTransfers, eSite) {
@@ -319,17 +327,170 @@ async function submitSoldTransfers(e, frm, listTransfers, eSite) {
    
 
    if (response.success) {
-      closeModal();
+      modal.close();
       await eSite.refreshInventory(runtime.allItems, runtime.allTransfers);
       refreshTable(eSite.id);
       
    }
 }
 
-function showEditMcUCosts({ target }) {
+   // this sets cost/price for event items/transfers equal to user inputs
+      // which is different from updateCostAndPrice, which sets cost/price = to base table db values
+function showEditCostAndPrice({ target }) {
+   const esID = Number(target.dataset.eventSiteID);
+   const eSite = runtime.stateEvent.getEventSiteByID(esID);
+   const tbl = getReportTable(esID);
+   
+   const rows = tbl.querySelectorAll(
+      'tr[data-type="garments"], tr[data-type="plusSize"], tr[data-type="accessories"], tr[data-type="transfers"]'
+   );
 
+   for (const row of rows) {
+      const tds = row.querySelectorAll('td[data-column="cost"], td[data-column="price"]');
+
+      for (const td of tds) {
+         makeCostPriceInput(td);
+      }
+   }
+
+   makeSubmitCancelButtons({ btnCntnr: target.parentElement, lstnrCntnr: tbl, type: 'report', 
+         action: 'editCostAndPrice', datasetExtra: { esID: esID } });
+
+   giveFirstFocus(tbl);
 }
 
+function makeCostPriceInput(td) {
+   const oValue = Number(td.textContent);
+   td.dataset.oValue = oValue;
+
+   const input = buildElement("input", { attrs: { type: 'number', value: oValue, step: .01, min: 0, max: 5000 } });
+   td.replaceChildren(input);
+}
+
+async function submitEditCostAndPrice({ target }) {
+   const esID = Number(target.dataset.esID);
+   const eSite = runtime.stateEvent.getEventSiteByID(esID);
+   const tbl = getReportTable(esID);
+
+      // a look up to pass to a helper. // so we can set pricing correctly
+   const plusSizeRows = tbl.querySelectorAll('tr[data-type="plusSize"]');
+   const plusSizePricing = {};
+   for (const row of plusSizeRows) {
+      const cost = Number(row.querySelector('td[data-column="cost"] input')?.value);
+      const price = Number(row.querySelector('td[data-column="price"] input')?.value);
+      plusSizePricing[row.dataset.size] = { cost, price };
+   }
+
+   const updates = {
+      garments: [],
+      plusSize: [],
+      accessories: [],
+      transfers: []
+   };
+   
+   const rows = tbl.querySelectorAll(
+      'tr[data-type="garments"], tr[data-type="plusSize"], tr[data-type="accessories"], tr[data-type="transfers"]'
+   );
+   for (const row of rows) {
+      const rowUpdates = buildUpdate(row, eSite, plusSizePricing);
+      if (rowUpdates) updates[row.dataset.type].push(...rowUpdates);
+   }
+
+   const response = await actionFetch('editCostAndPrice', 'EventSite', { updates });
+
+   if (response.success) {
+      resetSiteButtons(target);
+      console.log(eSite.plusSizePricing, updates.plusSize);
+      await refreshTable(esID);
+   }
+}
+
+function buildUpdate(row, eSite, plusSizePricing) {
+   const changes = {};
+
+   for (const td of row.querySelectorAll('td[data-column="cost"], td[data-column="price"]')) {
+      const input = td.querySelector("input");
+      const newValue = Number(input.value);
+      const oldValue = Number(td.dataset.oValue);
+
+      if (newValue !== oldValue) changes[td.dataset.column] = newValue;
+   }
+
+   if (Object.keys(changes).length === 0) return null;
+
+   const update = {};
+   let colMap = { cost: 'mcuCost', price: 'price'};
+
+   switch (row.dataset.type) {
+      case "garments":
+         const updates = [];
+
+            // get this site's garments for the style/color combination
+         const garments = eSite.getInventoryGarmentsByStyleByColor();
+         const sGarments = garments.find(s => (s.id == row.dataset.styleID));
+         const scGarments = sGarments.colors.find(c => (c.id == row.dataset.colorID));
+
+         for (const [sChar, invItem] of Object.entries(scGarments.sizes)) {
+            const u = { eventSiteInventoryID: invItem.id };
+            for (const [propName, value] of Object.entries(changes)) {
+               let finalValue = value
+               if (plusSizePricing[sChar]) finalValue += plusSizePricing[sChar][propName];
+               u[colMap[propName]] = finalValue;
+            }
+            
+            updates.push(u)
+         }
+
+         return updates;
+      case "plusSize":
+         update.eventSiteID = Number(row.dataset.esID);
+         colMap = { cost: ('cost' + row.dataset.size), price: ('price' + row.dataset.size) };
+         break;
+      case "accessories":
+         update.eventSiteInventoryID = Number(row.dataset.iiID);
+         break;
+      case "transfers":
+         update.eventSiteTransferID = Number(row.dataset.eventTransferID);
+         break;
+   }
+
+   for (const [propName, value] of Object.entries(changes)) {
+      update[colMap[propName]] = value;
+   }
+
+   return [ update ];
+}
+
+function cancelEditCostAndPrice({ target }) {
+   const esID = Number(target.dataset.esID);
+   const tbl = getReportTable(esID);
+   
+   const rows = tbl.querySelectorAll(
+      'tr[data-type="garments"], tr[data-type="plusSize"], tr[data-type="accessories"], tr[data-type="transfers"]'
+   );
+
+   for (const row of rows) {
+      const tds = row.querySelectorAll('td[data-column="cost"], td[data-column="price"]');
+
+      for (const td of tds) {
+         td.replaceChildren(td.dataset.oValue);
+      }
+   }
+
+   resetSiteButtons(target)
+}
+
+function resetSiteButtons(btn) {
+   const prnt = btn.parentElement;
+   prnt.innerHTML = '';
+
+   const newBtns = buildSiteBtns(btn.dataset.esID);
+   prnt.append(...newBtns);
+}
+
+
+   // this sets cost/price for event items/transfers equal to the base item/transfer cost/price
+      // which is different from editCostAndPrice, which allows user provided values for cost/price
 async function updateCostAndPrice({ target }) {
    const esID = target.dataset.eventSiteID;
    const eSite = runtime.stateEvent.getEventSiteByID(esID);
@@ -354,18 +515,12 @@ function showAddCosts({ target }) {
       hotel: runtime.allCosts.getByName("hotel"),
    }
 
-      // build a form to add transfers not already part of the event
-   const frm = buildElement("form", { id: 'siteCostsForm', dataset: { esID: eSite.id } });
-   frm.append(buildElement("p", { text: "Enter additional costs:" }));
-   frm.addEventListener("submit", function(e) { submitAddCosts(e, frm, eSite); });
-
    const headers = [ "Cost: ", "Quantity: ", "Rate: " ].map(
       text => buildElement("div", { text, classes: "cost-header" })
    );
 
 
    const costs = [];
-
       // transfer cost
    costs.push(...prepareAddCostRow({ eSite: eSite, cost: COSTS.transfers, quantity: eSite.getMainTransfers().startQ }));
       // machine costs
@@ -392,16 +547,25 @@ function showAddCosts({ target }) {
    if (eSite.site.city.distance > 100) costs.push(...prepareAddCostRow({ eSite: eSite, cost: COSTS.hotel }));
 
 
-
-
       // fill labels/inputs in the form
    const fieldset = buildElement("fieldset", { children: [ ...headers, ...costs ] });
-   frm.appendChild(fieldset);
 
-      // make a label, a button, put them in the modal
-   frm.appendChild(buildElement("button", { text: "SUBMIT", classes: 'block' }));
+      // make a button for adding other costs
+   const addBtn = buildElement("button", { children: [ buildIcon('add'), " Cost" ], attrs: { type: "button" }, 
+                  dataset: { action: "showAddNewCost"}, styles: { float: 'right' }, classes: 'report-action' });
+   addBtn.addEventListener("click", showAddNewCost);
+      // make a submit button
+   const sbmtBtn = buildElement("button", { text: "SUBMIT", classes: 'block' });
+   
+   
+      // build a form to hold the previously defined children
+   const formP = buildElement("p", { text: "Enter additional costs:" });
+   const br = buildElement("br");
+   const frm = buildElement("form", { id: 'siteCostsForm', dataset: { esID: eSite.id },
+                           children: [ formP, fieldset, addBtn, br, sbmtBtn ] });
+   frm.addEventListener("submit", function(e) { submitAddCosts(e, frm, eSite); });
 
-   openModal(frm, 'wide');
+   modal.open(frm, 'wide');
 }
 
 function prepareAddCostRow({ cost, quantity, eSite }) {
@@ -436,8 +600,6 @@ function buildAddCostRow({ cost, quantity = '', rate = null }) {
 }
 
 function buildAddEmployeeRow({ esEmp, eSite }) {
-   console.log(eSite);
-   console.log(esEmp);
    const rate = esEmp.payRate ?? esEmp.employee.payRate;
    const quantity = esEmp.hours ?? '';
 
@@ -511,8 +673,51 @@ async function submitAddCosts(e, frm, eSite) {
    
 
    if (responseCost.success && responsePay.success) {
-      closeModal();
+      modal.close();
       await eSite.refreshCosts();
       refreshTable(eSite.id);
+   }
+}
+
+function showAddNewCost() {
+   const p = buildElement("p", { text: 'What should the new cost be called?' });
+   const input = buildElement("input", { attrs: { type: 'text' } });
+   const sbmtBtn = buildElement("button", { text: "SUBMIT", classes: 'block' });
+
+   const form = buildElement("form", { children: [ p, input, sbmtBtn ] });
+   form.addEventListener("submit", function(e) { submitNewCost(e, form); });
+
+   childModal.open(form);
+}
+
+async function submitNewCost(e, form) {
+      // stop page refresh
+   e.preventDefault();
+
+   const costName = form.querySelector('input').value;
+   
+   if (costName != '') {
+      const response = await actionFetch('insert', 'Cost', { data: { costName } });
+
+      if (response.success) {
+         const costID = response.data;
+         const lbl = buildElement("div", { text: costName });
+
+         const quantityInput = buildElement("input", { attrs: { type: "number", step: .01 }, 
+            dataset: { costID: costID, field: 'quantity' }
+         });
+
+         const rateInput = buildElement("input", { attrs: { type: "number", step: .01 }, 
+            dataset: { costID: costID, field: 'rate' }
+         });
+
+
+         const costForm = document.getElementById('siteCostsForm');
+         const fieldset = costForm.querySelector('fieldset');
+         fieldset.append(lbl, quantityInput, rateInput);
+         console.log(fieldset);
+
+         childModal.close();
+      }
    }
 }

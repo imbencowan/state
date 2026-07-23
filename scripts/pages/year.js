@@ -479,7 +479,7 @@ function showAddYear() {
    });
 
       // add to page
-   openModal(wrapper);
+   modal.open(wrapper);
    textarea.focus();
 }
 
@@ -818,7 +818,7 @@ function showAddEvent() {
    });
 
       // add to page
-   openModal(wrapper);
+   modal.open(wrapper);
    textarea.focus();
 }
 
@@ -830,7 +830,7 @@ async function showSeasonStock() {
 
    const season = Season.getNextSeason(allSeasons);
    if (!season) {
-      openModal('No next season found.');
+      modal.open('No next season found.');
       return;
    }
 

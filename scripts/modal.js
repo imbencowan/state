@@ -3,17 +3,32 @@
    // a constant for ease
 import { giveFirstFocus } from "./utilities.js";
 
-function createModal(id) {
+
+export const modal = createModal("modal");
+export const childModal = createModal("childModal", modal);
+
+
+function createModal(id, parent = null) {
    const modal = document.getElementById(id);
    const modalWindow = modal.querySelector(".modal-window");
    const modalContent = modal.querySelector(".modal-content");
+
    const closeBtn = modal.querySelector(".close");
 
-   closeBtn.addEventListener("click", close);
+      // a way to pause the escape button listener for a parent modal
+   let escPaused = false;
+   function pauseEsc() {
+      escPaused = true;
+   }
+   function resumeEsc() {
+      escPaused = false;
+   }
 
+      // the base open and close methods for modals
    function open(content, size = "") {
-      modalBox.classList.remove("wide", "full");
-      if (size) modalBox.classList.add(size);
+      console.log('open');
+      modalWindow.classList.remove("wide", "full");
+      if (size) modalWindow.classList.add(size);
 
       modalContent.replaceChildren();
 
@@ -22,7 +37,7 @@ function createModal(id) {
       } else {
          modalContent.appendChild(content);
       }
-
+      
       document.addEventListener("keydown", escListener);
       document.addEventListener("click", windowListener);
 
@@ -39,82 +54,37 @@ function createModal(id) {
       modalContent.replaceChildren();
    }
 
-   function escListener(e) {
-      if (e.key === "Escape") close();
-   }
-
-   function windowListener(e) {
-      if (e.target === modal) close();
-   }
-
-   return {
+      // define the methods to return
+   let api = {
       open,
-      close,
-      get isOpen() {
-         return modal.style.display === "block";
-      }
+      close
    };
+
+      // if this is a child modal, over ride open/close to include pauseEsc/resumeEsc
+   if (parent) {
+      api = {
+         open(...args) {
+            parent.pauseEsc();
+            open(...args);
+         },
+         close(...args) {
+            close(...args);
+            parent.resumeEsc();
+         }
+      };
+   } else {
+      api.pauseEsc = pauseEsc;
+      api.resumeEsc = resumeEsc;
+   }
+
+      // set listeners to close the modal
+   function escListener(e) {
+      if (!escPaused && e.key === "Escape") api.close();
+   }
+   function windowListener(e) {
+      if (e.target === modal) api.close();
+   }
+   closeBtn.addEventListener("click", api.close);
+
+   return api;
 }
-
-
-export const modal = createModal("modal");
-export const childModal = createModal("childModal");
-
-
-
-
-// import { giveFirstFocus } from './utilities.js';
-
-
-// let modal;
-// let modalBox;
-// let modalContent;
-// let closeBtn;
-
-// function init() {
-//    modal = document.getElementById("myModal");
-//    modalBox = document.querySelector(".modal-content");
-//    modalContent = document.getElementById("modalContent");
-//    closeBtn = document.querySelector(".close");
-
-//    closeBtn.addEventListener("click", closeModal);
-// }
-
-// function openModal(content, size = "") {
-//    modalBox.classList.remove("wide", "full");
-//    if (size) modalBox.classList.add(size);   
-   
-//    modalContent.innerHTML = "";
-
-//    if (typeof content === "string") {
-//       modalContent.innerHTML = content;
-//    } else {
-//       modalContent.appendChild(content);
-//    }
-
-//    document.addEventListener('keydown', escListener);
-//    document.addEventListener('click', windowListener);
-
-//    modal.style.display = "block";
-
-//       // requestAnimationFrame() to delay for DOM changes
-//    requestAnimationFrame(() => giveFirstFocus(modalContent));
-// }
-
-// function escListener(e) {
-//    if (e.key === 'Escape') closeModal();
-// }
-
-// function windowListener(e) {
-//    if (e.target === modal) closeModal();
-// }
-
-// function closeModal() {
-//    document.removeEventListener('keydown', escListener);
-//    document.removeEventListener('click', windowListener);
-//    modal.style.display = "none";
-//       // clear the modal
-//    modalContent.replaceChildren();
-// }
-
-// export { init, openModal, closeModal };
