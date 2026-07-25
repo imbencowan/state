@@ -27,7 +27,7 @@ const routes = [
 ];
 
 
-export async function router() {
+export async function router(from) {
    const path = location.pathname.replace('/state', '')
       // make an array, splitting the url at '/'s. // remove falsy parts. // trim()
    const parts = splitPath(path);
@@ -40,7 +40,7 @@ export async function router() {
             // nullify runtime.stateEvent on non event pages. // prevents calling switchTab() when navigating from non event pages
          if (!route.isEvent) runtime.stateEvent = null;
 
-         return route.handler(parts, match, path);
+         return route.handler({ parts, match, path, from });
       }
    }
 
@@ -50,7 +50,7 @@ export async function router() {
 
 
    /////////////////////////////////////////////////////////////////////////////////////
-function handleYear(parts, path) {
+function handleYear({ parts, path }) {
    const parsed = parseYearParts(parts);
 
    if (parsed.valid) {
@@ -86,14 +86,20 @@ function parseYearParts(parts) {
 
    ////////////////////////////////////////////////////////////////////////////////////
    // state/sport/ handling
-function handleSport(parts, sport, path) {
+function handleSport({ parts, match: sport, path, from }) {
       // lower case to normalize tabs. 'ORDERS' would become 'orders', etc
    parts = parts.map(p => p.toLowerCase());
-
    const parsed = parseEventRoute(parts);
 
       // if it's a valid path, fetch a page. // if not, 404
    if (parsed.valid) {
+      let fromTab = null;
+      if (from) {
+         const lastPart = splitPath(from).at(-1).toLocaleLowerCase();
+         if (isEventTab(lastPart)) fromTab = lastPart;
+      }
+      if (!parsed.tab) parsed.tab = fromTab ?? 'orders';
+      
       const revisedPath = `state/${parts[0]}/${parsed.year}/${parsed.tab}`;
       history.replaceState(null, "", `/${revisedPath}`);
 

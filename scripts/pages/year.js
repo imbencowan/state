@@ -30,7 +30,6 @@ export async function goToYearPage(year) {
    if (!year) year = document.getElementById('selectYear').value;
    const response = await showPage('showYear', 'Year', { year: year });
 
-   console.log(response.data);
    buildYearPage(response.data);
 
    addShowYearFunctionality();
@@ -397,7 +396,7 @@ function updateRow(tds, updateValues) {
             const names = Array.from(slct.selectedOptions).map(opt => opt.textContent);
             const namesStr = names.join(', ');
             const idsArr = Array.from(slct.selectedOptions).map(opt => Number(opt.value));
-            console.log(idsArr);
+
             td.textContent = namesStr;
             td.dataset.oValue = JSON.stringify(idsArr);
             td.dataset.oText = namesStr;

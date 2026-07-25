@@ -164,7 +164,7 @@ function buildSiteTbody(es) {
    ] }));
    rows.push(buildElement("tr", { children: [
       buildTD("Total Profit"), buildTD(), buildTD(), buildTD(), buildTD(), buildTD(), 
-      buildDollarTD(total.resale - total.cost - total.lost)
+      buildDollarTD(total.resale - total.cost - total.lost), buildTD(), buildDollarTD(total.lost)
    ] }));
 
    return buildElement("tbody", { children: rows });
@@ -208,6 +208,8 @@ function makeCostRow(name, quantity, rate, first, total, rowData) {
       buildDollarTD(rate),
       buildTD(),
       buildDollarTD(quantity * rate),
+      buildTD(),
+      buildTD(),
       buildTD(),
       buildTD()
    ];
@@ -400,7 +402,6 @@ async function submitEditCostAndPrice({ target }) {
 
    if (response.success) {
       resetSiteButtons(target);
-      console.log(eSite.plusSizePricing, updates.plusSize);
       await refreshTable(esID);
    }
 }

@@ -26,7 +26,6 @@ function createModal(id, parent = null) {
 
       // the base open and close methods for modals
    function open(content, size = "") {
-      console.log('open');
       modalWindow.classList.remove("wide", "full");
       if (size) modalWindow.classList.add(size);
 

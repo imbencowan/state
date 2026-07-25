@@ -25,9 +25,8 @@ export function parseEventRoute(parts) {
       }
    } 
    
-      // if a part was missing, assign a default
+      // if year was missing, assign a default
    if (!year) year = document.getElementById('selectYear').value;
-   if (!tab) tab = 'orders';
 
    //    // double check them just cuz
    // if (!isEventYear(year) || !isEventTab(tab)) {

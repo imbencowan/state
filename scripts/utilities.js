@@ -317,6 +317,7 @@ export function getFirstFocusable(container = document) {
 export function giveFirstFocus(container = document) {
    const el = getFirstFocusable(container);
    el?.focus();
+   el?.select?.();
    return el;
 }
 

@@ -175,6 +175,7 @@ class EventSite extends BasicTableModel {
 						break;
 
 					case 'divisions':
+						// editing the division is currently disabled, probably for ever.
 						// self::updateInterTable(['eventSiteID' => $eventSiteID], []);
 						break;
 

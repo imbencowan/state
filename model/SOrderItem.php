@@ -12,19 +12,21 @@ class SOrderItem extends BasicTableModel {
 					'price' => 'orderPrice'
 					]; 
 	}
-		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
+		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
+			// $interTable = null, $stopContexts = [])
 			// Item only, no circular reference
 	protected static function getRelations(): array {
-      return [new Relation('item', 'Item', 'itemID', 'itemID', false)];
+      // return [new Relation('item', 'Item', 'itemID', 'itemID', false, null, [''])];
+      return [new Relation('item', 'Item', 'itemID', 'itemID', false, null, ['orders', 'reports', 'inventory', 'year'])];
    }
 	
 	public function __construct(
       public readonly ?int $id,
       public readonly int $schoolOrderID,
 		public readonly int $itemID,
-      public readonly ?Item $item,
       public readonly int $quantity,
-		public readonly float $price
+		public readonly float $price,
+      public readonly ?Item $item = null
    ) {}
 	
 

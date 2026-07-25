@@ -426,7 +426,6 @@ export class EventSite {
    }
 
    updateInventory(update) {
-         console.log(update, this.inventory);
       update.forEach(u => {
          const invItem = this.inventory.find(ii => ii.item.id === u.itemID);
          invItem.startQ = Number(u.quantity);
@@ -460,7 +459,7 @@ export class EventSite {
 
                // add the inventory item
             garments[styleID].colors[colorID].retailTotal += sold;
-            garments[styleID].colors[colorID].lostTotal += inv.writeOffQ;
+            garments[styleID].colors[colorID].lostTotal += inv.writeOffQ + inv.sponsorQ;
                // ??= allows assigning once
             if (!PLUS_SIZECHARS.has(sChar)) {
                garments[styleID].colors[colorID].cost ??= inv.cost;
@@ -713,13 +712,13 @@ export class SchoolOrder {
       this.invoiceDate = Utils.safeParseDate(invoiceDate);
       this.invoiceVersion = invoiceVersion;
       this.messageOrders = Array.isArray(messageOrders) ? messageOrders : [];
-      this.shirtsByStyle = Array.isArray(shirtsByStyle)
-         ? shirtsByStyle.map(style => style instanceof Style ? style : style != null ? Style.fromJSON(style) : null).filter(Boolean)
-         : [];
       this.oItems = Utils.parseToInstancesArr(oItems, SOrderItem);
       this.oTransfers = Utils.parseToInstancesArr(oTransfers, SOrderTransfer);
       this.site = site;
       this.sport = sport;
+      this.shirtsByStyle = Array.isArray(shirtsByStyle)
+         ? shirtsByStyle.map(style => style instanceof Style ? style : style != null ? Style.fromJSON(style) : null).filter(Boolean)
+         : [];
    }
 
    static fromValues(id, eShdID, school, genderID, qualifiers, completeness, due, paid, schoolOrderNote, 
@@ -754,6 +753,24 @@ export class SchoolOrder {
 		this.site = json.site;
 		this.sport = json.sport;
 	}
+
+   getSOItemsByStyleByColor() {
+      const styles = {};
+
+      for (const soi of this.oItems) {
+         const styleID = soi.item.style.id;
+         const colorID = soi.item.color.id;
+
+            // initialize style/color containers if they don't exist (??=)
+         styles[styleID] ??= { style: soi.item.style, colors: {} };
+         styles[styleID].colors[colorID] ??= { color: soi.item.color, sizeMap: {} };
+
+            // push the sOrder item
+         styles[styleID].colors[colorID].sizeMap[soi.item.size.displayChar] = soi;
+      }
+
+      return styles;
+   }
 	
 	getBoxTotal() {
 		let boxTotal = 0;
@@ -798,7 +815,7 @@ export class SchoolOrder {
 	}
 
    hasAddedShirts() {
-      return this.shirtsByStyle.some(style => style.shortName !== 'Dairy Hoods')
+      return this.oItems.some(soi => soi.item.style.id !== DAIRY_STYLE_ID);
    }
 
    hasAddedTransfers() {
@@ -806,12 +823,16 @@ export class SchoolOrder {
    }
 	
 	getTeamStyle() {
-		return this.shirtsByStyle.find(style => style.shortName === 'Dairy Hoods');
+		// return this.shirtsByStyle.find(style => style.shortName === 'Dairy Hoods');
+      return Object.values(this.getSOItemsByStyleByColor())
+            .find(({ style }) => style.id === DAIRY_STYLE_ID);
 	}
 	
 	getAddedStyles() {
          // omit the dairy hoods
-      const styles = this.shirtsByStyle.filter(style => style.shortName !== 'Dairy Hoods');
+      const styles = Object.values(this.getSOItemsByStyleByColor())
+            .filter(({ style }) => style.id !== DAIRY_STYLE_ID);
+      console.log(styles)
 
          // put adult hoods first in the list
       styles.sort((a, b) => {

@@ -106,10 +106,15 @@ abstract class BasicTableModel implements JsonSerializable {
 		$groupedRows = self::groupRowsByKey($rows, static::getTableName() . '_' . static::getPrimaryKey());
 
 			// make sure to transfer $context to buildFromRow()
-		return array_map(function ($row) use ($context) {
+		$data =  array_map(function ($row) use ($context) {
 			return static::buildFromRow($row, context: $context);
 		}, $groupedRows);
 
+
+		Test::logX('After hydrate: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB");
+
+
+		return $data;
 	}
 	
 		// helper to group fetched rows by a key. // $keyPrefix is used for aliased column names
@@ -676,6 +681,7 @@ abstract class BasicTableModel implements JsonSerializable {
 	
 		// If the subclass doesn't have a 'name' property, return null. otherwise, get wild.
 	public static function getIDByName(string $name): ?int {
+			// getColumns() returns [propName => colName, ...] // 'name' here is a prop to match to a col
 		if (!array_key_exists('name', static::getColumns())) return null;
 		$nameCol = static::getColumns()['name'];
 		$idCol = static::getColumns()['id'];
@@ -709,21 +715,24 @@ protected static function getFromDB(string $query, array $params = []): array {
 		$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
 	}
 
-	// $a = 'Memory before execute: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
+	$a = 'Memory before execute: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
 	$statement->execute();
 
-	// $b = 'Memory after execute, before fetch: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
+	$b = 'Memory after execute, before fetch: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
 
 	$rows = $statement->fetchAll();
 
-	// $c = 'Memory after fetchAll: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
-	// $d = 'Peak memory so far: ' . round(memory_get_peak_usage() / 1024 / 1024, 2) . " MB\n";
-	// Test::logX($a, $b, $c, $d);
+	$rCount = 'Rows fetched: ' . count($rows);
+	$cCount = 'Columns: ' . count($rows[0] ?? []);
+	$c = 'Memory after fetchAll: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
+	$d = 'Peak memory so far: ' . round(memory_get_peak_usage() / 1024 / 1024, 2) . " MB\n";
+	if (count($rows) > 150) Test::logX($rCount, $cCount, $a, $b, $c, $d);
 
 	$statement->closeCursor();
 
 	return $rows;
 }
+
 
 	
 		// builds the SELECT statement for get...FromDB() functions. uses helpers to build JOINs and column selections
@@ -741,7 +750,7 @@ protected static function getFromDB(string $query, array $params = []): array {
 			// Call recursive function to handle relations and their relations. returns array of JOIN statements
 		$joins = self::buildJoins($table, $relations, $selectColumns, [], [], $context);
 			// get optional WHERE clause
-		$whereClause = 
+		// $whereClause = 
 			// Build the final SELECT query
 		$query = "SELECT " . implode(", ", $selectColumns) . " FROM $table " . implode(" ", $joins);
 		return $query;

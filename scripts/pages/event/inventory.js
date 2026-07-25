@@ -4,7 +4,7 @@ import { runtime } from '../../runtime.js';
 import { sizeList, DAIRY_STYLE_ID, DAIRY_COLOR_ID, ADULT_HOOD_STYLE_ID } from '../../constants.js';
 import { actionFetch, myFetch } from '../../fetch.js';
 import { modal, childModal } from '../../modal.js';
-import { buildElement, parseToInstancesArr } from '../../utilities.js';
+import { buildElement, giveFirstFocus, parseToInstancesArr } from '../../utilities.js';
 import { buildActionButton, makeSubmitCancelButtons, makeTypeActionLabel, 
 			makeLabelInputList } from '../page-utils.js';
 import { InventoryItem, InventoryTransfer } from '../../models/db-classes.js';
@@ -285,7 +285,8 @@ function showEditInventory({ target }) {
 	});
 
 		// give focus
-	invTDs[0]?.querySelector('input')?.focus();
+	// invTDs[0]?.querySelector('input')?.focus();
+	giveFirstFocus(invTbl);
 
 		
 	makeSubmitCancelButtons({ btnCntnr: btn.parentElement, lstnrCntnr: invTbl, type: 'inventory', 

@@ -198,7 +198,9 @@ function buildOrdersTbodies(orders) {
 	const tbodies = [];
 
    orders.forEach(so => {
-      const teamShirts = so.getTeamStyle();
+      const teamStyle = so.getTeamStyle();
+		if (teamStyle == undefined) console.log(so);
+		const teamShirts = Object.values(teamStyle.colors)[0];
 
       let tds = [];
 
@@ -256,23 +258,26 @@ function buildAddedStyleRows(so) {
    const trs = [];
 
    for (const aStyle of so.getAddedStyles()) {
-      let tds = [];
+		for (const color of Object.values(aStyle.colors)) {
+			let tds = [];
 
-         // first td, the style name
-      tds.push(buildElement("td", {	text: aStyle.shortName }));
-         // then the sizes
-      makeSizeTDs(tds, aStyle);
-         // then the total
-      let sTotal = 0
-      for (const s of aStyle.sizes) {
-         sTotal += s.quantity;
-      }
-      tds.push(buildElement("td", { title: 'total', text: sTotal }));
-         // an empty td to fill the table
-      tds.push(buildElement("td"));
+				// first td, the style name
+			tds.push(buildElement("td", {	text: `${aStyle.style.shortName}` }));
+				// then the sizes
+			makeSizeTDs(tds, color);
+				// then the total
+			let sTotal = 0
+			for (const s of Object.values(color.sizeMap)) {
+				sTotal += s.quantity;
+			}
+			tds.push(buildElement("td", { title: 'total', text: sTotal }));
+				// an empty td to fill the table
+			tds.push(buildElement("td"));
 
-         // make the row
-      trs.push(buildElement("tr", { classes: "addOnRow", dataset: { styleID: aStyle.id }, children: tds }));
+				// make the row
+			trs.push(buildElement("tr", { classes: "addOnRow", children: tds,
+										dataset: { styleID: aStyle.id, colorID: color.id } }));
+		}
    }
 
    return trs;
@@ -1325,13 +1330,16 @@ function updateNeeded(order, add = true) {
 		// show the table if it was empty and hidden
 	nCntnr.classList.remove('hidden');
 
-	order.getTeamStyle().sizes.forEach(size => {
-		const match = Array.from(tds).find(td => td.title === size.displayChar);
+	const teamStyle = order.getTeamStyle();
+	const sizeMap = Object.values(teamStyle.colors)[0].sizeMap;
+	for (const [sChar, soi] of Object.entries(sizeMap)) {
+		console.log(sChar, soi);
+		const match = Array.from(tds).find(td => td.title === sChar);
       if (match) {
          let current = parseInt(match.textContent.trim(), 10);
          if (isNaN(current)) current = 0;
 				// make quantity negative if add is false
-         const delta = add ? -size.quantity : size.quantity;
+         const delta = add ? -soi.quantity : soi.quantity;
          match.textContent = current + delta;
 			
 
@@ -1344,7 +1352,7 @@ function updateNeeded(order, add = true) {
 			// 	// hide if total needed = 0
 			// if ((currentTotal + delta) === 0) totalCell.closest('table').classList.add('hidden');
       }
-	});
+	};
 
 		// set the total display
 	if (totalCell) totalCell.textContent = total;

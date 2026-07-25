@@ -66,56 +66,7 @@ class Event extends BasicTableModel {
 			// Strip back down to just the eventSites
 		return array_map(fn($entry) => $entry['eSite'], $organized);
 	}
-
 	
-	public function getUnhandledComments() {
-		$unhandled = [];
-		foreach ($this->eventSites as $eventSite) {
-			foreach ($eventSite->esDivisions as $esd) {
-				foreach ($esd->schoolOrders as $schoolOrder) {
-					foreach ($schoolOrder->getMessageOrders() as $order) {
-						if ($order->commentHandled == 0) {
-							$o = new stdClass();
-							$o->id = $order->id;
-							$o->school = $schoolOrder->school->shortName;
-							$o->esd = $esd->name;
-							$o->comment = $order->comment;
-							$unhandled[] = $o;
-						}
-					}
-				}
-			}
-		}
-		return $unhandled;
-	}
-	
-	public function getIncompleteOrders() {
-		$incompleteOrders = [];
-		foreach ($this->eventSites as $eventSite) {
-			foreach ($eventSite->esDivisions as $esd) {
-				foreach ($esd->schoolOrders as $order) {
-					if ($order->completeness == 0) {
-						$incompleteOrders[] = $order;
-					}
-				}
-			}
-		}
-		return $incompleteOrders;
-	}
-	
-	public function getNeededSizes($incompleteOrders) {
-		$neededSizes = ['S' => 0, 'M' => 0, 'L' => 0, 'XL' => 0, '2X' => 0, '3X' => 0, '4X' => 0];
-		foreach ($incompleteOrders as $order) {
-			foreach ($order->shirtsByStyle as $style) {
-				if ($style->shortName == "Dairy Hoods") {
-					foreach ($style->getSizes() as $size) {
-						$neededSizes[$size->displayChar] += $size->getQuantity();
-					}
-				}
-			}
-		}
-		return $neededSizes;
-	}
 	
 	
 
