@@ -19,7 +19,7 @@ abstract class BasicTableModel implements JsonSerializable {
 		// it is overridden in subclasses with relations. if a subclass has no relations, the default works
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, $interTable = null)
   	protected static function getRelations(): array { return []; }
-		// get relations filtered by $context
+		// get all Relations filtered by $context
 	protected static function getContextRelations(?string $context = null): array {
 		$allRelations = static::getRelations();
 
@@ -30,6 +30,15 @@ abstract class BasicTableModel implements JsonSerializable {
 				// if $context is included in stopContexts, return false, excluding the element from the filtered array
 			return !in_array($context, $relation->stopContexts);
 		});
+	}
+		// get Relations filtered for $context, and whether they should be JOINed or loaded separately
+	protected static function getJoinRelations(?string $context = null): array {
+		return array_filter(
+				// getContextRelations returns an array of Relations to filter
+			static::getContextRelations($context),
+				// only returns the Relations if it is not flagged loadSeparate
+			fn (Relation $relation) => !$relation->loadSeparate
+		);
 	}
 	
 
@@ -62,7 +71,7 @@ abstract class BasicTableModel implements JsonSerializable {
 	
 		$firstRow = $rows[0]; // Use first row for parent data
 		$columns = static::getColumns(); // an array [propertyName => columnName]
-		$relations = static::getContextRelations($context);
+		$relations = static::getJoinRelations($context);
 			// we have to screw with prefixes to deconstruct unique column aliases in $row['keys']
 		$colPrefix .= static::getTableName() . '_';
 		
@@ -111,7 +120,7 @@ abstract class BasicTableModel implements JsonSerializable {
 		}, $groupedRows);
 
 
-		Test::logX('After hydrate: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB");
+		// Test::logX('After hydrate: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB");
 
 
 		return $data;
@@ -658,7 +667,9 @@ abstract class BasicTableModel implements JsonSerializable {
 			// pass $where if needed, a Where instance to build 
 	public static function getAllFromDB(?string $context = null, ?array $columns = null, ?Where $where = null): array {
 		$rows = static::getRowsFromDB($context, $columns, $where);
-		return static::groupAndBuild($rows, $context);
+		$objs = static::groupAndBuild($rows, $context);
+		if ($objs !== null) static::resolveSeparateRelations($objs, $context);
+		return $objs;
 	}
 
 		// returns db rows.
@@ -676,6 +687,9 @@ abstract class BasicTableModel implements JsonSerializable {
 		$query = static::buildSelect($context) . " WHERE $table.$idCol  = :id";
 		$rows = static::getFromDB($query, [':id' => $id]);
 		$instance = !empty($rows) ? static::groupAndBuild($rows, $context)[$id] : null;
+		
+		if ($instance !== null) static::resolveSeparateRelations($instance, $context);
+
 		return $instance;
 	}
 	
@@ -722,17 +736,85 @@ protected static function getFromDB(string $query, array $params = []): array {
 
 	$rows = $statement->fetchAll();
 
+	$table = 'Table: ' . static::getTableName();
 	$rCount = 'Rows fetched: ' . count($rows);
 	$cCount = 'Columns: ' . count($rows[0] ?? []);
 	$c = 'Memory after fetchAll: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
 	$d = 'Peak memory so far: ' . round(memory_get_peak_usage() / 1024 / 1024, 2) . " MB\n";
-	if (count($rows) > 150) Test::logX($rCount, $cCount, $a, $b, $c, $d);
+	// if (count($rows) > 50) Test::logX($table, $rCount, $cCount, $a, $b, $c, $d);
+	Test::logX($table, $rCount, $cCount, $a, $b, $c, $d);
 
 	$statement->closeCursor();
 
 	return $rows;
 }
 
+protected static function resolveSeparateRelations(object|array $objects, ?string $context = null): void {
+	$objectList = is_array($objects) ? $objects : [$objects];
+
+	$queue = [];
+
+	static::queueSeparateRelations($objectList, $context, $queue);
+
+	
+	if ($queue) static::loadRelations($queue, $context);
+}
+
+protected static function queueSeparateRelations(object|array $objects, ?string $context, array &$queue): void {
+	$objectList = is_array($objects) ? $objects : [$objects];
+
+	foreach ($objectList as $object) {
+		foreach ($object::getContextRelations($context) as $relation) {
+				// if loadSeparate, this Relation was not previously JOINed. // do not follow it's sub Relations
+			if ($relation->loadSeparate) {
+				$queue[$relation->property]['relation'] = $relation;
+    			$queue[$relation->property]['parents'][] = $object;
+			}
+			else {
+					// already hydrated; recurse to follow it's sub Relations
+				$children = $object->{$relation->property};
+				if ($children !== null) static::queueSeparateRelations($children, $context, $queue);
+			}
+		}
+	}
+}
+
+protected static function loadRelations(array $queue, string $context) {
+	foreach ($queue as $q) {
+		$relation = $q['relation'];
+		$parents = $q['parents'];
+
+		$parentClass = $parents[0]::class;
+		$parentCols = $parentClass::getColumns();
+		$idProp = array_search($relation->leftKey, $parentCols, true);
+
+		$ids = [];
+		foreach ($parents as $parent) {
+			$ids[] = $parent->{$idProp};
+		}
+
+		$relatedClass = $relation->rClass;
+		if (!class_exists($relation->rClass)) continue;
+			// make short names to make the code readable
+		$relatedTable = $relatedClass::getTableName();
+		$childCols = $relatedClass::getColumns();
+		$childProp = array_search($relation->rightKey, $childCols, true);
+
+			// array $path, string $column, mixed $value, string $operator
+		$condition = new Condition([$relatedTable], $relation->rightKey, $ids, 'IN');
+		$where = new Where([$condition]);
+
+		$children = $relatedClass::getAllFromDB($context, null, $where);
+
+		foreach ($children as $child) {
+			$childrenByKey[$child->{$childProp}][] = $child;
+		}
+
+		foreach ($parents as $parent) {
+			$parent->{$relation->property} = $childrenByKey[$parent->{$idProp}] ?? [];
+		}
+	}
+}
 
 	
 		// builds the SELECT statement for get...FromDB() functions. uses helpers to build JOINs and column selections
@@ -743,7 +825,7 @@ protected static function getFromDB(string $query, array $params = []): array {
 			// allow specific columns to be provided, or get all by default
 		if (!$columns) $columns = static::getColumns();
 		$table = static::getTableName();
-		$relations = static::getContextRelations($context);
+		$relations = static::getJoinRelations($context);
 	
 		$selectColumns = [];
 		self::buildSelects($selectColumns, $table, $columns);
@@ -797,7 +879,7 @@ protected static function getFromDB(string $query, array $params = []): array {
 				$joins[] = self::writeJoin($relatedTable, $tableAlias, $oldAlias, $leftKey, $rightKey);
 			}
 				// Recursively handle relations of the related class (i.e., relations of relations)
-			$joins = self::buildJoins($relatedTable, $relatedClass::getContextRelations($context), 
+			$joins = self::buildJoins($relatedTable, $relatedClass::getJoinRelations($context), 
 												$selectColumns, $joins, $path, $context);
 		}
 		return $joins;

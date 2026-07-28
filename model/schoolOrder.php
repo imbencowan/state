@@ -42,7 +42,7 @@ class SchoolOrder extends BasicTableModel {
 		public readonly ?string $note = '',
 		string|DateTime|null $invoiceDate = null,
 		public readonly ?int $invoiceVersion = null,
-		private array $messageOrders = [],
+		public readonly array $messageOrders = [],
 		// array $shirtsByStyle = [],
 		public readonly array $oItems =[],
 		public readonly array $oTransfers = []
@@ -71,10 +71,6 @@ class SchoolOrder extends BasicTableModel {
 		];
    }
 		
-		// // Getters and Setters
-	public function getMessageOrders() { return $this->messageOrders; }
-	// public function setMessageOrders(array $value) { $this->messageOrders[] = $value; }
-	public function pushMessageOrders($value) { $this->messageOrders[$value->id] = $value; }
 	
 		// return shirts without the Dairy Hoods
 	// public function getAddedShirts() { return array_diff_key($this->shirtsByStyle, ['Dairy Hoods' => true]); }

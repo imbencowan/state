@@ -6,7 +6,6 @@
  
     // all fetch requests go to controller.php
 export async function myFetch(request) {
-    console.log(request);
     try {
         const response = await fetch('controller.php', {
             method: "POST", 

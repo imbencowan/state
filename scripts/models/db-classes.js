@@ -832,7 +832,7 @@ export class SchoolOrder {
          // omit the dairy hoods
       const styles = Object.values(this.getSOItemsByStyleByColor())
             .filter(({ style }) => style.id !== DAIRY_STYLE_ID);
-      console.log(styles)
+      // console.log(styles)
 
          // put adult hoods first in the list
       styles.sort((a, b) => {

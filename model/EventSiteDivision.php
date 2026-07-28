@@ -12,17 +12,17 @@ class EventSiteDivision extends BasicTableModel {
 		return ['id' => 'eventSiteHasDivisionID', 'eventSiteID' => 'eventSiteID', 'divisionID' => 'divisionID']; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
-			// $interTable = null, $stopContexts = [])
+			// $interTable = null, $stopContexts = [], $loadSeparate = false)
 	protected static function getRelations(): array { 
 		return [
 			new Relation('division', 'Division', 'divisionID', 'divisionID'), 
 			new Relation('schoolOrders', 'SchoolOrder', 'eventSiteHasDivisionID', 'eventSiteHasDivisionID', 
-						true, null, [ 'year', 'inventory', 'reports' ])
+						true, null, [ 'year', 'inventory', 'reports' ], true)
 		];
 	}
 		
 	public readonly ?string $name;
-	public readonly array $schoolOrders;
+	// public readonly array $schoolOrders;
 	
 	public function __construct(
 		public readonly ?int $id,
@@ -30,7 +30,8 @@ class EventSiteDivision extends BasicTableModel {
 		public readonly int $divisionID,
 		public readonly Division $division,
 			// default empty array
-		array $schoolOrders = []
+		// array $schoolOrders = []
+		public array $schoolOrders = []
 	) {
 		$this->name = $division->name;
 		usort($schoolOrders, fn($a, $b) => strcmp($a->school->shortName, $b->school->shortName));

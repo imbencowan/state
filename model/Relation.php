@@ -24,6 +24,6 @@ class Relation {
 				// this sets a stop on JOINs, but unlike $stopContexts, we still want the Related data.
 				// we just can't load it all at once. base class methods will manage loading this separately
 		public readonly bool $loadSeparate = false
-   ) {Test::logX($loadSeparate);}
+   ) {}
 }
 ?>

@@ -19,7 +19,7 @@ class EventSite extends BasicTableModel {
 					'price4X' => 'price4X'];
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
-			// $interTable = null, $stopContexts = [])
+			// $interTable = null, $stopContexts = [], $loadSeparate = false)
 	protected static function getRelations(): array {
       return [new Relation('site', 'Site', 'siteID', 'siteID', false, null, ['employees']),
 				new Relation('esDivisions', 'EventSiteDivision', 'eventSiteID', 'eventSiteID', true, null, ['employees']),
@@ -27,7 +27,7 @@ class EventSite extends BasicTableModel {
 				new Relation('vehicles', 'Vehicle', 'eventSiteID', 'vehicleID', true, 'eventsitehasvehicle'), 
 				new Relation('employees', 'EventSiteEmployee', 'eventSiteID', 'eventSiteID', true), 
 				new Relation('inventory', 'EventSiteInventoryItem', 'eventSiteID', 'eventSiteID', true, null, 
-								['year', 'orders', 'employees']),
+								['year', 'orders', 'employees'], true),
 				new Relation('transfers', 'EventSiteTransfer', 'eventSiteID', 'eventSiteID', true, null, 
 								['year', 'orders', 'employees']),
 				new Relation('costs', 'EventSitecost', 'eventSiteID', 'eventSiteID', true, null, 
