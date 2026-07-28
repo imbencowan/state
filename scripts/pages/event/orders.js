@@ -200,7 +200,7 @@ function buildOrdersTbodies(orders) {
    orders.forEach(so => {
       const teamStyle = so.getTeamStyle();
 		if (teamStyle == undefined) console.log(so);
-		const teamShirts = Object.values(teamStyle.colors)[0];
+		const teamShirts = Object.values(teamStyle?.colors ?? {})[0];
 
       let tds = [];
 
@@ -1290,7 +1290,7 @@ function showOMessage({ order }) {
 
 	// toggles an order as done / not done
 export async function toggleOrderCompleteness(box, order) {
-	if (order.shirtsByStyle.length === 0) {
+	if (order.oItems.length === 0) {
 		modal.open("You can not mark an order with no shirts complete");
 		box.checked = false;
 	} else {

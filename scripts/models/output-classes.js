@@ -212,16 +212,17 @@ export class Label {
         this.centerInGrid("Total", x);
     }
     
-    addGridQuantities(style, min, max) {
+    addGridQuantities(sizes, min, max) {
         this.doc.setFontSize(11);
-            // we can take out this condition once we finish fixing how transfers are attached to orders
-        if (style.id !== 13) {
-            style.sizes.forEach(size => {
-                let x = this.gridX + this.gridStep * (size.id - min);
-                this.centerInGrid(String(size.quantity), x);
-            });
-        }
-        this.centerInGrid(String(style.getTotalQuantity()), (this.gridX + ((max - min + 1) * this.gridStep)));
+
+        let total = 0
+        sizes.forEach(soi => {
+            let x = this.gridX + this.gridStep * (soi.item.size.id - min);
+            this.centerInGrid(String(soi.quantity), x);
+            total += soi.quantity;
+        });
+        
+        this.centerInGrid(String(total), (this.gridX + ((max - min + 1) * this.gridStep)));
     }
 
     addGridTotal(total, sizes) {

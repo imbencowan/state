@@ -55,7 +55,8 @@ class EventSite extends BasicTableModel {
     	public readonly array $vehicles = [],
 		array $esDivisions = [],
 		public readonly array $employees = [],
-		public readonly array $inventory = [],
+			// public, not readonly, so 
+		public array $inventory = [],
 		public readonly array $transfers = [],
 		public readonly array $costs = []
    ) {

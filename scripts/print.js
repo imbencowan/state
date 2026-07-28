@@ -10,7 +10,7 @@ import * as Helpers from './printHelpers.js';
 	// prints a single order's label
 export function printBoxLabel({ order }) {
 	// console.log(order);
-	if (!order.shirtsByStyle || order.shirtsByStyle.length === 0) {
+	if (order.oItems.length === 0) {
 		modal.open("This order is empty");
 		return;
 	}
@@ -75,32 +75,42 @@ function genBoxLabel(doc, order, originI, lblN = 1) {
 
 		// label team line
 	lbl.lineY += 8;
-	lbl.addGridSizes(order.getMinSize(), order.getMaxSize());
-	lbl.lineY += 4.5;
-	doc.setFontSize(11);
-	doc.text("Team Hoods:", lbl.alignX, lbl.lineY);
+	lbl.addGridSizes(minSize, maxSize);
+	
+	const teamStyle = order.getTeamStyle();
 	
 		// put in the team quantities
-	if (order.getTeamStyle()) {
-		lbl.addGridQuantities(order.getTeamStyle(), order.getMinSize(), order.getMaxSize());
+	if (teamStyle) {
+		lbl.lineY += 4.5;
+		doc.setFontSize(11);
+		doc.text("Team Hoods:", lbl.alignX, lbl.lineY);
+		for (const color of Object.values(teamStyle.colors)) {
+			lbl.addGridQuantities(Object.values(color.sizeMap), minSize, maxSize);
+		}
 	}
 	
-		// only do this if there are additional styles in order.shirtsByStyle OR added transfers
-	if (order.shirtsByStyle.length > 1 || order.oTransfers.length) {
+		// only do this if there are additional styles/transfers in order.
+	if (order.hasAddOns()) {
 		doc.setTextColor('666666');
+		
+		const addedStyles = Object.values(order.getAddedStyles());
+
+			// allocate 1 line for transfers, if there are any	
 		let trnsfrLines = (order.oTransfers.length) ? 1 : 0;
 			// only print 'Additional' if space permits
-		if ((order.getAddedStyles().length + trnsfrLines) < 5) {
+		if ((addedStyles.length + trnsfrLines) < 5) {
 			lbl.lineY += 8;
 			doc.text("Additional", lbl.indentX, lbl.lineY);
 		}
+
 			// make each line of added shirts, if there are any
-		if (order.shirtsByStyle.length > 1) {
-				// omit Dairy Hoods by only using AddedStyles
-			order.getAddedStyles().forEach(style => {
+		if (addedStyles.length) {
+			addedStyles.forEach(style => {
 				lbl.lineY += 6;
-				doc.text(style.shortName, lbl.alignX, lbl.lineY);
-				lbl.addGridQuantities(style, order.getMinSize(), order.getMaxSize());
+				doc.text(style.style.shortName, lbl.alignX, lbl.lineY);
+				for (const color of Object.values(style.colors)) {
+					lbl.addGridQuantities(Object.values(color.sizeMap), order.getMinSize(), order.getMaxSize());
+				}
 			});
 		}
 			// make a line for the number of transfers added
@@ -588,19 +598,19 @@ async function genInvoicePDF(doc, order, type = "Invoice") {
 	
 	invP.lineDown();
 		// first list shirts ordered
-	for (const style of order.shirtsByStyle) {
-		if (style.shortName != 'Dairy Hoods') {
-			for (const shirt of style.sizes) {
+	for (const style of Object.values(order.getAddedStyles())) {
+		for (const color of Object.values(style.colors)) {
+			for (const soi of Object.values(color.sizeMap)) {
 					// can we use id rather than displayChar?
 				// console.log(style.id, shirt.displayChar);
-				let item = getItemByStyleIDSizeChar(style.id, shirt.displayChar);
+				let item = soi.item;
 				invP.cell(item.getInvoiceName(), 1, 2, 'left');
-				invP.cell(String(shirt.quantity), 3);
+				invP.cell(String(soi.quantity), 3);
 				invP.cell(`$${item.price}`, 4);
-				invP.cell(`$${shirt.quantity * item.price}`, 5, 1, 'right');
+				invP.cell(`$${soi.quantity * item.price}`, 5, 1, 'right');
 				invP.lineDown();
-				totalItems += shirt.quantity;
-				totalDollars += (shirt.quantity * item.price);
+				totalItems += soi.quantity;
+				totalDollars += (soi.quantity * item.price);
 			}
 		}
 	}

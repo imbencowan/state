@@ -26,7 +26,6 @@ class SchoolOrder extends BasicTableModel {
 					new Relation('messageOrders', 'MessageOrder', 'schoolOrderID', 'schoolOrderID', true)];
    }
 	
-	// public readonly array $shirtsByStyle;
 	public readonly string|DateTime|null $invoiceDate;
 	
 	public function __construct(
@@ -43,11 +42,9 @@ class SchoolOrder extends BasicTableModel {
 		string|DateTime|null $invoiceDate = null,
 		public readonly ?int $invoiceVersion = null,
 		public readonly array $messageOrders = [],
-		// array $shirtsByStyle = [],
 		public readonly array $oItems =[],
 		public readonly array $oTransfers = []
    ) {
-		// $this->shirtsByStyle = self::organizeOrderItems($oItems);
 		$this->invoiceDate = is_string($invoiceDate) ? new DateTime($invoiceDate) : $invoiceDate;
 	}
 	
@@ -65,55 +62,27 @@ class SchoolOrder extends BasicTableModel {
 			'invoiceDate' => $this->invoiceDate,
 			'invoiceVersion' => $this->invoiceVersion,
 			'messageOrders' => $this->messageOrders,
-			// 'shirtsByStyle' => array_values($this->shirtsByStyle),
 			'oItems' => array_values($this->oItems),
 			'oTransfers' => array_values($this->oTransfers)
 		];
    }
 		
 	
-		// return shirts without the Dairy Hoods
-	// public function getAddedShirts() { return array_diff_key($this->shirtsByStyle, ['Dairy Hoods' => true]); }
-	
-	
-	// public function getStyleTotal($style) {
-	// 	$total = 0;
-	// 	foreach($this->shirtsByStyle[$style]->getSizes() as $addedSize) {
-	// 		$total += $addedSize->getQuantity();
+	// public function getMessageFileNames() {
+	// 	$fileNames = [];
+	// 	foreach ($this->messageOrders as $order) {
+	// 		$fileNames[] = $order->fileName;
 	// 	}
-	// 	return $total;
+	// 	return implode(", ", $fileNames);
 	// }
 	
-	public function getMessageFileNames() {
-		$fileNames = [];
-		foreach ($this->messageOrders as $order) {
-			$fileNames[] = $order->fileName;
-		}
-		return implode(", ", $fileNames);
-	}
-	
-	public function getMessageOrdersText() {
-		$orderTexts = [];
-		foreach ($this->messageOrders as $order) {
-			$orderTexts[] = $order->orderText;
-		}
-		return implode("\n", $orderTexts);
-	}
-	
-	// private static function organizeOrderItems($oItems): array {
-	// 	$styles = [];
-	// 	foreach ($oItems as $oItem) {
-	// 		$styleName = $oItem->item->style->shortName;
-	// 			// make an array of unique styles
-	// 		if (!isset($styles[$styleName])) $styles[$styleName] = $oItem->item->style;
-			
-	// 		$sizeChars = $oItem->item->size->charName;
-	// 		$oItem->item->size->setQuantity($oItem->quantity);
-	// 		$styles[$styleName]->pushSizes($oItem->item->size);	
+	// public function getMessageOrdersText() {
+	// 	$orderTexts = [];
+	// 	foreach ($this->messageOrders as $order) {
+	// 		$orderTexts[] = $order->orderText;
 	// 	}
-	// 	return $styles;
+	// 	return implode("\n", $orderTexts);
 	// }
-	
 	
 
 	 

@@ -6,7 +6,7 @@
    // import helper functions
 import * as Utils from '../utilities.js';
 import { parseWithRegistry } from '../hydration.js';
-import { sizeList, ADULT_HOOD_STYLE_ID, DAIRY_STYLE_ID } from '../constants.js';
+import { sizeList, ADULT_HOOD_STYLE_ID, DAIRY_STYLE_ID, DAIRY_COLOR_ID } from '../constants.js';
 import { actionFetch } from '../fetch.js';
 // DO NOT IMPORT RUNTIME, no circular dependencies.
 
@@ -135,14 +135,16 @@ export class StateEvent {
             for (const so of esd.schoolOrders) {
                   // we only need incomplete orders // exclude orders that are over their qualifiers
                if (!so.completeness && ((so.qualifiers === null || so.getDairyTotal() <= so.qualifiers))) {
-                     // dairyHoods style.id == 9. this filters out add ons
-                  const dHoods = so.shirtsByStyle.find(item => item.id === 9);
+                     // get just the dairy hoods
+                  const dStyle = so.getTeamStyle();
+                  const dHoods = dStyle?.colors[DAIRY_COLOR_ID];
+
                   if (dHoods) {
-                     for (const size of dHoods.sizes) {
+                     for (const [sizeChar, soi] of Object.entries(dHoods.sizeMap)) {
                            // make sure displayChar is valid
-                        if (!(size.displayChar in neededSizes)) throw new Error(`Unknown size: ${size.displayChar}`);
-                        neededSizes[size.displayChar] += size.quantity;
-                        neededSizes.total += size.quantity;
+                        if (!(sizeChar in neededSizes)) throw new Error(`Unknown size: ${sizeChar}`);
+                        neededSizes[sizeChar] += soi.quantity;
+                        neededSizes.total += soi.quantity;
                      }
                   }
                }
@@ -658,19 +660,17 @@ export class EventSiteDivision {
 		return this.schoolOrders.some(order => order.school?.id === id);
 	}
 	
-	getTeamsWithAddOns() {
-		return this.schoolOrders.filter(order =>
-			order.shirtsByStyle.some(style => style.shortName !== 'Dairy Hoods')
-		);
-	}
+	// getTeamsWithAddOns() {
+	// 	return this.schoolOrders.filter(order =>
+	// 		order.hasAddOns()
+	// 	);
+	// }
 	
 	getMaxSize() {
 		let max = 0;
 		this.schoolOrders.forEach(order => {
-			order.shirtsByStyle.forEach(style => {
-				style.sizes.forEach(size => {
-					if (size.id > max) max = size.id;
-				});
+			order.oItems.forEach(soi => {
+					if (soi.item.size.id > max) max = soi.item.size.id;
 			});
 		});
 		return max;
@@ -699,7 +699,7 @@ export class Division {
 export class SchoolOrder {
    constructor({ id, eshdID, schoolID, school, genderID, qualifiers = 0, completeness = 0, due = null, 
                paid = null, schoolOrderNote = null, invoiceDate = null, invoiceVersion = null, messageOrders = [], 
-               shirtsByStyle = [], oItems = [], oTransfers = [], site = undefined, sport = undefined }) {
+               oItems = [], oTransfers = [], site = undefined, sport = undefined }) {
       this.id = id;
       this.eshdID = eshdID;
       this.school = parseWithRegistry(school, School, schoolID);
@@ -716,15 +716,12 @@ export class SchoolOrder {
       this.oTransfers = Utils.parseToInstancesArr(oTransfers, SOrderTransfer);
       this.site = site;
       this.sport = sport;
-      this.shirtsByStyle = Array.isArray(shirtsByStyle)
-         ? shirtsByStyle.map(style => style instanceof Style ? style : style != null ? Style.fromJSON(style) : null).filter(Boolean)
-         : [];
    }
 
    static fromValues(id, eShdID, school, genderID, qualifiers, completeness, due, paid, schoolOrderNote, 
-                     invoiceSent, messageOrders, shirtsByStyle, site, sport) {
+                     invoiceSent, messageOrders, site, sport) {
       return new SchoolOrder({ id, eShdID, school, genderID, qualifiers, completeness, due, paid, schoolOrderNote, 
-                              invoiceSent, messageOrders, shirtsByStyle, site, sport });
+                              invoiceSent, messageOrders, site, sport });
    }
 
    static fromJSON(json) {
@@ -743,13 +740,11 @@ export class SchoolOrder {
 		this.due = json.due;
 		this.paid = json.paid;
 		this.schoolOrderNote = json.schoolOrderNote;
-		this.invoiceSent = json.invoiceSent;
+      this.invoiceDate = Utils.safeParseDate(json.invoiceDate);
+      this.invoiceVersion = json.invoiceVersion;
 		this.messageOrders = Array.isArray(json.messageOrders) ? json.messageOrders : [];
-		this.shirtsByStyle = Array.isArray(json.shirtsByStyle)
-			? json.shirtsByStyle.map(style =>
-				style instanceof Style ? style : style != null ? Style.fromJSON(style) : null
-			).filter(Boolean)
-			: [];
+      this.oItems = Utils.parseToInstancesArr(json.oItems, SOrderItem);
+      this.oTransfers = Utils.parseToInstancesArr(json.oTransfers, SOrderTransfer);		
 		this.site = json.site;
 		this.sport = json.sport;
 	}
@@ -774,31 +769,11 @@ export class SchoolOrder {
 	
 	getBoxTotal() {
 		let boxTotal = 0;
-      // console.log(this.shirtsByStyle);
-		this.shirtsByStyle.forEach(style => {
-         if (style.id !== 13) {
-            style.sizes.forEach(size => {
-               boxTotal += size.quantity;
-            });
-         }
+		this.oItems.forEach(soi => {
+         boxTotal += soi.quantity;
 		});
 		return boxTotal;
 	}
-
-      // returns total number of participant hoods ordered
-   getDairyTotal() {
-      let dTotal = 0;
-
-         // find the dairy hoods. if there are any, sum them. // dairy hoods style.id === 9
-      const dHoods = this.shirtsByStyle.find(style => style.id === 9);
-      if (dHoods) {
-         for (const s of dHoods.sizes) {
-            dTotal += s.quantity;
-         }
-      }
-
-      return dTotal;
-   }
 
    getTotalTransfers() {
       let total = 0;
@@ -823,10 +798,26 @@ export class SchoolOrder {
    }
 	
 	getTeamStyle() {
-		// return this.shirtsByStyle.find(style => style.shortName === 'Dairy Hoods');
       return Object.values(this.getSOItemsByStyleByColor())
             .find(({ style }) => style.id === DAIRY_STYLE_ID);
 	}
+
+      // returns total number of participant hoods ordered
+   getDairyTotal() {
+      let dTotal = 0;
+
+         // find the dairy hoods. if there are any, sum them. // dairy hoods style.id === 9
+      const dStyle = this.getTeamStyle();
+      const dHoods = dStyle?.colors[DAIRY_COLOR_ID];
+
+      if (dHoods) {
+         for (const s of Object.values(dHoods.sizeMap)) {
+            dTotal += s.quantity;
+         }
+      }
+
+      return dTotal;
+   }
 	
 	getAddedStyles() {
          // omit the dairy hoods
@@ -846,24 +837,20 @@ export class SchoolOrder {
 	
 	getMinSize() {
 		let min = Infinity;
-		this.shirtsByStyle.forEach(style => {
-			style.sizes.forEach(size => {
-            if (size.id < 9) {
-				   if (size.id < min) min = size.id;
-            }
-			});
+		this.oItems.forEach(soi => {
+         if (soi.item.size.id < 9) {
+            if (soi.item.size.id < min) min = soi.item.size.id;
+         }
 		});
 		return min;
 	}
 	
 	getMaxSize() {
 		let max = 0;
-		this.shirtsByStyle.forEach(style => {
-			style.sizes.forEach(size => {
-            if (size.id < 9) {
-   				if (size.id > max) max = size.id;
-      		}
-         });
+		this.oItems.forEach(soi => {
+         if (soi.item.size.id < 9) {
+            if (soi.item.size.id > max) max = soi.item.size.id;
+         }
 		});
 		return max;
 	}
