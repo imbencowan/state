@@ -132,8 +132,6 @@ export function addTransfersPageFunctionality() {
       const target = event.target.closest("button");
       if (!target) return;
 
-      console.log(target)
-
       if (target.classList.contains("transfers-update")) {
          showUpdateTransfers({ target });
       } else if (target.dataset.action == 'submitUpdateTransfers') {

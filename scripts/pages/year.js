@@ -2,9 +2,11 @@
 // js functions for the event page
 import { runtime } from '../runtime.js';
 import { actionFetch, myFetch } from '../fetch.js';
-import { arraysEqualIgnoreOrder, buildElement, getPropertyValues } from '../utilities.js';
+import { arraysEqualIgnoreOrder, buildElement, getPropertyValues, formatDateInput, parseInputDate, 
+         getDateRangeString } from '../utilities.js';
 import { buildActionButton, makeTypeActionLabel, makeLabelInputList, 
          makeButtonActionMap, buildIcon } from './page-utils.js';
+import { getDivisionsString } from '../formatters.js';
 import { modal, childModal } from '../modal.js';
 import { EventSite, Season, Site, StateEvent } from '../models/db-classes.js';
 import { showPage } from './page-handling.js';
@@ -14,16 +16,24 @@ import { printSeasonStockPDF } from '../print.js';
 
 const topButtons = [
    { action: "getSeasonStock", text: " Get Next Season Stock", handler: showSeasonStock }, 
-   { action: "addEvent", icon: "add", text: " Event", handler: showAddEvent }, 
+   { action: "addEvents", icon: "add", text: " Events", handler: showAddEvents }, 
    { action: "addYear", icon: "add", text: " Year", handler: showAddYear }
 ];
+
+   // action/handler map for the click event listener
+const yearActionMap = makeButtonActionMap(topButtons);
+yearActionMap.editRow = showRowEdit;
+yearActionMap.cancelRowEdit = cancelRowEdit;
+yearActionMap.submitRowEdit = submitRowEdit;
 
 
 export async function goToYearPage(year) {
    await Promise.all([
       runtime.allSites.load(),
+      runtime.allDivisions.load(),
       runtime.allEmployees.load(),
       runtime.allVehicles.load(),
+      runtime.allSports.load(),
       runtime.allSeasons.load()
    ]);
 
@@ -31,8 +41,9 @@ export async function goToYearPage(year) {
    const response = await showPage('showYear', 'Year', { year: year });
 
    buildYearPage(response.data);
-
    addShowYearFunctionality();
+
+   runtime.activeMode = null;
 }
 
 function buildYearPage(y) {
@@ -109,24 +120,13 @@ function addShowYearFunctionality() {
       // click listener will only activate for elements with a data-action
    container.addEventListener('click', function(event) {
          // get the button
-		const btn = event.target.closest('[data-action]');
-      if (!btn) return; // clicked somewhere irrelevant
+		const target = event.target.closest('[data-action]');
+      if (!target) return; // clicked somewhere irrelevant
 
-         // define click actions. 'selector': function()
-      const actions = {
-         'editRow': () => { if (!runtime.activeMode) showRowEdit(btn); },
-         'cancelRowEdit': () => cancelRowEdit(btn),
-         'submitRowEdit': () => submitRowEdit(btn),
-         'addYear': () => showAddYear(),
-         'getSeasonStock': () => showSeasonStock()
-      };
+      const action = target.dataset.action;
+      const handler = yearActionMap[action];
 
-      for (const slct in actions) {
-         if (btn.dataset.action == slct) {
-            actions[slct]();
-            return;
-         }
-      }
+		if (handler) handler(target);
    });
 }
 
@@ -134,6 +134,7 @@ function addShowYearFunctionality() {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 async function showRowEdit(target) {
+   if (runtime.activeMode) return;
       // prevent opening edits on multiple rows simultaneously
    runtime.activeMode = 'edit';
 
@@ -150,14 +151,14 @@ async function showRowEdit(target) {
          // use a switch to not rely on position
       switch (column) {
          case "site":
-            input = makeSiteSlct(td);
+            input = makeRowSiteSelect(td);
             break;
          case "divisions":
                // put edit divisions on hold because it doesn't work with BasicTableModel's current update methods
                   // and i'm not sure i want to be able to edit divisions any way.
                      // if you remove a division from a site, what happens? it's outside the scope of update
                         // needs a custom function
-            // input = await makeDvsnSlct(td);
+            // input = await makeDivSelect(td);
             break;
          case "manager":
             input = document.createElement('input');
@@ -185,8 +186,15 @@ async function showRowEdit(target) {
    row.querySelector('select')?.focus();
 }
 
+function makeRowSiteSelect(td) {
+   const slct = makeSiteSelect();
+   slct.value = td.dataset.oValue;
+
+   return slct;
+}
+
    // make a select for sites
-function makeSiteSlct(td) {
+function makeSiteSelect() {
       // bring in the sites
    let allSites = runtime.allSites.getSync();
       // alphebetize the list
@@ -194,45 +202,44 @@ function makeSiteSlct(td) {
       return x.name.localeCompare(y.name); // or numeric comparison if needed
    });
 
-   const oSiteID = td.dataset.oValue;
-
-   const newSlct = document.createElement('select');
-
+   const newSlct = buildElement('select', { dataset: { control: 'sites' } });
 
       // forEach site, make an option
    allSites.forEach((site) => {
-      const newOptn = document.createElement('option');
-      newOptn.textContent = site.name;
-      newOptn.value = site.id;
-      if (site.id == oSiteID) newOptn.selected = true;
-
+      const newOptn = buildElement("option", { text: site.name, attrs: { value: site.id } });
       newSlct.appendChild(newOptn);
    });
   
    return newSlct;
 }
+   
+      // omitted. editing divisions in row is currently prevented
+// function makeRowDivSelect(td) {
+//    const slct = makeDivSelect();
+
+//       // parse oValues from the data attribute to an array
+//    const oValues = JSON.parse(td.dataset.oValue || '[]');
+   
+//       // select if value matches one of oValues
+//          // may be this works, wrote it while it was not implemented
+//    [...slct.options].forEach(option => {
+//       if (oValues.includes(option.value)) option.selected = true;
+//    });
+
+//    return slct;
+// }
 
    // make a select for divisions
-      // omitted. editing divisions in row is currently prevented
-function makeDvsnSlct(td) {
+function makeDivSelect(td) {
    const allDivisions = runtime.allDivisions.getSync();
 
-   const newSlct = document.createElement('select');
+   const newSlct = buildElement('select', { dataset: { control: 'divisions' } });
    newSlct.multiple = true;
 
-      // parse oValues from the data attribute to an array
-   const oValues = JSON.parse(td.dataset.oValue || '[]'); // fallback to empty array
-
       // forEach div
-   Object.entries(allDivisions).forEach(([key, div]) => {
+   Object.values(allDivisions).reverse().forEach(div => {
       if (div.id !== 99) {
-         const newOptn = document.createElement('option');
-         newOptn.textContent = div.name;
-         newOptn.value = div.id;
-            // select if value matches one of oValues
-         if (oValues.includes(div.id)) newOptn.selected = true;
-
-         newSlct.appendChild(newOptn);
+         const newOptn = buildElement("option", { text: div.name, attrs: { value: div.id } });
          newSlct.appendChild(newOptn);
       }
    });
@@ -788,37 +795,283 @@ async function parseYear(txt) {
 
 
    // 
-function showAddEvent() {
+function showAddEvents() {
       // header
-   const head = buildElement("h2", { text: "Add an event" });
+   const head = buildElement("h2", { text: "Add events" });
 
-      // we need to replace this with a select for sports, a start date, and an end date
-      // textarea
-   // const textarea = document.createElement("textarea");
-   // textarea.rows = 10;
-   // textarea.cols = 50;
-   // textarea.placeholder = "Paste PDF text here...";
+      // year select
+   const yearDiv = makeAddEventYearDiv();
+   
+   const headers = [ 'Event', 'Sites', 'Divisions', 'X' ].map(t => buildElement("th", { text: t }));
+   const thead = buildElement("thead", {children: buildElement("tr", { children: headers }) });
+   const tbody = buildElement("tbody");
+   const table = buildElement("table", { id: 'addEventsTable', children: [ thead, tbody ] });
+   addAddEventRow(tbody);
 
+   table.addEventListener("change", addEventFormChangeListener);
+
+
+      // add row button
+   const addIcon = buildIcon('add');
+   const addBtn = buildElement("button", { children: [ addIcon, " Event" ], dataset: { control: 'addRow' } });
       // submit button
-   const submitBtn = document.createElement("button");
-   submitBtn.textContent = "Submit";
-   submitBtn.style.display = "block";
-   submitBtn.style.marginTop = "0.5em";
-
+   const confirmBtn = buildElement("button", { text: "Confirm", styles: { display: 'block' }, 
+                                 dataset: { control: 'confirm' } });
+   
       // make a wrapper so we don’t pollute the page
-   const wrapper = buildElement("div", { children: [ head, submitBtn ] });
+   const wrapper = buildElement("div", { children: [ head, yearDiv, table, addBtn, confirmBtn ] });
+   wrapper.addEventListener("click", (e) => handleAddEventClick(e.target, tbody));
 
-      // wire the button
-   submitBtn.addEventListener("click", () => {
-      const txt = textarea.value.trim();
-      if (txt) {
-         parseYear(txt);
-      }
-   });
 
       // add to page
-   modal.open(wrapper);
-   textarea.focus();
+   modal.open(wrapper, "wide");
+}
+
+function handleAddEventClick(target, tbody) {
+   target = target.closest('button');
+   if (!target) return;
+
+   switch (target.dataset.control) {
+      case 'addRow':
+         addAddEventRow(tbody);
+         break;
+      case 'removeRow':
+         removeAddEventRow(target, tbody);
+         break;
+      case 'confirm':
+         summarizeAddEventsInputs(tbody);
+   }
+}
+
+function addAddEventRow(tbody) {
+   let year = document.getElementById('eventYearSelect')?.value;
+   if (!year) year = document.getElementById('selectYear').value;
+
+   const today = new Date();
+   const dateObj = new Date(2000 + Number(year), today.getMonth(), today.getDate());
+   const date = formatDateInput(dateObj);
+
+   const eDiv = buildElement("div", { classes: [ 'grid', 'gridCols2' ], dataset: { column: 'event' } });
+   eDiv.appendChild(buildElement("label", { text: 'Activity: ' }));
+   eDiv.appendChild(makeSportSelect());
+   eDiv.appendChild(buildElement("label", { text: 'Start: ' }));
+   eDiv.appendChild(buildElement("input", { attrs: { type: 'date', value: date }, dataset: { control: 'start' } }));
+   eDiv.appendChild(buildElement("label", { text: 'End: ' }));
+   eDiv.appendChild(buildElement("input", { attrs: { type: 'date', value: date }, dataset: { control: 'end' } }));
+   eDiv.appendChild(buildElement("label", { text: 'Sites: ' }));
+   const sitesSelect = makeSiteSelect();
+   sitesSelect.multiple = true;
+   eDiv.appendChild(sitesSelect);
+
+   const sitesDiv = buildElement("div", { classes: [ 'grid', 'gridCols2' ], dataset: { column: 'sites' } });
+   const divisionsDiv = buildElement("div", { dataset: { column: 'divisions' } });
+   const closeBtn = buildElement("button", { text: 'x', dataset: { control: 'removeRow' } });
+
+
+   const eventTD = buildElement("td", { children: eDiv });
+   const sitesTD = buildElement("td", { children: sitesDiv });
+   const divisionsTD = buildElement("td", { children: divisionsDiv });
+   const closeTD = buildElement("td", { children: closeBtn });
+
+   const tr = buildElement("tr", { children: [ eventTD, sitesTD, divisionsTD, closeTD ], classes: [ 'addEventRow' ] });
+
+   tbody.appendChild(tr);
+}
+
+function removeAddEventRow(target, tbody) {
+      // don't remove the last remaining row. do no thing
+   if (tbody.rows.length < 2) return;
+
+   target.closest('tr').remove();
+}
+
+function makeAddEventYearDiv() {
+   const year = new Date().getFullYear() % 100;
+   const maxYear = year + 10;
+   const minYear = 20;
+
+   const yearSelect = buildElement("select", { id: 'eventYearSelect' });
+   for (let i = minYear; i <= maxYear; ++i) {
+      yearSelect.appendChild(buildElement("option", { text: `${i}-${i+1}`, attrs: { value: i } }));
+   }
+
+      // select the currently viewed year to start
+   const appYear = document.getElementById('selectYear').value;
+   yearSelect.value = appYear;
+
+   return buildElement("div", { children: [ "For the year: ", yearSelect ] });
+}
+
+function makeSportSelect() {
+   const allSports = runtime.allSports.getSync();
+
+   const newSlct = buildElement("select", { dataset: { control: 'sport' } });
+
+      // forEach div
+   Object.values(allSports).forEach(sport => {
+      const newOptn = buildElement("option", { text: sport.name, attrs: { value: sport .id } });
+      newSlct.appendChild(newOptn);
+   });
+  
+   return newSlct;
+}
+
+function addEventFormChangeListener(e) {
+   const target = e.target;
+   const row = e.target.closest(".addEventRow");
+   if (!row) return
+
+   switch (target.dataset.control) {
+      case 'sites':
+         updateSites(target, row);
+         break;
+      case 'divisions':
+         updateDivisions(target, row);
+         break;
+      case 'start': 
+         row.querySelector('[data-control="end"]').value = target.value;
+         break;
+   }
+}
+
+function updateSites(target, row) {
+   const sitesDiv = row.querySelector('[data-column="sites"]');
+   const divisionsDiv = row.querySelector('[data-column="divisions"]');
+   const selectedIDs = new Set([...target.selectedOptions].map(o => o.value));
+
+      // remove sites no longer selected
+   for (const siteRow of sitesDiv.querySelectorAll('[data-site-i-d]')) {
+      if (!selectedIDs.has(siteRow.dataset.siteID)) siteRow.remove();
+   }
+      // like wise, remove any matching elements from the divisions column
+   for (const divRow of divisionsDiv.querySelectorAll('[data-site-i-d]')) {
+      if (!selectedIDs.has(divRow.dataset.siteID)) divRow.remove();
+   }
+
+      // add new sites
+   for (const id of selectedIDs) {
+      if (sitesDiv.querySelector(`[data-site-i-d="${id}"]`)) continue;
+
+      const site = runtime.allSites.getByID(id);
+      const siteLabel = buildElement("label", { text: site.name });
+      const divSelect = makeDivSelect();
+      divSelect.dataset.siteID = id;
+      divSelect.size = 1;
+
+      const siteRow = buildElement("div", { dataset: { siteID: id }, children: [ siteLabel, divSelect ], 
+                                    classes: 'contents' });
+      sitesDiv.appendChild(siteRow);
+
+         // create the label in the divisions column, so they stay matched. initialize with a nonbreaking space
+      const divLabel = buildElement("label", { text: "\u00A0", dataset: { siteID: id } });
+      divLabel.style.display = 'block';
+      divLabel.style.marginBottom = '1rem';
+      divisionsDiv.appendChild(divLabel);
+   }
+}
+
+function updateDivisions(target, row) {
+   const divisionsDiv = row.querySelector('[data-column="divisions"]');
+   const selectedIDs = [...target.selectedOptions].map(o => o.value);
+   const siteID = target.dataset.siteID;
+
+      // get the matching element
+   let label = divisionsDiv.querySelector(`[data-site-i-d="${siteID}"]`);
+
+   const divisions = selectedIDs.map(id => runtime.allDivisions.getByID(id).name);
+   const divString = divisions.join(', ');
+
+   label.textContent = divString || "\u00A0";
+}
+
+
+
+function summarizeAddEventsInputs(tbody) {
+   const addEvents = [];
+
+   const rows = Array.from(tbody.rows);
+
+   for (const row of rows) {
+         // get the controls for more readable access
+      const controlNodes = row.querySelectorAll('[data-control]');
+         // .map here creates an array of [controlName, control] pairs. // Object.fromEntries() consumes these arrays
+      const controls = Object.fromEntries(
+         [...controlNodes].map(control => [control.dataset.control, control])
+      );
+
+         // get the sites control's selections, then get the values of those selections
+      const siteSelectionsArr = [...(controls.sites?.selectedOptions ?? [])];
+      const siteIDs = siteSelectionsArr.map(option => Number(option.value));
+         // store the sites with their divisions
+      const sites = [];
+      for (const sID of siteIDs) {
+            // get the divisions control for this site
+         const siteDivControl = row.querySelector(`[data-control="divisions"][data-site-i-d="${sID}"]`);
+            // make the selections an array, or an empty array if no selections were made
+         const divArr = [...siteDivControl?.selectedOptions ?? []];
+            // extract the ids
+         const divIDs = divArr.map(option => Number(option.value));
+         sites.push({ siteID: sID, divIDs });
+      }
+
+         // push an Event. // sites will already hold it's divisions data
+      addEvents.push({ 
+         sportID: Number(controls.sport.value),
+         start: controls.start.value,
+         end: controls.end.value,
+         sites
+      });
+   }
+   
+   showConfirmAddEvents(addEvents);
+}
+
+function showConfirmAddEvents(addEvents) {
+   const h3 = buildElement("h3", { text: "Does this look right?" });
+
+   const eventDivs = [];
+   for (const e of addEvents) {
+      const startDate = parseInputDate(e.start);
+      const endDate = parseInputDate(e.start);
+      
+      const h4 = buildElement("h4", { text: runtime.allSports.getByID(e.sportID).name });
+      const dateP = buildElement("p", { text: getDateRangeString(startDate, endDate) });
+
+      const spans = [];
+      for (const site of e.sites) {
+         const siteName = runtime.allSites.getByID(site.siteID).name;
+
+         const divisions = [];
+         for (const id of site.divIDs) {
+            divisions.push(runtime.allDivisions.getByID(id));
+         }
+
+         spans.push(buildElement("span", { text: siteName }));
+         spans.push(buildElement("span", { text: getDivisionsString(divisions) }));
+      }
+
+      const sitesDiv = buildElement("div", { children: spans, classes: [ 'grid', 'gridCols2' ] });
+
+      eventDivs.push(buildElement("div", { children: [ h4, dateP, sitesDiv ] }));
+   }
+
+   const eventsContainer = buildElement("div", { children: eventDivs });
+
+   const submitBtn = buildElement("button", { text: "Submit", styles: { display: 'block' }, });
+   submitBtn.addEventListener('click', () => submitAddEvents(addEvents));
+
+   const wrapper = buildElement("div", { children: [ h3, eventsContainer, submitBtn ] });
+   childModal.open(wrapper);
+}
+
+async function submitAddEvents(addEvents) {
+   console.log(addEvents);
+   const data = { addEvents };
+   const response = await actionFetch('addEvents', 'Event', data);
+
+   if (response.success) {
+
+   }
 }
 
 

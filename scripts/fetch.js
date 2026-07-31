@@ -33,6 +33,7 @@ export async function myFetch(request) {
 
 
     // (php method, (of) php class, data sent along).   // utilize myFetch()
+        // data should be an array where each element is one argument passed to func
 export async function actionFetch(func, ssClass, data) {
     return myFetch(new ActionRequest(func, ssClass, data));
 }

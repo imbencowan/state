@@ -236,8 +236,9 @@ abstract class BasicTableModel implements JsonSerializable {
 
 		// inserts the instance to the db
 			// is this replaceable with insert()?
-	public function addInstanceToDB(): ?int {
-		$db = Database::getDB();
+	public function addInstanceToDB(?PDO $db = null): ?int {
+			// if no $db passed in (for transactions), create a new connection
+		$db = $db ?? Database::getDB();
 		
 			// get object properties and columns
 		$instanceData = get_object_vars($this);
@@ -729,20 +730,20 @@ protected static function getFromDB(string $query, array $params = []): array {
 		$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
 	}
 
-	$a = 'Memory before execute: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
+	// $a = 'Memory before execute: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
 	$statement->execute();
 
-	$b = 'Memory after execute, before fetch: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
+	// $b = 'Memory after execute, before fetch: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
 
 	$rows = $statement->fetchAll();
 
-	$table = 'Table: ' . static::getTableName();
-	$rCount = 'Rows fetched: ' . count($rows);
-	$cCount = 'Columns: ' . count($rows[0] ?? []);
-	$c = 'Memory after fetchAll: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
-	$d = 'Peak memory so far: ' . round(memory_get_peak_usage() / 1024 / 1024, 2) . " MB\n";
-	// if (count($rows) > 50) Test::logX($table, $rCount, $cCount, $a, $b, $c, $d);
-	Test::logX($table, $rCount, $cCount, $a, $b, $c, $d);
+	// $table = 'Table: ' . static::getTableName();
+	// $rCount = 'Rows fetched: ' . count($rows);
+	// $cCount = 'Columns: ' . count($rows[0] ?? []);
+	// $c = 'Memory after fetchAll: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
+	// $d = 'Peak memory so far: ' . round(memory_get_peak_usage() / 1024 / 1024, 2) . " MB\n";
+	// // if (count($rows) > 50) Test::logX($table, $rCount, $cCount, $a, $b, $c, $d);
+	// Test::logX($table, $rCount, $cCount, $a, $b, $c, $d);
 
 	$statement->closeCursor();
 

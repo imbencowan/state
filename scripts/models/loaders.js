@@ -1,4 +1,5 @@
-import { makeDataLoader } from "../utilities.js";
+import { actionFetch } from "../fetch.js";
+import { mapObjsBy } from "../utilities.js";
 import { Item, Season, Sport } from "../models/db-classes.js";
 
 
@@ -126,6 +127,89 @@ export function makeSeasonLoader() {
 
       getByDate(date) {
          return Object.values(loader.getSync()).find(season => season.containsDate(date));
+      }
+   };
+}
+
+
+
+
+
+
+   // makes an object with methods to access the database
+      // intended for use with the runtime object
+export function makeDataLoader(srvrClassName, jsClass = null, srvrFnctn = "getAllFromDB") {
+   let cache = null;          // resolved data
+   let nameLookup = null;
+   let loadPromise = null;    // promise for first-time load
+
+      // private helper to fetch and map data
+   async function fetchAndMap() {
+      const response = await actionFetch(srvrFnctn, srvrClassName);
+      const raw = response.data || {};
+      let mapped = mapObjsBy(raw); // { id1: obj1, id2: obj2, ... }
+
+      if (jsClass) {
+         for (const key in mapped) {
+            mapped[key] = new jsClass(mapped[key]);
+         }
+      }
+
+      return mapped;
+   }
+
+   function buildNameLookup() {
+      nameLookup = {};
+
+      for (const obj of Object.values(cache)) {
+         if (obj.name) nameLookup[obj.name] = obj;
+      }
+   }
+
+   return {
+         // async load: fetch once, reuse promise if already loading
+      async load() {
+         if (!cache && !loadPromise) {
+            loadPromise = fetchAndMap().then(data => {
+               cache = data;       // store resolved data for sync access
+               return cache;
+            });
+         }
+         return loadPromise;
+      },
+
+         // always fetch fresh and update cache
+      async refresh() {
+         loadPromise = fetchAndMap().then(data => {
+            cache = data;
+            nameLookup = null;
+            return cache;
+         });
+         return loadPromise;
+      },
+
+         // synchronous access to resolved data
+      getSync() {
+         if (!cache) throw new Error("Data not loaded yet");
+         return cache;
+      },
+
+      getByID(id) {
+         if (!cache) throw new Error("Data not loaded yet");
+         return cache[id];
+      },
+
+      getByName(name) {
+         if (!cache) throw new Error("Data not loaded yet");
+         if (!nameLookup) buildNameLookup();
+
+         return nameLookup[name];
+      },
+
+         // clear everything
+      clear() {
+         cache = null;
+         loadPromise = null;
       }
    };
 }

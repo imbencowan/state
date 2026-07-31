@@ -8,6 +8,7 @@ import * as Utils from '../utilities.js';
 import { parseWithRegistry } from '../hydration.js';
 import { sizeList, ADULT_HOOD_STYLE_ID, DAIRY_STYLE_ID, DAIRY_COLOR_ID } from '../constants.js';
 import { actionFetch } from '../fetch.js';
+import { getDivisionsString } from '../formatters.js';
 // DO NOT IMPORT RUNTIME, no circular dependencies.
 
 
@@ -38,35 +39,7 @@ export class StateEvent {
 	}
 
    getDateRangeString() {
-      const start = this.startDate.toLocaleDateString("en-US", {
-         month: "long",
-         day: "numeric"
-      });
-
-      // one-day event
-      if (this.startDate.getTime() === this.endDate.getTime()) {
-         return start;
-      }
-
-      let end;
-      let conjunction;
-
-      // same month
-      if (
-         this.startDate.getFullYear() === this.endDate.getFullYear() &&
-         this.startDate.getMonth() === this.endDate.getMonth()
-      ) {
-         end = this.endDate.getDate();
-         conjunction = "-";
-      } else {
-         end = this.endDate.toLocaleDateString("en-US", {
-            month: "long",
-            day: "numeric"
-         });
-         conjunction = " - ";
-      }
-
-      return (start + conjunction + end).replace(/ (\S+)$/, "\u00A0$1");
+      return Utils.getDateRangeString(this.startDate, this.endDate);
    }
 	
 	getEventSiteByID(id) {
@@ -281,39 +254,12 @@ export class EventSite {
    }
 
    getDivisionsString() {
-      if (!this.esDivisions || this.esDivisions.length === 0) return '';
-
-         // create a map of id -> name (also removes duplicates)
-      const divs = new Map(
-         this.esDivisions.map(esd => [
-            esd.division.id,
-            esd.division.name
-         ])
-      );
-
-      const ids = [...divs.keys()].sort((a, b) => a - b);
-
-      let divStr;
-
-      if (ids.length === 1) {
-         divStr = divs.get(ids[0]);
-      } else {
-         const minId = ids[0];
-         const maxId = ids[ids.length - 1];
-
-         if ((maxId - minId + 1) === ids.length && ids.length > 2) {
-            divStr = `${divs.get(minId)} - ${divs.get(maxId)}`;
-         } else {
-            divStr = ids
-               .map(id => divs.get(id))
-               .sort()
-               .join(' / ');
-         }
+      const divisions = [];
+      for (const esd of this.esDivisions) {
+         divisions.push(esd.division);
       }
 
-      if (this.gender && this.gender.id !== 3) divStr += ' ' + this.gender.name;
-
-      return divStr;
+      return getDivisionsString(divisions, this.gender);
    }
 
    getGenderName() {

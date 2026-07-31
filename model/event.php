@@ -6,7 +6,7 @@ class Event extends BasicTableModel {
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
 		return ['id' => 'eventID',
-					'sport' => 'sportID',
+					'sportID' => 'sportID',
 					'startDate' => 'startDate',
 					'endDate' => 'endDate',
 					'year' => 'eventYear'];
@@ -24,11 +24,12 @@ class Event extends BasicTableModel {
 	
 	public function __construct(
 		public readonly ?int $id,
-		public readonly Sport $sport,
+		public readonly int $sportID,
+		public readonly ?Sport $sport,
 		string|DateTime $startDate, 
 		string|DateTime $endDate, 
 		public readonly int $year,
-		array $eventSites
+		array $eventSites = []
    ) {
 		$this->startDate = is_string($startDate) ? new DateTime($startDate) : $startDate;
 		$this->endDate = is_string($endDate) ? new DateTime($endDate) : $endDate;
@@ -38,6 +39,7 @@ class Event extends BasicTableModel {
 	public function jsonSerialize(): mixed {
 		return [
 			'id' => $this->id,
+			'sportID' => $this->sportID,
 			'sport' => $this->sport,
 			'startDate' => $this->startDate,
 			'endDate' => $this->endDate,
@@ -72,6 +74,40 @@ class Event extends BasicTableModel {
 
 		////////////////////////////////////////////////////////////////////////////////////////
 		// user function
+	public static function addEvents($addEvents) {
+		$newEvents = [];
+		Database::withDB(function($db) use ($addEvents, &$newEvents) {
+			foreach($addEvents as $event) {
+				$startObj = new DateTime($event['start']);
+				$year = Year::convertDateToSchoolYear($startObj);
+
+				$eventRow = [
+					'sportID' => $event['sportID'],
+					'startDate' => $event['start'],
+					'endDate' => $event['end'],
+					'eventYear' => $year
+				];
+
+				$eventID = Event::insert($eventRow, $db);
+
+				foreach($event['sites'] as $site) {
+					$esRow = [ 'eventID' => $eventID, 'siteID' => $site['siteID'] ];
+					$esID = EventSite::insert($esRow, $db);
+
+					$divRows = [];
+					foreach($site['divIDs'] as $divID) {
+						$divRows[] = [ 'eventSiteID' => $esID, 'divisionID' => $divID ];
+					}
+
+					EventSiteDivision::insertMany($divRows, $db);
+				}
+
+			}
+		});
+			// if we wanted to return some thing, we could collect eventIDs
+	}
+
+
 	public static function getPrevNextSportEvent(int $eventID, string $drctn, string $context) {
 		$db = Database::getDB();
 		
@@ -99,6 +135,19 @@ class Event extends BasicTableModel {
 		if ($adjacentID === false) return [ 'event' => null ];
 
 		return [ 'event' => self::getByID($adjacentID, $context) ];
+	}
+
+	
+	static function getEventBySportAndYear(int $year, int $sportID, string $context = 'orders') {
+		return [ 'data' => self::getBySportAndYear($sportID, $year, $context) ];
+	}
+
+
+	static function getEventByDate(?string $date = null) {
+		if ($date == null) $date = date('Y-m-d');
+		$id = self::getNextIDByDate($date);
+
+		return [ 'data' => self::getByID($id, 'orders') ];
 	}
 
 
@@ -291,22 +340,6 @@ class Event extends BasicTableModel {
 		return $stmt->fetchAll(PDO::FETCH_COLUMN);
 	}
 	
-	
-	
-		
-	//////////////////////////////////////////////////
-   // user actions
-	static function getEventBySportAndYear(int $year, int $sportID, string $context = 'orders') {
-		return [ 'data' => self::getBySportAndYear($sportID, $year, $context) ];
-	}
-
-
-	static function getEventByDate(?string $date = null) {
-		if ($date == null) $date = date('Y-m-d');
-		$id = self::getNextIDByDate($date);
-
-		return [ 'data' => self::getByID($id, 'orders') ];
-	}
 	
 	
 	///////////////////////////////////////

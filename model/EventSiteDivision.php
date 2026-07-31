@@ -28,11 +28,12 @@ class EventSiteDivision extends BasicTableModel {
 		public readonly ?int $id,
 		public readonly int $eventSiteID,
 		public readonly int $divisionID,
-		public readonly Division $division,
+		public readonly ?Division $division,
 			// default empty array
 		// array $schoolOrders = []
 		public array $schoolOrders = []
 	) {
+		Test::logX('null now');
 		$this->name = $division->name;
 		usort($schoolOrders, fn($a, $b) => strcmp($a->school->shortName, $b->school->shortName));
 		$this->schoolOrders = $schoolOrders;

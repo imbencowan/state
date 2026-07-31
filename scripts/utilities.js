@@ -1,6 +1,5 @@
-import { actionFetch } from "./fetch.js";
-
-
+/////////////////////////////////////////////////////////////////////////////////////////////
+//    TRY NOT TO IMPORT TO UTILITIES
 
 
 const FOCUSABLE_SELECTOR = 'input, button, select, textarea, a[href], [tabindex]:not([tabindex="-1"])';
@@ -172,85 +171,6 @@ export function distributeElementsToRows(containerSelector, minItemWidth = 100) 
 }
 
 
-   // makes an object with methods to access the database
-      // intended for use with the runtime object
-export function makeDataLoader(srvrClassName, jsClass = null, srvrFnctn = "getAllFromDB") {
-   let cache = null;          // resolved data
-   let nameLookup = null;
-   let loadPromise = null;    // promise for first-time load
-
-      // private helper to fetch and map data
-   async function fetchAndMap() {
-      const response = await actionFetch(srvrFnctn, srvrClassName);
-      const raw = response.data || {};
-      let mapped = mapObjsBy(raw); // { id1: obj1, id2: obj2, ... }
-
-      if (jsClass) {
-         for (const key in mapped) {
-            mapped[key] = new jsClass(mapped[key]);
-         }
-      }
-
-      return mapped;
-   }
-
-   function buildNameLookup() {
-      nameLookup = {};
-
-      for (const obj of Object.values(cache)) {
-         if (obj.name) nameLookup[obj.name] = obj;
-      }
-   }
-
-   return {
-         // async load: fetch once, reuse promise if already loading
-      async load() {
-         if (!cache && !loadPromise) {
-            loadPromise = fetchAndMap().then(data => {
-               cache = data;       // store resolved data for sync access
-               return cache;
-            });
-         }
-         return loadPromise;
-      },
-
-         // always fetch fresh and update cache
-      async refresh() {
-         loadPromise = fetchAndMap().then(data => {
-            cache = data;
-            nameLookup = null;
-            return cache;
-         });
-         return loadPromise;
-      },
-
-         // synchronous access to resolved data
-      getSync() {
-         if (!cache) throw new Error("Data not loaded yet");
-         return cache;
-      },
-
-      getByID(id) {
-         if (!cache) throw new Error("Data not loaded yet");
-         return cache[id];
-      },
-
-      getByName(name) {
-         if (!cache) throw new Error("Data not loaded yet");
-         if (!nameLookup) buildNameLookup();
-
-         return nameLookup[name];
-      },
-
-         // clear everything
-      clear() {
-         cache = null;
-         loadPromise = null;
-      }
-   };
-}
-
-
 
    // compares arrays' elements, disregarding order
       // returns true/false
@@ -333,6 +253,14 @@ export function formatCurrency(value) {
 	return `${(value ?? 0).toFixed(2)}`;
 }
 
+   // takes a Date object, returns a String: yyyy-mm-dd
+export function formatDateInput(date) {
+   const y = date.getFullYear();
+   const m = String(date.getMonth() + 1).padStart(2, "0");
+   const d = String(date.getDate()).padStart(2, "0");
+   return `${y}-${m}-${d}`;
+}
+
 
 export function getPropertyValues(array, property = "id") {
    if (!Array.isArray(array)) {
@@ -340,6 +268,48 @@ export function getPropertyValues(array, property = "id") {
    }
 
    return array.map(item => item[property]);
+}
+
+   // returns a string representing a start and end date
+export function getDateRangeString(d1, d2) {
+   const start = d1.toLocaleDateString("en-US", { month: "long", day: "numeric" });
+
+      // one-day event
+   if (sameCalendarDay(d1, d2)) return start;
+
+   let end;
+   let conjunction;
+
+         // same month
+   if ((d1.getFullYear() === d2.getFullYear()) && (d1.getMonth() === d2.getMonth())) {
+      end = String(d2.getDate());
+      conjunction = "-";
+         // different months
+   } else {
+      end = d2.toLocaleDateString("en-US", {
+         month: "long",
+         day: "numeric"
+      });
+      conjunction = " - ";
+   }
+
+      // the regex replaces the last normal space before the final 'word' with a non-breaking space.
+         // prevents October 31 - November 1 hanging the '1' on to a new line by it's self
+   return (start + conjunction + end).replace(/ (\S+)$/, "\u00A0$1");
+}
+
+function sameCalendarDay(d1, d2) {
+   return (
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate()
+   );
+}
+
+   // turns a string date ('yyyy-mm-dd') in to a LOCAL TIME Date object
+export function parseInputDate(value) {
+   const [year, month, day] = value.split("-").map(Number);
+   return new Date(year, month - 1, day);
 }
 
 

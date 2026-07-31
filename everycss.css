@@ -88,3 +88,20 @@ a:link {
 .center { text-align: center; }
 
 .bold { font-weight: bold; }
+
+.contents { 
+	display: contents;
+ }
+
+ .grid {
+   display: grid;
+   gap: 1rem;
+}
+
+.gridCols2 {
+   grid-template-columns: repeat(2, max-content);
+}
+
+.gridCols3y {
+   grid-template-columns: repeat(3, max-content);
+}

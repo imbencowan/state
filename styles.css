@@ -356,6 +356,7 @@ tr.addOnRow {
 	border: 1px solid #888;
 	width: 80%; /* Adjust as needed */
 	max-width: 500px; /* Optional max width */
+	overflow-x: auto;
 	border-radius: 8px;
 }
 
@@ -603,4 +604,13 @@ tr.addOnRow {
 	grid-template-columns: max-content max-content max-content;
 	align-items: center;
 	gap: .5em 1em;
+}
+
+#addEventsTable tbody td {
+	vertical-align: top;
+}
+
+.addEventRow {
+   border-top: 1px solid black;
+   padding-top: 0.5rem;
 }
