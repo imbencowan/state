@@ -324,7 +324,8 @@ async function submitInventoryEdit({ target }) {
 				invTransferID: Number(td.dataset.invTransferID), 
 				transferID: Number(td.dataset.transferID), 
 				quantity: inputValue, 
-				price: transfersMap[td.dataset.transferID].price 
+				price: transfersMap[td.dataset.transferID].price,
+				mcuCost: transfersMap[td.dataset.transferID].cost
 			});
 		}
 	});
@@ -827,7 +828,8 @@ async function submitAddTransfer(e, form) {
 				invTransferID: null, 
 				transferID: Number(t.id), 
 				quantity: Number(value), 
-				price: t.price
+				price: t.price,
+				mcuCost: t.cost
 			});
 		}
 	}

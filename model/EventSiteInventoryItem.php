@@ -26,7 +26,7 @@ class EventSiteInventoryItem extends BasicTableModel {
 			// $interTable = null, $stopContexts = [])
 	protected static function getRelations(): array { 
 		// return [ new Relation('item', 'Item', 'itemID', 'itemID') ];
-		return [ new Relation('item', 'Item', 'itemID', 'itemID', false, null, [ 'inventory', 'reports' ]) ];
+		return [ new Relation('item', 'Item', 'itemID', 'itemID', false, null, [ 'inventory', 'results' ]) ];
 	}
 	
 	public function __construct(

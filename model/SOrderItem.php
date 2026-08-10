@@ -17,7 +17,7 @@ class SOrderItem extends BasicTableModel {
 			// Item only, no circular reference
 	protected static function getRelations(): array {
       // return [new Relation('item', 'Item', 'itemID', 'itemID', false, null, [''])];
-      return [new Relation('item', 'Item', 'itemID', 'itemID', false, null, ['orders', 'reports', 'inventory', 'year'])];
+      return [new Relation('item', 'Item', 'itemID', 'itemID', false, null, ['orders', 'results', 'inventory', 'year'])];
    }
 	
 	public function __construct(

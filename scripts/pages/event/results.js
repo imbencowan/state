@@ -11,7 +11,7 @@ import {  } from '../../print.js';
 
 
    // buttons for each site
-const reportSiteButtons = [
+const resultsSiteButtons = [
    { action: "fillInventory", title: "finalize the inventory", icon: "edit", text: " Inventory",
       handler: showFillInventory, submitHandler: submitFillInventoryReport, cancelHandler: modal.close }, 
    { action: "fillTransfers", title: "enter sold transfers", icon: "edit", text: " Sold Transfers", 
@@ -23,10 +23,10 @@ const reportSiteButtons = [
       handler: updateCostAndPrice }
 ];
    // an array of action/handler pairs based on buttons to be used the page's event listener
-export const reportSiteActions = makeButtonActionMap(reportSiteButtons);
+export const resultsSiteActions = makeButtonActionMap(resultsSiteButtons);
 
 
-export async function attachReportsPanel(panel, sEvent) {
+export async function attachResultsPanel(panel, sEvent) {
 	   // first, ensure the appropriate data
    await sEvent.loadInventories(runtime.allItems, runtime.allTransfers);
    await sEvent.loadOrders(runtime.allItems, runtime.allTransfers);
@@ -54,7 +54,7 @@ function attachSiteBtns(esID) {
 }
 
 function buildSiteBtns(esID) {
-   return reportSiteButtons.map(b => 
+   return resultsSiteButtons.map(b => 
       buildActionButton({ ...b, classes: "report-action", datasetExtra: { eventSiteID: esID } })
    );
 }
@@ -232,7 +232,7 @@ async function refreshTable(esID) {
 function getReportTable(esID) {
 	esID = Number(esID);
 		// grab the inventory container
-	const cntnr = document.querySelector('.tabPanel.active[data-tab="reports"]');
+	const cntnr = document.querySelector('.tabPanel.active[data-tab="results"]');
 		// select the table with the matching data attribute
 	const tbl = cntnr.querySelector(`table[data-event-site-i-d="${esID}"]`);
 
@@ -265,7 +265,7 @@ function showFillInventory({ target }) {
       const action = target.dataset.action;
       if (!action) return;
 
-      reportSiteActions[action]({ target });
+      resultsSiteActions[action]({ target });
    });
 
    modal.open(cntnr, 'full');
@@ -273,7 +273,6 @@ function showFillInventory({ target }) {
 
 async function submitFillInventoryReport({ target }) {
    const success = await submitFillInventory({ target });
-   console.log('chang');
    if (success) await refreshTable(target.dataset.id);
 }
 
@@ -324,7 +323,7 @@ async function submitSoldTransfers(e, frm, listTransfers, eSite) {
       }
    }
    
-   const update = { rows: updateTransfers, updateCols: [ 'soldQ' ] };
+   const update = { rows: updateTransfers, updateCols: [ 'soldQ', 'price', 'mcuCost' ] };
    const response = await actionFetch('upsertMany', 'EventSiteTransfer', update);
    
 
@@ -514,6 +513,7 @@ function showAddCosts({ target }) {
       rentalV: runtime.allCosts.getByName("rental vehicle"),
       gas: runtime.allCosts.getByName("gas"),
       hotel: runtime.allCosts.getByName("hotel"),
+      empPay: runtime.allCosts.getByName("employee pay")
    }
 
    const headers = [ "Cost: ", "Quantity: ", "Rate: " ].map(
@@ -521,31 +521,39 @@ function showAddCosts({ target }) {
    );
 
 
+   const formCostIDs = [ COSTS.transfers.id, COSTS.machine.id, COSTS.champs.id ];
    const costs = [];
-      // transfer cost
+      // some standard costs first, transfers, machine, state champs
    costs.push(...prepareAddCostRow({ eSite: eSite, cost: COSTS.transfers, quantity: eSite.getMainTransfers().startQ }));
-      // machine costs
    costs.push(...prepareAddCostRow({ eSite: eSite, cost: COSTS.machine, quantity: eSite.getLikelyNumberPresses() }));
-      // state champs
    costs.push(...prepareAddCostRow({ eSite: eSite, cost: COSTS.champs, quantity: eSite.getStateChampQuantity() }));
       // employees
    if (eSite.employees.length) {;
       eSite.employees.forEach(esEmp => {
          costs.push(...buildAddEmployeeRow({ eSite, esEmp }));
       });
+   } else {
+      costs.push(...prepareAddCostRow({ eSite: eSite, cost: COSTS.empPay }));
+      formCostIDs.push(COSTS.empPay.id);
    }
       // vehicles
    if (eSite.vehicles.length) {
       if (eSite.vehicles.find(v => v.name.includes("Personal"))) {
          costs.push(...prepareAddCostRow({ eSite: eSite, cost: COSTS.personalV }));
+         formCostIDs.push(COSTS.personalV.id);
       }
       if (eSite.vehicles.find(v => v.name.includes("Rental"))) {
          costs.push(...prepareAddCostRow({ eSite: eSite, cost: COSTS.rentalV }));
+         formCostIDs.push(COSTS.rentalV.id);
       }
       costs.push(...prepareAddCostRow({ eSite: eSite, cost: COSTS.gas }));
+      formCostIDs.push(COSTS.gas.id);
    }
       // hotels
-   if (eSite.site.city.distance > 100) costs.push(...prepareAddCostRow({ eSite: eSite, cost: COSTS.hotel }));
+   if (eSite.site.city.distance > 100) {
+      costs.push(...prepareAddCostRow({ eSite: eSite, cost: COSTS.hotel }));
+      formCostIDs.push(COSTS.hotel);
+   }
 
 
       // fill labels/inputs in the form
@@ -554,7 +562,7 @@ function showAddCosts({ target }) {
       // make a button for adding other costs
    const addBtn = buildElement("button", { children: [ buildIcon('add'), " Cost" ], attrs: { type: "button" }, 
                   dataset: { action: "showAddNewCost"}, styles: { float: 'right' }, classes: 'report-action' });
-   addBtn.addEventListener("click", showAddNewCost);
+   addBtn.addEventListener("click", () => showAddNewCost(formCostIDs));
       // make a submit button
    const sbmtBtn = buildElement("button", { text: "SUBMIT", classes: 'block' });
    
@@ -571,7 +579,7 @@ function showAddCosts({ target }) {
 
 function prepareAddCostRow({ cost, quantity, eSite }) {
    let rate = null;
-   const esCost = eSite.getCostByID(cost.id);
+   const esCost = eSite?.getCostByID(cost.id);
 
    if (esCost) {
       rate = esCost.rate;
@@ -595,7 +603,6 @@ function buildAddCostRow({ cost, quantity = '', rate = null }) {
       attrs: { value: rate, type: "number", step: .01 }, 
       dataset: { costID: cost.id, field: 'rate' }
    });
-
 
    return [ lbl, quantityInput, rateInput ];
 }
@@ -680,12 +687,21 @@ async function submitAddCosts(e, frm, eSite) {
    }
 }
 
-function showAddNewCost() {
-   const p = buildElement("p", { text: 'What should the new cost be called?' });
+function showAddNewCost(formCostIDs) {
+   const allCosts = Object.values(runtime.allCosts.getSync());
+
+   const formCostsSet = new Set(formCostIDs);
+   const unCosts = allCosts.filter(cost => !formCostsSet.has(cost.id));
+
+   const p = buildElement("p", { text: 'Select additional costs: ' });
+   const options = unCosts.map(cost => buildElement("option", { attrs: { value: cost.id }, text: cost.name }));
+   const select = buildElement("select", { children: options, attrs: { multiple: true } });
+
+   const p2 = buildElement("p", { text: 'Or add a non existing cost: ' });
    const input = buildElement("input", { attrs: { type: 'text' } });
    const sbmtBtn = buildElement("button", { text: "SUBMIT", classes: 'block' });
 
-   const form = buildElement("form", { children: [ p, input, sbmtBtn ] });
+   const form = buildElement("form", { children: [ p, select, p2, input, sbmtBtn ] });
    form.addEventListener("submit", function(e) { submitNewCost(e, form); });
 
    childModal.open(form);
@@ -694,6 +710,21 @@ function showAddNewCost() {
 async function submitNewCost(e, form) {
       // stop page refresh
    e.preventDefault();
+
+   const costForm = document.getElementById('siteCostsForm');
+   const fieldset = costForm.querySelector('fieldset');
+
+   const selectedOptions = [ ...form.querySelector('select').selectedOptions ];
+   const addCosts = selectedOptions.map(optn => runtime.allCosts.getByID(optn.value));
+   
+   if (addCosts.length) {
+      for (const cost of addCosts) {
+         const row = prepareAddCostRow({ cost });
+         fieldset.append(...prepareAddCostRow({ cost }));
+      }
+
+      childModal.close();
+   }
 
    const costName = form.querySelector('input').value;
    
@@ -707,16 +738,11 @@ async function submitNewCost(e, form) {
          const quantityInput = buildElement("input", { attrs: { type: "number", step: .01 }, 
             dataset: { costID: costID, field: 'quantity' }
          });
-
          const rateInput = buildElement("input", { attrs: { type: "number", step: .01 }, 
             dataset: { costID: costID, field: 'rate' }
          });
 
-
-         const costForm = document.getElementById('siteCostsForm');
-         const fieldset = costForm.querySelector('fieldset');
          fieldset.append(lbl, quantityInput, rateInput);
-         console.log(fieldset);
 
          childModal.close();
       }

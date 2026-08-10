@@ -12,7 +12,7 @@ import { buildActionButton } from '../page-utils.js';
 import { topOrderActions, orderRowActions, attachOrdersPanel, toggleOrderCompleteness, 
 			changeCommentHandled } from './orders.js';
 import { topInventoryActions, inventorySiteActions, attachInventoryPanel } from './inventory.js';
-import { attachReportsPanel, reportSiteActions } from './reports.js';
+import { attachResultsPanel, resultsSiteActions } from './results.js';
 import { modal, childModal } from '../../modal.js';
 
 
@@ -22,7 +22,7 @@ import { modal, childModal } from '../../modal.js';
 const tabs = [
 	{ id: "orders", label: "Orders", build: attachOrdersPanel },
 	{ id: "inventory", label: "Inventory", build: attachInventoryPanel },
-	{ id: "reports", label: "Reports", build: attachReportsPanel }
+	{ id: "results", label: "Results", build: attachResultsPanel }
 ];
 
 	// define a pair of buttons to navigate next/previous event
@@ -261,7 +261,7 @@ export function addEventPageFunctionality() {
 			args.eSite = runtime.stateEvent.getEventSiteByID(target.dataset.eventSiteID);
 			handler = inventorySiteActions[action];
 		} else if (target.classList.contains("report-action")) {
-			handler = reportSiteActions[action];
+			handler = resultsSiteActions[action];
 		} else {
 			handler = topActions[action];
 		}

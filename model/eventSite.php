@@ -215,6 +215,7 @@ class EventSite extends BasicTableModel {
 	}
 
 	public static function editEventSiteInventory($eventSiteID, $updateItems = [], $updateTransfers = []) {
+		Test::logX($updateTransfers);
 			// use withDB to avoid some thing like a partial update
 		return Database::withDB(function($db) use ($eventSiteID, $updateItems, $updateTransfers) {
 			EventSiteInventoryItem::editItems($db, $eventSiteID, $updateItems);

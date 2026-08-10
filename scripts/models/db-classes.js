@@ -291,7 +291,7 @@ export class EventSite {
       return this.costMap.get(id);
    }
 
-      // used to prefill cost data in reports
+      // used to prefill cost data in the results tab
    getLikelyNumberPresses() {
       return Math.min(this.employees.length, 4);
    }
@@ -407,7 +407,7 @@ export class EventSite {
 
                // add the inventory item
             garments[styleID].colors[colorID].retailTotal += sold;
-            garments[styleID].colors[colorID].lostTotal += inv.writeOffQ + inv.sponsorQ;
+            garments[styleID].colors[colorID].lostTotal += inv.writeOffQ;
                // ??= allows assigning once
             if (!PLUS_SIZECHARS.has(sChar)) {
                garments[styleID].colors[colorID].cost ??= inv.cost;

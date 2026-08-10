@@ -586,6 +586,9 @@ tr.addOnRow {
 
 .reportTable td {
 	border-top: 1px solid black;
+	padding: 0 .6rem;
+	word-break: normal;
+	overflow-wrap: normal;
 }
 
 	/* right align quantity columns */

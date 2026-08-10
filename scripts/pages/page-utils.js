@@ -77,7 +77,7 @@ export function makeLabelInputList({ list, getName, getID, getValue }) {
                 name: id,
                 type: "number",
                 min: 0,
-                max: 2000,
+                max: 4000,
                 step: 1,
                 value: getValue?.(i) ?? ""
             }

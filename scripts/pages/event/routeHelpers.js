@@ -41,7 +41,7 @@ export function parseEventRoute(parts) {
 }
 
 export function isEventTab(x) {
-   const tabs = ['orders', 'inventory', 'reports'];
+   const tabs = ['orders', 'inventory', 'results'];
    return tabs.includes(x);
 }
 

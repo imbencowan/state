@@ -36,12 +36,14 @@ class EventSiteTransfer extends BasicTableModel {
 		//////////////////////////////////////////////////////
 		// Database functions	
 	public static function editTransfers($db, $eventSiteID, $transfers) {
+		Test::logX($transfers);
 			// match values to column names and upsert
 		$rows = array_map(fn($row) => [
-			'eventSiteID' => $eventSiteID,
-			'transferID'  => $row['transferID'],
-			'startQ'      => $row['quantity'],
-			'price'       => $row['price']
+			'eventSiteID'	=> $eventSiteID,
+			'transferID' 	=> $row['transferID'],
+			'startQ'     	=> $row['quantity'],
+			'price'      	=> $row['price'],
+			'mcuCost'		=> $row['mcuCost']
 		], $transfers);
 
 		self::upsertMany($rows, ['startQ'], $db);

@@ -17,7 +17,7 @@ class EventSiteDivision extends BasicTableModel {
 		return [
 			new Relation('division', 'Division', 'divisionID', 'divisionID'), 
 			new Relation('schoolOrders', 'SchoolOrder', 'eventSiteHasDivisionID', 'eventSiteHasDivisionID', 
-						true, null, [ 'year', 'inventory', 'reports' ], true)
+						true, null, [ 'year', 'inventory', 'results' ], true)
 		];
 	}
 		
@@ -33,7 +33,6 @@ class EventSiteDivision extends BasicTableModel {
 		// array $schoolOrders = []
 		public array $schoolOrders = []
 	) {
-		Test::logX('null now');
 		$this->name = $division->name;
 		usort($schoolOrders, fn($a, $b) => strcmp($a->school->shortName, $b->school->shortName));
 		$this->schoolOrders = $schoolOrders;

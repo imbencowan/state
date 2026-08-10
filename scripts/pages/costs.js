@@ -181,7 +181,7 @@ function buildAddCostFieldset() {
 
       if (columns[c].align === "right") {
          input.type = "number";
-         input.min = 0;
+         // input.min = 0;
          input.step = .01;
       } else {
          input.type = "text";
