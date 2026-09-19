@@ -6,7 +6,7 @@ export function parseEventRoute(parts) {
    if (parts.length > 3) {
       valid = false;
    } else if (parts.length > 1) {
-         // if there were 3 parts, assume /sport/year/tab
+         // if there were 3 parts, assume /series/year/tab
       if (parts.length === 3) {
          year = parts[1];
          tab = parts[2];

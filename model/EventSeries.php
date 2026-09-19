@@ -1,12 +1,12 @@
 <?php
-class Sport extends BasicTableModel {
+class EventSeries extends BasicTableModel {
 		// define the corresponding table, columns, and dependent tables to be used in the class
-   protected static function getTableName(): string { return 'sports'; }
-	protected static function getPrimaryKey(): string { return 'sportID'; }
+   protected static function getTableName(): string { return 'eventseries'; }
+	protected static function getPrimaryKey(): string { return 'seriesID'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
-		return ['id' => 'sportID', 
-					'name' => 'sportName', 
+		return ['id' => 'seriesID', 
+					'name' => 'seriesName', 
 					'isGendered' => 'isGendered', 
 					'isIndividualed' => 'isIndividualed', 
 					'maxTeamSize' => 'maxTeamSize', 
@@ -33,8 +33,8 @@ class Sport extends BasicTableModel {
 
 	//////////////////////////////////////////////////////
 	// Database functions	
-	public static function getByName($name) {
-		$query = static::buildSelect() . " WHERE sportName = :name";
+	public static function getByName(string $name) {
+		$query = static::buildSelect() . " WHERE seriesName = :name";
 		$rows = static::getFromDB($query, [':name' => $name]);
 		return !empty($rows) ? static::buildFromRow($rows) : null;
 	}

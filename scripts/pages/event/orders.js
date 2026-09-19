@@ -94,7 +94,7 @@ function attachNeededTable(cntnr, sEvent) {
          // get quantities from the StateEvent
    const needSizes = sEvent.getNeededSizes();
       // hide if empty
-   if (needSizes.total === 0) div.classList.add('hidden');
+   if (needSizes.total === 0) div.classList.add('displayNone');
 
    cntnr.appendChild(div);
 }
@@ -127,6 +127,8 @@ function attachOrders(cntnr, sEvent) {
 		}
 	});
 
+	const includeActivity = !(sEvent.isOneActivity());
+
       // for each EventSite
    sEvent.eventSites.forEach(es => {
          // a site header
@@ -140,11 +142,12 @@ function attachOrders(cntnr, sEvent) {
             classes: [ "topLevelButton", "clickable" ],
             dataset: { action: "printSoSPDF", eshdid: esd.id },
             children: [ buildIcon("print"), " SoS" ]
-          });
+         });
 
             // a division header
          const divisionH3 = buildElement("h3", { 
-            text: (esd.division.name + " " + es.getGenderName()), 
+            // text: (esd.division.name + " " + es.getGenderName()), 
+            text: (esd.getESDName(includeActivity)), 
             children: sosBtn, 
             dataset: { eventSiteDivisionId: esd.id } 
          });
@@ -571,7 +574,7 @@ function makeBlankOrderWrapper() {
 		<datalist id="schoolList"></datalist>
 		<p id="schoolIDDisplay">Selected School ID: <span id="schoolID"></span></p>`;
 
-	if (runtime.stateEvent.sport.name.toLowerCase() === "soccer") {
+	if (runtime.stateEvent.series.name.toLowerCase() === "soccer") {
 		w.innerHTML += 
 			`<form class="genderRadio"d>
 				<p>Gender:</p>

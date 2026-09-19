@@ -6,7 +6,7 @@ class Event extends BasicTableModel {
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
 		return ['id' => 'eventID',
-					'sportID' => 'sportID',
+					'seriesID' => 'seriesID',
 					'startDate' => 'startDate',
 					'endDate' => 'endDate',
 					'year' => 'eventYear'];
@@ -15,32 +15,33 @@ class Event extends BasicTableModel {
 			// $interTable = null, $stopContexts = [])
 	protected static function getRelations(): array {
       return [new Relation('eventSites', 'EventSite', 'eventID', 'eventID', true), 
-					new Relation('sport', 'Sport', 'sportID', 'sportID', false)];
+					new Relation('series', 'EventSeries', 'seriesID', 'seriesID', false)];
    }
 	
 	public readonly DateTime $startDate;
 	public readonly DateTime $endDate;
-	public readonly array $eventSites;
+	// public readonly array $eventSites;
 	
 	public function __construct(
 		public readonly ?int $id,
-		public readonly int $sportID,
-		public readonly ?Sport $sport,
+		public readonly int $seriesID,
+		public readonly ?EventSeries $series,
 		string|DateTime $startDate, 
 		string|DateTime $endDate, 
 		public readonly int $year,
-		array $eventSites = []
+		// array $eventSites = []
+		public readonly array $eventSites
    ) {
 		$this->startDate = is_string($startDate) ? new DateTime($startDate) : $startDate;
 		$this->endDate = is_string($endDate) ? new DateTime($endDate) : $endDate;
-		$this->eventSites = self::organizeEventSites($eventSites);
+		// $this->eventSites = self::organizeEventSites($eventSites);
 	}
 	
 	public function jsonSerialize(): mixed {
 		return [
 			'id' => $this->id,
-			'sportID' => $this->sportID,
-			'sport' => $this->sport,
+			'seriesID' => $this->seriesID,
+			'series' => $this->series,
 			'startDate' => $this->startDate,
 			'endDate' => $this->endDate,
 			'year' => $this->year,
@@ -49,25 +50,25 @@ class Event extends BasicTableModel {
 	}
 	
 		// returns the sent array keyed and sorted
-	private static function organizeEventSites($eventSites) {
-			// First, build an array with max division IDs as sort keys
-		$organized = [];
-		foreach ($eventSites as $eSite) {
-			$maxDivisionId = 0;
-			foreach ($eSite->esDivisions as $esd) {
-				if ($esd->division->id > $maxDivisionId) {
-					$maxDivisionId = $esd->division->id;
-				}
-			}
-			$organized[$eSite->site->name] = ['eSite' => $eSite, 'maxId' => $maxDivisionId];
-		}
-			// Sort by max division ID descending
-		uasort($organized, function ($a, $b) {
-			return $b['maxId'] <=> $a['maxId'];
-		});
-			// Strip back down to just the eventSites
-		return array_map(fn($entry) => $entry['eSite'], $organized);
-	}
+	// private static function organizeEventSites($eventSites) {
+	// 		// First, build an array with max division IDs as sort keys
+	// 	$organized = [];
+	// 	foreach ($eventSites as $eSite) {
+	// 		$maxDivisionId = 0;
+	// 		foreach ($eSite->esDivisions as $esd) {
+	// 			if ($esd->division->id > $maxDivisionId) {
+	// 				$maxDivisionId = $esd->division->id;
+	// 			}
+	// 		}
+	// 		$organized[$eSite->site->name] = ['eSite' => $eSite, 'maxId' => $maxDivisionId];
+	// 	}
+	// 		// Sort by max division ID descending
+	// 	uasort($organized, function ($a, $b) {
+	// 		return $b['maxId'] <=> $a['maxId'];
+	// 	});
+	// 		// Strip back down to just the eventSites
+	// 	return array_map(fn($entry) => $entry['eSite'], $organized);
+	// }
 	
 	
 	
@@ -82,7 +83,7 @@ class Event extends BasicTableModel {
 				$year = Year::convertDateToSchoolYear($startObj);
 
 				$eventRow = [
-					'sportID' => $event['sportID'],
+					'seriesID' => $event['seriesID'],
 					'startDate' => $event['start'],
 					'endDate' => $event['end'],
 					'eventYear' => $year
@@ -108,20 +109,20 @@ class Event extends BasicTableModel {
 	}
 
 
-	public static function getPrevNextSportEvent(int $eventID, string $drctn, string $context) {
+	public static function getPrevNextSeriesEvent(int $eventID, string $drctn, string $context) {
 		$db = Database::getDB();
 		
 			// assign query to get the appropriate event
 		if ($drctn === 'next') {
 			$query = "SELECT e2.eventID FROM events e1
-					JOIN events e2 ON e2.sportID = e1.sportID AND e2.startDate > e1.startDate
+					JOIN events e2 ON e2.seriesID = e1.seriesID AND e2.startDate > e1.startDate
 					WHERE e1.eventID = :eventID
 					ORDER BY e2.startDate ASC
 					LIMIT 1
 			";
 		} elseif ($drctn === 'prev') { 
 			$query = "SELECT e2.eventID FROM events e1
-					JOIN events e2 ON e2.sportID = e1.sportID AND e2.startDate < e1.startDate
+					JOIN events e2 ON e2.seriesID = e1.seriesID AND e2.startDate < e1.startDate
 					WHERE e1.eventID = :eventID
 					ORDER BY e2.startDate DESC
 					LIMIT 1
@@ -138,8 +139,8 @@ class Event extends BasicTableModel {
 	}
 
 	
-	static function getEventBySportAndYear(int $year, int $sportID, string $context = 'orders') {
-		return [ 'data' => self::getBySportAndYear($sportID, $year, $context) ];
+	static function getEventBySeriesAndYear(int $year, int $seriesID, string $context = 'orders') {
+		return [ 'data' => self::getBySeriesAndYear($seriesID, $year, $context) ];
 	}
 
 
@@ -153,8 +154,8 @@ class Event extends BasicTableModel {
 
 		//////////////////////////////////////////////////
 		// Database functions	
-	public static function getBySportAndYear(int $sportID, int $year, string $context = 'orders'): ?static {
-		$eventID = static::getIDBySportIDAndYear($sportID, $year);
+	public static function getBySeriesAndYear(int $seriesID, int $year, string $context = 'orders'): ?static {
+		$eventID = static::getIDBySeriesIDAndYear($seriesID, $year);
 		if (!$eventID) return null;
 
 			// ($id, $context)
@@ -163,12 +164,12 @@ class Event extends BasicTableModel {
 	}
 	
 
-	public static function getIDBySportIDAndYear(int $sportID, int $year) {
+	public static function getIDBySeriesIDAndYear(int $seriesID, int $year) {
 		$db = Database::getDB();
 		$query = 'SELECT eventID, startDate FROM events 
-					WHERE sportID = :sportID AND eventYear = :year';
+					WHERE seriesID = :seriesID AND eventYear = :year';
 		$statement = $db->prepare($query);
-		$statement->execute([':sportID' => $sportID, ':year' => $year]);
+		$statement->execute([':seriesID' => $seriesID, ':year' => $year]);
 		$events = $statement->fetchAll();
 		
 		if (empty($events)) {

@@ -55,33 +55,19 @@ a:link {
 
 
 
-.nowrap {
-	white-space: nowrap;
-}
+.nowrap { white-space: nowrap; }
+.clear { clear: both; }
+.overflowAuto { overflow: auto; }
 
-.bold {
-	font-weight: bold;
-}
 
-.clear {
-	clear: both;
-}
 
-.inline {
-	display: inline;
-}
 
-.overflowAuto {
-	overflow: auto;
-}
 
-.block {
-	display: block;
-}
-
-.hidden {
-	display: hidden;
-}
+.block { display: block; }
+.inline { display: inline; }
+.hidden { visibility: hidden; }
+.displayNone { display: none; }
+.contents { display: contents; }
 
 .left { text-align: left; }
 .right {	text-align: right; }
@@ -89,11 +75,9 @@ a:link {
 
 .bold { font-weight: bold; }
 
-.contents { 
-	display: contents;
- }
 
- .grid {
+
+.grid {
    display: grid;
    gap: 1rem;
 }

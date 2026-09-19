@@ -14,11 +14,11 @@ import { parseEventRoute, isEventTab, isEventYear } from "./pages/event/routeHel
 
 
    // define valid routes
-      // home, sports, items, schools, year
+      // home, series, items, schools, year
 const routes = [
       // handler in this first one creates an anonymous function to avoid passing (parts, match) as arguments
    { match: parts => (parts.length === 0), handler: () => goToEventPage(), isEvent: true },
-   { match: parts => (runtime.allSports.getBySlug(parts[0])), handler: handleSport, isEvent: true }, 
+   { match: parts => (runtime.allEventSeries.getBySlug(parts[0])), handler: handleSeries, isEvent: true }, 
    { match: parts => (parts[0] === 'items' && parts.length === 1), handler: goToItemsPage },
    { match: parts => (parts[0] === 'transfers' && parts.length === 1), handler: goToTransfersPage },
    { match: parts => (parts[0] === 'costs' && parts.length === 1), handler: goToCostsPage },
@@ -31,8 +31,8 @@ export async function router(from) {
    const path = location.pathname.replace('/state', '')
       // make an array, splitting the url at '/'s. // remove falsy parts. // trim()
    const parts = splitPath(path);
-      // we need this to route sports
-   await runtime.allSports.load();
+      // we need this to route series
+   await runtime.allEventSeries.load();
 
    for (const route of routes) {
       const match = route.match(parts);
@@ -85,8 +85,8 @@ function parseYearParts(parts) {
 
 
    ////////////////////////////////////////////////////////////////////////////////////
-   // state/sport/ handling
-function handleSport({ parts, match: sport, path, from }) {
+   // state/series/ handling
+function handleSeries({ parts, match: series, path, from }) {
       // lower case to normalize tabs. 'ORDERS' would become 'orders', etc
    parts = parts.map(p => p.toLowerCase());
    const parsed = parseEventRoute(parts);
@@ -105,7 +105,7 @@ function handleSport({ parts, match: sport, path, from }) {
 
       setYearSelect(parsed.year);
 
-      goToEventPage(sport.id, parsed.year, parsed.tab);
+      goToEventPage(series.id, parsed.year, parsed.tab);
    } else {
       showNotFound(path);
    }

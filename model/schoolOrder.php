@@ -178,18 +178,18 @@ class SchoolOrder extends BasicTableModel {
 					$order['genderName'] = 'Girls ';
 				}
 				
-					// get the whole sport, we need sport->minDiv later
-				$sport = Sport::getByName($order['sport']);
-					// get the school year. an event in january - may of the 24-25 school year will be represented by 24
+					// get the whole series, we need series->minDiv later
+				$series = EventSeries::getByName($order['sport']);
+					// get the school year. an eventinstance in january - may of the 24-25 school year will be represented by 24
 				$year = Year::convertDateToSchoolYear(new DateTime());
-				$eventID = Event::getIDBySportIDAndYear($sport->id, $year);
+				$eventID = Event::getIDBySeriesIDAndYear($series->id, $year);
 				$divisionID = Division::getIDByName($order['division']);	
 
-					// some sports only have competitions for a couple divisions. 
+					// some series only have competitions for a couple divisions. 
 						// schools in lower divisions play in the lowest division that has a competition
-				if ($divisionID < $sport->minDiv) $divisionID = $sport->minDiv;
+				if ($divisionID < $series->minDiv) $divisionID = $series->minDiv;
 
-				$eshdID = EventSiteDivision::getIDByEventAndDivisionAndGender($eventID, $divisionID, $sport->id, $genderID);
+				$eshdID = EventSiteDivision::getIDByEventAndDivisionAndGender($eventID, $divisionID, $series->id, $genderID);
 			// Test::logX('eshdID is ' . $eshdID, 'eventID is ' . $eventID, 'divisionID is ' . $divisionID, 'genderID is ' . $genderID);
 				
 					// need to add logic for if $school is not in the db
@@ -218,11 +218,11 @@ class SchoolOrder extends BasicTableModel {
 				
 				
 					// we need to do things uniquely for soccer. each MessageOrder should have it's own SchoolOrder
-				if ($sport == 'Soccer') {
+				if ($series == 'Soccer') {
 						// check if a MessageOrder already exists
 						// don't check for a SchoolOrder, because we will add one as long as there is no messageOrder
 							// this is soccer, each gender gets a SchoolOrder
-					$messageOrderID = MessageOrder::getIDByEventIDAndSchoolIDAndGenderID($eventID, $schoolID, $genderID);
+					// $messageOrderID = MessageOrder::getIDByEventIDAndSchoolIDAndGenderID($eventID, $schoolID, $genderID);
 					if (!$messageOrderID) {
 							// SchoolOrder::addNewOrder inserts a row in the schoolOrders table
 								// and returns the id for that inserted row

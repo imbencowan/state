@@ -66,23 +66,39 @@ abstract class BasicTableModel implements JsonSerializable {
 		////////////////////////////////////////// MAKING NESTED OBJECTS FROM DB SELECTS //////////////////
 		// builds a new object from $rows returned from a db call
 			// we have to screw with prefixes to deconstruct unique column aliases in $row['keys']
-	public static function buildFromRow(array $rows, string $colPrefix = '', ?string $context = null): mixed { // ?static {
+			// static refers to the current Class for the current table
+				/////////////////////////////////////////////////////////////////////////////////////////////
+				// i should put in a more detailed desctiption, because every time i look at this function it feels alien,
+				// borderline magic. // so first we get a map for column names/class properties. then we reconstruct the
+				// column aliases that were used in the actual sql rows returned, so we can turn the row data in to an 
+				// object. then we follow Relations for properties that hold objects of their own, and recurse.
+					// i guess that's not as bad as it always looks
+	public static function buildFromRow(array $rows, string $colPrefix = '', ?string $context = null): mixed {
 		if (empty($rows)) return null;
 	
-		$firstRow = $rows[0]; // Use first row for parent data
-		$columns = static::getColumns(); // an array [propertyName => columnName]
+		////////////////////////////////////////////////////////////////
+		// this is where some initial stuff is set up
+			// Use first row for parent data
+		$firstRow = $rows[0]; 
+			// get a map for the columns [propertyName => columnName]
+		$columns = static::getColumns(); 
 		$relations = static::getJoinRelations($context);
 			// we have to screw with prefixes to deconstruct unique column aliases in $row['keys']
 		$colPrefix .= static::getTableName() . '_';
 		
+
+		///////////////////////////////////////////////////////////////////
+		// here we map properties to the actual column aliases returned from the sql
+			// map parent properties
 		$mappedRow = [];
-			// Map parent properties
 		foreach ($columns as $propName => $colName) {
 			$colAlias = $colPrefix . $colName;
 			if (!array_key_exists($colAlias, $firstRow)) return null;
 			$mappedRow[$propName] = $firstRow[$colAlias];
 		}
 	
+
+		///////////////////////////////////////////////////////////////////////////
 			// Handle relations (both one-to-one and one-to-many)
 		foreach ($relations as $relation) {
 			if (class_exists($relation->rClass)) {
@@ -90,16 +106,17 @@ abstract class BasicTableModel implements JsonSerializable {
 				$relationPK = $relation->rClass::getPrimaryKey();
 				
 				$relColPrefix = $colPrefix . $relation->rClass::getTableName() . '_';
-	
+
 					// Group related objects by their primary key ($rows, $rowKey)
 				$relatedGrouped = self::groupRowsByKey($rows, $relColPrefix . $relationPK);
 				
 					// Recursively process related entities
 				foreach ($relatedGrouped as $relatedRows) {
 						// if the id for the foreign key is null, don't try to instantiate an object
-					if ($firstRow[$relColPrefix . $relationPK] == null) continue;
+					if ($relatedRows[0][$relColPrefix . $relationPK] == null) continue;
 					$relatedObjects[] = $relation->rClass::buildFromRow($relatedRows, $colPrefix, $context);
 				}
+
 					// Store as an array if it's a one-to-many relation, otherwise store a single object
 				$mappedRow[$relation->property] = $relation->isMany ? $relatedObjects : ($relatedObjects[0] ?? null);
 			}
@@ -122,11 +139,10 @@ abstract class BasicTableModel implements JsonSerializable {
 
 		// Test::logX('After hydrate: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB");
 
-
 		return $data;
 	}
 	
-		// helper to group fetched rows by a key. // $keyPrefix is used for aliased column names
+		// helper to group fetched rows by a key
 	protected static function groupRowsByKey(array $rows, string $rowKey): array {
 		$grouped = [];
 
@@ -139,15 +155,17 @@ abstract class BasicTableModel implements JsonSerializable {
 		return $grouped;
 	}
 	
-		// returns the sent array keyed by element's name property and sorted
-	protected static function organizeArray($arr): array {
-		$organized = [];
-		foreach ($arr as $a) {
-			$organized[$a->name] = $a;
-		}
-		ksort($organized);
-		return $organized;
-	}
+
+	// this appears to be unused any where in the project
+	// 	// returns the sent array keyed by element's name property and sorted
+	// protected static function organizeArray($arr): array {
+	// 	$organized = [];
+	// 	foreach ($arr as $a) {
+	// 		$organized[$a->name] = $a;
+	// 	}
+	// 	ksort($organized);
+	// 	return $organized;
+	// }
 
 
 	

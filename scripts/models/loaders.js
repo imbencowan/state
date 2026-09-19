@@ -1,6 +1,6 @@
 import { actionFetch } from "../fetch.js";
 import { mapObjsBy } from "../utilities.js";
-import { Item, Season, Sport } from "../models/db-classes.js";
+import { Item, Season, Series } from "../models/db-classes.js";
 
 
    // a specific loader for Items that gives a getByStyleColorSize() method
@@ -71,18 +71,18 @@ export function makeItemLoader() {
 }
 
 
-export function makeSportLoader() {
+export function makeSeriesLoader() {
       // start with our basic loader. // gives methods for accessing all Items from the db
-   const loader = makeDataLoader('Sport', Sport);
+   const loader = makeDataLoader('EventSeries', Series);
 
       // a cache for a lookup
    let slugLookup = null;
 
       // build the lookup
-   function buildSlugLookup(sports) {
+   function buildSlugLookup(series) {
       const lookup = {}
 
-      for (const s of Object.values(sports)) { lookup[s.slug] = s; }
+      for (const s of Object.values(series)) { lookup[s.slug] = s; }
 
       return lookup;
    }
@@ -95,9 +95,9 @@ export function makeSportLoader() {
 
          // over ride to load the lookup on initialization
       async load() {
-         const sports = await loader.load();
-         slugLookup = buildSlugLookup(sports);
-         return sports;
+         const series = await loader.load();
+         slugLookup = buildSlugLookup(series);
+         return series;
       },
 
       getBySlug(slug) {

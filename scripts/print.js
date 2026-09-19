@@ -26,7 +26,7 @@ export function printBoxLabel({ order }) {
 	// prints labels for all orders not marked complete
 export function printUndoneBoxLabels() {
 		// get all incomplete orders
-	let orders = runtime.stateEvent.getUndoneOrders();
+	const orders = runtime.stateEvent.getUndoneOrders();
         // check if there are any
     if (orders.length > 0) {
             // format is jsPDF(orientation, unit, format); 'p' = portrait
@@ -53,13 +53,17 @@ export function printUndoneBoxLabels() {
 function genBoxLabel(doc, order, originI, lblN = 1) {
 	// drawLabelRects(doc);
 	
-	const lbl = new Label(doc, originI, order.getBoxTotal(), lblN);	
+	const lbl = new Label(doc, originI, order.getBoxTotal(), lblN);
+	const sEvent = runtime.stateEvent;
+	const esd = sEvent.getESDivisionByID(order.eshdID);
+	const es = sEvent.getEventSiteByID(esd.eventSiteID);
 		
 		// this one is rotated to be vertical along the left edge
-	lbl.addSiteDivision(order.site, order.division);
+	lbl.addSiteDivision(es.site.name, esd.division.name);
 	
 		// start the horizontal rows
-	lbl.centerTextInLabel(order.sportStr, order.sportLblClr);
+	// lbl.centerTextInLabel(order.seriesStr, order.seriesLblClr);
+	lbl.centerTextInLabel(es.getSeriesStrGendered(sEvent), sEvent.series.labelColor);
 	
 	lbl.lineY += 9;
 	doc.setFontSize(18);
@@ -268,6 +272,7 @@ export function printSoSPDF(div) {
 
 	// actually generate each sign off sheet
 function genSoS(doc, div) {
+	console.log(div);
 	const sos = new SoSPage(doc);
 	const cursor = sos.cursor;
 	
@@ -286,11 +291,12 @@ function genSoS(doc, div) {
 	
 	doc.setTextColor(red);
 	doc.setFontSize(14);
-	let sportTxt = runtime.stateEvent.sport.name.toUpperCase()
-	doc.text(runtime.stateEvent.sport.name.toUpperCase(), cursor.x, cursor.y);
+	const activityName = (runtime.stateEvent.isOneActivity()) ? runtime.stateEvent.series.name : div.activity.name;
+	const actTxt = activityName.toUpperCase();
+	doc.text(actTxt, cursor.x, cursor.y);
 	
 	doc.setTextColor(blue);
-	let x = cursor.x + doc.getTextWidth(sportTxt) + 10;
+	let x = cursor.x + doc.getTextWidth(actTxt) + 10;
 	doc.text(div.division.name, x, cursor.y);
 	
 	
@@ -335,19 +341,21 @@ function genSoS(doc, div) {
 			doc.text(redText, (sos.colsX[2] + nameWidth + 4), cursor.y);
 			doc.setTextColor(black);
 		}
-		let total = (order.getTeamStyle()) ? order.getTeamStyle().getTotalQuantity() : order.qualifiers;
+		const total = (order.getTeamStyle()) ? order.getDairyTotal() : order.qualifiers;
 		sos.textToCell({ text: total });
-		let teamStyle = order.getTeamStyle();
+		const teamStyle = order.getTeamStyle();
 		if (teamStyle) {
-			let shirts = teamStyle.sizeMap;
-			sos.sizeList.forEach(size => {
-				let q = '-';
-				if (shirts[size]) {
-					q = shirts[size].quantity;
-					sizeTotals[size] += shirts[size].quantity;
-				}
-				sos.textToCell({ text: q });
-			});
+			for (const color of Object.values(teamStyle.colors)) { 
+				const shirts = color.sizeMap;
+				sos.sizeList.forEach(size => {
+					let q = '-';
+					if (shirts[size]) {
+						q = shirts[size].quantity;
+						sizeTotals[size] += shirts[size].quantity;
+					}
+					sos.textToCell({ text: q });
+				});
+			}
 		}
 			// draw a grid line
 		doc.line(sos.alignX, (sos.cursor.y + 1), sos.colsX[sos.colsX.length - 2], (sos.cursor.y + 1));
@@ -413,21 +421,23 @@ function genSoS(doc, div) {
 		
 		const addedStyles = order.getAddedStyles();
 		addedStyles.forEach(style => {
-			if ((style.id != ADULT_HOOD_STYLE_ID) || (addedStyles.length > 1)) {
-				sos.col = 3;
-				sos.textToCell({ text: style.shortName, align: 'right' });
-			}
-			sos.col = 4;
-			let shirts = style.sizeMap;
-			sos.sizeList.forEach(size => {
-				let q = '';
-				if (shirts[size]) {
-					q = shirts[size].quantity;
-					sizeTotals[size] += shirts[size].quantity;
+			for (const color of Object.values(style.colors)) {
+				if ((style.id != ADULT_HOOD_STYLE_ID) || (addedStyles.length > 1)) {
+					sos.col = 3;
+					sos.textToCell({ text: style.shortName, align: 'right' });
 				}
-				sos.textToCell({ text: q });
-			});
-			sos.newLine();
+				sos.col = 4;
+				let shirts = color.sizeMap;
+				sos.sizeList.forEach(size => {
+					let q = '';
+					if (shirts[size]) {
+						q = shirts[size].quantity;
+						sizeTotals[size] += shirts[size].quantity;
+					}
+					sos.textToCell({ text: q });
+				});
+				sos.newLine();
+			}
 		});
 
 		if (order.oTransfers.length) {
@@ -478,12 +488,12 @@ export async function downloadInvoicePDF({ order, type = "Invoice" }) {
 	genInvoicePDF(doc, order, type);
 
 	// let genderName = '';
-	// if (runtime.stateEvent.sport.name.toLowerCase() === "soccer") genderName
+	// if (runtime.stateEvent.series.name.toLowerCase() === "soccer") genderName
 
 	let suffix = '';
 	if (type !== "Invoice") suffix = ` - ${type}`;
 
-	const fileName = `${order.school.shortName} ${runtime.stateEvent.sport.name} ${runtime.stateEvent.getRealYear()} Add Ons${suffix}`;
+	const fileName = `${order.school.shortName} ${runtime.stateEvent.series.name} ${runtime.stateEvent.getRealYear()} Add Ons${suffix}`;
 
 	Helpers.downloadPDF(doc, fileName);
 }
@@ -642,12 +652,11 @@ async function genInvoicePDF(doc, order, type = "Invoice") {
 	invP.lineDown(2);
 
 	let gndrStr = '';
-		console.log(order);
 	if ((order.genderID !== null) && (Number(order.genderID) < 3)) {
 		if (Number(order.genderID) === 1) gndrStr = "Boys ";
 		if (Number(order.genderID) === 2) gndrStr = "Girls ";
 	}
-	let str = `${gndrStr}${runtime.stateEvent.sport.name} ${runtime.stateEvent.startDate.getFullYear()}`
+	let str = `${gndrStr}${runtime.stateEvent.series.name} ${runtime.stateEvent.startDate.getFullYear()}`
 	invP.centerTextInPage(str);
 }
 
@@ -740,7 +749,7 @@ function writeInventoryHeader(doc, page, cursor, eSite, sheet) {
 	doc.line((cursor.x + 2), (cursor.y + 1), (cursor.x + w + 2), (cursor.y + 1));
 
 		// write sport - divisions / site, top right of the page
-	let siteStr = runtime.stateEvent.sport.name.toUpperCase();
+	let siteStr = runtime.stateEvent.series.name.toUpperCase();
 	siteStr += ' ' + eSite.getDivisionsString();
 	siteStr += ' / ' + eSite.site.name;
 	page.col = 10;
@@ -900,8 +909,8 @@ function inventoryStartAddendum(doc, page, cursor, eSite) {
 	page.newLine(2);
 	eSite.transfers.forEach(t => {
 		let name = t.transfer.inventoryName ?? t.transfer.transferName;
-		if (name === 'sport events') name = name.replace("sport", eSite.sportName);
-		if (name === 'sub events') name = name.replace("sub", runtime.stateEvent.sport.name.toLowerCase());
+		if (name === 'sport events') name = name.replace("sport", eSite.seriesName);
+		if (name === 'sub events') name = name.replace("sub", runtime.stateEvent.series.name.toLowerCase());
 
 		const qtyText = (t.startQ < 10) ? t.startQ + ' SET' : t.startQ;
 
@@ -955,7 +964,7 @@ function inventorySoldAddendum(page, eSite) {
 	}
 	if (trnsfrs.some(t => t.transfer.transferName === "sub events")) {
 		page.newLine(.8);
-		page.textToCell({ text: `${runtime.stateEvent.sport.name.toLowerCase()} events`, align: 'right' });
+		page.textToCell({ text: `${runtime.stateEvent.series.name.toLowerCase()} events`, align: 'right' });
 	}
 
 	page.newLine(1.6);

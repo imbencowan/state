@@ -7,7 +7,7 @@ import { Transfer } from './models/db-classes.js';
 export function getTransferDisplayName(t) {
       // if runtime.stateEvent exists, properly name 'sub events'
    if (t.transferName === 'sub events' && runtime.stateEvent) {
-      return `${runtime.stateEvent.sport.name} events`;
+      return `${runtime.stateEvent.series.name} events`;
    } else {
       return t.transferName
    }

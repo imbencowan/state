@@ -1,7 +1,6 @@
 <?php
-	// i should explain how this is different from the Division class. 
-	// i made this so it could fit in the structure of event->eventSites->eventSiteDivisions->orders
-		// because orders have schools, and schools have divisions, and /those/ divisions should not have arrays of orders
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	// this is a container for groups of orders, defined by division, gender, and sport
 	
 class EventSiteDivision extends BasicTableModel {
 		// these give the table and column names to be used else where in the class
@@ -9,13 +8,19 @@ class EventSiteDivision extends BasicTableModel {
    protected static function getPrimaryKey(): string { return 'eventSiteHasDivisionID'; }
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
-		return ['id' => 'eventSiteHasDivisionID', 'eventSiteID' => 'eventSiteID', 'divisionID' => 'divisionID']; 
+		return ['id' => 'eventSiteHasDivisionID', 
+				'eventSiteID' => 'eventSiteID', 
+				'divisionID' => 'divisionID',
+				'genderID' => 'genderID',
+				'activityID' => 'activityID']; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
 			// $interTable = null, $stopContexts = [], $loadSeparate = false)
 	protected static function getRelations(): array { 
 		return [
 			new Relation('division', 'Division', 'divisionID', 'divisionID'), 
+			new Relation('gender', 'Gender', 'genderID', 'genderID'), 
+			new Relation('activity', 'Activity', 'activityID', 'activityID'), 
 			new Relation('schoolOrders', 'SchoolOrder', 'eventSiteHasDivisionID', 'eventSiteHasDivisionID', 
 						true, null, [ 'year', 'inventory', 'results' ], true)
 		];
@@ -28,7 +33,11 @@ class EventSiteDivision extends BasicTableModel {
 		public readonly ?int $id,
 		public readonly int $eventSiteID,
 		public readonly int $divisionID,
+		public readonly int $genderID,
+		public readonly int $activityID,
 		public readonly ?Division $division,
+		public readonly ?Gender $gender,
+		public readonly ?Activity $activity,
 			// default empty array
 		// array $schoolOrders = []
 		public array $schoolOrders = []
@@ -45,6 +54,10 @@ class EventSiteDivision extends BasicTableModel {
 			'eventSiteID' => $this->eventSiteID,
 			'divisionID' => $this->divisionID,
 			'division' => $this->division,
+			'genderID' => $this->genderID,
+			'gender' => $this->gender,
+			'activityID' => $this->activityID,
+			'activity' => $this->activity,
 			'schoolOrders' => array_values($this->schoolOrders)
 		];
 	}

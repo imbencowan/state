@@ -15,9 +15,12 @@ import { printSeasonStockPDF } from '../print.js';
 
 
 const topButtons = [
-   { action: "getSeasonStock", text: " Get Next Season Stock", handler: showSeasonStock }, 
+   { action: "getSeasonStock", text: "Get Next Season Stock", handler: showSeasonStock }, 
+   { action: "buildInventories", text: "Set Year Inventories", handler: buildInventories },
    { action: "addEvents", icon: "add", text: " Events", handler: showAddEvents }, 
-   { action: "addYear", icon: "add", text: " Year", handler: showAddYear }
+      // i'm commenting this out, the function is a little messy, and currently makes no account for 
+         // if there is already an event for a given year. i think right now it would happily create duplicate events
+   // { action: "addYear", icon: "add", text: " Year", handler: showAddYear }
 ];
 
    // action/handler map for the click event listener
@@ -33,7 +36,7 @@ export async function goToYearPage(year) {
       runtime.allDivisions.load(),
       runtime.allEmployees.load(),
       runtime.allVehicles.load(),
-      runtime.allSports.load(),
+      runtime.allEventSeries.load(),
       runtime.allSeasons.load()
    ]);
 
@@ -57,7 +60,7 @@ function buildYearPage(y) {
    const tblCntnr = buildElement("div", { children: [ tbl ], classes: 'table-container' });
 
    const yearDiv = buildElement("div", { id:'yearContainer', children: [ topDiv, tblCntnr ] });
-   document.getElementById('display').appendChild(yearDiv);
+   document.getElementById('display').replaceChildren(yearDiv);
 }
 
 function buildYearThead() {
@@ -74,6 +77,8 @@ function buildYearThead() {
 function buildYearTbody(events) {
    const rows = [];
 
+   console.log(events);
+
    for (const e of events) {
       const sEvent = StateEvent.fromJSON(e);
       const season = runtime.allSeasons.getByDate(sEvent.startDate);
@@ -87,7 +92,7 @@ function buildYearTbody(events) {
          const tds = [];
 
          if (i === 0) {
-            const h2 = buildElement("h2", { text: sEvent.sport.name });
+            const h2 = buildElement("h2", { text: sEvent.series.name });
             const txt = sEvent.getDateRangeString();
             tds.push(buildElement("td", { children: [ h2, txt ], attrs: { rowspan: sEvent.eventSites.length } }));
          }
@@ -457,31 +462,24 @@ function replaceEditButton(tds) {
 
 function showAddYear() {
       // header
-   const head = buildElement("h2", { text: "Paste a year's schedule here, and we'll try to parse it" });
-
+   const head = buildElement("h2", { text: "Upload a schedule, or paste it's text, and we'll try to parse it" });
+      // upload button
+   const uploadBtn = buildElement('input', { text: 'upload pdf', attrs: { type: 'file', accept: '.pdf' },
+                     styles: { marginBottom: '1em', display: 'block' } });
       // textarea
-   const textarea = document.createElement("textarea");
-   textarea.rows = 10;
-   textarea.cols = 50;
-   textarea.placeholder = "Paste PDF text here...";
-
+   const textarea = buildElement("textarea", { attrs: { rows: 10, cols: 50, placeholder: "Paste text here..." } });
       // submit button
-   const submitBtn = document.createElement("button");
-   submitBtn.textContent = "Parse";
-   submitBtn.style.display = "block";
-   submitBtn.style.marginTop = "0.5em";
+   const submitBtn = buildElement("button", { text: 'Parse', styles: { display: 'block', marginTop: '1em' } });
 
       // make a wrapper so we don’t pollute the page
-   const wrapper = buildElement("div", { children: [ head, textarea, submitBtn ] });
+   const wrapper = buildElement("div", { children: [ head, uploadBtn, textarea, submitBtn ] });
 
       // wire the button
    submitBtn.addEventListener("click", () => {
+      const file = uploadBtn.files[0];
       const txt = textarea.value.trim();
-      if (txt) {
-         parseYear(txt);
-      }
-      // clean up after use
-      // wrapper.remove();
+         // use file first, txt as a back up
+      if (file || txt) parseYear(file ? { file } : { txt });
    });
 
       // add to page
@@ -489,115 +487,316 @@ function showAddYear() {
    textarea.focus();
 }
 
-   // scan txt until you find a sport
-async function parseYear(txt) {
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////
+   // this function needs some work
+      // where to start? it currently only interprets a single multi year pdf format.
+      // it's a little hacky to the specifics of that particular pdf.
+      // but we probably won't need it for an other 4 years, so may be never again
+async function parseYear({ file, txt }) {
       // define existing values
-   const allSports = Object.values(await runtime.allSports.load());
+   const allEventSeries = Object.values(await runtime.allEventSeries.load());
+   const allActivities = Object.values(await runtime.allActivities.load());
    const allSites = Object.values(await runtime.allSites.load());
+   const allSiteAliases = Object.values(await runtime.allSiteAliases.load());
    const allSchools = Object.values(await runtime.allSchools.load());
    const allDivs = Object.values(await runtime.allDivisions.load());
    const allADs = Object.values(await runtime.allADs.load());
 
+      // removes a blank div place holder. id 99 has '' for it's name.
    const lastDiv = allDivs[allDivs.length - 1];
    if (lastDiv.id === 99) allDivs.pop();
 
-      // split txt into lines // Remove extra white space // remove any empty lines
-   let lines = txt.split('\n');
-   lines = lines.map(function(line) { return line.trim(); });
-   lines = lines.filter(function(line) { return line.length > 0; });
 
-   let newEvents = [];
-   let currentEvent = null;
-   let secondEvent = null;
+   const events = await (file ? parseFile(file) : parseText(txt));
 
-   lines.forEach(line => {
-         // check if the line starts with a known sport name
-      const sport = allSports.find(s => line.toLowerCase().startsWith(s.name.toLowerCase()));
-      if (sport) {
-            // get the dates
-         let remaining = line.slice(sport.name.length).trim();
-         let dates = parseDateRangeStr(remaining);
+   const table = buildNewYearTable(events);
+   const head = buildElement('p', { text: 'Does this look right?' });
+   const submitBtn = buildElement('button', { text: 'Yes, submit' });
+   submitBtn.addEventListener('click', async () => {
+      const response = await actionFetch('submitYear', 'Year', { events: events });
+      if (response.success) modal.open('Success');
+   });
 
-            // check if dance and cheer are in the same line
-         if (sport.name.toLowerCase() === 'dance' || sport.name.toLowerCase() === 'cheer') { 
-            // look for other sports in the line 
-            const otherSport = allSports.find(s => 
-                  (s.name.toLowerCase() !== sport.name.toLowerCase() 
-                     && remaining.toLowerCase().includes(s.name.toLowerCase()))
-            ); 
-            if (otherSport) { 
-                  // over write date stuff
-               const nameIdx = remaining.toLowerCase().indexOf(otherSport.name.toLowerCase());
-               if (nameIdx !== -1) remaining = remaining.slice(nameIdx + otherSport.name.length).trim();
-            
-               dates = parseDateRangeStr(remaining);
-                  // add the second event
-               secondEvent = {
-                  sport: sport,
-                  startDate: dates[0],
-                  endDate: dates[1] || dates[0],
-                  eventSites: []
-               };
-               newEvents.push(secondEvent);
-            } 
+   const wrapper = buildElement('div', { children: [ head, table, submitBtn ] });
+
+   modal.open(wrapper);
+
+
+   function buildNewYearTable(events) {
+      // const years = new Set(events.map(e => e.year));
+      
+      const thTexts = [ 'Series', 'Dates', 'Sites/Divs' ];
+      const ths = thTexts.map(tht => buildElement('th', { text: tht }));
+      // for (const y of years) {
+      //    ths.push(buildElement('th', { text: (y + '-' + (y + 1)) }));
+      // }
+
+
+      const trs = [];
+
+      for (const e of events) {
+         const tds = [];
+         tds.push(buildElement('td', { text: `${e.series.name} ${e.year}` }));
+         tds.push(buildElement('td', { text: getDateRangeString(e.startDate, e.endDate) }));
+
+         const bigKids = [];
+         for (const es of e.eSites) {
+            bigKids.push(`${getDivisionsString(es.divs)} / ${es.site.name}`);
+            bigKids.push(buildElement('br'));
          }
+         tds.push(buildElement('td', { children: bigKids }));
 
-            // add the event
-         currentEvent = {
-               sport: sport,
-               startDate: dates[0],
-               endDate: dates[1] || dates[0],
-               eventSites: []
-         };
-         newEvents.push(currentEvent);
-      } else if (currentEvent) {    
-            // treat as a site line
-            // expected line format: "6A RedHawk GC (Mtn View host) Dane Pence"
-            
-            // if a site is just TBD, leave sites empty. 
-         if ((line.length < 7) && (line.endsWith("A TBD"))) return;
-        
-            // delete host data
-         line = line.replace(/\([^)]*\)/g, '').trim();
-         let lineParts = parseSiteLineParts(line);
-
-            // parse. // site first, so we know definitively how many there are
-         let eSites = parseSite(lineParts.siteStr, allSites);
-         parseManager(lineParts, eSites, allADs);
-         parseDivs(lineParts.divStr, eSites, currentEvent.sport);
-
-         eSites.forEach(es => {
-            currentEvent.eventSites.push(es);
-         })
+         trs.push(buildElement('tr', { children: tds, styles: { verticalAlign: 'top', borderTop: '1px solid black' } }));
       }
-   });
 
-   let seenSites = [];
-   let newDuplicates = [];
-   newEvents.forEach(e => {
-      e.eventSites.forEach(es => {
-         if (!es.site.id) console.log(es.site);
-         if (!es.site.id && seenSites.includes(es.site.name)) {
-            es.duplicate = true;
-            newDuplicates.push(es.site.name);
-         } else {
-            seenSites.push(es.site.name);
-            es.duplicate = false;
-         }
-      });
-   });
+      const thead = buildElement('thead', { children: ths });
+      const tbody = buildElement('tbody', { children: trs });
+      const table = buildElement('table', { children: [ thead, tbody ] });
 
-   
-   console.log(newEvents);
-   
-   const response = await actionFetch('submitYear', 'Year', { events: newEvents });
-
-   if (response.success) {
-      // some thing should happen here
+      return table
    }
+
+   async function parseFile(file) {
+         // import PDF.js, the pdf reader library
+      const pdfjsLib = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.min.mjs');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.worker.min.mjs';
+
+      const data = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data }).promise;
+      const page = await pdf.getPage(1);
+      const textContent = await page.getTextContent();
+
+         // filter out empty items
+         // filter out strs that start with '('
+         // keep just the str, and the coords
+      const items = textContent.items
+         .filter(item => item.str.trim() !== '' && !item.str.startsWith('('))
+         .map(item => ({
+            str: item.str,
+            x: item.transform[4],
+            y: item.transform[5]
+         }));
+
+      const yTolerance = 3;
+
+      const rows = [];
+
+      for (const item of items) {
+         let row = rows.find(row => Math.abs(item.y - row.y) < yTolerance);
+
+         if (row) {
+            row.items.push(item);
+         } else {
+            row = { y: item.y, items: [item] };
+            rows.push(row);
+         }
+      }
+
+      // console.log(rows);
+
+      const currentYear = new Date().getFullYear() % 100;
+
+      const yearRow = rows.find(row => row.items.some(item => isYearRangeString(item.str)));
+
+      const years = [];
+      for (const item of yearRow.items) {
+         const year = Number(item.str.slice(2, 4));
+         years.push({ str: item.str, x: item.x, year: year });
+      }
+
+      const eventRows = {};
+      let currentEventKey;
+
+      for (const row of rows) {
+         const firstColStr = row.items[0].str.toLowerCase();
+         const eventMatch = allEventSeries.find(series => series.name.toLowerCase() === firstColStr);
+
+         if (eventMatch) {
+            const activityMatch = allActivities.find(act => firstColStr.endsWith(act.name.toLowerCase()));
+               // add the row.y to the key to differentiate fall/spring golf
+            currentEventKey = (firstColStr + row.y)
+            eventRows[currentEventKey] = { series: eventMatch, activity: activityMatch, eSiteRows: [], dateRow: row };
+               // special case to combine dance/cheer
+         } else if (firstColStr === 'dance' || firstColStr === 'cheer') {
+            if (currentEventKey !== 'dance&cheer') {
+               currentEventKey = 'dance&cheer';
+               const dcSeries = allEventSeries.find(s => s.name.toLowerCase() === 'dance & cheer');
+               const activity = allActivities.find(a => a.name.toLowerCase() === 'dance');
+               eventRows[currentEventKey] = { series: dcSeries, activity: activity, eSiteRows: [], dateRow: row };
+            }
+                  // special case to ignore solo & ensemble rows
+         } else if (firstColStr == 'solo & ensemble') {
+            currentEventKey = 'SKIP';
+               // attach site rows to an event row
+         } else if (currentEventKey && (currentEventKey !== 'SKIP') && row.items.length !== 1) {
+            eventRows[currentEventKey].eSiteRows.push(row);
+         }
+      }
+
+      console.log(eventRows);
+
+      const events = [];
+      const unknownSites = [];
+
+      for (const eRow of Object.values(eventRows)) {
+         for (let i = 1; i < eRow.dateRow.items.length; ++i) {
+            const yearCol = matchColumn(eRow.dateRow.items[i].x, years);
+            const year = yearCol.year;
+            
+            if (year >= currentYear) {
+
+               const dates = parseDateRangeStr(eRow.dateRow.items[i].str);
+               const startDate = dates[0];
+               const endDate = dates[1] || dates[0];
+
+               const eSites = [];
+               
+               for (const eSiteRow of eRow.eSiteRows) {
+                  const esds = parseDivs(eSiteRow.items[0].str, eRow.series);
+                  for (const esd of esds) {
+                     if (!eRow.activity) console.log(eRow);
+                     esd.activityID = eRow.activity.id;
+                  }
+
+                  const diff = eRow.dateRow.items.length - eSiteRow.items.length;
+
+                  const currentESites = parseSite(eSiteRow.items[i - diff].str);
+                  currentESites.forEach(es => {
+                     es.divs = esds;
+
+                     if (!es.site.id) unknownSites.push(es.site);
+                  });
+
+                  eSites.push(...currentESites);
+               }
+               events.push({series: eRow.series, year, startDate, endDate, eSites});
+            }
+         }
+      }
+
+      console.log(events);
+
+      return events;
+
+      function matchColumn(posX, colArr) {
+         let closest = null;
+         let closestDist = Infinity;
+
+         for (const col of colArr) {
+            const dist = Math.abs(posX - col.x);
+
+            if (dist < closestDist) {
+               closest = col;
+               closestDist = dist;
+            }
+         }
+
+         return closest;
+      }
+   }
+
+
+
+   
+
+   //    // split txt into lines // Remove extra white space // remove any empty lines
+   // let lines = txt.split('\n');
+   // lines = lines.map(function(line) { return line.trim(); });
+   // lines = lines.filter(function(line) { return line.length > 0; });
+
+   // let newEvents = [];
+   // let currentEvent = null;
+   // let secondEvent = null;
+
+   // lines.forEach(line => {
+   //       // check if the line starts with a known series name
+   //    const series = allEventSeries.find(s => line.toLowerCase().startsWith(s.name.toLowerCase()));
+   //    if (series) {
+   //          // get the dates
+   //       let remaining = line.slice(series.name.length).trim();
+   //       let dates = parseDateRangeStr(remaining);
+
+   //          // check if dance and cheer are in the same line
+   //       if (series.name.toLowerCase() === 'dance' || series.name.toLowerCase() === 'cheer') { 
+   //          // look for other series in the line 
+   //          const otherSeries = allEventSeries.find(s => 
+   //                (s.name.toLowerCase() !== series.name.toLowerCase() 
+   //                   && remaining.toLowerCase().includes(s.name.toLowerCase()))
+   //          ); 
+   //          if (otherSeries) { 
+   //                // over write date stuff
+   //             const nameIdx = remaining.toLowerCase().indexOf(otherSeries.name.toLowerCase());
+   //             if (nameIdx !== -1) remaining = remaining.slice(nameIdx + otherSeries.name.length).trim();
+            
+   //             dates = parseDateRangeStr(remaining);
+   //                // add the second event
+   //             secondEvent = {
+   //                series: series,
+   //                startDate: dates[0],
+   //                endDate: dates[1] || dates[0],
+   //                eventSites: []
+   //             };
+   //             newEvents.push(secondEvent);
+   //          } 
+   //       }
+
+   //          // add the event
+   //       currentEvent = {
+   //             series: series,
+   //             startDate: dates[0],
+   //             endDate: dates[1] || dates[0],
+   //             eventSites: []
+   //       };
+   //       newEvents.push(currentEvent);
+   //    } else if (currentEvent) {    
+   //          // treat as a site line
+   //          // expected line format: "6A RedHawk GC (Mtn View host) Dane Pence"
+            
+   //          // if a site is just TBD, leave sites empty. 
+   //       if ((line.length < 7) && (line.endsWith("A TBD"))) return;
+        
+   //          // delete host data
+   //       line = line.replace(/\([^)]*\)/g, '').trim();
+   //       let lineParts = parseSiteLineParts(line);
+
+   //          // parse. // site first, so we know definitively how many there are
+   //       let eSites = parseSite(lineParts.siteStr, allSites);
+   //       parseManager(lineParts, eSites, allADs);
+   //       parseDivs(lineParts.divStr, eSites, currentEvent.series);
+
+   //       eSites.forEach(es => {
+   //          currentEvent.eventSites.push(es);
+   //       })
+   //    }
+   // });
+
+   // let seenSites = [];
+   // let newDuplicates = [];
+   // newEvents.forEach(e => {
+   //    e.eventSites.forEach(es => {
+   //       if (!es.site.id) console.log(es.site);
+   //       if (!es.site.id && seenSites.includes(es.site.name)) {
+   //          es.duplicate = true;
+   //          newDuplicates.push(es.site.name);
+   //       } else {
+   //          seenSites.push(es.site.name);
+   //          es.duplicate = false;
+   //       }
+   //    });
+   // });
+
+   
+   // console.log(newEvents);
+   
+   // const response = await actionFetch('submitYear', 'Year', { events: newEvents });
+
+   // if (response.success) {
+   //    // some thing should happen here
+   // }
    
 
             // helpers // parsers
+   
    function parseSiteLineParts(str) {
       let parts = { divStr: null, siteStr: null, mgrStr: null };
          // get the div part
@@ -645,12 +844,13 @@ async function parseYear(txt) {
       return parts;
    }
 
-   function parseDateRangeStr(str) {
+   function parseDateRangeStr(str, year = null) {
+      if (year === null) year = new Date().getFullYear();
+
       let dateParts = str.split('-');
       let dates = dateParts.map(d => d.trim());
       dates.forEach(d => { d.replace('.', '')});
 
-      let year = new Date().getFullYear();
       dates[0] = new Date(`${dates[0]} ${year}`);
 
       let month = dates[0].getMonth()
@@ -676,28 +876,32 @@ async function parseYear(txt) {
       return dates;
    }
 
-   function parseSite(str, allSites) {
+   // function parseSite(str, allSites) {
+   function parseSite(str) {
       let sites = [];
       let eSites = [];
          // check if there is a slash indicating multiple sites
       if (str.includes("/")) {
             // check if Boys / Girls is indicated
-         if (/\bB\b.*?\/.*?\bG\b/.test(str)) {
-               // split at the slash
+         if (/\bB\b/.test(str) && /\bG\b/.test(str)) {
             let parts = str.split('/');
+
             parts.forEach(part => {
-                  // get gender. B(oys) = 1, G(irls) = 2, neither = 3, but that shouldn't happen here
                let gender = 3;
+
                if (/\bB\b/.test(part)) {
                   gender = 1;
                } else if (/\bG\b/.test(part)) {
                   gender = 2;
                }
-                  // clean the string. remove 'B' or 'G' and trim()
-                   // use regex to ensure B and G are bounded, not part of a word
+
                part = part.replace(/\b[BG]\b/g, '').trim();
+
                sites.push(strToSite(part));
-               eSites.push(new EventSite( { site: strToSite(part), gender } ));
+               eSites.push(new EventSite({
+                  site: strToSite(part),
+                  gender
+               }));
             });
          } else {
                // if not B / G, remove the second site, just log the first
@@ -727,6 +931,10 @@ async function parseYear(txt) {
 
 
          let site = allSites.find(s => s.name === str);
+         if (!site) {
+            const alias = allSiteAliases.find(sa => sa.alias === str);
+            if (alias) site = allSites.find(s => s.id === alias.siteID);
+         }
          if (!site) site = allSites.find(s => s.name === (str + ' HS')) || new Site({ name: str });
 
          if (!site.id) console.log(site.name);
@@ -766,17 +974,11 @@ async function parseYear(txt) {
       }
    }
 
-   function parseDivs(str, eSites, sport) {
+   function parseDivs(str, series) {
       let divs = [];
 
-         // if no divs specified, get it from sport
-      if (str === null || str.length === 0) {
-         const minDivID = sport.minDiv;
-         allDivs.forEach(div => {
-            if (div.id >= minDivID && div.id < 98) divs.push(div);
-         });
-            // if only one div, assign
-      } else if (str.length === 2) {
+         // if only one div, assign
+      if (str.length === 2) {
          divs.push(allDivs.find(d => str.startsWith(d.name)));
       } else {
             // if more than one, search the string
@@ -785,10 +987,20 @@ async function parseYear(txt) {
          });
       }
 
-         // divs are assumed to be the same for each site in a row.  // assign
-      eSites.forEach(es => {
-         es.esDivisions = divs;
-      });
+         // if no divs were found, assign from series
+      if (divs.length == 0) {
+         const minDivID = series.minDiv;
+         allDivs.forEach(div => {
+            if (div.id >= minDivID && div.id < 98) divs.push(div);
+         });   
+      } 
+
+      return divs;
+   }
+
+      // detects strings like '2026-2027' or '2026-27'
+   function isYearRangeString(str) {
+      return /^\d{4}-(\d{2}|\d{4})$/.test(str);
    }
 }
 
@@ -853,7 +1065,7 @@ function addAddEventRow(tbody) {
 
    const eDiv = buildElement("div", { classes: [ 'grid', 'gridCols2' ], dataset: { column: 'event' } });
    eDiv.appendChild(buildElement("label", { text: 'Activity: ' }));
-   eDiv.appendChild(makeSportSelect());
+   eDiv.appendChild(makeSeriesSelect());
    eDiv.appendChild(buildElement("label", { text: 'Start: ' }));
    eDiv.appendChild(buildElement("input", { attrs: { type: 'date', value: date }, dataset: { control: 'start' } }));
    eDiv.appendChild(buildElement("label", { text: 'End: ' }));
@@ -902,14 +1114,14 @@ function makeAddEventYearDiv() {
    return buildElement("div", { children: [ "For the year: ", yearSelect ] });
 }
 
-function makeSportSelect() {
-   const allSports = runtime.allSports.getSync();
+function makeSeriesSelect() {
+   const allEventSeries = runtime.allEventSeries.getSync();
 
-   const newSlct = buildElement("select", { dataset: { control: 'sport' } });
+   const newSlct = buildElement("select", { dataset: { control: 'series' } });
 
       // forEach div
-   Object.values(allSports).forEach(sport => {
-      const newOptn = buildElement("option", { text: sport.name, attrs: { value: sport .id } });
+   Object.values(allEventSeries).forEach(series => {
+      const newOptn = buildElement("option", { text: series.name, attrs: { value: series.id } });
       newSlct.appendChild(newOptn);
    });
   
@@ -1016,7 +1228,7 @@ function summarizeAddEventsInputs(tbody) {
 
          // push an Event. // sites will already hold it's divisions data
       addEvents.push({ 
-         sportID: Number(controls.sport.value),
+         seriesID: Number(controls.series.value),
          start: controls.start.value,
          end: controls.end.value,
          sites
@@ -1034,7 +1246,7 @@ function showConfirmAddEvents(addEvents) {
       const startDate = parseInputDate(e.start);
       const endDate = parseInputDate(e.start);
       
-      const h4 = buildElement("h4", { text: runtime.allSports.getByID(e.sportID).name });
+      const h4 = buildElement("h4", { text: runtime.allEventSeries.getByID(e.seriesID).name });
       const dateP = buildElement("p", { text: getDateRangeString(startDate, endDate) });
 
       const spans = [];
@@ -1107,4 +1319,10 @@ function getNextSeasonDateRange(season) {
       start: `${startYear}-${String(season.startMonth).padStart(2, '0')}-${String(season.startDay).padStart(2, '0')}`,
       end: `${endYear}-${String(season.endMonth).padStart(2, '0')}-${String(season.endDay).padStart(2, '0')}`
    };
+}
+
+
+
+async function buildInventories() {
+   
 }

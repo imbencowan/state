@@ -310,23 +310,6 @@ tr.addOnRow {
 	margin: 5px;
 }
 
-.right {
-	text-align: right;
-}
-
-.center {
-	text-align: center;
-}
-
-.hidden {
-	display: none;
-}
-
-#sportPage h1 {
-	font-size: 170%;
-	text-decoration: underline;
-}
-
 .clickable:hover {
 	cursor: pointer;
 }

@@ -243,9 +243,9 @@ export function giveFirstFocus(container = document) {
 
 
    // standards a string as a *slug* fit for urls
-      // lowercases. // trims.  // replaces ' ' with '-', so Boys  Basketball => boys-basketball
+      // lowercases. // trims.  // replaces ' ' with '-'and '&' with 'and', so 'Dance & Cheer' => 'dance-and-cheer'
 export function slugify(str) {
-   return str.toLowerCase().trim().replace(/\s+/g, '-');
+   return str.toLowerCase().trim().replace(/\s+/g, '-').replace(/&/g, 'and');
 }
 
    // standardize printing $ amounts

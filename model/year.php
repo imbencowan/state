@@ -102,62 +102,72 @@ class Year implements JsonSerializable {
 	}
 
 	static function submitYear($events) {
-		ob_start();
-		// var_dump($events);
-
-		$eYear = date('y');
-
-		foreach ($events as $event) {
-				// EventColumns: 'eventID', 'sportID', 'startDate', 'endDate', 'eventYear'
-			$eventInsert = [
-				'sportID'   => $event['sport']['id'] ?? null,
-				'startDate' => $event['startDate'] ?? date('Y-m-d'), // fallback to today
-				'endDate'   => $event['endDate']   ?? date('Y-m-d'), // fallback to today
-				'eventYear' => $eYear
-			];
-			$eventID = Event::insert($eventInsert);
-
-			foreach ($event['eventSites'] as $eSite) {
-					// get the siteID	
-				if (!empty($eSite['site']['id'])) {
-					$siteID = $eSite['site']['id'];
-				} else if (empty($eSite['duplicate'])) {
-					$siteID = Site::insert([ 'siteName' => $eSite['site']['name'] ]);
-				} else {
-						// pull the previously inserted id
-					$siteID = Site::getIDByName($eSite['site']['name']);
-				}
-
-					// 'eventID', 'siteID', 'managerName', 'startDate', 'endDate'
-				$esInsert = [
-					'eventID'     => $eventID,
-					'siteID'      => $siteID,
-					'managerName' => $eSite['managerName'] ?? null
+		Database::withDB(function($db) use ($events,) {
+			foreach ($events as $event) {
+					// EventColumns: 'eventID', 'seriesID', 'startDate', 'endDate', 'eventYear'
+				$eventInsert = [
+					'seriesID'   => $event['series']['id'] ?? null,
+					'startDate' => $event['startDate'],
+					'endDate'   => $event['endDate'],
+					'eventYear' => $event['year']
 				];
-				$eSiteID = EventSite::insert($esInsert);
+				$eventID = Event::insert($eventInsert, $db);
 
-					// if the site has a gender, interTable it
-				if ((int)($eSite['gender'] ?? 0) === 1 || (int)($eSite['gender'] ?? 0) === 2) {
-					$values = [
-						'eventSiteID' => $eSiteID,
-						'genderID'    => $eSite['gender']
+				foreach ($event['eSites'] as $eSite) {
+						// get the siteID	
+					if (!empty($eSite['site']['id'])) {
+						$siteID = $eSite['site']['id'];
+					} else {
+						throw new Exception("Site not found: " . $eSite['site']['name']);
+					}
+					// else if (empty($eSite['duplicate'])) {
+					// 	$siteID = Site::insert([ 'siteName' => $eSite['site']['name'] ]);
+					// } else {
+					// 		// pull the previously inserted id
+					// 	$siteID = Site::getIDByName($eSite['site']['name']);
+					// }
+
+						// 'eventID', 'siteID', 'managerName', 'startDate', 'endDate'
+					$esInsert = [
+						'eventID'     => $eventID,
+						'siteID'      => $siteID,
+						'managerName' => $eSite['managerName'] ?? null
 					];
-					EventSite::insertInterTable('gender', [$values]);
-				}
+					$eSiteID = EventSite::insert($esInsert, $db);
 
-				foreach ($eSite['esDivisions'] ?? [] as $div) {
-						// 'eventSiteID', 'divisionID'
-					EventSiteDivision::insert([
-						'eventSiteID' => $eSiteID,
-						'divisionID'  => $div['id']
-					]);
+					$genderID = null;
+
+						// if the site has a gender, interTable it
+					if ((int)($eSite['gender'] ?? 0) === 1 || (int)($eSite['gender'] ?? 0) === 2) {
+						$genderID = $eSite['gender'];
+						// $values = [
+						// 	'eventSiteID' => $eSiteID,
+						// 	'genderID'    => $genderID
+						// ];
+						// EventSite::insertInterTable('gender', [$values]);
+					}
+
+					foreach ($eSite['divs'] ?? [] as $div) {
+							// 'eventSiteID', 'divisionID'
+						$esdInsert = [ 'eventSiteID' => $eSiteID, 'divisionID'  => $div['id'], 
+										'activityID' => $div['activityID'] ];
+						if ($genderID !== null) $esdInsert['genderID'] = $genderID;
+
+							// special handling for Dance & Cheer
+						if($event['series']['id'] === 21) {
+								// an extra insert for Dance
+							$esdInsert['activityID'] = 10;
+							EventSiteDivision::insert($esdInsert, $db);
+								// then reset the property for Cheer to insert via the regular path
+							$esdInsert['activityID'] = 11;
+						}
+
+						EventSiteDivision::insert($esdInsert, $db);
+					}
 				}
 			}
-		}
 
-
-		$html = ob_get_clean(); 
-
-		return [ 'html' => $html, 'data' => $events ];
+			return [ 'data' => $events ];
+		});
 	}
 }

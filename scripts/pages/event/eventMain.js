@@ -36,7 +36,7 @@ const prevNextActions = Object.fromEntries(
 	prevNextEventButtons.map(b => [b.action, b.handler])
 )
 const topActions = {
-	printSoSPDF: ({ target }) => printSoSPDF(runtime.stateEvent.getDivisionByID(target.dataset.eshdid)),
+	printSoSPDF: ({ target }) => printSoSPDF(runtime.stateEvent.getESDivisionByID(target.dataset.eshdid)),
 	...prevNextActions,
 	...topOrderActions,
 	...topInventoryActions
@@ -47,15 +47,15 @@ const topActions = {
 
 
 	// leave the default parameters so we can access the next/most recent event
-export async function goToEventPage(sportID = null, year = null, tab = 'orders') {
+export async function goToEventPage(seriesID = null, year = null, tab = 'orders') {
 		// check if we're just switching tabs for a single event
-	if (runtime.stateEvent && sportID == runtime.stateEvent.sport.id && year == runtime.stateEvent.year) {
+	if (runtime.stateEvent && seriesID == runtime.stateEvent.series.id && year == runtime.stateEvent.year) {
 		switchTab(tab);
 	} else {
 		let response;
 
 			// if no sport provided, get the next/most recent Event
-		if(!sportID) {
+		if(!seriesID) {
 			response = await actionFetch('getEventByDate', 'Event', { 'date': null });
 		} else {
 				// other wise look up the event by sport and year. // pass tab as context
@@ -70,8 +70,8 @@ export async function goToEventPage(sportID = null, year = null, tab = 'orders')
 					year = sixMonthsAgo.getFullYear() % 100;
 				}
 			}
-			const data = { 'year': year, 'sportID': sportID, 'context': tab }
-			response = await actionFetch('getEventBySportAndYear', 'Event', data);
+			const data = { 'year': year, 'seriesID': seriesID, 'context': tab }
+			response = await actionFetch('getEventBySeriesAndYear', 'Event', data);
 		}
 		
 			// reset mode on load
@@ -86,7 +86,7 @@ export async function goToEventPage(sportID = null, year = null, tab = 'orders')
 				// ATTACH EVENT LISTENERS 
 			addEventPageFunctionality();
 		} else {
-			showNoEvent(sportID, year);
+			showNoEvent(seriesID, year);
 		}
 	}
 }
@@ -96,17 +96,17 @@ export function buildEventPage(sEvent, tab) {
 	const cntnr = buildElement("div", { id: "eventContainer" });
 
 		// attach a header, the buttons at the top of the page, tabs for viewing event data
-	attachSportHeader(cntnr, sEvent);
+	attachSeriesHeader(cntnr, sEvent);
 	attachTabs(cntnr, sEvent, tab);
 
 	return cntnr;
 }
 
 	// builds the inner page header
-function attachSportHeader(cntnr, sEvent) {
+function attachSeriesHeader(cntnr, sEvent) {
 	const arrowButtons = prevNextEventButtons.map(buildActionButton);
 
-	const sport = sEvent.sport.name;
+	const sport = sEvent.series.name;
 	const year = sEvent.startDate.toLocaleDateString("en-US", { year: "numeric" });
 	const h = buildElement("h1", { text: (sport + " " + year) });
 
@@ -153,7 +153,7 @@ function attachTabs(parent, sEvent, tab) {
       if (!e.target.matches("button")) return;
 
       const tabID = e.target.dataset.tab;
-		navigate(`${sEvent.sport.slug}/${sEvent.year}/${tabID}`);
+		navigate(`${sEvent.series.slug}/${sEvent.year}/${tabID}`);
    });
 
    parent.append(nav, pnlsCntnr);
@@ -190,19 +190,19 @@ async function showPrevNextEvent(drctn) {
 	const tab = parseEventRoute(parts).tab;
 
 	const data = { drctn: drctn, eventID: runtime.stateEvent.id, context: tab };
-	const response =  await actionFetch('getPrevNextSportEvent', 'Event', data);
+	const response =  await actionFetch('getPrevNextSeriesEvent', 'Event', data);
 
 	if (response.success) {
 		if (response.data.event == null) {
 				// this presumes drctn can only be 'prev' or 'next'
 			const qlfr = drctn === 'prev' ? 'earlier' : 'later';
-			modal.open(`There is no ${qlfr} event for ${runtime.stateEvent.sport.name}`);
+			modal.open(`There is no ${qlfr} event for ${runtime.stateEvent.series.name}`);
 		} else {
 				// assign the new runtime event
 			const sEvent = StateEvent.fromJSON(response.data.event);
 
 			if (sEvent.year !== runtime.stateEvent.year) {
-				history.pushState({}, '', `/state/${sEvent.sport.slug}/${sEvent.year}/${tab}`);
+				history.pushState({}, '', `/state/${sEvent.series.slug}/${sEvent.year}/${tab}`);
 				document.getElementById('selectYear').value = sEvent.year;
 			}
 
@@ -219,14 +219,17 @@ async function showPrevNextEvent(drctn) {
 	}
 }
 
-function showNoEvent(sportID, year) {
-   const sport = runtime.allSports.getByID(sportID).name;
+function showNoEvent(seriesID, year) {
+   const series = runtime.allEventSeries.getByID(seriesID).name;
 
-   const msg = `There is currently no information for ${sport} for the ` 
+   const msg = `There is currently no information for ${series} for the ` 
       + `20${year}-20${(Number(year) + 1)} school year.`;
    const p = buildElement("p", { text: msg });
    const div = buildElement("div", { children: p });
    document.getElementById('display').replaceChildren(div);
+
+		// unset the stateEvent so the app doesn't mistakenly reference the one previously viewed.
+	runtime.stateEvent = null;
 }
 
 
@@ -332,8 +335,8 @@ function getOrderFromTableButton(target) {
 				// this is actually kind of clean considering the alternatives for getting this info where it needs to be.
 		order.division = esd.division.name + divGenderStr;
 		order.site = eventSite.site.name;
-		order.sportStr =  sportGenderStr + runtime.stateEvent.sport.name;
-		order.sportLblClr = runtime.stateEvent.sport.labelColor;
+		order.seriesStr =  sportGenderStr + runtime.stateEvent.series.name;
+		order.seriesLblClr = runtime.stateEvent.series.labelColor;
 	
 		return order;
 	}

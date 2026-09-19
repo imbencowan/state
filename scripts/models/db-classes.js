@@ -14,9 +14,9 @@ import { getDivisionsString } from '../formatters.js';
 
 	// define how an event works from json
 export class StateEvent {
-   constructor({ id, sport, startDate, endDate, year, eventSites = [] }) {
+   constructor({ id, series, startDate, endDate, year, eventSites = [] }) {
       this.id = id;
-      this.sport = Utils.parseToInstance(sport, Sport);
+      this.series = Utils.parseToInstance(series, Series);
       this.startDate = Utils.safeParseDate(startDate.date);
       this.endDate = Utils.safeParseDate(endDate.date);
       this.year = year;
@@ -26,20 +26,12 @@ export class StateEvent {
       this.orderMap = null;
    }
 
-   static fromValues(id, sport, startDate, endDate, year, eventSites = []) {
-      return new StateEvent({ id, sport, startDate, endDate, year, eventSites });
+   static fromValues(id, series, startDate, endDate, year, eventSites = []) {
+      return new StateEvent({ id, series, startDate, endDate, year, eventSites });
    }
 
    static fromJSON(json) {
       return new StateEvent(json);
-   }
-	
-	getRealYear() {
-		return this.startDate.getFullYear().toString().slice(-2);
-	}
-
-   getDateRangeString() {
-      return Utils.getDateRangeString(this.startDate, this.endDate);
    }
 	
 	getEventSiteByID(id) {
@@ -55,16 +47,32 @@ export class StateEvent {
       return this.esMap.get(id);
 	}
 	
-	getDivisionByID(id) {
-		for (const es of this.eventSites) {
-			const match = es.esDivisions.find(div => div.id === Number(id));
-			if (match) return match;
-		}
-		return null; // Not found
+	getESDivisionByID(id) {
+		id = Number(id);
+      
+      if (!this.esdMap) {
+         this.esdMap = new Map();
+
+         for (const eSite of this.eventSites) {
+            for (const d of eSite.esDivisions) {
+               this.esdMap.set(d.id, d); 
+            }
+         }
+      }
+
+      return this.esdMap.get(id);
 	}
 	
+	getRealYear() {
+		return this.startDate.getFullYear().toString().slice(-2);
+	}
+
+   getDateRangeString() {
+      return Utils.getDateRangeString(this.startDate, this.endDate);
+   }
+	
 	getEsdByDivIDAndGenderID(divID, genderID = null) {
-		if (divID < this.sport.minDiv) divID = this.sport.minDiv;
+		if (divID < this.series.minDiv) divID = this.series.minDiv;
 		for (const es of this.eventSites) {
             // if a genderID was passed (soccer) check it matches the EventSite's gender
          if ((genderID == null) || (es.gender.id === Number(genderID))) {
@@ -141,16 +149,14 @@ export class StateEvent {
 				eshd.schoolOrders.forEach(order => {
 						// check completeness. 0 == incomplete. // check blank // check over qualifiers
 					if (!order.completeness && (order.getDairyTotal() > 0) && !order.isOver()) {
-                  let sportGenderStr = '';
-                  if (this.sport.name === "Soccer") {
-                     if (order.genderID === 1) sportGenderStr += ' - Boys';
-                     if (order.genderID === 2) sportGenderStr += ' - Girls';
+                  let seriesGenderStr = '';
+                  if (this.series.name === "Soccer") {
+                     if (order.genderID === 1) seriesGenderStr += ' - Boys';
+                     if (order.genderID === 2) seriesGenderStr += ' - Girls';
                   }
                   
-						order.division = eshd.division.name +divGenderStr;
+						order.division = eshd.division.name + divGenderStr;
 						order.site = eventSite.site.name;
-						order.sportStr = this.sport.name + sportGenderStr;
-                  order.sportLblClr = this.sport.labelColor;
 						orders.push(order);
 					}
 				});
@@ -184,6 +190,16 @@ export class StateEvent {
       return unhandledComments;
    }
 
+   isOneActivity() {
+      const firstActivityID = this.eventSites
+         .flatMap(es => es.esDivisions)
+         .find(esd => esd.activity?.id != null)?.activity.id;
+
+      return this.eventSites.every(es =>
+         es.esDivisions.every(esd => esd.activity?.id == firstActivityID)
+      );
+   }
+
       // this function is a wrapper to conveniently call on a stateEvent instance
          // allItems must be passed in from runtime via the caller to avoid circular dependencies
          // you can't import runtime to this module
@@ -202,7 +218,7 @@ export class StateEvent {
    }
 }
 
-export class Sport {
+export class Series {
    constructor({ id, name, isGendered, isIndividualed, maxTeamSize, minDiv, labelColor }) {
       this.id = id;
       this.name = name;
@@ -216,11 +232,11 @@ export class Sport {
    }
 
    static fromValues(id, name, isGendered, isIndividualed, maxTeamSize, minDiv, labelColor) {
-      return new Sport({ id, name, isGendered, isIndividualed, maxTeamSize, minDiv, labelColor });
+      return new Series({ id, name, isGendered, isIndividualed, maxTeamSize, minDiv, labelColor });
    }
 
    static fromJSON(json) {
-      return new Sport(json);
+      return new Series(json);
    }
 }
 
@@ -239,8 +255,9 @@ export class EventSite {
       this.costs = Utils.parseToInstancesArr(costs, EventSiteCost);
       this.plusSizePricing = plusSizePricing;
       this.inventoryLoaded = false;
-		this.esDivisions = Utils.parseToInstancesArr(esDivisions, EventSiteDivision);
       this.costMap = null;
+		this.esDivisions = Utils.parseToInstancesArr(esDivisions, EventSiteDivision);
+      this.sortESDs();
 	}
 
    static fromValues(id, eventID, site, siteID, managerName, gender, vehicles, employees, inventory, transfers, 
@@ -253,6 +270,15 @@ export class EventSite {
       return new EventSite(json);
    }
 
+   sortESDs() {
+      this.esDivisions.sort((a, b) =>
+         a.activity.id - b.activity.id ||
+            // sort divisions descending
+         b.division.id - a.division.id ||
+         a.gender.id - b.gender.id
+      );
+   }
+
    getDivisionsString() {
       const divisions = [];
       for (const esd of this.esDivisions) {
@@ -260,6 +286,11 @@ export class EventSite {
       }
 
       return getDivisionsString(divisions, this.gender);
+   }
+
+   getSeriesStrGendered(sEvent) {
+      const genderStr = this.gender ? (' ' + this.gender.name) : '';
+      return sEvent.series.name + genderStr;
    }
 
    getGenderName() {
@@ -559,6 +590,22 @@ export class Site {
    }
 }
 
+export class SiteAlias {
+   constructor({ id, siteID, alias }) {
+      this.id = id;
+      this.siteID = siteID;
+      this.alias = alias;
+   }
+
+   static fromValues(id, siteID, alias) {
+      return new SiteAlias({ id, siteID, alias });
+   }
+
+   static fromJSON(json) {
+      return new SiteAlias(json);
+   }
+}
+
 export class Vehicle {
    static registry = null;
 
@@ -578,10 +625,13 @@ export class Vehicle {
 }
 
 export class EventSiteDivision {
-   constructor({ id, eventSiteID, divisionID, division, schoolOrders = [] }) {
+   constructor({ id, eventSiteID, divisionID, division, genderID, gender, activityID, activity, 
+               schoolOrders = [] }) {
       this.id = id;
       this.eventSiteID = eventSiteID;
       this.division = parseWithRegistry(division, Division, divisionID);
+      this.activity = parseWithRegistry(activity, Activity, activityID);
+      this.gender = gender;
       this.schoolOrders = Utils.parseToInstancesArr(schoolOrders, SchoolOrder);
       this.ordersLoaded = this.schoolOrders.length > 0;
    }
@@ -621,6 +671,12 @@ export class EventSiteDivision {
 		});
 		return max;
 	}
+
+   getESDName(includeActivity = false) {
+      const activityStr = includeActivity ? (' ' + this.activity.name) : '';
+      const genderStr = this.gender.name ? (' ' + this.gender.name) : '';
+      return `${this.division.name}${genderStr}${activityStr}`;
+   }
 }
 
 export class Division {
@@ -645,7 +701,7 @@ export class Division {
 export class SchoolOrder {
    constructor({ id, eshdID, schoolID, school, genderID, qualifiers = 0, completeness = 0, due = null, 
                paid = null, schoolOrderNote = null, invoiceDate = null, invoiceVersion = null, messageOrders = [], 
-               oItems = [], oTransfers = [], site = undefined, sport = undefined }) {
+               oItems = [], oTransfers = [] }) {
       this.id = id;
       this.eshdID = eshdID;
       this.school = parseWithRegistry(school, School, schoolID);
@@ -660,14 +716,12 @@ export class SchoolOrder {
       this.messageOrders = Array.isArray(messageOrders) ? messageOrders : [];
       this.oItems = Utils.parseToInstancesArr(oItems, SOrderItem);
       this.oTransfers = Utils.parseToInstancesArr(oTransfers, SOrderTransfer);
-      this.site = site;
-      this.sport = sport;
    }
 
-   static fromValues(id, eShdID, school, genderID, qualifiers, completeness, due, paid, schoolOrderNote, 
-                     invoiceSent, messageOrders, site, sport) {
-      return new SchoolOrder({ id, eShdID, school, genderID, qualifiers, completeness, due, paid, schoolOrderNote, 
-                              invoiceSent, messageOrders, site, sport });
+   static fromValues(id, eshdID, school, genderID, qualifiers, completeness, due, paid, schoolOrderNote, 
+                     invoiceSent, messageOrders) {
+      return new SchoolOrder({ id, eshdID, school, genderID, qualifiers, completeness, due, paid, schoolOrderNote, 
+                              invoiceSent, messageOrders });
    }
 
    static fromJSON(json) {
@@ -690,10 +744,18 @@ export class SchoolOrder {
       this.invoiceVersion = json.invoiceVersion;
 		this.messageOrders = Array.isArray(json.messageOrders) ? json.messageOrders : [];
       this.oItems = Utils.parseToInstancesArr(json.oItems, SOrderItem);
-      this.oTransfers = Utils.parseToInstancesArr(json.oTransfers, SOrderTransfer);		
-		this.site = json.site;
-		this.sport = json.sport;
+      this.oTransfers = Utils.parseToInstancesArr(json.oTransfers, SOrderTransfer);
 	}
+
+   getES(sEvent) {
+      console.log('nes')
+      const esd = this.getESD(sEvent);
+      return sEvent.getEventSiteByID(esd.eventSiteID);
+   }
+
+   getESD(sEvent) {
+      return sEvent.getESDivisionByID(this.eshdID);
+   }
 
    getSOItemsByStyleByColor() {
       const styles = {};
@@ -1321,5 +1383,36 @@ export class EventSiteCost {
 
    static fromJSON(json) {
       return new EventSiteCost(json);
+   }
+}
+
+export class Activity {
+   constructor({ id, name, isIndividualed }) {
+      this.id = id;
+      this.name = name;
+      this.isIndividualed = isIndividualed;
+   }
+
+   static fromValues(id, name, isIndividualed) {
+      return new Activity({ id, name, isIndividualed });
+   }
+
+   static fromJSON(json) {
+      return new Activity(json);
+   }
+}
+
+export class Gender {
+   constructor({ id, name }) {
+      this.id = id;
+      this.name = name;
+   }
+
+   static fromValues(id, name) {
+      return new Activity({ id, name });
+   }
+
+   static fromJSON(json) {
+      return new Activity(json);
    }
 }
