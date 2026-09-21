@@ -65,14 +65,15 @@ abstract class BasicTableModel implements JsonSerializable {
 	
 		////////////////////////////////////////// MAKING NESTED OBJECTS FROM DB SELECTS //////////////////
 		// builds a new object from $rows returned from a db call
-			// we have to screw with prefixes to deconstruct unique column aliases in $row['keys']
-			// static refers to the current Class for the current table
-				/////////////////////////////////////////////////////////////////////////////////////////////
-				// i should put in a more detailed desctiption, because every time i look at this function it feels alien,
-				// borderline magic. // so first we get a map for column names/class properties. then we reconstruct the
-				// column aliases that were used in the actual sql rows returned, so we can turn the row data in to an 
-				// object. then we follow Relations for properties that hold objects of their own, and recurse.
-					// i guess that's not as bad as it always looks
+			/////////////////////////////////////////////////////////////////////////////////////////////
+			// i should put in a more detailed desctiption, because every time i look at this function it feels alien,
+			// borderline magic. // so first we get a map for column names/class properties. then we reconstruct the
+			// column aliases that were used in the actual sql rows returned, so we can turn the row data in to an 
+			// object. then we follow Relations for properties that hold objects of their own, and recurse.
+				// i guess that's not as bad as it always looks
+			////////////////////////////////////////////////////////////////////////////////////////////
+				// we have to screw with prefixes to deconstruct unique column aliases in $row['keys']
+				// static refers to the current Class for the current table
 	public static function buildFromRow(array $rows, string $colPrefix = '', ?string $context = null): mixed {
 		if (empty($rows)) return null;
 	

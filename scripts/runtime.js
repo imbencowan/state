@@ -5,9 +5,10 @@ import { Activity, Color, Cost, Division, Employee, Item, Person, School, Season
 			Style, Transfer, Vehicle } from "./models/db-classes.js";
 
 export const runtime = {
-		// global containers. accessors as well if they utilize 
+		// global containers
 	activeOrder: undefined,
 	stateEvent: undefined,
+	yearEvents: undefined,
 		// this one prevents different actions being called while others are still open
 	activeMode: undefined,
 		// makeDataLoader(srvrClassName, jsClass = null, srvrFnctn = "getAllFromDB")
@@ -26,7 +27,14 @@ export const runtime = {
 	allSizes: makeDataLoader('Size', Size),
 	allStyles: makeDataLoader('Style', Style),
 	allTransfers: makeDataLoader('Transfer', Transfer),
-	allVehicles: makeDataLoader('Vehicle', Vehicle)
+	allVehicles: makeDataLoader('Vehicle', Vehicle),
+
+		// really just a utility for the router, so new pages don't have stale data here
+	clearPageData() {
+		this.stateEvent = undefined;
+		this.yearEvents = undefined;
+		this.activeMode = undefined;
+	}
 };
 
 

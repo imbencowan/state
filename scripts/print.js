@@ -1128,7 +1128,7 @@ function writeSeasonStockTable(doc, page, rows) {
 
 function writeSeasonOrderTable(doc, page, rows) {
 	writeSeasonTable(doc, page, rows, {
-		title: 'To Order',
+		title: 'Cases To Order',
 		headers: ['Style', 'Color', 'Size', 'Order'],
 		colPositions: [1, 2, 3, 4],
 		writeRow(page, row) {

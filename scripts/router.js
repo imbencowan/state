@@ -28,6 +28,8 @@ const routes = [
 
 
 export async function router(from) {
+   runtime.clearPageData();
+   
    const path = location.pathname.replace('/state', '')
       // make an array, splitting the url at '/'s. // remove falsy parts. // trim()
    const parts = splitPath(path);
@@ -44,7 +46,6 @@ export async function router(from) {
       }
    }
 
-   runtime.stateEvent = null;
    return showNotFound(path);
 }
 

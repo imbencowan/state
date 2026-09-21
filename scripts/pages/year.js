@@ -43,6 +43,8 @@ export async function goToYearPage(year) {
    if (!year) year = document.getElementById('selectYear').value;
    const response = await showPage('showYear', 'Year', { year: year });
 
+   runtime.yearEvents = response.data.events;
+
    buildYearPage(response.data);
    addShowYearFunctionality();
 
@@ -1292,13 +1294,16 @@ async function showSeasonStock() {
    const allSeasons = Object.values(await runtime.allSeasons.load());
    await runtime.allItems.load();
 
-   const season = Season.getNextSeason(allSeasons);
+   // const season = Season.getNextSeason(allSeasons);
+   const season = Season.getCurrentSeason(allSeasons);
+   console.log(season);
    if (!season) {
       modal.open('No next season found.');
       return;
    }
 
-   const dateRange = getNextSeasonDateRange(season);
+   // const dateRange = getNextSeasonDateRange(season);
+   const dateRange = getCurrentSeasonDateRange(season);
    const response = await actionFetch('getStockByDateRange', 'Event', dateRange);
    if (!response?.success) return;
 
@@ -1321,8 +1326,35 @@ function getNextSeasonDateRange(season) {
    };
 }
 
+function getCurrentSeasonDateRange(season) {
+   const now = new Date();
+   const currentYear = now.getFullYear();
+   const today = ((now.getMonth() + 1) * 100) + now.getDate();
+
+   const start = (season.startMonth * 100) + season.startDay;
+   const end = (season.endMonth * 100) + season.endDay;
+   const crossesYear = start > end;
+
+   const startYear = crossesYear && today <= end
+      ? currentYear - 1
+      : currentYear;
+
+   const endYear = crossesYear
+      ? startYear + 1
+      : startYear;
+
+   return {
+      start: `${startYear}-${String(season.startMonth).padStart(2, '0')}-${String(season.startDay).padStart(2, '0')}`,
+      end: `${endYear}-${String(season.endMonth).padStart(2, '0')}-${String(season.endDay).padStart(2, '0')}`
+   };
+}
+
 
 
 async function buildInventories() {
-   
+   const year = runtime.yearEvents[0].year;
+
+   const response = await actionFetch('setInventories', 'Year', { year });
+
+   if (response.success) modal.open('Success!');
 }

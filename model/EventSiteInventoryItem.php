@@ -75,5 +75,10 @@ class EventSiteInventoryItem extends BasicTableModel {
 		$stmt = $db->prepare("DELETE FROM eventsiteinventories WHERE eventSiteID = :eventSiteID AND startQ = 0");
 		$stmt->execute([':eventSiteID' => $eventSiteID]);
 	}
+
+		// a helper for setting future inventories
+	public function getSoldQ(): int {
+		return $this->startQ + $this->addedQ - $this->endQ - $this->writeOffQ - $this->sponsorQ;
+	}
 }
 ?>
