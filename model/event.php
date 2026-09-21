@@ -266,29 +266,109 @@ class Event extends BasicTableModel {
 		return array_values($events);
 	}
 
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		// TODO: Change this from simply summing previous-year retail sales + team orders + final events startQ.
+		// We need to determine the maximum stock requirement over the current season.
+		//
+		// 1. Get current-season events and sort them chronologically.
+		// 2. Group concurrent events.
+		// 3. For each item, track cumulative previous-year demand (retail sales + team orders)
+		//    and the maximum stock requirement seen so far.
+		// 4. For each group of concurrent events, calculate:
+		//       current events' combined startQ + cumulative previous-year demand
+		//    and update maxQ if this exceeds the previous maximum.
+		// 5. For non-final events, use matching previous-year events (by seriesID and
+		//    prior-year date range) to get actual retail soldQ.
+		// 6. For final events, use their current startQ rather than previous-year sales,
+		//    since we need enough stock physically supplied to those events without
+		//    trying to predict their sales.
+		// 7. The resulting maxQ for each item is the amount of stock needed to order.
+		//
+		// this should catch the case of 'we need more stock available for dance&cheer/wrestling than for speech'
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// this function is to calculate what stock we need for a given season
 	public static function getStockByDateRange(string $start, string $end): array {
-			// build a WHERE to SELECT events between dates passed in.
-		$where = new Where([ new Condition(['events'], 'startDate', [$start, $end], 'BETWEEN') ]);
-			// build a query to get the sum of eventsiteinventories for those events
-		$query = "SELECT eventsiteinventories.itemID,
-							SUM(eventsiteinventories.startQ) AS totalQ
+			// get the events for the season
+		$currentDateCondition = new Condition(['events'], 'startDate', [$start, $end], 'BETWEEN');
+		$currentDateWhere = new Where([$currentDateCondition]);
+		$currentEventsQuery = "SELECT * FROM events " . $currentDateWhere->getWhereString();
+
+		$eventRows = Event::getFromDB($currentEventsQuery);
+		
+			// separate the final events
+		$latestStart = null;
+		foreach ($eventRows as $event) {
+			$eventDate = new DateTime($event['startDate']);
+			if ($latestStart === null || $eventDate > $latestStart) $latestStart = $eventDate;
+		}
+
+		$finalEvents = [];
+		$nonFinalEvents = [];
+
+		$cutoffDate = (clone $latestStart)->modify('-10 days');
+
+		foreach ($eventRows as $event) {
+			$eventDate = new DateTime($event['startDate']);
+
+			if ($eventDate >= $cutoffDate) {
+				$finalEvents[] = $event;
+			} else {
+				$nonFinalEvents[] = $event;
+			}
+		}
+
+			// get the final events inventories
+				// first, get the appropriate ids
+		$finalEventIDs = array_map(fn($event) => $event['eventID'], $finalEvents);
+			// make a Where using those ids
+		$currentIDsWhere = new Where([ new Condition(['events'], 'eventID', $finalEventIDs, 'IN')]);
+		$finalEventsQuery = "SELECT esi.itemID,
+							SUM(esi.startQ) AS totalQ
 					FROM events
 					JOIN eventsites
 						ON events.eventID = eventsites.eventID
-					JOIN eventsiteinventories
-						ON eventsites.eventSiteID = eventsiteinventories.eventSiteID"
-					. $where->getWhereString() .
-					" GROUP BY eventsiteinventories.itemID
-					  ORDER BY eventsiteinventories.itemID";
+					JOIN eventsiteinventories esi
+						ON eventsites.eventSiteID = esi.eventSiteID"
+					. $currentIDsWhere->getWhereString() .
+					" GROUP BY esi.itemID
+					  ORDER BY esi.itemID";
+
+		$finalEventsRows = self::getFromDB($finalEventsQuery);
+		
+
+
+			//
+		$nonFinalSeriesIDs = array_map(fn($event) => $event['seriesID'], $nonFinalEvents);
+		$priorStart = (new DateTime($start))->modify('-1 year')->format('Y-m-d');
+		$priorEnd = (new DateTime($end))->modify('-1 year')->format('Y-m-d');
+		$priorDateCondition = new Condition(['events'], 'startDate', [$priorStart, $priorEnd], 'BETWEEN');
+		$seriesCondition = new Condition(['events'], 'seriesID', $nonFinalSeriesIDs, 'IN');
+		$itemCondition = new Condition(['apparel'], 'inventoryMinimum', 0, '>');
+		$retailWhere = new Where([ $priorDateCondition, $seriesCondition, $itemCondition ]);
+
+			// get the sum of sorderitems we did for non final events for this date range in the previous year
+		$query = "SELECT esi.itemID,
+							SUM(esi.startQ + esi.addedQ - esi.endQ) AS totalQ
+					FROM events
+					JOIN eventsites
+						ON events.eventID = eventsites.eventID
+					JOIN eventsiteinventories esi
+						ON eventsites.eventSiteID = esi.eventSiteID
+					JOIN apparel
+						ON esi.itemID = apparel.itemID"
+					. $retailWhere->getWhereString() .
+					" GROUP BY esi.itemID
+					  ORDER BY esi.itemID";
+
 
 		$stockRows = self::getFromDB($query);
 
-			// get the sum of sorderitems we did for this date range in the previous year
-		$priorStart = (new DateTime($start))->modify('-1 year')->format('Y-m-d');
-		$priorEnd = (new DateTime($end))->modify('-1 year')->format('Y-m-d');
-		$priorWhere = new Where([ new Condition(['events'], 'startDate', [$priorStart, $priorEnd], 'BETWEEN') ]);
-		$priorQuery = "SELECT sorderitems.itemID,
+
+		
+		$sorderWhere = new Where([$priorDateCondition]);
+
+		$sOrderQuery = "SELECT sorderitems.itemID,
 								SUM(sorderitems.sOrderItemsQuantity) AS totalQ
 						FROM events
 						JOIN eventsites
@@ -299,11 +379,11 @@ class Event extends BasicTableModel {
 							ON eventsitehasdivision.eventSiteHasDivisionID = schoolorders.eventSiteHasDivisionID
 						JOIN sorderitems
 							ON schoolorders.schoolOrderID = sorderitems.schoolOrderID"
-						. $priorWhere->getWhereString() .
+						. $sorderWhere->getWhereString() .
 						" GROUP BY sorderitems.itemID
 						  ORDER BY sorderitems.itemID";
 
-		$priorRows = self::getFromDB($priorQuery);
+		$priorRows = self::getFromDB($sOrderQuery);
 
 			// merge the results of the two queries. sorderitems can include retail items as part of a schoolorder
 		$merged = [];
@@ -316,6 +396,18 @@ class Event extends BasicTableModel {
 		}
 
 		foreach ($priorRows as $row) {
+			$itemID = $row['itemID'];
+			if (!isset($merged[$itemID])) {
+				$merged[$itemID] = [
+					'itemID' => $itemID,
+					'totalQ' => 0
+				];
+			}
+
+			$merged[$itemID]['totalQ'] += (int) $row['totalQ'];
+		}
+
+		foreach ($finalEventsRows as $row) {
 			$itemID = $row['itemID'];
 			if (!isset($merged[$itemID])) {
 				$merged[$itemID] = [

@@ -742,8 +742,8 @@ abstract class BasicTableModel implements JsonSerializable {
 	// executes 'arbitrary' sql. called by multiple functions above and in other classes
 protected static function getFromDB(string $query, array $params = []): array {
 	$db = Database::getDB();
-	$statement = $db->prepare($query);
 
+	$statement = $db->prepare($query);
 		// bind parameters
 	foreach ($params as $key => $value) {
 		$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
