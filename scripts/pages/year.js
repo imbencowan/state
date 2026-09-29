@@ -10,12 +10,15 @@ import { getDivisionsString } from '../formatters.js';
 import { modal, childModal } from '../modal.js';
 import { EventSite, Season, Site, StateEvent } from '../models/db-classes.js';
 import { showPage } from './page-handling.js';
-import { printSeasonStockPDF } from '../print.js';
+import { printYearSchedule, printSeasonStockPDF, printYearPreprintQs } from '../print.js';
+import { DAIRY_STYLE_ID, sizeList } from '../constants.js';
 
 
 
 const topButtons = [
+   { action: 'printSchedule', icon: 'print', text: ' Schedule', handler: printSchedule },
    { action: "getSeasonStock", text: "Get Next Season Stock", handler: showSeasonStock }, 
+   { action: 'printPreprintQs', icon: 'print', text: ' Preprints', handler: printPreprintQs },
    { action: "buildInventories", text: "Set Year Inventories", handler: buildInventories },
    { action: "addEvents", icon: "add", text: " Events", handler: showAddEvents }, 
       // i'm commenting this out, the function is a little messy, and currently makes no account for 
@@ -1296,7 +1299,6 @@ async function showSeasonStock() {
 
    // const season = Season.getNextSeason(allSeasons);
    const season = Season.getCurrentSeason(allSeasons);
-   console.log(season);
    if (!season) {
       modal.open('No next season found.');
       return;
@@ -1347,6 +1349,76 @@ function getCurrentSeasonDateRange(season) {
       start: `${startYear}-${String(season.startMonth).padStart(2, '0')}-${String(season.startDay).padStart(2, '0')}`,
       end: `${endYear}-${String(season.endMonth).padStart(2, '0')}-${String(season.endDay).padStart(2, '0')}`
    };
+}
+
+
+function printSchedule() {
+   const schedTable = document.getElementById('eventsTable').cloneNode(true);
+
+      // make a couple of amendments for the printed version
+   schedTable.querySelectorAll('tr').forEach(row => {
+      row.lastElementChild.remove();
+   });
+   schedTable.querySelectorAll('h2').forEach(h2 => {
+      h2.insertAdjacentHTML('afterend', '<br>');
+   });
+
+   printYearSchedule(schedTable);
+}
+
+
+async function printPreprintQs() {
+   const preprintSizeList = sizeList.slice(0, -2);
+      // get the year we'er looking at
+   const year = runtime.yearEvents[0].year;
+
+      // get the itemIDs for dairy hoods since we're doing those preprints.
+   const itemsByColor = runtime.allItems.getItemsByStyle(DAIRY_STYLE_ID);
+   const itemIDs = Object.values(itemsByColor).flatMap(items => Object.values(items).map(item => item.id));
+
+   const response = await actionFetch('getPreprintQs', 'Year', { year, itemIDs });
+
+   if (response.success) {
+      modal.open('Success!');
+
+      const headers = ['Event'];
+      for (const size of preprintSizeList) {
+         headers.push(size);
+      }
+      headers.push('Total');
+
+      const tableData = [];
+
+      for (const event of Object.values(response.data)) {
+         const date = new Date(event.startDate);
+         const month = date.toLocaleString('en-US', { month: 'short' });
+
+         let displayName = event.seriesName;
+         if (displayName == 'Golf') displayName += ` ${month}`;
+
+         const row = [ displayName ];
+
+         let rowTotal = 0;
+         const quantitiesBySize = {};
+
+         for (const [itemID, quantity] of event.items) {
+            const item = runtime.allItems.getByID(itemID);
+            const preprintQ = Math.floor(quantity * .78 / item.caseQ); 
+            quantitiesBySize[item.size.displayChar] = (preprintQ === 0) ? '' : preprintQ;
+            rowTotal += preprintQ;
+         }
+
+         for (const size of preprintSizeList) {
+            row.push(quantitiesBySize[size] ?? '');
+         }
+
+         row.push(rowTotal);
+
+         tableData.push(row);
+      }
+
+      printYearPreprintQs(headers, tableData);
+   }
 }
 
 

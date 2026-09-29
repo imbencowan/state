@@ -56,7 +56,10 @@
 
 
 		<!-- load functional libraries // jspdf and sheetjs -->
+		<!-- jspdf, used for all our pdf generation -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/5.0.2/jspdf.plugin.autotable.min.js"></script>
+		<!-- sheetjs, used for reading ihsaa's qualifier files -->
 	<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 </body>
 </html>

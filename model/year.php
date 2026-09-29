@@ -172,6 +172,7 @@ class Year implements JsonSerializable {
 	}
 
 
+
 	static function setInventories(int $year) {
 		$upsertRows = [];
 			// get base inventory items. // Condition($path, $column, $value, $operator = '=')
@@ -328,6 +329,49 @@ class Year implements JsonSerializable {
 			'newEvents' => $newEvents, 
 			'oldEvents' => $oldEvents
 		];
+	}
+
+
+	static function getPreprintQs(int $year, array $itemIDs) {
+		$priorYear = $year - 1;
+		$yearCndtn = new Condition(['events'], 'eventYear', $priorYear);
+		$itemCndtn = new Condition(['sorderitems'], 'itemID', $itemIDs, 'IN');
+		$where = new Where([$yearCndtn, $itemCndtn]);
+
+		$query = "SELECT events.eventID, events.startDate, eventseries.seriesName, sorderitems.itemID,
+								SUM(sorderitems.sOrderItemsQuantity) AS totalQ
+						FROM events
+						JOIN eventsites
+							ON events.eventID = eventsites.eventID
+						JOIN eventseries
+							ON events.seriesID = eventseries.seriesID
+						JOIN eventsitehasdivision
+							ON eventsites.eventSiteID = eventsitehasdivision.eventSiteID
+						JOIN schoolorders
+							ON eventsitehasdivision.eventSiteHasDivisionID = schoolorders.eventSiteHasDivisionID
+						JOIN sorderitems
+							ON schoolorders.schoolOrderID = sorderitems.schoolOrderID"
+						. $where->getWhereString() .
+						" GROUP BY events.eventID, sorderitems.itemID
+  						ORDER BY events.eventID, sorderitems.itemID";
+
+		$rows = Database::getFromDB($query);
+
+		$events = [];
+
+		foreach ($rows as $row) {
+				// initialize the event container
+			$events[$row['eventID']] ??= [
+				'startDate' => $row['startDate'],
+				'seriesName' => $row['seriesName'],
+				'items' => []
+			];
+
+				// push each item to it's event
+			$events[$row['eventID']]['items'][] = [ $row['itemID'], $row['totalQ'] ];
+		}
+
+		return $events;
 	}
 
 		// measures how many days are between two year agnostic dates

@@ -1075,6 +1075,7 @@ function buildSeasonStockRows(stockRows) {
 		const stock = Number(row.stock ?? item.stock ?? 0);
 		const shortage = Math.max(needed - stock, 0);
 		const caseQ = Number(item.caseQ ?? 0);
+		// console.log(order);
 
 		return {
 			itemID: Number(row.itemID),
@@ -1127,12 +1128,14 @@ function writeSeasonStockTable(doc, page, rows) {
 }
 
 function writeSeasonOrderTable(doc, page, rows) {
+	console.log(rows);
 	writeSeasonTable(doc, page, rows, {
 		title: 'Cases To Order',
 		headers: ['Style', 'Color', 'Size', 'Order'],
 		colPositions: [1, 2, 3, 4],
 		writeRow(page, row) {
 			page.textToCell({ text: getSeasonStockSizeCell(row) });
+			// console.log(row);
 			page.textToCell({ text: row.order });
 		}
 	});
@@ -1191,7 +1194,7 @@ function buildSeasonOrderRows(rows) {
 
 			totalOrderCases = canCoverNativeAndBorrow
 				? 0
-				: Math.max(nativeNeededCases - stockCases, 0) + Math.max(borrowNeededCases - borrowStockCases, 0);
+				: (Math.max(nativeNeededCases - stockCases, 0) + Math.max(borrowNeededCases - borrowStockCases, 0)) * caseQ;
 		} else {
 			const nativeShortage = Math.max(row.nativeNeeded - row.nativeStock, 0);
 			const borrowShortage = Math.max(row.borrowNeeded - row.borrowStock, 0);
@@ -1200,7 +1203,7 @@ function buildSeasonOrderRows(rows) {
 				? nativeShortage
 				: nativeShortage + borrowShortage;
 
-			totalOrderCases = caseQ > 0 ? Math.ceil(totalUnits / caseQ) : 0;
+			totalOrderCases = caseQ > 0 ? Math.ceil(totalUnits / caseQ) * caseQ : 0;
 		}
 
 		row.order = totalOrderCases;
@@ -1267,7 +1270,7 @@ function writeSeasonHoodSizeTable(doc, page, rows) {
 		['needDairy', 'Need Dairy'],
 		['stockDairy', 'Stock Dairy'],
 		['toBasement', 'To Basement'],
-		['order', 'Order']
+		['order', 'Ordered']
 	];
 
 	rowLabels.forEach(([key, label]) => {
@@ -1288,7 +1291,6 @@ function writeSeasonHoodSizeTable(doc, page, rows) {
 }
 
 function buildSeasonHoodSizeData(rows) {
-	console.log(rows);
 	const hoodSizes = sizeList.slice(0, 7);
 	const data = {
 		rawStockHoods: Object.fromEntries(hoodSizes.map(size => [size, 0])),
@@ -1471,4 +1473,52 @@ function closeSeasonStockSpans(doc, page, colPositions, currentStyleID, currentC
 	page.colsX.slice(colPositions[0], colPositions[colPositions.length - 1] + 2).forEach(x => {
 		doc.line(x, gridStart, x, gridEnd);
 	});
+}
+
+
+
+export function printYearSchedule(table) {
+	const { jsPDF } = window.jspdf;
+	const doc = new jsPDF();
+
+   doc.autoTable({
+      html: table,
+			// remove unwanted default styling
+		alternateRowStyles: { fillColor: false	},
+			// draws row borders
+		styles: { lineWidth: {
+				top: 0.3,
+				right: 0,
+				bottom: 0,
+				left: 0
+		} }
+   });
+
+   window.open(doc.output('bloburl'), '_blank');
+}
+
+
+
+export function printYearPreprintQs(headers, tableData) {
+	const { jsPDF } = window.jspdf;
+	const doc = new jsPDF();
+	const rows = [];
+
+   doc.autoTable({
+		head: [headers],
+  		body: tableData,
+		styles: {
+			fontSize: 14,
+			cellPadding: 3.5,
+			valign: 'middle'
+		},
+		headStyles: {
+			fontSize: 15
+		},
+		didParseCell: function (data) {
+			data.cell.styles.halign = data.column.index === 0 ? 'left' : 'center';
+		}
+   });
+
+   window.open(doc.output('bloburl'), '_blank');
 }

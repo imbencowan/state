@@ -58,6 +58,15 @@ export function makeItemLoader() {
          return itemsbBSCArr.map(i => i.size);
       },
 
+         // returns all Items of a given Style 
+      getItemsByStyle(styleID) {
+            // get all sizes for a style/color combo
+         const styleByColor = styleColorSizeLookup?.[styleID] ?? {};
+         console.log(styleByColor);
+
+         return styleByColor;
+      },
+
       async refresh() {
          styleColorSizeLookup = null;
          return loader.refresh();

@@ -18,6 +18,19 @@
 	
 		// set the time zone
 	date_default_timezone_set('America/Boise');
+
+
+		// set allowed actions to be called from the client
+			// BasicTableModel actions
+	$btmActions = [
+		'insert',
+		'upsert',
+		'insertMany',
+		'upsertMany',
+		'deleteByIDs',
+		'getByID',
+		'getByName'
+	];
 	
 	///////////////////////////////////////////////////////////
 	// GET THE INPUT
