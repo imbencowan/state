@@ -92,7 +92,6 @@ export async function goToEventPage(seriesID = null, year = null, tab = 'orders'
 }
 
 export function buildEventPage(sEvent, tab) {
-	console.log(sEvent.startDate);
 		// a container
 	const cntnr = buildElement("div", { id: "eventContainer" });
 

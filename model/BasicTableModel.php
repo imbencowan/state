@@ -740,34 +740,9 @@ abstract class BasicTableModel implements JsonSerializable {
 	}
 
 	// executes 'arbitrary' sql. called by multiple functions above and in other classes
+		// this is a shell so that it can be inherited by all subclasses
 protected static function getFromDB(string $query, array $params = []): array {
 	return Database::getFromDB($query, $params);
-	// $db = Database::getDB();
-
-	// $statement = $db->prepare($query);
-	// 	// bind parameters
-	// foreach ($params as $key => $value) {
-	// 	$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
-	// }
-
-	// // $a = 'Memory before execute: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
-	// $statement->execute();
-
-	// // $b = 'Memory after execute, before fetch: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
-
-	// $rows = $statement->fetchAll();
-
-	// // $table = 'Table: ' . static::getTableName();
-	// // $rCount = 'Rows fetched: ' . count($rows);
-	// // $cCount = 'Columns: ' . count($rows[0] ?? []);
-	// // $c = 'Memory after fetchAll: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
-	// // $d = 'Peak memory so far: ' . round(memory_get_peak_usage() / 1024 / 1024, 2) . " MB\n";
-	// // // if (count($rows) > 50) Test::logX($table, $rCount, $cCount, $a, $b, $c, $d);
-	// // Test::logX($table, $rCount, $cCount, $a, $b, $c, $d);
-
-	// $statement->closeCursor();
-
-	// return $rows;
 }
 
 protected static function resolveSeparateRelations(object|array $objects, ?string $context = null): void {

@@ -1,12 +1,13 @@
-    // a constant array for reading a submission
-import { sizeList, ihsaaSizeList } from './constants.js';
-    // fetch
+import { ihsaaSizeList } from './constants.js';
 import { myFetch } from './fetch.js';
-    // classes to organize data to send to the server
 import { ActionRequest, InputOrder } from './models/other-classes.js';
+import { runtime } from './runtime.js';
 import { modal, childModal } from './modal.js';
 
 export async function submitOrderFiles() {
+		// load some look ups
+	await runtime.allActivities.load();
+
 	let files = document.getElementById("fileInput").files;
 		// check if no files were selected, and exit the function in that case
     if (files.length === 0) {
@@ -37,7 +38,7 @@ export async function submitOrderFiles() {
 	// this came from gpt, because i'm still fuzzy on how to work with promises. and map.
 async function readFiles(files) {
 	let orders = [];
-		// Convert FileList to an array, so that we can map it
+		// convert FileList to an array, so that we can map it
 	const fileArray = Array.from(files);
 	const promises = fileArray.map(file => {
 	  return new Promise((resolve) => {
@@ -53,8 +54,7 @@ async function readFiles(files) {
 	});
 		// Wait for all file reading promises to resolve
 	await Promise.all(promises);
-		// Code here will run after all orders have been pushed
-	// console.log("All orders processed:", orders);
+	
 	return orders;
 }
 	
@@ -84,23 +84,33 @@ function getOrder(orderText, fileName) {
 	inputString.subEnd = inputString.str.indexOf('\n', inputString.subStart);
 	
 	let orderedBy = inputString.str.slice(inputString.subStart, inputString.subEnd);
-	let school = getSlice(inputString);
-	let division = getSlice(inputString);
-	let sport = getSlice(inputString);
-	let gender = 3;
+	const school = getSlice(inputString);
+	const division = getSlice(inputString);
+	let activity = getSlice(inputString);
+	let series;
+	let gender;
 		// make it match the names in the db
-	if (sport.includes('Boys')) {
+	if (activity.includes('Boys')) {
 		gender = 1;
-		sport = sport.slice(0, -7);
-		if (sport == "Basketball") sport = "Boys Basketball";
-	} else if (sport.includes('Girls')) {
+			// take the end off it 
+		activity = activity.slice(0, -7);
+		series = activity;
+		if (activity == "Basketball") series = "Boys Basketball";
+	} else if (activity.includes('Girls')) {
 		gender = 2;
-		sport = sport.slice(0, -8);
-		if (sport == "Basketball") sport = "Girls Basketball";
-	} 
+		activity = activity.slice(0, -8);
+		series = activity;
+		if (activity == "Basketball") series = "Girls Basketball";
+	} else {
+		series = activity;
+	}
+
+	if (series != 'Soccer') gender = 3;
+
+	const activityID = runtime.allActivities.getByName(activity).id;
 	
 	let sizes = getSizes(inputString);
-	let order = new InputOrder(orderedBy, school, division, sport, gender, sizes, fileName, orderText, comment);
+	let order = { orderedBy, school, division, activity, activityID, series, gender, sizes, fileName, orderText, comment };
 	
 	return order;
 }

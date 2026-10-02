@@ -134,13 +134,13 @@ class SchoolOrder extends BasicTableModel {
 
 
 		// utilizes base class method
-	public static function addNewOrder($eshdID, $schoolID, $genderID = 0) {
+	public static function addNewOrder(int $eshdID, int $schoolID, int $genderID = 0) {
 		$data = ['eventSiteHasDivisionID' => $eshdID, 'schoolID' => $schoolID, 'genderID' => $genderID];
 		return self::insert($data);
 	}
 	
 	
-	public static function getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID) {
+	public static function getIDByEventSiteHasDivisionAndSchool(int $eshdID, int $schoolID) {
 		$query = "SELECT schoolOrderID FROM schoolorders 
 					WHERE eventSiteHasDivisionID = :eshdID AND schoolID = :schoolID";
 		$rows = static::getFromDB($query, [':eshdID' => $eshdID, ':schoolID' => $schoolID]);
@@ -179,7 +179,7 @@ class SchoolOrder extends BasicTableModel {
 				}
 				
 					// get the whole series, we need series->minDiv later
-				$series = EventSeries::getByName($order['sport']);
+				$series = EventSeries::getByName($order['series']);
 					// get the school year. an eventinstance in january - may of the 24-25 school year will be represented by 24
 				$year = Year::convertDateToSchoolYear(new DateTime());
 				$eventID = Event::getIDBySeriesIDAndYear($series->id, $year);
@@ -188,9 +188,9 @@ class SchoolOrder extends BasicTableModel {
 					// some series only have competitions for a couple divisions. 
 						// schools in lower divisions play in the lowest division that has a competition
 				if ($divisionID < $series->minDiv) $divisionID = $series->minDiv;
-
-				$eshdID = EventSiteDivision::getIDByEventAndDivisionAndGender($eventID, $divisionID, $series->id, $genderID);
-			// Test::logX('eshdID is ' . $eshdID, 'eventID is ' . $eventID, 'divisionID is ' . $divisionID, 'genderID is ' . $genderID);
+				$eshdID = EventSiteDivision::getIDByFKs($eventID, $divisionID, $series->id, $genderID);
+				// if ($eshdID === null) Test::logX($eventID, $divisionID, $order['activityID'], $genderID);
+				// Test::logX('eshdID is ' . $eshdID, 'eventID is ' . $eventID, 'divisionID is ' . $divisionID, 'genderID is ' . $genderID);
 				
 					// need to add logic for if $school is not in the db
 				$schoolID = School::getIDByName($order['school']);
@@ -229,7 +229,7 @@ class SchoolOrder extends BasicTableModel {
 						$schoolOrderID = SchoolOrder::addNewOrder($eventID, $divisionID, $schoolID, $genderID);
 							// create a new MessageOrder, and then add it to the db
 							// the new id will be returned
-						$o = new messageOrder(null, $schoolOrderID, $genderID, $orderedBy, $comment, $commentHandled, $orderText, 
+						$o = new MessageOrder(null, $schoolOrderID, $genderID, $orderedBy, $comment, $commentHandled, $orderText, 
 													$fileName, date('Y-m-d H:i:s'));							
 						$messageOrderID = $o->addInstanceToDB();
 						$addedOrders[] = $order;
@@ -286,7 +286,7 @@ class SchoolOrder extends BasicTableModel {
 			// make the html, with the weird output buffer stuff
 		$htmlContent = ob_get_clean();
 		
-		return [ 'html' => $htmlContent, 'data' => $orders ];
+		return [ 'html' => $htmlContent, 'data' => $orders, 'ordersAdded' => $addedOrders, 'preexistingOrders' => $preexistingOrders ];
 	}
 	
 

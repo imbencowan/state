@@ -9,7 +9,7 @@ import { buildIcon, buildActionButton, makeTypeActionLabel,
 			makeSubmitCancelButtons, makeButtonActionMap } from '../page-utils.js';
 import { SchoolOrder } from '../../models/db-classes.js';
 import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoices, printSoSPDF, printAllSoSPDF, 
-			printOMessages, genIHSAATotals } from '../../print.js';
+			printOMessages, printAutoTable } from '../../print.js';
 
 
    // define the top orders tab buttons. what they say, and who they call
@@ -744,7 +744,45 @@ function showAllSchoolsAZ() {
 
 
 function printTotals() {
+	const sizeObj = { Total: 0 };
+	for (const s of sizeList) { sizeObj[s] = 0; }
+
+	const divTotals = { 'Total': { ...sizeObj } };
 	
+	for (const es of runtime.stateEvent.eventSites) {
+		for (const esd of es.esDivisions) {
+			divTotals[esd.division.name] ??= { ...sizeObj };
+
+			for (const so of esd.schoolOrders) {
+				for (const soi of so.oItems) {
+					const s = soi.item.size.displayChar;
+					divTotals[esd.division.name][s] += soi.quantity;
+					divTotals[esd.division.name].Total += soi.quantity;
+					divTotals['Total'][s] += soi.quantity;
+					divTotals['Total'].Total += soi.quantity;
+				}
+			}
+		}
+	}
+
+	const headers = [ '', ...sizeList, 'Total' ];
+
+	const rows = [];
+	for (const [key, value] of Object.entries(divTotals)) {
+		const sizes = [];
+		for (const s of sizeList) { sizes.push(value[s]) }
+
+		rows.push([ key, ...sizes, value.Total]);
+	}
+
+	rows.sort((a, b) => a[0].localeCompare(b[0]));
+
+	const year = runtime.stateEvent.startDate.getFullYear();
+	const event = runtime.stateEvent.series.name;
+	const tableName = `${year} ${event} Dairy West Totals`;
+	console.log(tableName);
+
+	printAutoTable(headers, rows, tableName);
 }
 
 

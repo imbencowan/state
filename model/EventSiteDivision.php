@@ -65,28 +65,22 @@ class EventSiteDivision extends BasicTableModel {
 	
 	//////////////////////////////////////////////////////
 	// Database functions	
-	public static function getIDByEventAndDivisionAndGender($eventID, $divisionID, $genderID = null) {
+	public static function getIDByFKs(int $eventID, int $divisionID, int $activityID, $genderID = 3) {
 			// checks if there is a matching record in eventSiteHasGender to get the correct esd
 		$query = "
 			SELECT esd.eventSiteHasDivisionID
 			FROM eventSiteHasDivision AS esd
 			INNER JOIN eventSites AS es ON es.eventSiteID = esd.eventSiteID
-			LEFT JOIN eventSiteHasGender AS esg
-				ON esg.eventSiteID = es.eventSiteID
-				AND esg.genderID = :genderID
 			WHERE es.eventID = :eventID
 				AND esd.divisionID = :divisionID
-				AND ( :genderID IS NULL
-						OR esg.eventSiteID IS NOT NULL
-						OR NOT EXISTS (SELECT 1 FROM eventSiteHasGender gchk WHERE gchk.eventSiteID = es.eventSiteID)
-					)
-			ORDER BY (esg.eventSiteID IS NOT NULL) DESC
-			LIMIT 1
+				AND esd.activityID = :activityID
+				AND esd.genderID = :genderID
 		";
 
 		$params = [
 			':eventID'    => $eventID,
 			':divisionID' => $divisionID,
+			':activityID' => $activityID,
 			':genderID'   => $genderID
 		];
 

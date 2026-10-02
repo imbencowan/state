@@ -1500,25 +1500,29 @@ export function printYearSchedule(table) {
 
 
 export function printYearPreprintQs(headers, tableData) {
+		// define some styles for the table. mostly to size the rows
+	const styles = { fontSize: 14, cellPadding: 3.5, valign: 'middle'	};
+	const headStyles = { fontSize: 15 };
+		// makes first column left aligned, the rest centered
+	const didParseCell = data => {
+		data.cell.styles.halign = data.column.index === 0 ? 'left' : 'center';
+	};
+
+	const options = { styles, headStyles, didParseCell };
+
+	printAutoTable(headers, tableData, '', options);
+	console.log(options);
+}
+
+
+export function printAutoTable(headers, rows, tableName = '', options = {}) {
 	const { jsPDF } = window.jspdf;
 	const doc = new jsPDF();
-	const rows = [];
+	console.log(tableName);
 
-   doc.autoTable({
-		head: [headers],
-  		body: tableData,
-		styles: {
-			fontSize: 14,
-			cellPadding: 3.5,
-			valign: 'middle'
-		},
-		headStyles: {
-			fontSize: 15
-		},
-		didParseCell: function (data) {
-			data.cell.styles.halign = data.column.index === 0 ? 'left' : 'center';
-		}
-   });
+   if (tableName) doc.text(tableName, 14, 15);
+
+	doc.autoTable({ head: [headers],	body: rows,	startY: tableName ? 25 : 10, ...options });
 
    window.open(doc.output('bloburl'), '_blank');
 }

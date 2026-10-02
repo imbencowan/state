@@ -1,7 +1,8 @@
 export class InputOrder {
 		//we're using 'sport' in place of 'event' because event is a key word
-	constructor(orderedBy, school, division, sport, gender, sizes, fileName, orderText, comment) {
-		this.sport = sport;
+	constructor(orderedBy, school, division, activity, series, gender, sizes, fileName, orderText, comment) {
+		this.activity = activity;
+		this.series = series;
 		this.division = division;
 		this.school = school;
 		this.gender = gender;

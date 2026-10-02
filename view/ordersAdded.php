@@ -4,8 +4,8 @@
 			// Sort by sport, division, school
 		usort($addedOrders, function($a, $b) {
 				// First, compare getSportID()
-			if ($a['sport'] != $b['sport']) {
-				return $a['sport'] <=> $b['sport'];
+			if ($a['series'] != $b['series']) {
+				return $a['series'] <=> $b['series'];
 			}
 				// If getSportID() is the same, compare getDivisionID()
 			if ($a['division'] != $b['division']) {
@@ -39,7 +39,7 @@
 			
 ?>
 				<tr class="unDoneRow">
-					<td title="<?= $order['fileName']; ?>"><?= $order['sport']; ?></td>
+					<td title="<?= $order['fileName']; ?>"><?= $order['series']; ?></td>
 					<td><?= $order['shortSchool']; ?></td>
 					<td><?= $order['genderName']; ?></td>
 					<td><?= $order['year']; ?></td>
@@ -62,8 +62,8 @@
 			// Sort by sport, division, school
 		usort($preexistingOrders, function($a, $b) {
 				// First, compare getSportID()
-			if ($a['sport'] != $b['sport']) {
-				return $a['sport'] <=> $b['sport'];
+			if ($a['series'] != $b['series']) {
+				return $a['series'] <=> $b['series'];
 			}
 				// If getSportID() is the same, compare getDivisionID()
 			if ($a['division'] != $b['division']) {
@@ -78,7 +78,7 @@
 <?php
 		foreach ($preexistingOrders as $order) {
 			echo '<li title="' . $order['fileName'] . '">' . $order['shortSchool'] . ' ' . $order['genderName'] . 
-					$order['sport'] . ' ' . $year . '</li>';
+					$order['series'] . ' ' . $year . '</li>';
 		}
 ?>
 	</ul>
