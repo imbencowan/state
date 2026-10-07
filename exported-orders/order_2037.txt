@@ -1,0 +1,33 @@
+From: Nick Birch
+Activity: Speech
+
+---------------------------------------------------------
+SCHOOL
+
+Idaho Falls High School
+Tigers
+Orange & Black
+Karla LaOrange
+Dallan Parker
+Nick Birch
+Robin Christensen
+
+---------------------------------------------------------
+SHIRTS
+
+Nick Birch
+Idaho Falls High School
+5A
+Speech
+
+S: 2
+M: 9
+L: 3
+XL: 5
+
+
+
+
+---------------------------------------------------------
+IP: 192.225.184.10
+ID: 57e41005-2bd0-4d8f-a42e-28b75ef83be5

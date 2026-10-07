@@ -1,0 +1,53 @@
+From: Chad Hill
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+South Fremont High School
+Cougars
+Red & Black
+Brandon Farris
+Drex Hathaway
+Chad Hill
+Alyssa Barney
+Noelia Olvera
+Briana Rumsey
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Sonnie Haws	12
+	Kaylee Moulton	12
+	Valeria Lopez	11
+	Sofia Valbusa	11
+	Addison Berry	10
+	Aaron Garcia	10
+	BrundaLynn Grover	10
+	Brooklyn Hathaway	10
+	Celeste Orme	10
+	Maylie Squires	10
+	Emrielle Vining	10
+	Kaiah Martinez	9
+	Paislee Garcia	12
+	Kamryne Baldwin	12
+
+---------------------------------------------------------
+SHIRTS
+
+Chad Hill
+South Fremont High School
+4A
+Cheer
+
+S: 3
+M: 10
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 192.225.188.98
+ID: 2105d72c-abc9-4aa6-9e48-2c496387c425

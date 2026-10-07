@@ -1,0 +1,83 @@
+From: Ron Emry
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Cascade High School
+Ramblers
+Purple & Gold
+Joni Stevenson
+Chuck Silzly
+Ron Emry
+Josh Hurley
+Tyler Luschen
+Managers: (Below)
+Josh Miller
+Reece Talbott
+Miguel Mancha Duran
+Dorothy Stillwell - Cheer
+Jaxson Peterson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Davis Taylor	SG, G	6-0	12
+	1	Chris Hinkle	F	6-0	9
+	3	Cole Olson	PG, SG	5-11	12
+	4	Lincoln Huckaby	PF	6-2	12
+	12	Michael Barker	SF, PF	5-11	11
+	13	Finn Wilkins	SG, PG	5-10	11
+	15	Dylan Hodges	SF	6-0	10
+	20	Hayden Hull	PF, C	6-2	12
+	24	Jesse Walker	SG	5-8	9
+	31	Will Huckaby	SF, PF	6-2	10
+
+---------------------------------------------------------
+RECORD
+
+17	6
+
+42	Victory Charter	55
+52	Council	36
+41	Garden Valley	53
+58	Marsing	56
+56	Horseshoe Bend	25
+32	Sitka	72
+35	Ketchikan	61
+57	Hutchison	45
+53	Victory Charter	49
+41	New Plymouth	47
+37	Riverside	54
+63	Tri-Valley	25
+48	Greenleaf Friends Academy	27
+53	Salmon River	29
+57	Tri-Valley	42
+65	Riverstone International	55
+56	Garden Valley	52
+59	Horseshoe Bend	39
+50	Council	53
+64	Salmon River	41
+69	Greenleaf Friends Academy	49
+68	Greenleaf Friends Academy	44
+42	Council	41
+
+---------------------------------------------------------
+SHIRTS
+
+Ron Emry
+Cascade High School
+1A
+Basketball - Boys
+
+M: 6
+L: 3
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 96.5.131.2
+ID: cc18275d-ea32-4ec4-8827-e8426f61d634

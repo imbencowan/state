@@ -1,0 +1,81 @@
+From: Lee Jay Cook
+Activity: Football
+
+---------------------------------------------------------
+SCHOOL
+
+Carey High School
+Panthers
+Blue & Gold
+Jim Foudy
+Melanie Blacker
+Lee Jay Cook
+John Saili
+Lane Durtschi
+Dusty Simpson
+DJ Parke
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	weight	grade
+	0	Wrangler Marcroft	DL, OL	6-0	189	12
+	2	Tayton sears	RB, DB	5-4	118	9
+	3	Frankie Hoy	QB, DB	5-5	120	10
+	4	Holt Koudelka	ATH	5-11	160	10
+	5	madden perkes	RB, DB	5-7	150	11
+	6	Gabe Saili	TE, LB	6-1	186	12
+	9	Jonah Saili	QB, LB	6-2	177	10
+	10	Weston Baker	WR, DB	5-7	137	10
+	13	Garret Olsen	ATH	5-7	136	10
+	16	parker bennion	TE, QB	5-9	144	9
+	23	Liam Long	RB, DE	5-10	180	10
+	24	johnathan rojas	WR, DE	5-10	170	10
+	25	Pieran Hoy	DL, OL	5-7	160	12
+	28	Stockton Sears	RB, DB	5-8	166	12
+	33	Peter Warthen	ATH, ATH	5-9	140	10
+	34	Tripp Bailey	C, DL	5-8	180	11
+	35	Tyler Ocrowley	RB, DE	6-0	177	10
+	40	will parke	TE, LB	5-11	178	12
+	42	Gavin Long	DL, OL	6-1	280	12
+	45	Caden Clark	OL, DL	5-11	265	10
+	47	Kade Hansen	TE, DE	6-0	147	11
+	52	Austin Newton	ATH, S	5-10	156	11
+	77	Everest Arnall	ATH			10
+
+---------------------------------------------------------
+RECORD
+
+9	1
+
+	Council	
+16	Murtaugh	6
+26	Butte County	16
+58	Castleford	18
+50	Richfield	6
+44	Hansen	14
+54	Rockland	24
+52	Dietrich	0
+64	Shoshone	8
+28	Valley	36
+40	Coeur du Christ Academy	36
+
+---------------------------------------------------------
+SHIRTS
+
+Lee Jay Cook
+Carey High School
+1A
+Football
+
+S: 1
+M: 7
+L: 13
+2XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 66.232.90.254
+ID: 63b63873-b191-4465-9755-b6032f2b5912

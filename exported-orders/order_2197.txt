@@ -1,0 +1,59 @@
+From: Andy Ankeny
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Middleton High School
+Vikings
+Navy & Gold
+Marc Gee
+Johnny Hullinger
+Andy Ankeny
+Scott Robertson
+Stephan Palesano
+Hank Ashby
+Alana Ashby
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+		Parker Rhoades	INF, OF	9
+		Hayleigh Wells	INF	9
+	00	Roxy Schiffler		
+	1	Lauren Butler		
+	2	Adelyn McPherson		
+	3	Aysha Fried		
+	4	Paislee Olsen		
+	5	Haylee Hultner		
+	6	Samantha Miller		
+	7	Sydney Qualls		
+	11	Mekenna Trimmer		
+	12	Kenadi Whitlow		
+	13	Averi Gustafson		
+	17	Shay Hermansen		
+	18	Kamryn Becker		
+	21	Kendyl Chronister		
+	22	Hailie Maupin		
+	25	Allie Murray	P, OF	10
+	33	Libby Garcia		
+
+---------------------------------------------------------
+SHIRTS
+
+Andy Ankeny
+Middleton High School
+5A
+Softball
+
+S: 2
+M: 9
+L: 6
+
+
+
+
+---------------------------------------------------------
+IP: 199.231.248.114
+ID: 71e45a3a-0cee-4ec9-bad4-9cb7857f52df

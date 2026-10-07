@@ -1,0 +1,91 @@
+From: Shayne Proctor
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Madison High School
+Bobcats
+Red, White & Gray
+Randy Lords
+Bradee Klassen
+Shayne Proctor
+Shane Humpherys
+Clyde Nelson
+Kurt Webb
+Traci Peterson
+Mark Minarik
+Daniel Chiddix
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Nash Humpherys	G	5-11	12
+	1	Carter Lerwil	G	6-3	12
+	2	Wayd Bailey	PG	5-10	9
+	3	Kyle Orr	G	5-11	11
+	4	Tyler Morrill	G	5-7	12
+	5	Logan Nelson	G	5-11	11
+	10	Bryce Wilson	C	6-4	12
+	11	Micah Thompson	F	6-2	11
+	12	Clay Sutton	G	6-1	11
+	14	Brigham Wilson	F	6-1	10
+	15	Rhett Hammond	G	5-11	10
+	20	Jaden Taylor		5-8	10
+	21	Hayden Kunz	F	6-4	10
+	24	Collins Hirschi		6-2	9
+	33	Hazen Torgerson	G	5-10	12
+
+---------------------------------------------------------
+RECORD
+
+21	2
+
+66	Hillcrest 	51
+75	Sky View (UT)	61
+72	Skyline	30
+56	Coeur d" Alene	62
+66	Ridgevue	52
+53	Lake City	41
+75	Pocatello	34
+74	San Pedro (CA)	61
+69	WestLake (UT)	68
+62	Ridgevue	52
+62	Canyon Ridge	43
+77	Thunder Ridge	61
+53	Highland	40
+78	Rigby 	76
+82	Blackfoot	72
+65	Thunder Ridge	57
+71	Canyon Ridge	58
+76	Highland	48
+49	Rigby	40
+78	Bonneville	53
+54	Shelley	57
+85	Canyon Ridge	56
+76	Thunder Ridge	56
+
+---------------------------------------------------------
+COMMENT
+
+Would it be possible to have a size large added to our group for our manager and be billed for it, or do we need to purchase it while we are there?
+
+---------------------------------------------------------
+SHIRTS
+
+Shayne Proctor
+Madison High School
+6A
+Basketball - Boys
+
+M: 3
+L: 2
+XL: 10
+
+
+
+
+---------------------------------------------------------
+IP: 192.225.186.74
+ID: 7463ae18-d61e-4087-9520-df830341376c

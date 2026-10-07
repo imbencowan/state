@@ -1,0 +1,57 @@
+From: Shaun Walker
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Twin Falls High School
+Bruins
+Navy, Lt Blue & White
+Brady Dickinson
+Nancy Jones
+Shaun Walker
+Eduardo Garcia
+Pete Hillman
+Katie Kauffman
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	2	Davian Olsen		9
+	3	Senou Nouwakpo		9
+	4	Ian Jorgensen		10
+	6	Jayden Clopton		11
+	7	Reese Nebeker		11
+	8	Kesh Pohlman		11
+	9	Aydin Masic		12
+	10	Max Serrano		12
+	11	Marcus Martinez		12
+	13	Wendell McBride		11
+	14	Kevin Rivera		11
+	15	Finn Bennett		10
+	16	Kayden Clopton		11
+	17	Jake Gleckler		11
+	18	Clive Muyingo		11
+	19	Jevan May		10
+	20	Josh Spiers		12
+	99	Jose Hernandez		12
+
+---------------------------------------------------------
+SHIRTS
+
+Shaun Walker
+Twin Falls High School
+5A
+Soccer - Boys
+
+M: 5
+L: 12
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 216.83.77.2
+ID: c5ace787-bac4-469b-98c1-ea1a30fb6372

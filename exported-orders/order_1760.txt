@@ -1,0 +1,66 @@
+From: Dane Roy
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Owyhee High School
+Storm
+Red & Grey
+Derek Bub
+Rachel Edwards
+Dane Roy
+Madi Haskins
+Kyla Christenson
+Allysha Ellwanger
+Allison Sherburne
+Jaqueline Allison
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Avery Asin	10
+	Brooklyn Broadbent	12
+	Elizabeth Caldwell	12
+	Callie Carver	12
+	Gabriella Cruz-Arruda	9
+	Gabriela Herrera	10
+	Addalyn Herrman	10
+	Brooklyn Larson	12
+	Eliza Lewis	12
+	Miley Madsen	12
+	Amaya Madsen	12
+	Ashlyn Mcewan	12
+	Adeline McGrath	12
+	Addison Miller	11
+	Ashlynn Needs	9
+	Addisyn Olsen	10
+	Iailey Packer	11
+	Paisley Pew	11
+	Brynnleigh Roth	11
+	Sophie Small	9
+	McKarlee Stanford	11
+	Lily Warmerdam	12
+	Izabella Wheeler	10
+	Alaina Zobrist	11
+	Mia Leal	10
+
+---------------------------------------------------------
+SHIRTS
+
+Dane Roy
+Owyhee High School
+6A
+Cheer
+
+S: 1
+M: 10
+L: 14
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.160
+ID: 89baefb5-8197-4319-b341-5ca593a4415a

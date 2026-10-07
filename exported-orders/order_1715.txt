@@ -1,0 +1,63 @@
+From: Eric Bonds
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Skyview High School
+Hawks
+Navy, Silver, Light Blue
+Gregg Russell
+Dave Young
+Eric Bonds
+Annie Calhoun
+Claire Dines
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Maddie Aaron	9
+	Kooper Acree	9
+	Maddy Cantrell	12
+	Adrian Ellis	9
+	Jayden Fuhriman	11
+	Vanessa Green	12
+	Faith Hill	10
+	Ava Huskey	11
+	Breanna Kershner	12
+	Wendi Kershner	10
+	Kinley Klassen	11
+	Bailey Koyle	11
+	Rowynn Lauer	12
+	Kaydence Long	11
+	Natalie Mecham	11
+	Amberlie Metcalf	11
+	Ali Pancheri	11
+	Audrey Rehwald	10
+	Brianna Roth	9
+	Ellie Strothman	11
+	Amaya Thiel	12
+	Alyssa Voronin	9
+	Samantha Wangler	10
+	Abby Wightman	10
+	Gabby Wightman	12
+
+---------------------------------------------------------
+SHIRTS
+
+Eric Bonds
+Skyview High School
+5A
+Dance
+
+S: 7
+M: 14
+L: 4
+
+
+
+
+---------------------------------------------------------
+IP: 209.127.238.209
+ID: 659fc20d-5d50-4f61-84b3-dff80c323bb8

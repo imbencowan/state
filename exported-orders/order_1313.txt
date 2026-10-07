@@ -1,0 +1,50 @@
+From: Kellen Clemens
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Coeur du Christ Academy
+Saints
+Navy, Crimson, White
+
+Lucas Heintschel
+Kellen Clemens
+Natalie Kiefer
+Cassie Johnston
+Lucy Ross
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	2	Rachel Cefola	OH/MB	5-6	9
+	3	Ava Fiore	DS/S	5-5	12
+	4	Kate Clemens	S	5-10	12
+	5	Madeline Junkin	OH	5-10	12
+	7	Sadie Harrington	MB	5-7	12
+	8	Esperanza Klocko	L	5-4	9
+	9	Olivia Urbina	DS	5-4	12
+	12	Mia Longo	MB	5-6	11
+	14	Angelica Ross	OH	5-8	11
+	16	Abigail Ross	OH	5-6	9
+	17	Therese Junkin	RS	5-10	9
+	18	Savannah Sloan	MB	5-7	11
+
+---------------------------------------------------------
+SHIRTS
+
+Kellen Clemens
+Coeur du Christ Academy
+1A
+Volleyball
+
+S: 3
+M: 9
+
+
+
+
+---------------------------------------------------------
+IP: 47.231.113.136
+ID: c1e6f549-f79c-4a70-8a81-d13c57dde8d2

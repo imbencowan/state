@@ -1,0 +1,81 @@
+From: Zach Dong
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Kimberly High School
+Bulldogs
+Red, Black & White
+Luke Schroeder
+Darin Gonzales
+Zach Dong
+Scott Plew
+Stephanie Buckley
+Callie Taylor
+Kayla Hutcheson
+Whitney Chapa
+Casey Darrington 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	10	Tarissa Plew	SG, SF	5-7	12
+	12	Taya Plew	SG	5-11	10
+	14	Emma Chavez	PG, SG	5-3	10
+	15	Shelby Heider	PG	5-3	10
+	20	Brooklyn Verwey	G, PG	5-8	9
+	23	Berkley Dille	PG, G	5-3	12
+	25	Hope Ward	F	5-8	12
+	30	Ashlyn Hammond	C	5-9	11
+	32	Adyson Osborne	C	5-9	10
+	35	Annie Buckley	SF, SG	5-3	11
+	40	Tylee Chadwick	G	5-5	10
+	44	Joy Hanchey	G	5-6	10
+	52	Ruby Nannini	PF	5-9	10
+
+---------------------------------------------------------
+RECORD
+
+14	7
+
+31	Mountain Home 	74
+23	Jerome	61
+48	Twin Falls 	38
+33	Sugar Salem 	64
+48	Mountain Home	54
+66	Marsh Valley	50
+52	Filer	36
+51	Snake River	25
+56	Buhl	23
+47	Parma	66
+69	Payette	38
+53	Weiser	50
+42	Sugar Salem 	60
+50	Jerome	61
+39	Woodriver	16
+60	Snake River	44
+68	Gooding	52
+63	Buhl	39
+74	Filer	46
+66	Gooding	47
+51	Woodriver	30
+
+---------------------------------------------------------
+SHIRTS
+
+Zach Dong
+Kimberly High School
+4A
+Basketball - Girls
+
+L: 12
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.110.172
+ID: e4d78f4d-d39f-4032-adee-a5850ea7706e

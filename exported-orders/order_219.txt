@@ -1,0 +1,55 @@
+From: Ryon Pope
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Gooding High School
+Senators
+Red & Black
+David Carson
+Leigh Patterson
+Ryon Pope
+Rachel Reed
+Jami Stirewalt
+Shaylynn Caswell
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Taylor Slizeski	12
+	Haley Rogers	12
+	Ariana Aguilar	9
+	Izzy Ramsey	11
+	CJ Ridley	12
+	Joe Pavkov	9
+	Ethan Anderson	12
+	Mya Rowly	11
+	Ella Sears	11
+	Breyden Bunderson	11
+	Maebri Madson	9
+	Natalee Gonzalez	10
+	Wyatt Geer	12
+	Brynna Hults	9
+	Scarlett Musillo	9
+
+---------------------------------------------------------
+SHIRTS
+
+Ryon Pope
+Gooding High School
+4A
+Cheer
+
+S: 3
+M: 4
+L: 6
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 160.3.21.42
+ID: 60de977e-58cc-4d9f-bb32-95af6618c02b

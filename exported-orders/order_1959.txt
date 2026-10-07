@@ -1,0 +1,86 @@
+From: Ted Bell
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Highland High School - Pocatello
+Rams
+Black, White & Red
+Doug Howell
+Brad Wallace
+Travis Bell
+Matt Stucki
+Nick Hansen
+John Ward
+Vance Nielsen
+AveryManu
+Austin Smellie
+Justin Walls
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Cedric Mitchell	PG	6-0	11
+	1	Marshall Glenn	PG		12
+	2	Raphael Njoku		6-1	12
+	3	Tracen Tripple	SG	6-2	12
+	4	Boston McCulloch		6-0	12
+	5	Dallin Glenn		6-3	11
+	11	Stockton Moore	PG, SG	5-11	11
+	13	Krew Vaughn			10
+	14	Magnum Anderson			10
+	15	Jax Howell			9
+	20	George Wilcox			10
+	21	Tyson McMinn			9
+	22	Colton Stucki			11
+	23	Tanner Hunt		6-0	11
+	24	Malakai Mitchell		5-11	11
+
+---------------------------------------------------------
+RECORD
+
+19	4
+
+56	Shelley	53
+60	Idaho Falls	43
+40	Preston	48
+61	Skyline	35
+56	Century	40
+64	Pocatello	56
+71	Bear River	46
+75	Bonneville	55
+62	Post Falls	63
+63	Canyon Ridge	58
+55	Rigby	42
+70	Bonneville	42
+37	Pocatello	38
+53	Madison	51
+57	Thunder Ridge	56
+67	Canyon Ridge	43
+64	Rigby	52
+57	Century	46
+47	Madison	41
+52	Thunder Ridge	57
+58	Skyline	34
+61	Canyon Ridge	55
+51	Rigby	43
+
+---------------------------------------------------------
+SHIRTS
+
+Ted Bell
+Highland High School - Pocatello
+6A
+Basketball - Boys
+
+L: 6
+XL: 9
+
+
+
+
+---------------------------------------------------------
+IP: 169.197.75.108
+ID: bb675b40-2ce3-4f0c-adeb-d9699f78e492

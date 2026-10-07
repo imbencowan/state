@@ -1,0 +1,65 @@
+From: Dane Pence
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Mountain View High School
+Mavericks
+Blue, Green & White
+Derek Bub
+Scot Montoya
+Dane Pence
+Gene Corson
+Travis Miller
+Kayla Davis
+Jasmine Ramos
+Kristi Christensen
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Addyson Crumley	GK	11
+	1	Samantha Jones	FORW	12
+	2	Macie Lockteff	MF	9
+	3	Berkleigh Crumley	D	12
+	4	Ryah Miller	MF	12
+	5	Peyton Richards	D	10
+	6	Sienna Holbrook	FORW	10
+	7	Jaci Anderson	D	11
+	8	Allie Louvier	MF	11
+	9	Vivian Sipe	FORW	11
+	10	Marisol Stosich	FORW	12
+	11	Iman Hamzic	MF	9
+	12	Elle Sandel	MF	10
+	13	Rylee Hutchison	D	10
+	14	Kadence Keller	MF	9
+	15	Ainslee Gaithwaite	D, MF	9
+	16	Averie Green	D	12
+	18	Kaylee Bellomy	MF	12
+	19	Macy McCullough	D	11
+	20	Alisha Flake	D, MF	12
+	21	Elaina Camacho	FORW	9
+	22	Zoey Jones	MF	12
+	23	Abigail Anderson	D	10
+	25	Laney Otero	GK	11
+
+---------------------------------------------------------
+SHIRTS
+
+Dane Pence
+Mountain View High School
+6A
+Soccer - Girls
+
+M: 9
+L: 11
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.133
+ID: 03021c11-5107-4c2c-bd51-3ad05e144235

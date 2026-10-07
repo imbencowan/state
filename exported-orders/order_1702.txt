@@ -1,0 +1,83 @@
+From: Andy Ankeny
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Middleton High School
+Vikings
+Navy & Gold
+Marc Gee
+Johnny Hullinger
+Andy Ankeny
+Marianne Blackwell
+Ro Wiggins
+Bryce Blackwell
+Jenna Coburn
+Emerson Post
+Shayla Hartman
+Jessie Holman
+Kent Bradshaw
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Zoey Blackwell	G	5-7	12
+	2	Olivia Blackwell	G	5-8	11
+	3	Mikylee Apple	G, W	5-8	11
+	4	Berkley Rogers	G, W	5-11	10
+	5	Cadence Steele	G, W	5-10	11
+	10	Gracie Coombs	G	5-6	12
+	15	Miley Steele	W	5-11	12
+	20	Dawn Holman	G, W	5-8	10
+	21	Daylie Fried	W	5-10	10
+	22	Finlee Fried	P	6-0	12
+	23	Aysha Fried	W, P	5-10	12
+	24	Megan Stewart	P	5-11	11
+
+---------------------------------------------------------
+RECORD
+
+19	4
+
+75	Meridian	41
+66	Westview	30
+67	Rancho Christian	83
+67	Victory Christian Academy	19
+56	Francis Parker	67
+55	Capital	45
+60	Eagle	52
+59	Kuna	38
+49	Alta	31
+62	Clayton Valley Charter	68
+61	Central East	37
+74	Timpanogos	27
+64	Centennial	26
+49	Borah	38
+58	Boise	45
+55	Timberline	27
+52	Rocky Mountain	43
+91	Ridgevue	20
+61	Owyhee	29
+50	Mountain View	48
+65	Mountain View	31
+51	Boise	59
+37	Borah	29
+
+---------------------------------------------------------
+SHIRTS
+
+Andy Ankeny
+Middleton High School
+5A
+Basketball - Girls
+
+XL: 12
+
+
+
+
+---------------------------------------------------------
+IP: 199.231.248.114
+ID: a1629b68-584d-4197-8123-a0e000beb54d

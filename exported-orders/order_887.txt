@@ -1,0 +1,54 @@
+From: Jennifer Murdock
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Declo High School
+Hornets
+Orange & Black
+Sandra Miller
+Roland Bott
+Jennifer Murdock
+Chancey Christiansen
+Chancey Christiansen
+Kandace Pettigrew
+Tiffany Mallory
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Alayna Wageman		
+	2	Sohpie Rasmussen		
+	3	Graci Wolf		
+	4	Makendrie Harris		
+	5	Kymbree Koyle		
+	7	Rylee Darrington		
+	8	Tesslie Averett		
+	10	Kimber Peterson		
+	14	Amerie Ewell		
+	15	Teagan Wickel		
+	20	Shayli Stevens		
+	22	Saige Wickel		
+	24	Claire Wilson		
+
+---------------------------------------------------------
+SHIRTS
+
+Jennifer Murdock
+Declo High School
+4A
+Softball
+
+S: 5
+M: 3
+L: 4
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 72.22.239.194
+ID: a9f4ef89-e355-410b-8de7-df3a18376178

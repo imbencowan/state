@@ -1,0 +1,34 @@
+From: Scott Burton
+Activity: Drama
+
+---------------------------------------------------------
+SCHOOL
+
+Jerome High School
+Tigers
+Black & Orange
+Brent Johnson
+Nathan Tracy
+Scott Burton
+Sharmy Steele
+
+---------------------------------------------------------
+SHIRTS
+
+Scott Burton
+Jerome High School
+5A
+Drama
+
+S: 9
+M: 3
+L: 4
+XL: 2
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 172.68.3.14
+ID: 811811c0-a65b-447f-b6b6-9000f2987b2a

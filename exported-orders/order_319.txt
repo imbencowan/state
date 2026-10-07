@@ -1,0 +1,62 @@
+From: Tom Shanahan
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Bishop Kelly High School
+Knights
+Black & Gold
+Bill Avey
+Sarah Quilici
+Tom Shanahan
+Amy Eisele
+Dawn Dewhirst
+Lynne Williams
+Karsyn Brinkley
+Allie Howell
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Ada Twardus	12
+	Ava Codina	12
+	Belle Dewhirst	12
+	Jaylin Black	12
+	Kathryn Lind	12
+	Maria Quintana-Sanchez	12
+	Ali Engrstrom	11
+	Elin Diddle	11
+	Ella Green	11
+	Mariah Chavolla	11
+	Rylie Peterson	11
+	Aisilynn Martinez	10
+	Mia Custodio	10
+	Parker Roope	10
+	Rowan Belew	10
+	Taylor Gerhard	10
+	Bentlee Holtz	9
+	Brooke MacCarther	9
+	Ellie Eisele	9
+	Kierra Aggers	9
+
+---------------------------------------------------------
+SHIRTS
+
+Tom Shanahan
+Bishop Kelly High School
+5A
+Cheer
+
+S: 2
+M: 10
+L: 7
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 24.119.144.124
+ID: a37e415c-8092-47a6-9814-32078684227b

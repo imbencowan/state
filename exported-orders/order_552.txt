@@ -1,0 +1,81 @@
+From: Travis Draper
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Grace High School
+Grizzlies
+Red & White
+Jason Moss
+Bryan Jensen
+Travis Draper
+Rory Lloyd
+Greg Bergholm
+Kevin Smith
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Derek Hill		6-1	12
+	2	Jamison Smith		6-0	12
+	4	Braden Kimball		5-11	12
+	5	Gavin Draper		6-0	11
+	12	Cooper Andersen		6-0	11
+	15	Laexin Van Gass		6-5	12
+	24	Chase Smith		6-1	11
+	25	Carson Reeves		6-2	12
+	31	Carson Welch		6-1	12
+	33	Trevor Mathews		6-2	12
+	34	Parker Yost		6-5	11
+	40	Bodee Smith		5-10	11
+	45	Landon Moss		6-1	12
+
+---------------------------------------------------------
+RECORD
+
+11	13
+
+46	WEST SIDE	50
+56	BEAR LAKE	48
+40	RIRIE	37
+47	SOUTH FREMONT	52
+39	FIRTH	56
+46	ABERDEEN	33
+45	RICH COUNTY, UTAH	52
+33	AMERICAN FALLS	45
+48	MALAD	45
+47	ABERDEEN	24
+48	BEAR LAKE	29
+49	SODA SPRINGS	54
+41	MALAD	52
+63	RAFT RIVER	47
+44	WEST SIDE	56
+38	AMERICAN FALLS	64
+44	SODA SPRINGS	59
+37	BUTTE COUNTY	43
+39	COKEVILLE, WY	36
+60	OAKLEY	27
+55	BUTTE COUNTY	75
+74	ALTURAS	20
+65	BUTTE COUNTY	57
+50	BUTTE COUNTY	37
+
+---------------------------------------------------------
+SHIRTS
+
+Travis Draper
+Grace High School
+2A
+Basketball - Boys
+
+L: 7
+XL: 6
+
+
+
+
+---------------------------------------------------------
+IP: 138.43.109.167
+ID: 2d68a82f-eb58-46a4-b7cb-f4c0cd52d50f

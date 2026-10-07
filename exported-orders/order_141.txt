@@ -1,0 +1,80 @@
+From: Molly Olson
+Activity: Football
+
+---------------------------------------------------------
+SCHOOL
+
+Kendrick High School
+Tigers
+Orange & Black
+Steve Kirkland
+Steve Kirkland
+Molly Olson
+Zane Hobart
+Greg Frisbee
+Ken Hobart
+Mat Anderson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	weight	grade
+	2	Ralli Roetcisoender	WR, DB	6-2	173	11
+	4	Kasch Littlefield	WR	5-9	130	9
+	5	Wyatt Cook	TE, DL	6-3	215	12
+	7	Kolt Koepp	TE, DL	6-3	171	11
+	8	Blake Morgan	QB	5-11	145	9
+	9	Jerry Anderson	DB, WR	5-10	143	9
+	10	Maddox Kirkland	QB, DB	6-1	161	10
+	11	Nathan Tweit	WR, LB	6-3	185	11
+	13	Caleb O’Bryant	OL, DL	6-0	223	12
+	15	Xavier Carpenter	RB, LB	5-10	180	12
+	18	Cade Silflow	WR, DB	6-1	154	11
+	19	Sawyer Hewett	RB, DB	6-0	170	12
+	21	Nathan Kimberling	OL, DL	6-0	191	10
+	22	Jamie Roberts	WR, DB	5-8	142	11
+	24	Landon Sneve	RB, LB	5-10	155	10
+	26	Orion Stewart	RB, LB	5-8	155	10
+	28	Brock Boyer	OL, DL	6-2	220	12
+	33	Leyton Brown-Sherrill	TE, DB	5-8	151	12
+	35	Travis Hix	OL, DL	6-2	204	11
+	36	Carson Hogan	OL, DL	5-10	208	12
+	42	Keegan Anderson	OL, DL	5-10	225	10
+	52	Tyler Hoffman	OL, DL	5-7	150	9
+	64	Evan Simpson	OL, DL	6-1	230	12
+	84	Hudson Kirkland	LB, WR	6-1	171	9
+
+---------------------------------------------------------
+RECORD
+
+	
+
+86	Troy	8
+74	Oakley	8
+58	Clearwater Valley	0
+54	Lapwai	8
+68	Potlatch	6
+56	Kamiah	12
+18	Logos	30
+52	Prairie	20
+54	Potlatch	0
+52	Logos	26
+
+---------------------------------------------------------
+SHIRTS
+
+Molly Olson
+Kendrick High School
+2A
+Football
+
+M: 5
+L: 10
+XL: 8
+
+
+
+
+---------------------------------------------------------
+IP: 162.158.41.81
+ID: ecd9ecc1-58ab-4566-bd5c-5ff003829557

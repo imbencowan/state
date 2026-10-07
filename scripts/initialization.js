@@ -1,7 +1,7 @@
 import { runtime } from './runtime.js';
 import { actionFetch } from './fetch.js';
     // function to be attached to a listener
-import { submitOrderFiles } from './order-submission.js';
+import { submitOrderFiles, getEmailOrders } from './order-submission.js';
 	// utility for building the nav bar
 import { buildElement } from './utilities.js';
 import { navigate } from './navigation.js';
@@ -31,8 +31,9 @@ export async function init() {
 		await handler();
    });
 
-		// add the file submit listenter
+		// add the file submit listenters
 	document.getElementById('fileInput').addEventListener('change', submitOrderFiles);
+	document.getElementById('getEmailOrdersButton').addEventListener('click', getEmailOrders);
 	
 		// initial load
 			// Sizes, Colors, Styles, and Transfers are all terminal objects with no runtime.all* children

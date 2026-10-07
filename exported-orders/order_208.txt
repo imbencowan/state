@@ -1,0 +1,61 @@
+From: Shaun Walker
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Twin Falls High School
+Bruins
+Navy, Lt Blue & White
+Brady Dickinson
+Nancy Jones
+Shaun Walker
+Lexi Robinson
+Sari Jayo
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Lauren Brown	12
+	Rees Richards	12
+	Kennedy Thompson	12
+	Kendra McCool	12
+	Elizabeth Zavala-Gonzales	12
+	Ivy Perry	11
+	Brinley Salts	11
+	Bria Kitchen	11
+	Cate Whitehead	11
+	Sunny Rose	11
+	Veda Sunkesula	11
+	Madelynn Jayo	10
+	Taislee Straubhaar	10
+	Seylor Wright	10
+	Sophie Anderson	10
+	Bella Evans	10
+	Sophia Schroeder	9
+	Hartley King	9
+	Sadie Ohlensehlen	9
+	Emilia Anderson	9
+	Peyton Durham	9
+	Ellie Whitworth	9
+	Aleah Jackson	9
+
+---------------------------------------------------------
+SHIRTS
+
+Shaun Walker
+Twin Falls High School
+5A
+Dance
+
+S: 2
+M: 12
+L: 9
+
+
+
+
+---------------------------------------------------------
+IP: 216.83.77.2
+ID: d67cae01-a5ab-4c1f-9680-1f2c6d1f36e8

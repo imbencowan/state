@@ -1,0 +1,88 @@
+From: Jared Hillier
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Bear Lake High School
+Bears
+Blue & White
+Gary Brogan
+Luke Kelsey
+Jared Hillier
+Ken Wells
+Josie Vouros
+Shawn Lloyd 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Kortlyn Skinner	SG	5-7	12
+	2	Kambria Romrell	P	5-6	12
+	3	Brinley Walker	G	5-4	11
+	4	Brooke Boehme	PG	5-4	11
+	5	Mckinley Humpherys	SF, SG	5-8	9
+	10	Paisley Lloyd	PG	5-2	10
+	11	Elle Romrell	PG, SG	5-4	9
+	12	Londyn Lufkin	P	5-10	11
+	13	Desiree Alleman	W	5-7	12
+	15	Abby Humpherys	W	5-8	11
+	20	Maycee Skinner	PF	5-9	9
+	21	Boston Pelto	PG	5-3	12
+	22	Avery Hunter	P	5-10	10
+	24	Peyten Crockett	P	5-10	12
+	32	Halle Wells	P, SF	6-1	11
+
+---------------------------------------------------------
+RECORD
+
+20	4
+
+50	Sugar-Salem	59
+65	Ririe	29
+49	Blackfoot	46
+58	Grantsville	28
+48	Syracuse	53
+39	Malad	48
+48	Firth	25
+56	South Fremont	27
+57	Malad	50
+61	Firth	34
+51	Preston	21
+37	Sugar-Salem	58
+46	Teton	13
+66	South Fremont	32
+56	Snake River	23
+48	American Falls	6
+55	Preston	45
+51	Marsh Valley	24
+51	Snake River	10
+50	American Falls	22
+61	Marsh Valley	39
+67	American Falls	27
+60	Marsh Valley	31
+54	Marsh Valley	39
+
+---------------------------------------------------------
+COMMENT
+
+We would like to order 1 extra small hoodie, 1 extra Medium, 1 xl, 1 2xl and 1 3xl , we will pay for them at the tournament. 
+
+---------------------------------------------------------
+SHIRTS
+
+Jared Hillier
+Bear Lake High School
+4A
+Basketball - Girls
+
+S: 3
+M: 12
+
+
+
+
+---------------------------------------------------------
+IP: 208.98.185.129
+ID: 3f19f96e-6faa-4137-adbf-7ff5ea3343f6

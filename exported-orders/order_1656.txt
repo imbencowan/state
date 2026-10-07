@@ -1,0 +1,58 @@
+From: Randy Winn
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Burley High School
+Bobcats
+Green, Gray, Black & White
+Sandra Miller
+Levi Power
+Randy Winn
+Lacey Sunderland
+Courtney Lopez
+Briana Rice
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Adalynn Kruckenberg	12
+	Abree Darrington	12
+	Kaleie Gibson	12
+	Ella Stephens	10
+	Jaycee Anderson	10
+	Nevaeh Rodriguez	10
+	Susannah Martinez	10
+	BrynLee Hutchison	9
+	Lailanee Dorantes	9
+	Leandra Teuscher	9
+	Brayla Pope	9
+	Libby Wilks	9
+	Audrina Juarez	9
+	Paizleigh Pelcher	9
+
+---------------------------------------------------------
+COMMENT
+
+Please make one of the small sweatshirts an extra small
+
+---------------------------------------------------------
+SHIRTS
+
+Randy Winn
+Burley High School
+5A
+Dance
+
+S: 2
+M: 11
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 72.22.239.194
+ID: 8bad60e2-63cb-4fa9-b18d-48f9694751c2

@@ -1,0 +1,52 @@
+From: Jodi Beard
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+North Fremont High School
+Huskies
+Purple & Gold
+Brandon Farris
+Jaren Bean
+Jodi Beard
+Ericka Robertson
+Todd Robertson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Lexi Peebles	INF	12
+	1	London Marsden	CF, OF	12
+	2	Oakley Hathaway	2B, INF	12
+	3	Peyton Lenz	P	12
+	4	Brooklyn Ingle		
+	5	Harlee Cherry	RF, OF	12
+	7	Makyah Cherry	3B, INF	12
+	8	Daisy Reynolds		
+	12	Lily Hoffner	1B, INF	12
+	14	Mickinley Lenz		
+	16	Catie Pickard		
+	17	Mytay Gunnell		
+	18	Morgan Green	C	12
+	20	Quincee Palmer		
+
+---------------------------------------------------------
+SHIRTS
+
+Jodi Beard
+North Fremont High School
+3A
+Softball
+
+S: 4
+M: 5
+L: 5
+
+
+
+
+---------------------------------------------------------
+IP: 192.225.188.98
+ID: dc92cd72-22c8-41ed-bbb7-4946d65b4126

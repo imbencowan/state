@@ -1,0 +1,59 @@
+From: TJ Clary
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Sandpoint High School
+Bulldogs
+Red & White
+Becky Meyer
+Jacki Crossingham
+TJ Clary
+Dan Anderson
+Jake Rookey 
+Tyler Bangle 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Landon Brinkmeier		11
+	2	Colton Dickinson		10
+	3	Knox Williams		11
+	4	Blake McGrann		10
+	5	Wesley Drube		9
+	6	Isaac Schmit		12
+	7	Ethan Polhemus		10
+	8	Travis Morgan		12
+	9	Asher Hazan		12
+	10	Jack Treman		12
+	11	Huxley Hall		12
+	12	Brennan Shaw		11
+	13	Jasey Treman		12
+	16	Gus Penrose		10
+	17	Logan McGrann		12
+	18	Dixon Reed		10
+	19	Caiden Gion		12
+	20	Hugo GilRuiz		10
+	22	Pax Longanecker		10
+	25	Alvaro Santos		10
+
+---------------------------------------------------------
+SHIRTS
+
+TJ Clary
+Sandpoint High School
+5A
+Soccer - Boys
+
+M: 5
+L: 12
+XL: 3
+
+
+
+
+---------------------------------------------------------
+IP: 168.245.213.188
+ID: bb831a41-16c9-49dc-9e3f-93aa70b6bd47

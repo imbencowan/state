@@ -1,0 +1,53 @@
+From: Jeff Horsley
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Soda Springs High School
+Cardinals
+Red & Black
+Scott Muir
+Jess McMurray
+Jeff Horsley
+Lacey Harris
+Brandi Carroll
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Lily Davis	12
+	Taylor Dunford	12
+	Kacie Hansen	12
+	Alivia Perkins	12
+	Ashley Dalley	11
+	Paetyn Hopkins	11
+	Macie Hansen	11
+	Elley Christensen	11
+	Chelsey Oliver	10
+	Kristin Hansen	10
+	Emerey Lakey	10
+	Kayla Obray	10
+	Penny Fullmer	10
+	Andi Carpenter	10
+	Angelina Lin	9
+	Kennedy Smith	9
+
+---------------------------------------------------------
+SHIRTS
+
+Jeff Horsley
+Soda Springs High School
+3A
+Cheer
+
+S: 5
+M: 11
+
+
+
+
+---------------------------------------------------------
+IP: 168.245.231.154
+ID: 45eed3e9-2562-43af-94ce-12b33a0279b4

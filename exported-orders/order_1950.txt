@@ -1,0 +1,90 @@
+From: Connor Jackson
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Cole Valley Christian High School
+Chargers
+Blue, White & Silver
+Allen Howlett
+Kim DeMain
+Connor Jackson
+Leif Karlberg
+Sydney Donaldson
+Kevin Rima
+Andy Thompson
+Ty Hughes
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Jacob Bieri	G	6-1	12
+	2	Jamin Hughes	G	5-10	10
+	3	Tate Mensonides	G	6-0	11
+	4	Lucas Guray	G	6-1	11
+	5	Brady Sautebin	F	6-5	12
+	10	Kaden Krogh	F	6-3	11
+	11	Cooper Kollmann	F	6-5	11
+	12	Madden Compton	G	6-4	11
+	21	Bryson Long	F	6-3	12
+	23	Eli Hamby	F	6-2	11
+	30	Ethan Minegar	F	6-0	11
+	35	Soren Fraas	G	6-7	10
+
+---------------------------------------------------------
+RECORD
+
+17	4
+
+63	The Ambrose School	40
+57	Capital	71
+67	Borah	44
+49	Bishop Kelly	53
+77	Kelso	42
+81	Nome-Beltz	74
+61	Grace Christian	63
+79	Mt. Edgecumbe	87
+80	Nampa Christian	33
+73	Baker	43
+68	Kimberly	41
+53	Homedale	36
+71	Fruitland	42
+67	Weiser	41
+70	Payette	21
+64	McCall-Donnelly	43
+67	Homedale	35
+65	Fruitland	31
+64	Weiser	42
+86	Payette	18
+66	McCall-Donnelly	49
+
+---------------------------------------------------------
+COMMENT
+
+If I can purchase additional sweatshirts (6) for my manager + coaching staff I'd like to bring an additional check to the State Breakfast:
+M - 1
+L - 1
+XL - 3
+2XL - 1
+
+---------------------------------------------------------
+SHIRTS
+
+Connor Jackson
+Cole Valley Christian High School
+4A
+Basketball - Boys
+
+M: 1
+L: 4
+XL: 7
+
+
+
+
+---------------------------------------------------------
+IP: 97.171.149.155
+ID: 23007255-c8a6-46d5-aae1-cc3c10b4f4a8
+ID: 735e572a-73eb-4cf1-b0b0-55eaf473e49f

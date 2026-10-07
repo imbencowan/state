@@ -1,0 +1,84 @@
+From: Douglas Henderson
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Lewiston High School
+Bengals
+Purple & Gold
+Tim Sperber
+David Kronemann
+Doug Henderson
+Brooks Malm
+Robin Bogar
+Chad Armitage
+Tanner Olson
+Kevin Walker
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Zavier McFee	G	6-1	11
+	2	Royce Fisher	G	6-4	12
+	3	DJ Wilkerson	G	5-9	10
+	4	Jordan Walker	F	5-9	12
+	14	Peyton Walker	G	5-10	10	
+	15	Andrew Haines	G	6-5	10
+	21	Brady Rudolph	G	6-1	11
+	24	Blaze Hepburn	F	6-2	11
+	31	Carson Henson	G	6-2	10
+	32	Noah Schumaker	F	6-3	10
+	33	William Bobeck	G	6-6	11
+	44	Braylon Howland	G	6-1	10
+	45	Krew DeGroot	F	6-3	10
+	55	Mason Way	F	6-3	12
+
+---------------------------------------------------------
+RECORD
+
+20	3
+
+66	Walla Walla	37
+58	Rocky Mountain	63
+69	Pendleton	47
+72	Bonners Ferry	60
+53	University	59
+66	Clarkston	62
+71	Kellogg	40
+78	Ellensburg	41
+70	Kendrick	60
+87	McCall-Donnelly	55
+73	Bonners Ferry	55
+67	Orofino	35
+56	Moscow	36
+67	Lakeland	29
+72	Sandpoint	62
+79	Moscow	33
+62	Lakeland	35
+76	Coeur d'Alene	69
+51	Lake City	73
+73	Post Falls	70
+70	Sandpoint	58
+66	Moscow	43
+72	Sandpoint	54
+
+---------------------------------------------------------
+SHIRTS
+
+Douglas Henderson
+Lewiston High School
+5A
+Basketball - Boys
+
+M: 3
+L: 8
+XL: 3
+
+
+
+
+---------------------------------------------------------
+IP: 64.126.150.70
+ID: bbd5244d-c933-4bec-a2a4-139855221bb6

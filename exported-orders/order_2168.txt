@@ -1,0 +1,55 @@
+From: Cory Dickard
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Melba High School
+Mustangs
+Red & White
+Sherry Ann Adams
+Eric Forsgren
+Cory Dickard
+Tim Reinertson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Kelton Bodily		10
+	2	Ty Aggen		11
+	3	Colter Bodily		12
+	4			
+	5	Bryson Fugge		9
+	6	Mason Lenz		9
+	7	Aden Arrington		11
+	8	Christopher Herbek		11
+	9	Cooper Brooks		11
+	10	Brayden Albers		12
+	11	CJ Husted		12
+	12	Matthew Lester		10
+	13	Luke Clark		12
+	14	Jack Emery		11
+	15	Ty Martineau		12
+	16	Max Jones		11
+	19	Wyatt Pinkston		12
+
+---------------------------------------------------------
+SHIRTS
+
+Cory Dickard
+Melba High School
+3A
+Baseball
+
+S: 1
+M: 6
+L: 7
+XL: 3
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.111.50
+ID: 95be517c-f630-40cc-bf36-63ebc454f5a0

@@ -1,0 +1,54 @@
+From: David Joyce
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Teton High School
+Timberwolves
+Orange & Maroon
+Megan Christiansen
+Sam Zogg
+David Joyce
+Ashley Bogs
+Anais Murrietta
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Averie Hibbert	12
+	Daisy Lopez	10
+	Ashlee Mattingly	12
+	Kiyana Amos	9
+	Jarica Richins	9
+	Juliet Ruiz	11
+	Saidy Barba	12
+	Bridget Martinez	12
+	Alais Horney	10
+	Lucy Dewitt	11
+	Kenya Garcia	10
+	Yami Hernandez	10
+	Elizabeth Olivas	9
+	Yareli Moreno	9
+	Erandy Mendez	9
+
+---------------------------------------------------------
+SHIRTS
+
+David Joyce
+Teton High School
+4A
+Cheer
+
+S: 4
+M: 6
+L: 3
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 207.183.185.76
+ID: be71af7b-1525-46d9-8fc8-a2ed0c04a0b4

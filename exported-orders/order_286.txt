@@ -1,0 +1,80 @@
+From: Brian Barber
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Boise High School
+Brave
+Red & White
+Lisa Roberts
+Deborah Watts
+Brian Barber
+Kim Brydges
+Ron Marthe
+Issy Siegrist
+Seth Newville
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	3	Kaity Haan	G	6-0	12
+	5	RyLynn Ruffing	G	6-1	9
+	10	Morgan Montgomery	G	5-7	12
+	11	Norah Woodland	G	5-7	12
+	12	Alison Turcke	G	5-8	12
+	13	Avery Patricco	G	5-8	12
+	15	Libby Nelson	SG	5-8	11
+	21	Caroline Wyatt	G	5-7	12
+	23	Scarlett Meyer	G	5-8	10
+	24	Presley Binder	G	5-9	12
+	25	Ramsey Binder	G	5-9	11
+	32	Olivia Chatfield	G	5-8	11
+	33	Brynn Schindele	G	5-8	10
+	34	Nya Pellant-Latham	F	6-0	10
+
+---------------------------------------------------------
+RECORD
+
+18	3
+
+46	Rigby	37
+50	Kuna	49
+51	Middleton	61
+53	Coeur d' Alene	44
+54	Lake City	30
+76	Post Falls	46
+45	Timberline	34
+66	Borah	41
+36	Owyhee	43
+68	Bishop Kelly	33
+56	Eagle	59
+57	Mountain View	29
+61	Kuna	54
+63	Ridgevue	37
+63	Centennial	28
+37	Borah	31
+58	Rocky Mountain	42
+53	Timberline	45
+55	Capital	33
+81	Meridian	34
+
+---------------------------------------------------------
+SHIRTS
+
+Brian Barber
+Boise High School
+6A
+Basketball - Girls
+
+S: 1
+M: 2
+L: 11
+
+
+
+
+---------------------------------------------------------
+IP: 207.244.138.10
+ID: a8129281-66da-49d9-bb02-623d9c549113

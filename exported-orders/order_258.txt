@@ -1,0 +1,72 @@
+From: Brian Lee
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Nezperce High School
+Nighthawks
+Blue & Gold
+Brian Lee
+Misti Cook
+Brian Lee
+Kaci Ralstin
+Marty Lux
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	4	Avery Lux		5-7	9
+	10	Raegan Mosman		5-2	9
+	12	Paityn Ralstin		5-6	9
+	14	Aubree Lux		5-10	12
+	20	Elizabeth Duuck		5-3	11
+	24	Helen Wilcox		5-4	10
+	32	Abigail Duuck		5-6	10
+	34	Morgan Kirkland		5-5	11
+	40	Jada Jensen		5-5	9
+	42	Melia Johnson		5-4	9
+	44	Izzy Horton		5-8	11
+	50	Kairys Grant		5-8	11
+
+---------------------------------------------------------
+RECORD
+
+10	10
+
+35	Kamiah	41
+11	Orofino	25
+32	St. John Bosco	29
+49	Salmon River	34
+45	Genesee	56
+31	Highland	32
+42	Timberline	10
+45	St. John Bosco	36
+32	Genesee	58
+51	Salmon River	56
+53	Highland	36
+42	Orofino	45
+29	Deary	31
+73	Timberline	21
+45	Deary	32
+51	Genesee	57
+28	Highland	27
+
+---------------------------------------------------------
+SHIRTS
+
+Brian Lee
+Nezperce High School
+1A
+Basketball - Girls
+
+S: 5
+M: 7
+
+
+
+
+---------------------------------------------------------
+IP: 129.222.131.161
+ID: ac572d5f-4fe4-4833-a6ed-49f71010ca25

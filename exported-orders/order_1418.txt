@@ -1,0 +1,53 @@
+From: Brodie Parrott
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Filer High School
+Wildcats
+Red, White & Navy
+Kelli Schroeder
+Shane Hild
+Brodie Parrott
+Alexandria Foster
+BJ Price 
+Rachelle Parker
+Jessica Jensen 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Aubrey Westling	S, RS	5-4	12
+	2	Brekk Bowman	MH	5-10	11
+	3	Peyton Hollifield	MH, OPP	5-11	11
+	4	Ruthie Bullock	S, RS	5-4	12
+	5	Brook Parker	OH	5-7	12
+	6	Ella Jensen	L, DS	5-4	12
+	7	Keyana Montreal	MB, OH	5-9	9
+	8	Jillian Price	RS	5-11	9
+	9	Amberlin Brown	OH, DS	5-4	12
+	10	Lilyann Curtis	OH, DS	5-6	11
+	11	Brooklyn Shank	Libero	5-3	9
+	12	Adalynn Shank	S/OPP	5-5	9
+	15	Ava Smith	OPP	5-10	12
+
+---------------------------------------------------------
+SHIRTS
+
+Brodie Parrott
+Filer High School
+4A
+Volleyball
+
+S: 5
+M: 7
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 66.232.70.36
+ID: cce10219-ac50-4d63-9044-523cafb7a57f

@@ -1,0 +1,85 @@
+From: Kent Howell
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Marsh Valley High School
+Eagles
+Blue, Scarlet & White
+Gary Tucker
+Wyatt Hansen
+Kent Howell
+Chris Ball
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Cooper Bowman	SG		12
+	1	Kaden Hansen	PF, SF		12
+	2	Weslee Evans	SF		11
+	3	Jaxson Smith	PG	5-6	11
+	4	Eli Hadley	SG		12
+	5	Tate Whitworth			11
+	10	Chandler Bennett	SF		11
+	11	Karter Davis			9
+	12	Justis Whitworth	SG		
+	20	Kutter Lish			11
+	21	Weston Aagard	C		11
+	24	Nash Guthrie			9
+	25	Cooper Curzon			11
+	42	Boston Sorensen			11
+
+---------------------------------------------------------
+RECORD
+
+13	11
+
+50	Teton	52
+64	South Fremont	40
+51	West Side	58
+52	Sugar Salem	64
+83	Parma	39
+53	Skyview	69
+50	Gooding	44
+57	West Side	64
+58	Filer	63
+59	South Fremont	53
+46	Filer	42
+47	Sugar Salem	53
+36	Teton	48
+79	Buhl	50
+42	American Falls	40
+44	Snake River	67
+59	Bear Lake	32
+38	American Falls	47
+70	Buhl	43
+42	Snake River	59
+69	Bear Lake	51
+49	American Falls	45
+50	Snake River	39
+67	Snake River	62
+
+---------------------------------------------------------
+COMMENT
+
+This one has my roster and record with scores.  the first one did not.  Sorry
+
+---------------------------------------------------------
+SHIRTS
+
+Kent Howell
+Marsh Valley High School
+4A
+Basketball - Boys
+
+M: 2
+L: 12
+
+
+
+
+---------------------------------------------------------
+IP: 172.56.150.43
+ID: f4a146b7-68f4-4427-a4a2-390f231c5e58

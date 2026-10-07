@@ -1,0 +1,85 @@
+From: Avery Brown-Sonder
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Lakeside Junior/Senior High School
+Knights
+Black, White & Red
+Tara Lere
+Jennifer Hall
+Adrian Brown-Sonder
+Chris Dohrman
+Caleb Harms
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	00	Cassidy Gorr			11
+	1	Kimberly Pluff			11
+	2	Kyleigh Wolfe			11
+	3	Laila Charlie			9
+	5	Alayla Matheson			9
+	10	Areannia Lowley			12
+	11	Zymri Hodgson			11
+	12	Alberta Stensgar			11
+	15	Sadie Leo			9
+	20	Ambi Aldrich			9
+	21	Sylvia Matt			11
+	22	Ryanna Ortivez			9
+	24	Tylah Lambert			11
+	32	Saydee Peone			9
+	42	Fawn Abrahamson			11
+
+---------------------------------------------------------
+RECORD
+
+13	7
+
+68	Clark Fork	33
+18	Timberlake	68
+43	Inchelium	64
+60	Kellogg	57
+57	Post Falls JV	33
+51	Inchelium	47
+54	Wallace	37
+42	Inchelium	57
+42	Wellpinit	55
+55	Genesis Prep Academy	39
+34	Lapwai	69
+68	Genesis Prep Academy	58
+67	Wallace	44
+49	Lake Roosevelt	46
+25	Timberlake	69
+75	Bonners Ferry	78
+72	Clark Fork	27
+72	Clark Fork	23
+66	Genesis Prep Academy	35
+63	Wallace	45
+
+---------------------------------------------------------
+COMMENT
+
+Tami Dohrman - Score Bookkeeper 
+
+---------------------------------------------------------
+SHIRTS
+
+Avery Brown-Sonder
+Lakeside Junior/Senior High School
+2A
+Basketball - Girls
+
+S: 3
+M: 8
+L: 3
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 205.210.19.218
+ID: 5f7f78ab-0bef-4e72-b870-c2c06aeb6153

@@ -1,0 +1,53 @@
+From: Tanner Baumann
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Gooding High School
+Senators
+Red & Black
+David Carson
+Ryon Pope
+Tanner Baumann
+Savannah Erickson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	00	Jaelynn Patton		11
+	1	Chailey Patton		9
+	2	Shyla Squires		10
+	4	Violet Conrad		11
+	5	Emma Day		12
+	6	Neria Childs		9
+	7	Kodi Garza		10
+	8	Brianna Lopes		11
+	9	Addison Bingham		10
+	10	Scottlyn Martin		9
+	11	Ellie Day		9
+	12	Kaylee Silver		12
+	14	Addy Kearsley		11
+	15	Olivia Rogers		10
+	23	Payton Toone		9
+
+---------------------------------------------------------
+SHIRTS
+
+Tanner Baumann
+Gooding High School
+4A
+Softball
+
+S: 2
+M: 8
+L: 3
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 159.118.253.9
+ID: 0e65f9ae-afa6-4cd2-aeba-dc268feb07bc

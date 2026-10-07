@@ -1,0 +1,53 @@
+From: Jason Willer
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Capital High School
+Eagles
+Black, Gold & Silver
+Lisa Roberts
+Derek Gardner
+Jason Willer
+Shane Alder
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Sophie Mason	OF	12
+	2	Olivia Stone	C, 1B	12
+	4	Kharson Castell	OF	12
+	5	Audrey McKibben	OF, INF	12
+	6	Genevieve Tessmer	INF, P	9
+	7	Olivia Dow	C, INF	9
+	8	Syd Garber	P, OF	12
+	10	Lelaina Jeanblanc	INF, OF	11
+	11	Grace Leise	1B, OF	11
+	13	Olli Fuchs	INF, OF	10
+	14	Kiya Caltabiano	P, INF	12
+	15	Keyten Erickson	INF, C	12
+	18	Darlene Espinoza	INF	9
+	22	Lizzy Turpen	INF, OF	12
+	23	Juel Cavesuela	P, INF	12
+	33	McKenna Chavez	INF	11
+
+---------------------------------------------------------
+SHIRTS
+
+Jason Willer
+Capital High School
+6A
+Softball
+
+S: 1
+M: 11
+L: 4
+
+
+
+
+---------------------------------------------------------
+IP: 207.244.138.12
+ID: 4f65f6ef-62b0-4fa6-9875-c9d06742b775

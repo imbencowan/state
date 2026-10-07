@@ -1,0 +1,54 @@
+From: Kris Knowles
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Vallivue High School
+Falcons
+Brown & Gold
+Lisa Boyd
+Kellie Dean
+Kris Knowles
+Todd Zucker
+Mike Green 
+Brock Wilson 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Gage Warrington	OF, P	10
+	2	Eli Daniel	SS, RHP	10
+	3	Aaron Rayo	2B, INF	12
+	4	Noah Delgado	2B, SS	9
+	5	Jayden Cagel	OF, RHP	11
+	6	Colt Augustus	C, OF	12
+	7	Isaac Farrel	1B, LHP	10
+	8	Brennan Case	OF	12
+	9	Banks Sedillos	OF, P	11
+	10	Baren Vadapalli	INF, RHP	10
+	12	Clay Cope	3B, 2B	10
+	13	Cooper Crutcher	OF, RHP	12
+	14	Joe Bosco	1B	12
+	15	J.J. Bittick	P, 3B	10
+	17	Connor Payne	SS, RHP	12
+	99	Carson Cyganik	C, 3B	10
+
+---------------------------------------------------------
+SHIRTS
+
+Kris Knowles
+Vallivue High School
+5A
+Baseball
+
+M: 7
+L: 9
+
+
+
+
+---------------------------------------------------------
+IP: 207.126.111.99
+ID: 77f7c15f-b4ee-449b-8f95-9acaacdf41aa

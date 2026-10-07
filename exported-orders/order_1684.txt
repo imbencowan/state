@@ -1,0 +1,79 @@
+From: Jayce Allred
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Salmon River High School
+Savages
+Royal Blue & Gold
+Trish Simonson
+Kyle Ewing
+Jayce Allred
+Levi Tucker
+Abbey Tucker
+Brandon Ratcliff
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Shyanne Nourse		5-1	10
+	2	Audrey Tucker	SG	5-5	11
+	3	Hope Watson		5-3	9
+	5	Raydin Hayes	PF	5-10	11
+	10	Taylor Ewing	PG	5-6	11
+	12	Cheyanne Case		5-7	10
+	14	Rylee Walters	PG, SG	5-10	12
+	21	Poppy Harper		5-3	9
+	22	Kennedy Wilson	SG, C	5-11	10
+	24	Kylie Priddy		5-2	9
+
+---------------------------------------------------------
+RECORD
+
+23	0
+
+67	Tri-Valley	30
+39	Cascade	31
+58	Nezperce	50
+49	Kendrick	26
+56	Council	34
+51	Highland	38
+64	La Grande	59
+55	Carey	43
+54	Nyssa	23
+43	Kendrick	35
+53	Cascade	17
+80	Greenleaf Friends Academy	17
+65	Tri-Valley	19
+65	Garden Valley	41
+52	Highland	35
+66	Nezperce	46
+74	Council	38
+2	Greenleaf Friends Academy	0
+69	Horseshoe Bend	16
+69	Garden Valley	29
+69	Horseshoe Bend	13
+56	Tri-Valley	10
+68	Garden Valley	25
+
+---------------------------------------------------------
+SHIRTS
+
+Jayce Allred
+Salmon River High School
+1A
+Basketball - Girls
+
+S: 5
+M: 5
+
+
+
+
+---------------------------------------------------------
+IP: 96.5.140.26
+ID: 7ee00b7e-687f-4121-b7dc-bcb6551ac8a3
+ID: c2c6f729-cf2e-4319-b3f7-c5e4dc825194
+ID: 4134ec24-51c4-451e-8da7-b13b6fc1075e

@@ -1,0 +1,61 @@
+From: Curt-Randall Bayer
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Bonners Ferry High School
+Badgers
+Navy & White
+Jan Bayer
+Lisa Iverson
+Curt-Randall Bayer
+Paul Bonnell
+Matt Solis
+Brycen Lunger
+Derek Oxford
+Jared Gardin
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	00	Cardon Pluid	GK	10
+	1	Gabriel Litterell	MF	9
+	5	Omar VanDyken	MF	12
+	6	Caleb Bryant	D	10
+	10	Nikita Rawson	FORW	12
+	11	Jesse Fess	D	12
+	12	Trevor Festini	MF	10
+	13	Eli Blackmore	FORW, MF	12
+	15	Aaron Tadlock	MF	10
+	16	Noah Miller	MF	9
+	18	Ben Middleton	D, MF	10
+	19	Riser Hanson	MF	12
+	20	Lincoln Hymas	MF	11
+	21	Logan Archibald	MF	11
+	22	Dominic Solum	FORW	9
+	25	Josh Warner	MF	9
+	26	Malachi Hubbard	D	12
+	27	Riley Thompson	MF	12
+	29	Peyton Hinthorn	D	10
+	99	Kordale Burt	GK	10
+
+---------------------------------------------------------
+SHIRTS
+
+Curt-Randall Bayer
+Bonners Ferry High School
+4A
+Soccer - Boys
+
+M: 5
+L: 13
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 162.158.42.213
+ID: 74573649-0200-43e6-9f55-5f03f471e710

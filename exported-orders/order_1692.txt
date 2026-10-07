@@ -1,0 +1,76 @@
+From: Todd Cady
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Columbia High School
+Wildcats
+Maroon & Gold
+Greg Russell
+Cory Woolstenhulme
+Todd Cady
+Neal Robertson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Kadriana Battleson	G	5-5	12
+	2	Bailey Robertson	PG	5-5	10
+	3	Elsie McEntee	G		11
+	4	Grace Wilson	G		9
+	10	Princess Quezada	G		12
+	11	Addison Whitworth	F		9
+	22	Gabby Nabors	SG	5-9	12
+	23	Conlie Baker	F		9
+	24	Yani Lincoln	G	5-5	12
+	32	Kiyah Guevara	F	5-9	11
+	33	Anne Kartchner	F	5-10	12
+
+---------------------------------------------------------
+RECORD
+
+14	7
+
+46	Kuna	45
+45	Centennial	35
+28	Capital	55
+33	Rocky Mountain	61
+24	Bishop Kelly	57
+58	Vallivue	27
+30	Skyview	35
+31	Meridian	46
+39	Cole Valley Christian	51
+51	Capital	50
+56	Emmett	36
+60	Nampa	51
+46	Caldwell	22
+51	Weiser	42
+41	Bishop Kelly	48
+48	Vallivue	23
+54	Emmett	42
+55	Skyview	53
+45	Nampa	24
+54	Caldwell	20
+46	Skyview	42
+	Bishop Kelly	
+
+---------------------------------------------------------
+SHIRTS
+
+Todd Cady
+Columbia High School
+5A
+Basketball - Girls
+
+S: 3
+M: 5
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 209.127.238.209
+ID: 6187fc3f-d4ba-4434-864d-a74b91abfa5d

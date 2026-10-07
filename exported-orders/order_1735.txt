@@ -1,0 +1,84 @@
+From: Shayne Proctor
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Madison High School
+Bobcats
+Red, White & Gray
+Randy Lords
+Bradee Klassen
+Shayne Proctor
+Luke Sutton
+Preston Berry
+Kirk Ricks
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Brodie Spencer	SF	5-9	12
+	2	Torey Parker	PF	6-0	12
+	3	Sloane Humpherys	PG	5-6	11
+	5	Jamie Sutton	SG	5-6	10
+	10	Hazel Ririe	PF	6-0	11
+	11	Jaylyn Shaw	SG, PG	5-2	11
+	12	Cambry Crapo	G	5-8	10
+	13	Mia Walsh	SG	6-1	12
+	20	Monica Ramirez	G	5-4	10
+	21	Aspen Boice	C	6-0	12
+	22	Camri Call	SG	5-6	12
+	23	Taylie Call	G	5-6	10
+	31	Tayvia Kofoed	F	5-6	10
+	32	West Ellingford	F	5-6	10
+	33	Sophia Chapman	F	5-11	9
+
+---------------------------------------------------------
+RECORD
+
+16	9
+
+47	Idaho Falls	28
+55	Kuna	31
+30	Eagle	56
+40	Rocky Mountain	42
+49	Hillcrest	40
+63	Skyline	44
+62	Pocatello	45
+48	Canyon Ridge	10
+51	Thunder Ridge	50
+53	Windsor	63
+59	Twin Falls	35
+48	Mead	37
+33	Rigby	58
+52	Blackfoot	47
+68	Canyon Ridge	15
+52	Thunder Ridge	55
+57	Bonneville	32
+33	Highland	44
+38	Rigby	60
+39	Highland	49
+60	Shelley	29
+38	Highland	23
+51	Thunder Ridge	49
+39	Rigby	52
+54	Thunder Ridge	45
+
+---------------------------------------------------------
+SHIRTS
+
+Shayne Proctor
+Madison High School
+6A
+Basketball - Girls
+
+M: 8
+L: 7
+
+
+
+
+---------------------------------------------------------
+IP: 192.225.186.74
+ID: 998a9cfa-68e4-4210-859b-249de74e0eba

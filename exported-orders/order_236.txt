@@ -1,0 +1,62 @@
+From: Tony Brulotte
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Eagle High School
+Mustangs
+Green & Silver
+Derek Bub
+Susan McInerney
+Tony Brulotte
+Christina Shell
+Jillia Romano
+Delaney Schow
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Savi Anderson	9
+	Mailee Brown	9
+	Brielle Dahlgren	11
+	Bria Davis	11
+	Kayla Diaz	9
+	Peyton Douglas	10
+	Veronica Eliason	11
+	Samantha Gorman	12
+	Meredith Judge	11
+	Anna Martindale	10
+	Ellie McDonough	12
+	Macee Munson	9
+	Brooke Norris	10
+	Clara Paventy	11
+	Brooklyn Price	9
+	Sydnee Seeley	12
+	Alexa Shannahan	11
+	Abigail Shipp	11
+	Addyson Simpson	9
+	Hailee Simpson	11
+	Birklie Smith	10
+	Daisy Weightman	9
+	Payten Wolf	11
+
+---------------------------------------------------------
+SHIRTS
+
+Tony Brulotte
+Eagle High School
+6A
+Dance
+
+S: 4
+M: 18
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.101
+ID: 93780b15-ba10-4d2a-ae5c-e122221379a5

@@ -1,0 +1,61 @@
+From: Conor Kennedy
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+McCall-Donnelly High School
+Vandals
+Red, White & Blue
+Tim Thomas
+Tim Thomas
+Conor Kennedy
+Forrest Stanley
+Shannon Carheden
+Rich Prittie
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Michael Foster	GK	12
+	4	Sebastian Carheden		10
+	5	Cooper Berg	D, GK	11
+	6	William Caroll		11
+	7	Kage Stokes		11
+	8	Bogdan Monahan		12
+	9	Kye McCallister	D	12
+	10	Caleb Anderson		12
+	11	Jose Manuel		11
+	12	Jacob Lawless		12
+	14	Toby Klasner		12
+	15	Alex Rich		11
+	17	Solomon Arndt	D	12
+	18	Mike Siuce		10
+	20	Drake Fanslow		11
+	21	Eli Arndt		9
+	22	Cole Warren		10
+	23	Marcus Nelson		10
+	24	Conrad Alexander		12
+	30	Landen Bork	MF	9
+	31	Adam Hoban	GK, D	9
+	33	Jackson Thomas	D	10
+
+---------------------------------------------------------
+SHIRTS
+
+Conor Kennedy
+McCall-Donnelly High School
+4A
+Soccer - Boys
+
+L: 12
+XL: 8
+2XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 172.71.150.116
+ID: 58d3a5f8-92a8-4f54-9cec-f24ad3c57623

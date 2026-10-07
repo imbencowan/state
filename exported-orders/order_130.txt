@@ -1,0 +1,69 @@
+From: Troy Rice
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Rocky Mountain High School
+Grizzlies
+Purple, Black & White
+Derek Bub
+Dan Lunt
+Troy Rice
+Eric Simmonsen
+Geneva Chugg
+Aubree Chatterton
+Aisha Reed
+Kelly Potter
+Alyssa Pyle
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+		Regan Morin		11
+	0 0	Leah Subatani	GK	10
+	1	Bea Levi	GK	12
+	2	Brooklyn Brown	D	12
+	3	Madelyn Jakobson	D, FORW	11
+	4	Natali Madrigal	MF	12
+	5	Andi Hilton	FORW	12
+	6	Hallie Bentzinger	D	10
+	7	Reese Fratusco	FORW	12
+	8	Brynn Wolff	MF	11
+	9	Van Staley	D, MF	11
+	10	Addie Osterhout	MF, D	11
+	11	Liv Gonzales	D	11
+	12	Marli Fullmer	D	9
+	13	Lauren Polson	MF	12
+	14	Emma Moorcroft	D	12
+	15	Elly Levi	D	12
+	16	Addison Altwies	FORW, D	11
+	17	Faith Chatraw	FORW, D	12
+	18	MaKenna Giberson	D	12
+	19	Lydia Maisey	FORW	12
+	20	Brianna Avalos	D	11
+	21	Dilynn Revelle	FORW	10
+	22	Ella Navarro	MF	9
+	23	Kalia DeGuzman	MF	9
+	24	Teagan Weigt	MF, FORW	9
+	25	Campbell Wilson	FORW, MF	11
+
+---------------------------------------------------------
+SHIRTS
+
+Troy Rice
+Rocky Mountain High School
+6A
+Soccer - Girls
+
+M: 4
+L: 22
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 162.158.42.213
+ID: 9da7d109-c4dc-4d32-aab3-ea923d60c412

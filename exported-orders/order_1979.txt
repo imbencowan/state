@@ -1,0 +1,85 @@
+From: Robert Coombs
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Snake River High School
+Panthers
+Purple, White & Black
+Mark Kress
+Ray Carter
+Robert Coombs
+Robert Coombs
+Cory Gilbert
+Tyler Coombs
+Mike Kirkham
+Brandon Jackman
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Preston Wheatley	G	5-10	12
+	3	Buck Anderson	G	5-8	10
+	5	Graham High	G	6-1	11
+	11	Bryden Mortensen	G	6-1	12
+	12	Lincoln Thomas	P	6-3	9
+	13	Brock Mortimer	G	6-0	11
+	14	Taft VanOrden	G	5-10	10
+	15	Hunter Lee	G	6-0	12
+	21	Hunter Thomas	P	6-7	12
+	25	Rod Trejo	P	6-2	12
+	32	Bridjer Howard	P	6-10	11
+	35	Bronson Carter	G	6-1	11
+	41	Owen Jones	P	6-5	11
+	55	Crew Albertson	G	5-11	12
+
+---------------------------------------------------------
+RECORD
+
+16	8
+
+62	Buhl	48
+47	Filer	38
+42	Kimberly	49
+64	Buhl	51
+43	Teton	51
+42	Filer	36
+52	Bonneville	59
+47	Idaho Falls	55
+49	Evanston	37
+61	South Fremont	58
+38	Teton	46
+42	Sugar-Salem	50
+58	Kimberly	41
+44	South Fremont	53
+38	Sugar-Salem	52
+58	Bear Lake	32
+62	Marsh Valley	32
+64	American Falls	45
+51	Bear Lake	20
+49	Marsh Valley	41
+58	American Falls	42
+59	Bear Lake	44
+52	American Falls	36
+46	Marsh Valley	28
+
+---------------------------------------------------------
+SHIRTS
+
+Robert Coombs
+Snake River High School
+4A
+Basketball - Boys
+
+L: 5
+XL: 7
+2XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.111.114
+ID: 6c2fd8ff-5680-4e1c-973e-40d43257f3c7

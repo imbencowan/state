@@ -1,0 +1,69 @@
+From: Troy Rice
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Rocky Mountain High School
+Grizzlies
+Purple, Black & White
+Derek Bub
+Scott Connors
+Troy Rice
+Bill Taylor
+Josh Dalmas
+Michael Karafi
+Ben Tanner
+Gian Torres
+Ethan Bengtzen
+Isaac Szuch
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Paul Mercadante	GK	12
+	3	Garrison Torres	D	12
+	4	Trey Fulmer	D	12
+	6	Jackson Pritchett	D	12
+	7	David Muyolo	FORW	12
+	9	Taulant Hyseni	STRK	12
+	10	Drake Rutz	MF	12
+	11	Gabe Hernandez	STRK	12
+	12	Jacob Ogden	D	12
+	13	Connor Mauritzson	GK	12
+	14	Adrian Jeminez	STRK	12
+	16	Kyler Nishikawa		11
+	17	Kevin Juarez	MF	11
+	18	Taif Alsaadi	MF	11
+	19	Camden Shepherd	MF	12
+	21	Hamza Catovic	MF, FORW	12
+	21	Bryten Rehwalt	D	12
+	23	Devin Sprengel		11
+	26	Sawyer Harris	MF	10
+	27	Marshall Nicolas	FORW	10
+	28	Taylor Martin	STRK	12
+	30	Noah Olsen	D	12
+	33	Tydan Doyle	D	12
+	34	Roman Ramirez		12
+	37	Liam Allred		9
+	39	Eric Garcia		10
+
+---------------------------------------------------------
+SHIRTS
+
+Troy Rice
+Rocky Mountain High School
+6A
+Soccer - Boys
+
+S: 1
+M: 9
+L: 12
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.114
+ID: a6023a8a-b164-41e0-a249-cf34350f1419

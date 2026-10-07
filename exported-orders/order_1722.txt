@@ -1,0 +1,46 @@
+From: John Hartz
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Ridgevue High School
+Warhawks
+Orange, Black, White & Gray
+Lisa Boyd
+Robert Gwyn
+John Hartz
+Maggie Robertson
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Aubry Poulsen	12
+	Danika Van Vorous	12
+	Novalei Baca	12
+	Emily Haustveit	12
+	Isabella Melendez	11
+	Reese Oswald	11
+	Allison Haustveit	10
+	Eliana Olvera	10
+	Shyanne Morgan	9
+	Bryn Bastian	9
+
+---------------------------------------------------------
+SHIRTS
+
+John Hartz
+Ridgevue High School
+6A
+Dance
+
+M: 8
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.110.27
+ID: 9d52025b-3ca9-4eac-a1de-cc877dfe7360

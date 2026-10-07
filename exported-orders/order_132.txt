@@ -1,0 +1,62 @@
+From: Brian Barber
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Boise High School
+Brave
+Red & White
+Lisa Roberts
+Deborah Watts
+Brian Barber
+Ali Leonard
+Nicole Arsenault
+Sydney Smith
+Calle Belodoff
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+		Lucy Hopstad		10
+	0	Marin MacKenzie	GK	12
+	1	Juliette Langlet	GK	12
+	2	Nolyn Cromie		12
+	3	Leidy Nielsen		12
+	4	Lucy King		11
+	5	Avery Singer		12
+	6	Josie Reedy		9
+	7	Elle Frazier		10
+	8	Kunie Hirai		12
+	9	Maizy Kluksdal		12
+	10	Kohl Frazier		12
+	11	Emerson Shirey		11
+	13	Lily Colson		10
+	14	Claire LaMastra		10
+	15	Olivia Lamb		10
+	16	Catherine Carpenter		12
+	17	Ella Moore		12
+	18	Grace Hatch		11
+	19	Amelia Callaghan		12
+	22	Avery Morris		12
+	25	Eden Scott		10
+
+---------------------------------------------------------
+SHIRTS
+
+Brian Barber
+Boise High School
+6A
+Soccer - Girls
+
+S: 1
+M: 12
+L: 9
+
+
+
+
+---------------------------------------------------------
+IP: 172.71.151.101
+ID: b2ccf6be-ff93-4a0b-ae87-a34633060ede

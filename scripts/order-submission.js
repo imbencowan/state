@@ -1,8 +1,9 @@
 import { ihsaaSizeList } from './constants.js';
-import { myFetch } from './fetch.js';
+import { actionFetch, myFetch } from './fetch.js';
 import { ActionRequest, InputOrder } from './models/other-classes.js';
 import { runtime } from './runtime.js';
 import { modal, childModal } from './modal.js';
+import { buildElement } from './utilities.js';
 
 export async function submitOrderFiles() {
 		// load some look ups
@@ -21,19 +22,11 @@ export async function submitOrderFiles() {
 	let request = new ActionRequest('uploadOrders', 'SchoolOrder', { 'orders': orders });
 	let responseJSON = await myFetch(request);
 
-	// document.getElementById("display").innerHTML = responseJSON.html;
-	modal.open(responseJSON.html);
-		// add event listener for comment table checkboxes
-	const commentsContainer = document.getElementById('commentsTable');
-	if (commentsContainer) {
-		commentsTable.addEventListener('change', function(event) {
-			if (event.target.matches('input[type="checkbox"]')) {
-				changeCommentHandled(event.target);
-			}
-		});
-	}
+	if (!responseJSON) return;
+
+	modal.open(buildOrderUploadResults(responseJSON.ordersAdded, responseJSON.preexistingOrders));
 	
-}	
+}
 
 	// this came from gpt, because i'm still fuzzy on how to work with promises. and map.
 async function readFiles(files) {
@@ -88,11 +81,12 @@ function getOrder(orderText, fileName) {
 	const division = getSlice(inputString);
 	let activity = getSlice(inputString);
 	let series;
-	let gender;
-		// make it match the names in the db
+	let gender = 3;
+
+		// get the series based on activity. // make it match the names in the db
 	if (activity.includes('Boys')) {
 		gender = 1;
-			// take the end off it 
+			// remove the 'Boys ' prefix
 		activity = activity.slice(0, -7);
 		series = activity;
 		if (activity == "Basketball") series = "Boys Basketball";
@@ -101,11 +95,11 @@ function getOrder(orderText, fileName) {
 		activity = activity.slice(0, -8);
 		series = activity;
 		if (activity == "Basketball") series = "Girls Basketball";
+	} else if (activity == 'Dance' || activity == 'Cheer'){
+		series = 'Dance & Cheer';
 	} else {
 		series = activity;
 	}
-
-	if (series != 'Soccer') gender = 3;
 
 	const activityID = runtime.allActivities.getByName(activity).id;
 	
@@ -157,4 +151,126 @@ function getSizes(inputString) {
 		++i;
 	});
 	return sizes;
+}
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// display upload results
+
+function buildOrderUploadResults(ordersAdded = [], preexistingOrders = []) {
+	const results = buildElement('div');
+	const added = sortOrders(ordersAdded);
+	const preexisting = sortOrders(preexistingOrders);
+
+	if (!added.length && !preexisting.length) {
+		results.appendChild(document.createTextNode('no orders were submitted'));
+	}
+
+	if (added.length) {
+		results.appendChild(buildElement('h2', { text: 'Orders Added' }));
+		results.appendChild(buildAddedOrdersTable(added));
+
+		const commentOrders = added.filter(order => order.comment !== '');
+		if (commentOrders.length) results.appendChild(buildCommentsTable(commentOrders));
+	}
+
+	if (preexisting.length) {
+		results.appendChild(buildElement('p', { text: 'There is already an order for: ' }));
+		results.appendChild(buildElement('ul', {
+			children: preexisting.map(order => buildElement('li', {
+				title: order.fileName,
+				text: `${order.shortSchool} ${order.gender.name} ${order.series} ${order.year}`
+			}))
+		}));
+	}
+
+	return results;
+}
+
+function sortOrders(orders) {
+	return [...(orders || [])].sort((a, b) =>
+		compareValues(a.series, b.series) ||
+		compareValues(a.division, b.division) ||
+		String(a.school).localeCompare(String(b.school))
+	);
+}
+
+function compareValues(a, b) {
+	if (a === b) return 0;
+	return a < b ? -1 : 1;
+}
+
+function buildAddedOrdersTable(orders) {
+	const headings = ['Sport', 'School', 'Gender', 'Year', 'S', 'M', 'L', 'XL', '2X', '3X'];
+	const thead = buildElement('thead', {
+		children: buildElement('tr', { children: headings.map(text => buildElement('th', { text })) })
+	});
+	const tbody = buildElement('tbody', {
+		children: orders.map(order => buildElement('tr', {
+			classes: 'unDoneRow',
+			children: [
+				buildElement('td', { title: order.fileName, text: order.series }),
+				buildElement('td', { text: order.shortSchool }),
+				buildElement('td', { text: order.gender.name }),
+				buildElement('td', { text: order.year }),
+				...(order.sizes || []).slice(0, 6).map(size => buildElement('td', { text: size }))
+			]
+		}))
+	});
+
+	return buildElement('table', { classes: 'addedOrdersTable', children: [thead, tbody] });
+}
+
+function buildCommentsTable(orders) {
+	const headings = ['School', 'Division', 'Comment', 'Handled'];
+	const thead = buildElement('thead', {
+		children: buildElement('tr', { children: headings.map(text => buildElement('th', { text })) })
+	});
+	const tbody = buildElement('tbody', {
+		children: orders.map(order => {
+			const checkbox = buildElement('input', {
+				classes: 'commentChckBx',
+				attrs: { type: 'checkbox' },
+				dataset: { orderId: order.messageOrderID }
+			});
+			return buildElement('tr', { children: [
+				buildElement('td', { title: order.schoolOrderID, text: order.shortSchool }),
+				buildElement('td', { text: order.division }),
+				buildElement('td', { text: order.comment }),
+				buildElement('td', { children: checkbox })
+			] });
+		})
+	});
+	const table = buildElement('table', { id: 'commentsTable', children: [thead, tbody] });
+
+	table.addEventListener('change', async event => {
+		if (!event.target.matches('input.commentChckBx')) return;
+
+		const checkbox = event.target;
+		const response = await actionFetch('changeCommentHandled', 'MessageOrder', {
+			id: checkbox.dataset.orderId,
+			handled: checkbox.checked
+		});
+		if (response?.data?.rowsAffected) {
+			const body = checkbox.closest('tbody');
+			checkbox.closest('tr').remove();
+			if (!body.querySelector('tr')) table.remove();
+		} else {
+			checkbox.checked = false;
+			modal.open('Something went wrong marking this comment as handled');
+		}
+	});
+
+	return buildElement('div', {
+		children: [buildElement('br'), buildElement('h2', { text: 'Comments' }), table]
+	});
+}
+
+
+
+
+export function getEmailOrders() {
+	const response = actionFetch('getEmailOrders', 'MailAccess');
 }

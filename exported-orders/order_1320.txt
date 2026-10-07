@@ -1,0 +1,55 @@
+From: Ty Price
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Malad High School
+Dragons
+Orange & Black
+Dallan Rupp
+Robert Hannah
+Ty Price
+Camie Tripp
+Gia Haycock
+Alicia Seamons
+Emily Nelson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Stella Merja			10
+	2	Kassie Rupp			9
+	4	Jette Nelson			10
+	5	Brynnlee Jones			12
+	6	Brinley Clark			11
+	7	Kendra Rupp			12
+	8	Izzy Haycock			12
+	9	Quincee Hammer			12
+	10	Tenlee Sweeten			10
+	11	Kyndall Tanner			9
+	12	Paityn Ward			11
+	14	Purity Miller			12
+	16	Mady VanBebber			11
+	19	Olivia Nelson			12
+	20	Kialey Pickett			11
+
+---------------------------------------------------------
+SHIRTS
+
+Ty Price
+Malad High School
+3A
+Volleyball
+
+S: 1
+M: 10
+L: 4
+
+
+
+
+---------------------------------------------------------
+IP: 199.104.23.1
+ID: 48e5c6f8-55d8-4d0a-9cb1-fe85ee52562c

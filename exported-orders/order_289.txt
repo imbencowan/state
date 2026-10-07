@@ -1,0 +1,83 @@
+From: Vince Mann
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Borah High School
+Lions
+Green & Gold
+Lisa Roberts
+Tim Standlee
+Vince Mann
+Ebony Norman
+ShamBrick Williams
+Kayla Haley-Agbeko
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Karli Hall	PG	5-3	11
+	2	Savannah Evans	PG	5-0	12
+	3	Vita Romeo	PG	5-5	12
+	5	Rylee Hale	G, W	5-8	10
+	10	Amayah Defares	G, PG	5-9	12
+	11	Brooklyn Gardiner	PG, G	5-7	10
+	12	Abi Howington	W, G	5-10	11
+	15	Nakiyia Percell	G, W	6-0	10
+	20	Kamryn Krasselt	G, W	5-8	10
+	24	Brinley Chase	G, W	6-1	9
+	25	Kya Davis	G, W	6-1	10
+	40	Hannah Romberg	C	6-2	11
+	42	Myyah Rigsbee	W	5-8	10
+
+---------------------------------------------------------
+RECORD
+
+15	3
+
+57	Capital High School	47
+59	Ridgevue High School 	37
+64	Meridian High School	33
+66	Timberline High School-Boise	63
+41	Boise High School	66
+48	Kuna High School	43
+58	Centennial High School	42
+53	Mountain View High School 	33
+44	Timberline High School-Boise 	20
+50	Eagle High School 	45
+45	Ridgevue High School	28
+54	Rocky Mountain High School 	31
+46	Kuna High School	21
+31	Boise High School 	37
+56	Meridian High School	26
+29	Owyhee High School	46
+42	Mountain View High School 	32
+31	Capital High School	30
+
+---------------------------------------------------------
+COMMENT
+
+thank you!
+
+---------------------------------------------------------
+SHIRTS
+
+Vince Mann
+Borah High School
+6A
+Basketball - Girls
+
+S: 1
+M: 3
+L: 5
+XL: 3
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 207.244.138.11
+ID: 85207ae8-3955-4803-970e-4376b78e9e51

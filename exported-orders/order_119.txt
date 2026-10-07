@@ -1,0 +1,59 @@
+From: Tom Shanahan
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Bishop Kelly High School
+Knights
+Black & Gold
+Bill Avey
+Sarah Quilici
+Tom Shanahan
+Eneko Bereziartua
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Justin McGrew	GK	12
+	3	Dylan Gale	D	11
+	4	Simon Williams	FORW, MF	9
+	5	Cameron Wind	MF, D	11
+	6	Dan Hyman	D, MF	12
+	7	Diego Nava	FORW	12
+	8	Logan Kenworthy	MF, D	9
+	9	Andre Ruplinger	FORW	12
+	10	Jack Ciovacco	FORW, MF	12
+	11	Liam Running	FORW, MF	11
+	12	Patxi Bentz	FORW	12
+	13	RJ Rippert	D	12
+	14	Brayden Thomas	D, MF	12
+	15	Eduardo Longo	GK, FORW	12
+	16	Ian Novosel	D, FB	12
+	17	Jackson Burris	FORW	12
+	18	Mason Schweitzer	MF, FORW	12
+	19	JD Quilici	D	11
+	20	Jake Shepherd	D, MF	9
+	21	Carter Lauer	MF	11
+	22	Blake Delaney	MF, D	12
+	23	Simon Brotman	MF	11
+
+---------------------------------------------------------
+SHIRTS
+
+Tom Shanahan
+Bishop Kelly High School
+5A
+Soccer - Boys
+
+M: 7
+L: 13
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 172.68.22.146
+ID: cb5d5d13-158a-4201-a018-cd66e2337541

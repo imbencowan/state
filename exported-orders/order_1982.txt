@@ -1,0 +1,81 @@
+From: Patrick Hogan
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Teton High School
+Timberwolves
+Orange & Maroon
+Brian Ashton
+Kristin Weston
+Patrick Hogan
+Jay Silver
+Scott Burnside
+Garren Shakespear
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Ian Haskell	G	6-0	10
+	1	Luke Nelson	G	6-1	12
+	2	Drew Moss	F	6-2	11
+	3	Bradley Brown	F, G	6-4	12
+	10	Devin Gutke	G	5-10	12
+	11	Canon Kunz	G, F	6-4	11
+	12	Eli Grant	F, C	6-3	12
+	13	Andrew Thomas	G	6-0	10
+	21	Gideon Taylor	F, C	6-4	11
+	23	Paul Ashton	G	5-10	10
+	32	Mason Beebe	G, F	6-0	10
+	34	Oliver Lifton	C	6-6	12
+
+---------------------------------------------------------
+RECORD
+
+20	5
+
+81	Marsh Valley	57
+79	Bear Lake	42
+38	Eagle	49
+67	Madison	59
+56	Ridgevue	81
+51	Snake River	43
+66	Burley	56
+71	Jackson Hole	44
+75	Spring Creek	57
+74	Idaho Falls	69
+46	Snake River	38
+67	Marsh Valley	50
+60	Bear Lake	47
+59	Ririe	46
+51	Sugar-Salem	61
+60	American Falls	62
+58	Jackson Hole	28
+82	South Fremont	50
+55	Ririe	41
+50	Sugar-Salem	37
+80	South Fremont	56
+64	South Fremont	54
+37	Sugar-Salem	35
+43	Sugar-Salem	51
+29	Sugar-Salem	28
+
+---------------------------------------------------------
+SHIRTS
+
+Patrick Hogan
+Teton High School
+4A
+Basketball - Boys
+
+L: 5
+XL: 7
+
+
+
+
+---------------------------------------------------------
+IP: 69.165.114.26
+ID: 5142df44-70d5-4bc3-9f94-ca869ea92427

@@ -1,0 +1,58 @@
+From: Joshua Smith
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Malad High School
+Dragons
+Orange & Black
+Jon Abrams
+Dallan Rupp
+Joshua Smith
+Jeff Snow
+Chad Maroney
+Ty Price
+Tyrell Hubbard
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Brady Showell	INF, P	12
+	2	Holdyn Higley	INF, OF, P	11
+	3	Brayden Arnout	OF	11
+	4	Hudson Daniels	INF, OF, P	10
+	5	Cale Briggs	INF	11
+	7	Kayson Neal	INF, OF	10
+	8	Carter Blaisdell	INF, P	12
+	9	Dawson Peterson	INF	10
+	10	Brooks Blaisdell	INF, OF, P	11
+	11	Carter Carey	C, INF, P	11
+	13	Ethan Horsley	INF, OF, P	10
+	15	Kyson Willie	OF	10
+	24	Easton Green	OF, INF, P	10
+	27	Brycen Howe	INF, P	12
+	28	Rydon Montgomery	C, INF, OF, P	11
+	35	Kurt Ward	INF, OF, P	11
+	99	Braxden Kaufman	INF, P	10
+
+---------------------------------------------------------
+SHIRTS
+
+Joshua Smith
+Malad High School
+3A
+Baseball
+
+S: 1
+M: 10
+L: 4
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 199.104.23.20
+ID: 2f3cc2e0-3dab-4457-8b69-5531edcd9640

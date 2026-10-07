@@ -1,0 +1,53 @@
+From: Ty Shippen
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Rigby High School
+Trojans
+Maroon & Gold
+Chad Martin
+Bryan Lords
+Ty Shippen
+Faith Stibal
+Natalie Groom
+Sierra Klein
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Camorah Murdock	12
+	Ashton Gneiting	12
+	Payton Dalling	12
+	Samantha Groom	11
+	Tessa Smith	11
+	Shelby Thomas	11
+	Kortney Egbert	11
+	Tylee Hansen	10
+	Lucy Long	10
+	Presley Shepperd	10
+	Sadie Young	10
+	Regan Hansen	10
+	Bristol Warner	10
+	Paisley Clapp	9
+	Brinley Merrill	10
+
+---------------------------------------------------------
+SHIRTS
+
+Ty Shippen
+Rigby High School
+6A
+Dance
+
+S: 12
+M: 3
+
+
+
+
+---------------------------------------------------------
+IP: 38.43.28.203
+ID: 424b5def-1735-4ea8-845f-5ed598fe375f

@@ -1,0 +1,62 @@
+From: Brian Barber
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Boise High School
+Brave
+Red & White
+Lisa Roberts
+Deborah Watts
+Brian Barber
+Mike Darrow
+Grant Hamilton
+Matt Billings
+Steve Smith
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Landon Montgomery		12
+	1	Travis Bartich		12
+	2	Noah Prince		12
+	3	Hudson Faull		11
+	4	Charlie Lamb		12
+	9	Confiance Ishimwe		11
+	10	Baraka Dayi		12
+	11	Alex Hoefer		12
+	12	Avi Rajbhandari		11
+	13	Ben Colborn		12
+	14	Kellen Hulquist		12
+	17	William Pooser		12
+	18	Jack Andonian		11
+	19	Rosdith Bisala Nkalu		11
+	21	Harper Carr		12
+	22	Fletcher Human		10
+	23	Meyer Smith		10
+	25	C.J. Zambukos		10
+	27	Miles Bailey		12
+	28	Tucker Smith		12
+	45	Aiden Kemp		10
+
+---------------------------------------------------------
+SHIRTS
+
+Brian Barber
+Boise High School
+6A
+Soccer - Boys
+
+S: 1
+M: 12
+L: 5
+XL: 3
+
+
+
+
+---------------------------------------------------------
+IP: 172.71.151.101
+ID: e2130e45-79a6-48c2-863d-43fefb7d000a

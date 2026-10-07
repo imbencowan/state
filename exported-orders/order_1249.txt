@@ -1,0 +1,64 @@
+From: Andy Ankeny
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Middleton High School
+Vikings
+Navy & Gold
+Marc Gee
+Johnny Hullinger
+Andy Ankeny
+Adam Fullmer
+Ryan Chris
+Roger Burbage
+Gilbert Rangel
+Travis Moulton
+Faith Wright
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	2	Cadence Steele	HB, STRK	11
+	4	Claire Miller	MF	11
+	5	Brooklyn Alder	STRK	11
+	6	Lina Woodruff	D	11
+	8	Abby Linderman	STRK	12
+	9	Leila Sosa	STRK	11
+	10	Reece Biorn	STRK	11
+	11	Ella Walters	HB	11
+	12	Jetta McCallister	HB, STRK	9
+	13	Kaylee Banks	FB	10
+	14	Autumn Herrin	GK	10
+	15	Megan Stewart	GK	11
+	16	Bailey Fullmer	FB, HB	10
+	17	Brinklie Steele	MF	12
+	18	Hailey Chris	MF	10
+	19	Allie Lantz	HB	11
+	20	Nyah Steele	MF	9
+	21	Payton Rohr	SWEP	12
+	22	Taylor Wallace	MF	11
+	23	Amity Moulton	MF	10
+	24	Abby Silito	MF	11
+	25	Ava Teixeira	MF	10
+
+---------------------------------------------------------
+SHIRTS
+
+Andy Ankeny
+Middleton High School
+5A
+Soccer - Girls
+
+M: 1
+L: 15
+XL: 6
+
+
+
+
+---------------------------------------------------------
+IP: 199.231.248.114
+ID: 2908308b-8911-4b8f-9adf-27ba411b6325

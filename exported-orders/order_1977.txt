@@ -1,0 +1,82 @@
+From: Matt Harris
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Ririe High School
+Bulldogs
+Royal Blue & Gold
+Jeff Gee
+Dr. Kasey Teske
+Matt Harris
+Jordan Hamilton
+Doug Schlader
+Marshall Jensen
+Jeff Gee
+Houston Brown
+Sterling Bybee
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Camden Stosich	Forward	6-1	11
+	1	Dayton Yeck	Guard	5-7	11
+	2	Kolter Lewis	Guard	5-10	12
+	3	Thomas Henderson	Guard	6-2	12
+	4	Cooper Brown	Guard	6-2	12
+	5	Bryce Barber	Guard	5-11	11
+	10	Jefferson Moss	Guard	5-8	11
+	11	Kody Landon	Forward	6-5	12
+	12	Dillon Landon	Guard	6-0	9
+	14	Cole Johnson	Guard	6-2	9
+	20	Austin Landon	Forward	6-4	12
+	23	Ty Anderson	Forward	6-0	11
+	24	Ian Johnson	Forward	6-1	12
+
+---------------------------------------------------------
+RECORD
+
+14	9
+
+61	South Fremont	44
+68	Carey	27
+41	Watersprings	42
+51	Rockland	34
+49	West Side	60
+42	Malad	45
+30	Sugar-Salem	51
+42	West Side	36
+45	Malad	35
+45	North Fremont	32
+46	Firth	25
+46	Teton	59
+47	West Jefferson	57
+65	Salmon	26
+35	Sugar-Salem	41
+58	North Fremont	40
+59	South Fremont	53
+42	Firth	44
+61	West Jefferson	41
+41	Teton	55
+62	Salmon	32
+
+---------------------------------------------------------
+SHIRTS
+
+Matt Harris
+Ririe High School
+3A
+Basketball - Boys
+
+M: 2
+L: 5
+XL: 6
+
+
+
+
+---------------------------------------------------------
+IP: 96.5.131.85
+ID: 27de5fd2-4652-4cf7-8c94-46e1c599c655

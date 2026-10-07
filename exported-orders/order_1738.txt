@@ -1,0 +1,85 @@
+From: Travis Mader
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Prairie High School
+Pirates
+Black, White & Red
+Jon Rehder
+Matt Elven
+Travis Mader
+Teel Bruner
+Jamie Scheffler
+Madison Shears
+Ciara Droegmiller
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+		Mia Anderson	INJ	5-4	10
+	2	Kennedy Riener	G	5-6	11
+	3	Zoey Behler	G	5-6	10
+	4	Sydney Shears	G	5-6	12
+	5	Hailey Hanson	G	5-9	12
+	10	Lillian Rehder	G/P	5-6	11
+	12	Aubree Riener	G	5-9	9
+	14	Erica Schlader	W	5-6	11
+	20	Halee Rowland	P	5-7	11
+	23	Beka Schumacher	P	5-11	10
+	24	Faith Cash	G	5-1	10
+	30	Reagan Brannan	G	5-7	10
+	32	Blake Uhlenkott	G	5-3	10
+	33	Sage Elven	G/P	5-11	12
+	34	Kylie Schumacher	P	5-11	12
+	40	Alli Rambo	P	5-10	10
+
+---------------------------------------------------------
+RECORD
+
+19	5
+
+53	Nezperce	35
+48	Moscow	44
+49	Lapwai	56
+52	Kendrick	33
+20	Grangeville	37
+31	Oakley	37
+38	Grace	37
+42	Kamiah	29
+67	Potlatch	23
+71	Troy	19
+54	Kamiah	42
+57	Potlatch	23
+48	Grangeville	54
+62	Lapwai	39
+57	Kendrick	24
+64	Clearwater Valley	25
+53	Logos	20
+56	Troy	23
+58	Logos	21
+34	Kamiah	28
+63	Clearwater Valley	26
+50	Kamiah	27
+23	Lapwai	41
+
+---------------------------------------------------------
+SHIRTS
+
+Travis Mader
+Prairie High School
+2A
+Basketball - Girls
+
+S: 7
+M: 6
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 64.126.167.18
+ID: c97c3c9f-d17c-443d-9557-b9e6abe71db1

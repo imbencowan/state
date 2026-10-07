@@ -1,0 +1,82 @@
+From: Scott Adams
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Firth High School
+Cougars
+Blue, White & Black
+Basil Morris
+Keith Drake
+Scott Adams
+Shaun Ellsworth
+Bryce Andersen
+Branden Hall
+Austin Jacobsen
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Kiptyn Barney	G		11
+	2	Brycen Andersen	SF		11
+	3	Madex Howell	SG		12
+	4	Stockton Clayson	P		9
+	5	A.j. Flores	G		12
+	10	Quinton Hall	PG	5-8	11
+	11	Ricky Arriaga	SG	5-11	12
+	12	Kamdon Bott	SF, PF		12
+	22	Hayden Trent	C	6-6	12
+	23	Cooper Finch	G	5-9	11
+	24	Wyatt Killpack	C		11
+	32	Cole Blue	C		11
+	34	Gage Lizarraga	SF		11
+
+---------------------------------------------------------
+RECORD
+
+15	8
+
+54	West Side	60
+52	Declo	51
+50	Marsh Valley	54
+71	Owyhee	40
+46	West Jefferson	39
+35	Declo	46
+41	West Side	44
+55	South Fremont	53
+62	Bear Lake	43
+57	Malad	47
+25	Ririe	46
+62	Bear Lake	44
+66	Salmon	32
+54	North Fremont	40
+55	West Jefferson	51
+44	Ririe	42
+63	Salmon	33
+67	South Fremont	72
+45	North Fremont	28
+56	West Jefferson	59
+44	North Fremont	41
+37	Ririe	50
+72	West Jefferson	63
+
+---------------------------------------------------------
+SHIRTS
+
+Scott Adams
+Firth High School
+3A
+Basketball - Boys
+
+M: 4
+L: 8
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 67.215.46.79
+ID: 8732f4eb-14e5-4bb8-9635-538b1e6c0338

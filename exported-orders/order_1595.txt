@@ -1,0 +1,116 @@
+From: Tol Gropp
+Activity: Football
+
+---------------------------------------------------------
+SCHOOL
+
+Timberline High School - Boise
+Wolves
+Blue, Silver & Black
+Lisa Roberts
+Chad Wright
+Tol Gropp
+Ian Smart
+Shawn Res
+Jeremy Haener, Dan Bates
+Terrial Hall
+Don Smart, Eric Taylor
+Matt Austin
+Cameron Weller
+Beau Martin
+David Goodwin
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	weight	grade
+	0	Graysen Crockett	WR, DB	5-9		10
+	1	Hudson Lewis	WR, SS	5-10		12
+	2	Lucas Thompson	WR, DB	5-9		11
+	3	Brody Engroff	RB, LB	5-9		11
+	4	Austin Engroff	SS	6-0		12
+	5	Benton Bates	RB, LB	6-0		12
+	6	Owen Froehlich	DB, WR	5-10		11
+	7	Karl Fransen	DB, WR	6-1		11
+	8	Sam Haener	DE, TE	6-5		12
+	9	Evan Paschke	DL, TE	6-2		11
+	10	Jack Brant	QB	6-0		12
+	11	Nash Okelley	MLB, OLB	6-2		12
+	12	Kian Borja	QB, DB	5-10		10
+	13	Karlitos Lopez	DL, TE	6-2		12
+	14	Hayden Hills	WR, DL	6-1		11
+	15	Evan Anders	LB, RB	5-11		11
+	16	Michael Alvarado	DB, WR	5-10		11
+	17	Fletch Scudder	DB, WR	5-11		11
+	18	Isaac Mills	FB, DL	6-1		12
+	19	Brayden Morrison	DB, WR	5-8		11
+	20	Shawn Barsness	SS, RB	6-0		11
+	21	Max Southorn	DB, WR	5-7		12
+	22	Jacob Everett	K	5-10		12
+	23	Everett Overcash	FS, WR	5-6		11
+	24	Liam Tucker	DB, WR	5-9		9
+	25	Joel Davis	RB, LB	5-9		10
+	26	Elijah Fejeran	RB, LB	5-9		11
+	27	Zain Sheikh	WR, DB	5-10		10
+	28	Tony Faeq	LB	5-10		10
+	30	Kole Hudson	LB, RB	5-7		12
+	31	Andrew Stoor	QB	5-10		9
+	32	Ezra Severson	LB	5-9		11
+	33	Cannon Espindola	LB, RB	5-9		11
+	37	Wyatt Potter	LB	5-8		10
+	38	Hudson Fish	LB, RB	5-9		10
+	39	Hagen Clint	K	5-9		11
+	40	JD Milander	K	5-9		9
+	44	Christian Heryet	TE/DL	5-11		10
+	50	Stephen Hamerl	OL, DL	6-1		11
+	51	Ian Arnold	T, DE	6-2		12
+	52	Eli Morley	OL/DL	5-11		10
+	53	Raphael Stumpp	C, MLB	6-0		12
+	54	Aidan Bakeman	OL, DL	6-1		12
+	55	Jaden Acosta	OL, DL	5-10		10
+	56	Hudson Snook	DL, FB	5-10		11
+	59	Josh Adelman	DE	6-0		11
+	62	Tyler Goodwin	OL, DL	6-2		11
+	66	Gavyn Moore	OL, DL	6-0		10
+	72	Nico McDaniel	OL, DL	5-11		10
+	73	Joseph Caroselli	C, G	6-0		12
+	75	Andrew Price	T, DE	6-6		12
+	77	Shalin Agarwal	OL, DL	5-9		10
+	79	Ben Cooper	OL, DL	5-10		10
+
+---------------------------------------------------------
+RECORD
+
+10	1
+
+61	Borah	7
+43	Nelson	15
+20	Boise	13
+33	Meridian	7
+50	Capital	19
+12	Middleton	26
+49	Centennial	7
+31	Rocky Mountain	20
+35	Eagle	33
+21	Middleton	7
+23	Coeur d'Alene	17
+
+---------------------------------------------------------
+SHIRTS
+
+Tol Gropp
+Timberline High School - Boise
+6A
+Football
+
+M: 8
+L: 22
+XL: 20
+2XL: 3
+
+
+
+
+---------------------------------------------------------
+IP: 207.244.138.57
+ID: 12e12aa6-6f90-4206-a9f1-79b98d8a5238

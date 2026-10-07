@@ -1,0 +1,68 @@
+From: Troy Rice
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Rocky Mountain High School
+Grizzlies
+Purple, Black & White
+Derek Bub
+Dan Lunt
+Troy Rice
+Bill Taylor
+Josh Dalmas
+MIchael Karafi
+Ben Tanner
+Gian Torres
+
+---------------------------------------------------------
+ROSTER
+
+	0	Paul Mercadante	GK	11
+	1	GianCarlo Salazar	GK	11
+	3	Drake Rutz	MF	11
+	4	Trey Fulmer	D	11
+	5	Sri Balamurugan	D	11
+	6	Jackson Pritchett	D	11
+	8	Garrison Torres	D	11
+	9	Taulent Hyseni	STRK	11
+	10	Rylan Mcpherson	STRK	12
+	11	Gabe Hernandez	STRK	11
+	14	Adrian Jeminez	STRK	11
+	16	Jacob Ogden	D	11
+	17	Kevin Juarez	MF	10
+	18	Taif Alsaadi	MF	10
+	19	Camden Shepard	MF	11
+	20	Bryten Rehwalt	D	11
+	21	Ethan Gulick	D	12
+	22	Tydan Doyle	D	11
+	24	Isaac Delgado	STRK	11
+	28	Taylor Martin	STRK	11
+	29	Jerod Belleza	D	10
+	33	Oslo Hart	MF	12
+
+---------------------------------------------------------
+COMMENT
+
+This is a re-submit with the correct information - TK 8:32am 10/17/24  Please use this submission!
+
+---------------------------------------------------------
+SHIRTS
+
+Troy Rice
+Rocky Mountain High School
+6A
+Soccer - Boys
+
+S: 1
+M: 7
+L: 13
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 108.162.246.79
+ID: 1f4d6c7a-ecb8-49a0-9171-4cf4e6888a17

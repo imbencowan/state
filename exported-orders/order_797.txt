@@ -1,0 +1,60 @@
+From: Tina Pelkey
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Nampa Christian High School
+Trojans
+Maroon & Gold
+Greg Wiles
+Jim Eisentrager
+Tina Pelkey
+Jake Allen
+Lance Cheney
+Mike Fast
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Coleson Mensonides	OF	12
+	2	Brayden Schaefer	P, INF	12
+	3	Riley Schaefer	P, INF	11
+	4	Dylan O'Brien	OF	11
+	5	Pete Dice	C, INF	11
+	6	Nate Rundquist	INF	11
+	7	Ben Knudsen	OF, P	10
+	8	Tanner Cagle	OF, P	12
+	11	Colby Ferdinand	INF	12
+	12	Landen Olachea	C, INF	10
+	13	Tate Mensonides	OF, INF	10
+	14	Zac Woods	INF, P	10
+	15	Wyatt Roam	OF	12
+	20	Brody Black	INF, P	10
+	21	Kaden Mullins	INF, P	12
+	23	Jack Ihli	INF, P	12
+
+---------------------------------------------------------
+COMMENT
+
+Thank you for your support of our student-athletes!
+
+---------------------------------------------------------
+SHIRTS
+
+Tina Pelkey
+Nampa Christian High School
+3A
+Baseball
+
+M: 1
+L: 14
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 67.134.58.242
+ID: 77c719c9-d18c-4e14-8a38-822b71ed61de

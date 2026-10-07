@@ -1,0 +1,66 @@
+From: Aaron Lippy
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Coeur d'Alene Charter Academy
+Panthers
+Red, White & Blue
+Daniel Nicklay
+Daniel Nicklay
+Aaron Lippy
+Craig Daigle
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+		Luke Blasick	FORW	9
+		Raphael Renault		11
+		Lucas Davisson	D	9
+	1	Mattis Macmillan	GK	11
+	2	Cooper Hermes	FORW	10
+	3	Liam GarrColes	D	9
+	4	Cruz Portellas	MF	11
+	5	Anthony Haler	MF	10
+	6	Lucas Witherwax	MF	11
+	7	Brooks Judd	FORW	9
+	8	Stefan Pawlik	D	10
+	9	Elliot Engles	FORW	10
+	10	Tate Burkholder	D	12
+	11	Liam Hughes	D	11
+	12	Christian Blasick	FORW	11
+	13	Owen Sharp	MF	12
+	14	Bridger Crawford	D	11
+	15	Taylor Smith	MF	10
+	16	Joseph Nicklay	FORW	11
+	17	Sam Hines	MF	10
+	18	Treffen McCord	MF	12
+	19	Isaac Hines	MF, FORW	12
+	20	Branston Banta	D	11
+	21	Thomas Strait	D	12
+	22	Creighton LeHoist	D	10
+	23	Aedan Aguirre	MF	10
+	24	Patrick Leahy	D	9
+
+---------------------------------------------------------
+SHIRTS
+
+Aaron Lippy
+Coeur d'Alene Charter Academy
+4A
+Soccer - Boys
+
+S: 1
+M: 10
+L: 7
+XL: 3
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 162.158.41.27
+ID: a862ec5a-448f-4edc-88d6-7e37ff1240cf

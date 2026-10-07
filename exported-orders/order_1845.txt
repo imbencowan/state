@@ -1,0 +1,54 @@
+From: Lundyn Stuart
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Pocatello High School
+Thunder
+Red & Blue
+Doug Howell
+Heidi Graham
+Brandon Jackson
+Sylvia Tea
+Kambree Jaglowski
+Madi Sorensen
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Emma Rasmussen	12
+	Jazlyn Malcom	12
+	Bryar Barron	12
+	Lydia Perkins	12
+	Jasmine Rosales	12
+	Juniper Toll	12
+	Sierra Baumgartner	10
+	Lucy Giles	10
+	Addie Strickland	10
+	Kimberly Walden	10
+	Addy Crook	9
+	Kaibree Dunahoo	9
+	Phoenix Fernandez	9
+	Kennedy Giles	9
+	Kambria Woonsook	9
+
+---------------------------------------------------------
+SHIRTS
+
+Lundyn Stuart
+Pocatello High School
+5A
+Dance
+
+S: 2
+M: 5
+L: 8
+
+
+
+
+---------------------------------------------------------
+IP: 169.197.75.109
+ID: 5f2f7ff7-608c-4805-83ae-1dbc02601d29

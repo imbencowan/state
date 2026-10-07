@@ -1,0 +1,81 @@
+From: Mark Van Weerdhuizen
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Fruitland High School
+Grizzlies
+Orange & Black
+Stoney Winston
+Wade Carter
+Mark Van Weerdhuizen
+Willie Lake
+Rodd Baxter
+Tory Bratcher
+Craig Hamann
+John Verbance
+Ross Newman
+Chris Howard
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Aleksi Drollinger	PG		12
+	2	Kennedy Fitch	SF, PF		9
+	3	Madison Hillman	SG		11
+	4	Ali Kriegh	SG		12
+	5	Payson Bratcher	SG, PG		9
+	10	Jordynn Bake	SF		9
+	11	Lexi Clow	SF		10
+	12	Nyah Tubbs	SF		12
+	13	Ella Smith	PG		10
+	14	Jenna Jenks	SF		12
+	20	Karli Roubidoux	G		9
+	21	Paige Williams	F		11
+	23	Maya Skeen	SG, PG		10
+
+---------------------------------------------------------
+RECORD
+
+11	9
+
+43	@ New Plymouth	60
+37	@ Emmett	34
+37	New Plymouth	45
+43	Melba	44
+43	@ Cole Valley Christian	36
+28	McCall-Donnelly	58
+39	@ Marsing	41
+38	Baker (OR)	47
+38	Emmett	36
+39	@ Melba	52
+61	Marsing	31
+45	@ Baker (OR)	67
+52	Weiser	39
+64	@ Homedale	34
+66	Payette	48
+59	Cole Valley Christian	52
+57	@ McCall-Donnelly	54
+40	@ Weiser	60
+56	Homedale	34
+52	@ Payette	35
+
+---------------------------------------------------------
+SHIRTS
+
+Mark Van Weerdhuizen
+Fruitland High School
+4A
+Basketball - Girls
+
+S: 2
+M: 11
+
+
+
+
+---------------------------------------------------------
+IP: 208.98.138.146
+ID: 0b964d07-d3a0-4fcb-a564-6ac9046be8c4

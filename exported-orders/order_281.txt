@@ -1,0 +1,80 @@
+From: Robert Parker
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Pocatello High School
+Thunder
+Red & Blue
+Doug Howell
+Lisa Delonas
+Robert Parker
+Sunny Evans
+Natalie Lewis
+Joshua Pollard
+Chris Shuler
+Heather Enslinger
+Ashlynn Keller
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Adrie Johnson			12
+	1	Abby Lusk			11
+	3	Alivia Marshall			12
+	4	Oakley Hirschi			11
+	5	Hailee Pool			12
+	10	Trelawna Hargraves			12
+	11	Taylee Rogers			12
+	22	Kennasyn Garza			12
+	23	Tessa Hargraves			12
+	25	Saige Hagler			12
+
+---------------------------------------------------------
+RECORD
+
+19	2
+
+56	Bonneville	20
+55	Highland	29
+60	Hillcrest	44
+55	Minico	26
+59	Rigby	40
+58	Twin Falls	38
+52	Highland	39
+52	Madison	50
+66	Preston	20
+56	Twin Falls	17
+50	Century	15
+52	Westlake UT	65
+61	Teton	24
+48	Eagle	50
+55	Shelley	32
+64	Thunder Ridge	60
+84	Minico	21
+72	Century	32
+63	Preston	39
+37	Rigby	26
+66	Idaho Falls	58
+
+---------------------------------------------------------
+SHIRTS
+
+Robert Parker
+Pocatello High School
+5A
+Basketball - Girls
+
+M: 4
+L: 1
+XL: 4
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 173.47.166.81
+ID: 31975751-fada-40f7-a922-15d1f194f18e

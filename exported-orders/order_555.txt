@@ -1,0 +1,83 @@
+From: Molly Olson
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Kendrick High School
+Tigers
+Orange & Black
+Steve Kirkland
+Steve Kirkland
+Molly Olson
+Steve Kirkland
+Drew Eggers
+Robbie Anselmo
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Maddox Kirkland	G	6-1	10
+	1	Cade Silflow	G	6-1	11
+	2	Ralli Roetcisoender	G	6-2	11
+	3	Kolt Koepp	F	6-3	11
+	4	Nathan Tweit	PF	6-3	11
+	5	Wyatt Cook	P	6-3	12
+	10	Landon Sneve	G	5-10	10
+	13	Brock Boyer	P	6-2	12
+	21	Nathan Kimberling	F	6-1	10
+	23	Blake Morgan	G	5-11	9
+	24	Hudson Kirkland	G	6-2	9
+	31	Morgan Boyer	F	6-2	9
+	32	Jerry Anderson	G	5-11	9
+	35	Travis Hix		6-2	11
+
+---------------------------------------------------------
+RECORD
+
+17	7
+
+39	Moscow	48
+46	Sandpoint	39
+66	Logos	51
+53	Kamiah	60
+76	Salmon River	19
+46	Clarkston	47
+64	Pendleton	53
+56	Lewiston	64
+52	St. Maries	50
+51	Lapwai	39
+62	Potlatch	55
+61	Prairie	60
+55	Logos	83
+58	Kamiah	65
+52	Troy	20
+75	Salmon River	42
+58	Prairie	31
+64	St. Maries	44
+64	Potlatch	53
+75	Troy	16
+67	Lapwai	44
+51	Potlatch	44
+70	Logos	62
+52	Kamiah	46
+
+---------------------------------------------------------
+SHIRTS
+
+Molly Olson
+Kendrick High School
+2A
+Basketball - Boys
+
+M: 3
+L: 5
+XL: 6
+
+
+
+
+---------------------------------------------------------
+IP: 69.130.203.66
+ID: 34f2bb56-4a16-41b2-b620-6dbe1ac71907

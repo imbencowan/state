@@ -1,0 +1,57 @@
+From: TJ Clary
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Sandpoint High School
+Bulldogs
+Red & White
+Becky Meyer
+Jacki Crossingham
+TJ Clary
+Alan Brinkmeier
+Makayla Sundquist 
+Aislynn Robertson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Izzy Stark		11
+	1	Marlee Stevens		10
+	2	Cecilia Dignan		12
+	3	Rae Olsen		10
+	4	Aylee Butler		9
+	6	Maggie McClure		10
+	7	Bayah Ratigan		11
+	8	Ella Lett		9
+	9	Ava Gllahe		12
+	11	Alyssa Porter		10
+	12	Vivian Haag		11
+	13	Mackenzie Mitchell		12
+	15	Willow Betz		10
+	16	Isabella Maltby		9
+	17	Elia Howard		12
+	18	Aleeya Anaya		11
+	19	Sawyer Lee		11
+	21	Jordyn Tomco		11
+	22	Hope Barnes		12
+
+---------------------------------------------------------
+SHIRTS
+
+TJ Clary
+Sandpoint High School
+5A
+Soccer - Girls
+
+M: 18
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 168.245.213.188
+ID: 5e7fda6b-7a16-4b29-8c1f-69041f111722

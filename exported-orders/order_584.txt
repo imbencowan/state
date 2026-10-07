@@ -1,0 +1,78 @@
+From: Zach Dong
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Kimberly High School
+Bulldogs
+Red, Black & White
+Luke Schroeder
+Darin Gonzales
+Zach Dong
+Daren Garey
+Ryan Trappen
+Jeremy Jenkins
+Mark Ward
+Shane Pickup
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Broden Anthony	Guard	6-3	12
+	2	MaCraye Bruning	Guard	6-1	11
+	3	Quentin Pettingill	Guard	5-9	11
+	5	Gunner Beckstead	Forward	6-3	10
+	11	Jacob Wyatt	Guard	6-1	11
+	12	Ryker Larson	Guard	6-1	12
+	20	Devin Pettingill	Forward	6-3	12
+	21	Gerwin Jeschke	Forward	6-5	11
+	22	Titus Osterman	Forward	6-4	10
+	23	Ethan Maikranz	Forward	6-3	12
+	24	Porter Lloyd	Guard	6-2	11
+	32	Carolos Paz	Forward	6-3	9
+
+---------------------------------------------------------
+RECORD
+
+9	11
+
+57	American Falls	44
+47	Bishop Kelly	56
+52	Sugar Salem	54
+64	Wendell	66
+58	Jerome	67
+41	Snake River	67
+31	American Falls	45
+52	Skyline	56
+56	Jackson Hole	44
+48	Jerome	46
+54	Sugar Salem	63
+56	Buhl	51
+61	Snake River	71
+49	Wendell	57
+60	Gooding	50
+73	Mountain Home	50
+60	Filer	74
+69	Buhl	54
+69	Filer	64
+66	Gooding	54
+
+---------------------------------------------------------
+SHIRTS
+
+Zach Dong
+Kimberly High School
+4A
+Basketball - Boys
+
+L: 4
+XL: 8
+
+
+
+
+---------------------------------------------------------
+IP: 159.118.253.212
+ID: d49b5acb-75c6-4a28-b886-ba2a03b49440

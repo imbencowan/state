@@ -1,0 +1,88 @@
+From: Chad Hill
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+South Fremont High School
+Cougars
+Red & Black
+Brandon Farris
+Drex Hathaway
+Chad Hill
+Brooke Bailey
+Jackie Rowberry
+Whitney Forbush
+Kaitlynd Torres
+Bruce Kerbs
+Crissy Kerbs
+Carly Klingler
+Mandy Lagerstrom
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Lily Christensen	SG	5-6	12
+	2	Kenzly Neville	SF	5-9	12
+	3	Ty Conger	SG	5-5	11
+	4	Blakely McNeil	SG	5-7	12
+	5	Bailee Webster	SG	5-3	11
+	11	Megan Biorn	PG, SG	5-5	11
+	12	Brindee Bailey	SF	5-10	10
+	13	Sailee Kerbs	PG	5-4	10
+	15	Katelyn Rowley	SF	5-5	12
+	21	Brianne Bailey	PG, SF	5-11	12
+	22	Hayden Larson	Post	6-1	12
+	23	Hallie Robles	SF	5-6	11
+	33	Brookie Bair	Post	6-1	10
+
+---------------------------------------------------------
+RECORD
+
+21	5
+
+55	American Falls	25
+50	North Fremont	45
+50	American Falls	41
+58	West Jefferson	39
+53	Snake River	18
+60	Firth	38
+47	Twin Falls	39
+56	West Jefferson	48
+41	Ririe	33
+54	Jackson Hole	15
+56	Bonneville	52
+55	Idaho Falls	62
+60	Snake River	25
+64	Marsh Valley	48
+55	Teton	47
+59	North Fremont	50
+48	Ririe	47
+36	Sugar-Salem	55
+55	Teton	39
+70	Firth	48
+52	Sugar-Salem	58
+55	Teton	29
+48	Sugar-Salme	49
+61	Teton	41
+45	Sugar-Salem	49
+49	Marsh Valley	45
+
+---------------------------------------------------------
+SHIRTS
+
+Chad Hill
+South Fremont High School
+4A
+Basketball - Girls
+
+M: 4
+L: 9
+
+
+
+
+---------------------------------------------------------
+IP: 192.150.157.109
+ID: b6d3c491-2017-4551-a9d1-50af1589fbfb

@@ -154,47 +154,37 @@ class SchoolOrder extends BasicTableModel {
    // user actions
 	
 	static function uploadOrders($orders) {
-		
-		ob_start();
+		$addedOrders = [];
+		$preexistingOrders = [];
 		
 			// simplify the naming, bring in the input
 		// $orders = $data['orders'];
 		if (!empty($orders)) {
 				// set arrays for new orders, and ones that already exist
-			$addedOrders = [];
-			$preexistingOrders = [];
-			
 				// the & in the foreach allows us to pass a reference rather than a copy, and alter each $order
 			foreach ($orders as &$order) {
 					// we could move the logic in this foreach to a function like processOrder(), and wrap it in withDB() for transaction
 				
-					// gender should come in as the table's id value, because it's easy (just 1, 2, or 3)
+					// get some basics for easy repeated access
 				$genderID = $order['gender'];
-					// it looks like i'm making gender a pair of properties in the order, rather than a gender object
-				$order['genderName'] = '';
-				if ($genderID == 1) {
-					$order['genderName'] = 'Boys ';
-				} elseif ($genderID == 2) {
-					$order['genderName'] = 'Girls ';
-				}
-				
+				$activityID = $order['activityID'];
+				$divisionID = Division::getIDByName($order['division']);
+				$schoolID = School::getIDByName($order['school']);
+if (!$schoolID) Test::logX('School not found: ' . $order['school']);
 					// get the whole series, we need series->minDiv later
 				$series = EventSeries::getByName($order['series']);
+				$activity = Activity::getByID($activityID);
 					// get the school year. an eventinstance in january - may of the 24-25 school year will be represented by 24
 				$year = Year::convertDateToSchoolYear(new DateTime());
-				$eventID = Event::getIDBySeriesIDAndYear($series->id, $year);
-				$divisionID = Division::getIDByName($order['division']);	
-
-					// some series only have competitions for a couple divisions. 
-						// schools in lower divisions play in the lowest division that has a competition
-				if ($divisionID < $series->minDiv) $divisionID = $series->minDiv;
-				$eshdID = EventSiteDivision::getIDByFKs($eventID, $divisionID, $series->id, $genderID);
-				// if ($eshdID === null) Test::logX($eventID, $divisionID, $order['activityID'], $genderID);
-				// Test::logX('eshdID is ' . $eshdID, 'eventID is ' . $eventID, 'divisionID is ' . $divisionID, 'genderID is ' . $genderID);
-				
-					// need to add logic for if $school is not in the db
-				$schoolID = School::getIDByName($order['school']);
-				$order['shortSchool'] = School::shortenSchoolName($order['school']);
+					// now we can get the event
+				$eventID = Event::getIDBySeriesIDAndYear($series->id, $year);	
+					// values to be submitted
+				$orderedBy = $order['orderedBy'];
+				$comment = $order['comment'];
+					// comment is handled if it is empty
+				$commentHandled = ($comment == '') ? 1 : 0;
+				$orderText = $order['orderText'];
+				$fileName = $order['fileName'];
 				
 					// to make SOrderItems
 				$baseSize = 42;
@@ -204,89 +194,72 @@ class SchoolOrder extends BasicTableModel {
 					if ($size > 0) $hoods[$baseSize + $i] = $size;
 					++$i;
 				}
-				
 
-				$orderedBy = $order['orderedBy'];
-				$comment = $order['comment'];
-					// comment is handled if it is empty
-				$commentHandled = ($comment == '') ? 1 : 0;
-				$orderText = $order['orderText'];
-				$fileName = $order['fileName'];
-				
-				
+
+					// get some derived data to be consumed by the front end
+				$order['gender'] = Gender::getByID($genderID);
+				$order['shortSchool'] = School::shortenSchoolName($order['school']);
 				$order['year'] = $year;
 				
-				
-					// we need to do things uniquely for soccer. each MessageOrder should have it's own SchoolOrder
-				if ($series == 'Soccer') {
-						// check if a MessageOrder already exists
-						// don't check for a SchoolOrder, because we will add one as long as there is no messageOrder
-							// this is soccer, each gender gets a SchoolOrder
-					// $messageOrderID = MessageOrder::getIDByEventIDAndSchoolIDAndGenderID($eventID, $schoolID, $genderID);
-					if (!$messageOrderID) {
-							// SchoolOrder::addNewOrder inserts a row in the schoolOrders table
-								// and returns the id for that inserted row
-						$schoolOrderID = SchoolOrder::addNewOrder($eventID, $divisionID, $schoolID, $genderID);
-							// create a new MessageOrder, and then add it to the db
-							// the new id will be returned
-						$o = new MessageOrder(null, $schoolOrderID, $genderID, $orderedBy, $comment, $commentHandled, $orderText, 
-													$fileName, date('Y-m-d H:i:s'));							
-						$messageOrderID = $o->addInstanceToDB();
-						$addedOrders[] = $order;
-					} else {
-						$preexistingOrders[] = $order;
-					}
-					
-						// if it's not soccer, do it the normal way
-				} else {
-						// check if a schoolOrder already exists
-					$schoolOrderID = self::getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID);
-						// if there is no schoolOrder, add it, and return the id for the new row
-					if (!$schoolOrderID) {
-						$schoolOrderID = self::addNewOrder($eshdID, $schoolID);
-					} else {
-					}
-						// check if a messageOrder exists using the schoolOrderID and genderID
-					$messageOrderID = MessageOrder::getIDBySchoolOrderIDAndGenderID($schoolOrderID, $genderID);
-					
-						// if it does not exist, add it, and it's hoods morderitems
-					if (!$messageOrderID) {
-							// create a new MessageOrder, and then add it to the db
-								// the new id will be returned
-				
-						$o = new MessageOrder(null, $schoolOrderID, $genderID, $orderedBy, $comment, $commentHandled, $orderText, 
-													$fileName, date('Y-m-d H:i:s'));	
-						$messageOrderID = $o->addInstanceToDB();
-						
-							// add the team items
-						SOrderItem::addTeamItems($schoolOrderID, $hoods);
-						
-							// here we make sure completeness is set correctly
-								// if the existing SchoolOrder is already marked complete, and a second MessageOrder is added,
-									// it needs to change to partial complete
-								// if it is a blank order, make it unDone
-								// we could make a general function in BasicTableModel to UPDATE x to y if z
-						self::updateCompletenessIf($schoolOrderID, 1, 2);
-						self::updateCompletenessIf($schoolOrderID, 4, 0);
 
-						$addedOrders[] = $order;
-					} else {
-						$preexistingOrders[] = $order;
-					}
+					// some series only have competitions for a couple divisions. 
+						// schools in lower divisions play in the lowest division that has a competition
+				if ($divisionID < $activity->minDiv) $divisionID = $activity->minDiv;
+
+
+					// soccer has separate ESDs for boys and girls, so we need to pass the genderID
+				if ($order['series'] == 'Soccer') {
+					$eshdID = EventSiteDivision::getIDByFKs($eventID, $divisionID, $activityID, $genderID);
+				} else {
+					$eshdID = EventSiteDivision::getIDByFKs($eventID, $divisionID, $activityID);
 				}
 
-				$order['schoolOrderID'] = $schoolOrderID;
+
+				if ($eshdID === null) Test::logX($fileName, $eventID, $divisionID, $activityID, $genderID);
+				
+				
+				
+
+					// check if a schoolOrder already exists
+				$schoolOrderID = self::getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID);
+					// if there is no schoolOrder, add it, and return the id for the new row
+				if (!$schoolOrderID) $schoolOrderID = self::addNewOrder($eshdID, $schoolID);
+
+					// check if a messageOrder exists using the schoolOrderID and genderID
+				$messageOrderID = MessageOrder::getIDBySchoolOrderIDAndGenderID($schoolOrderID, $genderID);
+				
+					// if it does not exist, add it, and it's hoods sorderitems
+				if (!$messageOrderID) {
+						// create a new MessageOrder, and then add it to the db
+							// the new id will be returned
+			
+					$o = new MessageOrder(null, $schoolOrderID, $genderID, $orderedBy, $comment, $commentHandled, $orderText, 
+												$fileName, date('Y-m-d H:i:s'));	
+					$messageOrderID = $o->addInstanceToDB();
+						
+						// add the team items
+					SOrderItem::addTeamItems($schoolOrderID, $hoods);
+					
+						// here we make sure completeness is set correctly
+							// if the existing SchoolOrder is already marked complete, and a second MessageOrder is added,
+								// it needs to change to partial complete
+							// if it is a blank order, make it unDone
+							// we could make a general function in BasicTableModel to UPDATE x to y if z
+					self::updateCompletenessIf($schoolOrderID, 1, 2);
+					self::updateCompletenessIf($schoolOrderID, 4, 0);
+
+					$order['schoolOrderID'] = $schoolOrderID;
+					$order['messageOrderID'] = $messageOrderID;
+					$addedOrders[] = $order;
+				} else {
+					$order['schoolOrderID'] = $schoolOrderID;
+					$order['messageOrderID'] = $messageOrderID;
+					$preexistingOrders[] = $order;
+				}
 			}
 			unset($order);
-		} else {
-			echo "no orders were submitted";
 		}
-		
-		include 'view/ordersAdded.php';
-			// make the html, with the weird output buffer stuff
-		$htmlContent = ob_get_clean();
-		
-		return [ 'html' => $htmlContent, 'data' => $orders, 'ordersAdded' => $addedOrders, 'preexistingOrders' => $preexistingOrders ];
+		return [ 'data' => $orders, 'ordersAdded' => $addedOrders, 'preexistingOrders' => $preexistingOrders ];
 	}
 	
 

@@ -1,0 +1,50 @@
+From: Kevin Stilling
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Wood River High School
+Wolverines
+Green & White
+Jim Foudy
+Julia Grafft
+Kevin Stilling
+Kristyn Rutland
+
+---------------------------------------------------------
+ROSTER
+
+	0	Keira Bearup	DS	5-5	11
+	1	Mady Torres	DS	5-3	10
+	2	Lucy Drougas	MH, OPP	6-1	11
+	3	Story Sharp	S, DS	5-6	12
+	4	Hadley Hodges	OPP, DS	5-7	12
+	5	Ashley Carhuamaca	L, DS	5-4	11
+	6	Natalie Rosser	DS	5-4	9
+	7	Daisy Scales	OH, OPP	5-10	11
+	8	Avery Seaward	OH	5-8	11
+	9	Ellie Sandoz	MH, OH	6-2	12
+	10	Susan Vilcopoma	DS	5-5	11
+	11	Anna Kremenchuk	MH, OH	5-11	11
+	12	Tobie Stilling	MH, OPP	5-11	11
+	13	Maeve Hansmeyer	OH, OPP	5-9	10
+	14	Paityn Nelson	S	5-10	11
+
+---------------------------------------------------------
+SHIRTS
+
+Kevin Stilling
+Wood River High School
+5A
+Volleyball
+
+M: 10
+L: 5
+
+
+
+
+---------------------------------------------------------
+IP: 66.232.90.249
+ID: 70f85efd-5625-4f12-a4f2-b7f1d0820795

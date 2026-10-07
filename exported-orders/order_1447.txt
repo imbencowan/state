@@ -1,0 +1,56 @@
+From: Norma Alley
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Coeur d'Alene High School
+Vikings
+Royal & White
+Shon Hocker
+Victoria Beecher
+Tony Prka
+Carly Curtis
+Joyce Nida
+Sherrie Martin
+Kevin Curtis
+Kara Beidler
+Kylie Njoku
+Erin Miller
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Kaylee Paulson	OH	5-8	12
+	2	Camryn Farrar	OH	5-8	12
+	3	Embree Mckeown	DS	5-3	10
+	4	Bridget Maiani	DS, L	5-4	11
+	5	Eva Callari	S, OH	5-8	10
+	6	Jules Hasso	OH, OPP	5-10	10
+	7	Maren Larson	MB, RS	5-10	10
+	8	Jovie Le	MB, OPP	5-10	11
+	9	Marly Sutich	OPP, MB	5-11	10
+	11	Gianna Callari	OPP, MB	6-1	12
+	12	Aubrey Voorhees	OH	5-6	10
+	13	Hannah Shafer	S	5-11	11
+
+---------------------------------------------------------
+SHIRTS
+
+Norma Alley
+Coeur d'Alene High School
+6A
+Volleyball
+
+S: 1
+M: 5
+L: 5
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 162.218.182.24
+ID: 50d5df76-721d-4cb5-821a-c0d0436055e4

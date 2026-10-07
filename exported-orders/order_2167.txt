@@ -1,0 +1,66 @@
+From: Kent Howell
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Marsh Valley High School
+Eagles
+Blue, Scarlet & White
+Gary Tucker
+Wyatt Hansen
+Kent Howell
+Kent Howell
+Jared Bowman
+Reese Howell
+Wyatt Harris
+Jake East
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1/2	Tate Whitworth	SS	12
+	3	Kade Hemsley	INF	10
+	4	Evan Morrison	2B	9
+	5	Nash Guthrie	C	10
+	6	Kolton Gambrell	RF	9
+	7	Cooper Curzon	LF	12
+	8	Boston Sorensen	OF	12
+	9	Chandler Bennett	C	12
+	10	Denver Peterson	OF	11
+	11	Karter Davis	2B	10
+	12	Ethan Anderson	1B	12
+	14	Jaycek Hull	INF	11
+	17	Vance Larsen	1B	11
+	18	Carter Curzon	UTIL	10
+	21	Bodie Dahlke	3B	9
+	22	Hunter Solomon	CF	11
+	23	Mayan Noble	OF	10
+	25	Zane Wilding	1B	9
+	35	Hunter East	OF	9
+	37	Carson Branson	3B	11
+
+---------------------------------------------------------
+COMMENT
+
+Thank you
+
+---------------------------------------------------------
+SHIRTS
+
+Kent Howell
+Marsh Valley High School
+4A
+Baseball
+
+M: 4
+L: 15
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 67.215.46.44
+ID: 52002271-bf77-492d-9a17-c3508f885f50

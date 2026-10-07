@@ -1,0 +1,78 @@
+From: Mandy Frank
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Victory Charter High School
+Vipers
+Green & Silver
+Marianne Saunders
+Tera Luce
+Mandy Frank
+Sally Ray
+Ali Riley
+Isaac Gomez
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	5	Annabelle Alainz	W, SG	5-5	9
+	10	Avery Kunz	W, G	5-3	10
+	11	Naja Vesterager	C, F	5-11	11
+	15	Bethany Young	G, SG	5-3	9
+	21	Savannah Hunt	G, W	5-3	10
+	22	Mikayla Zink	F, SG	5-9	12
+	23	Taliah Rogers	W, SG	5-8	12
+	24	Tamaya Rogers	PF, SF	6-0	10
+	25	Savanna Prince	F, W	5-4	10
+	32	Leah Ray	PG, SG	5-9	10
+	44	Etta Hodges	W, SG	5-6	10
+
+---------------------------------------------------------
+RECORD
+
+15	6
+
+47	Council	54
+52	Council	44
+55	Treasure Valley Classical Academy	26
+42	Riverstone International	16
+45	Notus	19
+36	Rimrock	46
+28	Cascade	38
+54	Garden Valley	55
+56	Compass Charter	43
+44	Wilder	41
+52	Centennial Baptist	22
+50	North Star	28
+33	Hagerman	45
+49	Liberty Charter	43
+48	Idaho City	21
+47	Gem State Adventist Academy	23
+40	Vision	43
+43	Council	31
+48	Compass Charter	27
+40	Liberty Charter	30
+44	Vision	37
+
+---------------------------------------------------------
+SHIRTS
+
+Mandy Frank
+Victory Charter High School
+2A
+Basketball - Girls
+
+S: 2
+M: 7
+L: 1
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 65.129.120.16
+ID: 50080d8f-e41c-4344-9438-034296a9d866

@@ -1,0 +1,78 @@
+From: Curt-Randall Bayer
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Bonners Ferry High School
+Badgers
+Navy & White
+Jan Bayer
+Lisa Iverson
+Curt-Randall Bayer
+Greg Kissee
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Ty Schrock	PG, SG	6-	11
+	5	Landon Hart	G	6-4	11
+	10	Broden Buckhanan	SG	5-8	11
+	11	Peyton Hinthorn	SG, F	6-5	11
+	12	Brydin Weymer	SG	5-9	9
+	14	Riston Allred	G, F	6-3	11
+	20	Bo Dee Scarborough	PG	5-10	10
+	23	Sulay Abubakari	SF	6-7	12
+	33	Micah Thomson	F, C	6-6	12
+	35	Jameson Cartwright-Kissee	SG	6-1	11
+	42	Dallin Baisden	G	5-11	9
+	44	Gordon Woelfle	G	6-1	9
+
+---------------------------------------------------------
+RECORD
+
+12	8
+
+45	Sandpoint	67
+76	East Valley	60
+61	Lakeland	69
+68	Stillwater Christian	58
+60	Lewiston	72
+64	Moscow	58
+69	Lake Roosevelt	51
+53	Reardan	75
+55	Lewiston	73
+57	Stillwater Christian	82
+85	Lakeside	83
+77	Timberlake	55
+48	St. Maries	79
+69	Kellogg	50
+66	Lakeside	70
+76	Flathead Valley	64
+66	Kellogg	61
+79	Priest River	44
+71	Timberlake	53
+70	Timberlake	48
+
+---------------------------------------------------------
+SHIRTS
+
+Curt-Randall Bayer
+Bonners Ferry High School
+4A
+Basketball - Boys
+
+M: 4
+L: 1
+XL: 5
+2XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 162.142.102.190
+ID: a311304f-bd05-4420-9f2e-67fa1a4ca7a8
+ID: 38aa5d47-9597-4918-9e36-82392013101b
+ID: 4a4b813d-0c32-4e24-ac05-29c38fcd6218

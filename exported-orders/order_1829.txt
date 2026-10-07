@@ -1,0 +1,56 @@
+From: Brent Knapp
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Preston High School
+Indians
+Blue & White
+Gary Thomas
+Clint Peery
+Brent Knapp
+Devyn Jones
+Lily Gleason
+Vicki Brackin
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Addison Milligan 	
+	Araeli Atkinson	
+	Avery Higley 	
+	Blakely Jensen	
+	Braeli Luke 	
+	Eliza Hull 	
+	Ella Bingham	
+	Emmaree Mouritsen	
+	Greenlee Christensen	
+	Harley West	
+	Heidi Burbank	
+	Isabella Diago 	
+	Kinsley Riter	
+	Kendra Terry 	
+	Lauren Palmer	
+	Macklee Bowcut 	
+	Madyson Checketts 	
+	Alexandra Taut 	
+
+---------------------------------------------------------
+SHIRTS
+
+Brent Knapp
+Preston High School
+5A
+Dance
+
+S: 9
+M: 9
+
+
+
+
+---------------------------------------------------------
+IP: 208.98.189.205
+ID: 756b8d9c-55cc-4381-938b-93f2c9dfa50c

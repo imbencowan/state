@@ -1,0 +1,55 @@
+From: Scott Burton
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Jerome High School
+Tigers
+Black & Orange
+Brent Johnson
+Nathan Tracy
+Scott Burton
+Karly Hudelson
+David Garcia
+Abriana Dally
+Jenny Jackson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Vayda Ortega	INF, UTIL	10
+	1	Baylie Burke	INF, UTIL	10
+	2	Peyton Thompson	OF, INF	11
+	4	Zada Larsen	INF, C	10
+	5	Ellie Helmer	OF, UTIL	11
+	6	Capreece Beilke	OF, UTIL	10
+	7	Emma Allen	C, OF	12
+	8	Briaunna Robbinette	P, INF	12
+	9	Sarah Spellerberg	OF	12
+	10	Kourtney Harris	OF, P	11
+	11	Abiegayl Hinton	INF	12
+	12	Sawyer Gararad	SS, UTIL	9
+	16	MaKenzie Messick	INF, P	9
+	18	Ally Jackson	C, INF	9
+
+---------------------------------------------------------
+SHIRTS
+
+Scott Burton
+Jerome High School
+5A
+Softball
+
+S: 2
+M: 10
+L: 1
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 174.230.196.53
+ID: 0848dbaa-9809-4f7a-ad42-9c0587d4d0c1

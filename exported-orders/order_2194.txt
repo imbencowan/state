@@ -1,0 +1,57 @@
+From: Matt Neff
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Lakeland High School
+Hawks
+Green & Gold
+Jake Massey
+Jimmy Hoffman
+Matt Neff
+Dwayne Curry
+Mackenzie Smith
+Lindsey Entel
+Matea Dorame
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Ada Blakemore		11
+	2	Delilah “Dizzy” Zimmerman		12
+	3	Macie Chapple		12
+	4	Katie Nave		10
+	8	Gracie Gurney		12
+	9	Abby Helmholz		11
+	11	Reece Vanek		10
+	12	Raygen Dutton		11
+	14	Reece Dutton		10
+	21	Jaiden Corbey		11
+	22	Marisa Evans		12
+	33	Ella Ferguson		9
+	54	Avah Gonzales		9
+	55	Katie Dewey		12
+	56	Alyssa Ryckman		12
+	57	Allison Grantham		10
+	77	Kiersten Drake		12
+
+---------------------------------------------------------
+SHIRTS
+
+Matt Neff
+Lakeland High School
+5A
+Softball
+
+S: 13
+M: 4
+
+
+
+
+---------------------------------------------------------
+IP: 162.218.180.34
+ID: a658e605-5c7f-47d5-84cd-971760eb4671
+ID: 4e28cc50-9d83-4a21-a609-174b0c254327

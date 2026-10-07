@@ -1,0 +1,53 @@
+From: Janina Beard
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Moscow High School
+Bears
+Red, Black & White
+Shawn Tiegs
+Erik Perryman
+Patrick Laney
+Tiffany Scripter
+Icelynn Bird 
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Hailey Brewer	9
+	Abigail Cox	10
+	Venessa Deife	10
+	Ashlyn Fakhouri	11
+	Shaelyn Garcia 	9
+	Trinity Hall	10
+	Ashley Hansen	11
+	Anna Linskey	10
+	Peyton Lowry	9
+	Charlie Maxcer	9
+	Mason Schulte	11
+	Emerson Shuffield	10
+	Ashley Stenlund	11
+	Anna Yates	12
+
+---------------------------------------------------------
+SHIRTS
+
+Janina Beard
+Moscow High School
+5A
+Cheer
+
+S: 1
+M: 10
+L: 2
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 64.126.141.208
+ID: 88c7f324-837e-4fe4-8c1d-79d122008a1b

@@ -1,0 +1,82 @@
+From: Lundyn Stuart
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Pocatello High School
+Thunder
+Red & Blue
+Doug Howell
+Heidi Graham
+Brandon Jackson
+Sunny Evans
+Natalie Lewis
+Joshua Pollard
+Ashylnn Keller
+Heather Enslinger
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+		Ary Gonzalez			11
+	0	Claire Schaugaard			10
+	1	Abby Lusk			12
+	2	Brynlee Pool			11
+	4	Camryn Tatom			11
+	5	Oakley Hirschi	SF, PF		12
+	10	Paislee Teeples			10
+	11	Lainey Rogers			11
+	14	KaileeJo Finlayson			12
+	15	Madysen Torngren			10
+	21	Maeve Rollins			10
+	23	Adelyn Shuler		5-7	11
+
+---------------------------------------------------------
+RECORD
+
+16	7
+
+39	Highland	31
+59	Hillcrest	52
+30	Rigby	47
+46	Twin Falls	29
+33	Highland	35
+45	Madison	62
+43	Preston	35
+53	Twin Falls	43
+67	Century	32
+48	Skyridge	45
+60	Thunder Ridge	65
+47	Lakeland	63
+52	Shelley	50
+50	Bonneville	32
+54	Thunder Ridge	61
+61	Burley	57
+67	Century	34
+50	Preston	46
+37	Rigby	62
+64	Idaho Falls	39
+55	Burley	34
+43	Preston	34
+47	Preston	40
+
+---------------------------------------------------------
+SHIRTS
+
+Lundyn Stuart
+Pocatello High School
+5A
+Basketball - Girls
+
+L: 7
+XL: 3
+2XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 169.197.75.109
+ID: b50d2a78-7f01-4738-a2ce-9c3148c06a82

@@ -1,0 +1,85 @@
+From: Joshua Smith
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Malad High School
+Dragons
+Orange & Black
+Jon Abrams
+Dallan Rupp
+Joshua Smith
+Trevor Jones
+Tyson Daniels
+Dave Anderson
+Joe Miller
+Alex Probst
+Allison Eliason
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Samantha Schrenk	G		
+	2	Kiley Miller	G		11
+	3	Brinley Clark	G, W		10
+	4	Teagan Daniels	G		12
+	5	Brynnlee Jones	G, W		11
+	10	Izzy Haycock	G, W		11
+	11	Mikell Keetch	G, W		11
+	12	Paityn Ward	G, W		10
+	13	Scarlet Hawkes	P, W		11
+	14	Madi VanBebber	C, P		10
+	15	Braylin Beutler	W, G		11
+	21	Kendra Rupp	P, G		11
+	22	Jette Nelson	G, W		
+	24	Olivia Nelson	C, P		11
+	25	Emree Hanks	G, W		
+
+---------------------------------------------------------
+22	1
+
+54	Soda Springs	42
+56	West Side	30
+52	Wendell	24
+74	Aberdeen	38
+53	Declo	15
+45	Bear Lake	39
+51	American Falls	21
+49	Ririe	24
+76	Firth	50
+50	West Jefferson	24
+57	Marsh Valley	25
+56	Parma	40
+72	Melba	23
+36	Bear Lake	61
+59	Ririe	50
+58	American Falls	43
+62	West Side	30
+65	Aberdeen	14
+54	Soda Springs	33
+59	Firth	35
+55	West Side	19
+52	Declo	38
+41	Soda Springs	32
+
+
+---------------------------------------------------------
+SHIRTS
+
+Joshua Smith
+Malad High School
+3A
+Basketball - Girls
+
+S: 4
+M: 8
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 199.104.23.1
+ID: 64b6f988-99b0-45fc-b156-f8beef018148

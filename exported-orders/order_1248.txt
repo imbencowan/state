@@ -1,0 +1,59 @@
+From: Zach Dong
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Kimberly High School
+Bulldogs
+Red, Black & White
+Luke Schroeder
+Darin Gonzales
+Zach Dong
+Suzy Harper
+Madison Smith
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Kate Walters	GK	10
+	2	Alison Bean	D	12
+	3	Britney Pettingill	FORW	9
+	4	Anna Hanchey	D, MF	10
+	5	Haley Bitner	FORW, D	10
+	7	Hannah Fisher	FORW	10
+	8	Julisa Juarez	D	10
+	9	Parli Adams	D	10
+	10	Renetta Welch	MF, D	10
+	11	Ava Harper	MF	12
+	12	Reagan Hufstetler	MF, D	11
+	13	Charlotte Siebeneicher	FORW, D	11
+	14	Emily Higbee	MF, FORW	10
+	15	Hazel Wyatt	FORW	10
+	16	Luisa Bogner	D, FORW	12
+	17	Giana Renaldi	D, FORW	11
+	21	Taylor Williams	D	11
+	23	Joy Hanchey	D, GK	11
+	26	Emma Chavez	FORW	11
+	28	Cassidy Johnson	FORW	11
+
+---------------------------------------------------------
+SHIRTS
+
+Zach Dong
+Kimberly High School
+4A
+Soccer - Girls
+
+S: 2
+M: 13
+L: 4
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 159.118.253.212
+ID: 063f6d48-8443-4963-b262-0394f99bb791

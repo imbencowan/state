@@ -1,0 +1,71 @@
+From: Zach Dong
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Kimberly High School
+Bulldogs
+Red, Black & White
+Luke Schroeder
+Darin Gonzales
+Zach Dong
+Amanda Plew
+Caitlin Ward
+Lynda Moses
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Claire Eaton 	9
+	Evelynn Shetler	9
+	Morgan Benedict	9
+	Brielle Bowman	9
+	Ellie Black	9
+	Stacy Barrett	9
+	Brinley Giles	9
+	Ileana Wood-Orozco	10
+	Vyvian Heidemann	10
+	Katie Gearheart	10
+	Bentley Peterson	10
+	Piper Young	10
+	Haylie Moore	10
+	Abigayle Shepherd	10
+	Leesa Phillips	10
+	Lissy Erickson	10
+	Ava Green	10
+	A'jah Cystrunk	11
+	Maiya Greenhalgh	11
+	Kailee Abramowski	11
+	Kelsie Dawson	11
+	Maizee Olsen	12
+	Jazzy Lierman	12
+	Madi Trappen	12
+	Ericha Sorensen	12
+	Holly Erickson	12
+	Kate Lewis	12
+	Briley Stanger	12
+	Dakota Wayment	12
+	Brie Black	12
+	Brinley Bitner	12
+	Kaylee Aburto 	12
+
+---------------------------------------------------------
+SHIRTS
+
+Zach Dong
+Kimberly High School
+4A
+Cheer
+
+S: 5
+M: 20
+L: 5
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.110.172
+ID: b58f44af-0946-4c4c-8b30-6b544f071122

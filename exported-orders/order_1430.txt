@@ -1,0 +1,52 @@
+From: Alex Zepeda
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Priest River Lamanna High School
+Spartans
+Orange & Black
+Kim Spacek
+Vanessa Haggett
+Alex Zepeda
+Katlyn Ward
+Heidi Luckey
+Lindsay Troudt
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Kenadie Kingery			12
+	2	Callie Stanger			11
+	3	Jayda Storro			12
+	4	Toni Marinello			12
+	5	Jasmine Stark			11
+	6	Rylee Dixon	MB		11
+	7	Madi Grove	S		10
+	8	Haylee Jepson-Church			11
+	9	Raygn Turner			11
+	11	Aleigha Jensen			12
+	12	Hadley Sandau			9
+	13	McKinley Burgess-Duquette			10
+	14	Courtney Whitaker	MB		10
+
+---------------------------------------------------------
+SHIRTS
+
+Alex Zepeda
+Priest River Lamanna High School
+3A
+Volleyball
+
+S: 2
+M: 8
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 173.225.87.250
+ID: 5aa406cd-d922-4635-9833-428748820f54

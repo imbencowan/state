@@ -1,0 +1,49 @@
+From: Brian Hardy
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Valley High School
+Vikings
+Blue & White
+Ty Jones
+Risa Moffitt
+Brian Hardy
+Katie Clark
+Carrie Morgan
+Tannah Waltermeyer
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Emily Huettig	MH	5-10	10
+	2	Hayli Gordon	S	5-6	10
+	3	Kinsey Frudden	MH	5-10	9
+	4	Hailey Malone	OH	5-5	11
+	5	Seleni Sanchez	L	5-4	12
+	6	Ariani Flores	OPP	5-5	10
+	7	Daisy Flores	OPP	5-6	12
+	8	Vianey Damian	DS	5-3	11
+	9	Azaria Balls	S	5-5	9
+	24	Sophia Crumrine	OH	5-6	11
+
+---------------------------------------------------------
+SHIRTS
+
+Brian Hardy
+Valley High School
+2A
+Volleyball
+
+S: 4
+M: 5
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 97.132.137.228
+ID: 63dae2fc-8add-40b9-b5c3-782f1e8db9a8

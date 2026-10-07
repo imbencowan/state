@@ -1,0 +1,59 @@
+From: Tyler Johnson
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Bonneville High School
+Bees
+Green, Gold & White
+Scott Woolstenhulme
+Justin Jolley
+Tyler Johnson
+Josh Sutherland
+Adam Rudd
+Jessy Coffman
+Brenlee Cherry
+Mara Shiffler
+Cody Dykes
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Gracie Longhurst	P, OF	11
+	2	Kherrington Christensen	2B, UTIL	11
+	3	Paige Bourgeois	OF	11
+	4	Lila Coffman	P, UTIL	10
+	8	Paisley Bowler	OF	12
+	11	Alli Sutherland	CF, OF	12
+	14	Frankie Spagnolo	RHP, 1B	9
+	16	Adalyn Brown	3B	10
+	17	Gracie Dennett	P, INF	10
+	18	Keeli Miller	SS, INF	11
+	19	Aniyah Galaviz		9
+	21	Alyvia Rudd	1B, C	11
+	22	Kamaya Dykes		10
+	23	Evelyn Ryan	C, 3B	9
+	25	Mckynlie Cook	1B, OF	11
+	29	Diana Peterson	UTIL	12
+
+---------------------------------------------------------
+SHIRTS
+
+Tyler Johnson
+Bonneville High School
+5A
+Softball
+
+S: 1
+M: 11
+L: 3
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 192.42.147.17
+ID: 8fe94dd5-0dbb-47f9-852e-2f9c552c0f48

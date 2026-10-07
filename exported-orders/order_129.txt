@@ -1,0 +1,59 @@
+From: Tol Gropp
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Timberline High School - Boise
+Wolves
+Blue, Silver & Black
+Lisa Roberts
+Diana Molino
+Tol Gropp
+Maison O'Neill
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Eve Engle		9
+	1	Alexis Salisbury		10
+	2	Gabriella McHargue		11
+	4	Annika Callender		9
+	5	Maura Walters		11
+	6	Jade Vachek		12
+	7	Eva Rivera		9
+	8	Allee Haynes		9
+	9	Gracen Hildebrand		9
+	10	Mackenzie Hildebrand		11
+	11	Claire Corson		9
+	12	Hailey Thistle		12
+	13	Ella St. Pierre		12
+	14	Francesca Truax		12
+	15	Abbey Arrossa		11
+	16	Aliza Boggs		10
+	17	Maya Atkinson		10
+	18	Whitney Draper		10
+	19	Morgan Woods		11
+	20	Reese Vachek		10
+	21	Riley Unruh		11
+	22	Lola Simpson		11
+
+---------------------------------------------------------
+SHIRTS
+
+Tol Gropp
+Timberline High School - Boise
+6A
+Soccer - Girls
+
+S: 1
+M: 7
+L: 14
+
+
+
+
+---------------------------------------------------------
+IP: 172.68.22.147
+ID: 570ac0f0-31b6-47a5-8ddb-15d2252ed22a

@@ -1,0 +1,70 @@
+From: Todd Cady
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Columbia High School
+Wildcats
+Maroon & Gold
+Greg Russell
+Cory Woolstenhulme
+Todd Cady
+Jacci Markham
+Andrea Williams-Rhodes
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Elyscia Rios	12
+	Sophia Kirkman	12
+	Adelynn Wall	12
+	Suzy Keller	12
+	Katie Wyne	12
+	Mia Barrios	12
+	Alexis Poole	12
+	Annalee Austin	12
+	Jenny Skeen	12
+	Averi Barrett	11
+	Abbigail Villascan	11
+	Abby Davis	11
+	Jo Sundquist	11
+	Reagan Brooks	10
+	Amayah Flores	10
+	Bella Stimpson	10
+	Deangelo Muro	10
+	Emersyn Wall	10
+	Jaidyn Davis	10
+	Joslyn Maurer	10
+	Roxy Cleverly	10
+	Alyssa Magley	9
+	Anamarie Bohlin	9
+	Brielle Suldan	9
+	Evala Tuckett	9
+	Gracee Yarbrough	9
+	Kyla Malson	9
+	Mayan Nelson	9
+	Noah Flores	9
+	Olivia Joyner	9
+	SImone Brown	9
+	Emma Vicek	9
+
+---------------------------------------------------------
+SHIRTS
+
+Todd Cady
+Columbia High School
+5A
+Dance
+
+S: 1
+M: 25
+L: 6
+
+
+
+
+---------------------------------------------------------
+IP: 104.225.183.7
+ID: 1b220b25-8098-4331-803b-75421aa0b639

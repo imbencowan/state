@@ -1,0 +1,54 @@
+From: Catey Walton
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Timberlake High School
+White Tigers
+Gold & Navy
+Lisa Arnold
+Ryne Eberlin
+Catey Walton
+Casi Lupinacci
+Jenny Whaley 
+Laura Sanchez
+Becca Malloy
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Willow Mattson		10
+	2	Prestyn Gardner		9
+	4	Claire Linder		10
+	7	Taylor Bentley		12
+	8	Amy McCune		12
+	10	Lillian Lamp		10
+	11	Reese Allaway		12
+	12	Shae Jones		9
+	16	Hallah Lee		10
+	18	Marissa Needs		12
+	19	Alannah Winland		9
+	20	Emilia Landon		10
+	22	Jesi Kitchin		12
+	24	Sadie Green		9
+
+---------------------------------------------------------
+SHIRTS
+
+Catey Walton
+Timberlake High School
+4A
+Softball
+
+S: 1
+M: 8
+L: 5
+
+
+
+
+---------------------------------------------------------
+IP: 172.56.104.101
+ID: 2e0d720a-5447-48c2-8a09-71dbf02c004d

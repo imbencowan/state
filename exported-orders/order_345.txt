@@ -1,0 +1,63 @@
+From: Brandon Jackson
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+American Falls High School
+Beavers
+Red, White & Black
+Randy Jensen
+Travis Hansen
+Brandon Jackson
+Erin Kress
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Adair, Bryn	10
+	Alvarez, Laila	12
+	Andersen, Amy	10
+	Castorena, Payzlee	10
+	Castorena, Pixie	9
+	Clinger, Ali	9
+	Colucci, Ella	11
+	Colucci, Haydn	9
+	Flores, Devanhi	10
+	Giesbrecht, Italie	10
+	Gugelman, Addison 	9
+	Hall, Shayla	10
+	Hernandez, Elizabeth	11
+	Hess, Khloie	10
+	Hodgkiss, Brylee	10
+	Hunt, Kenzie	10
+	Mortenson, Maycee	10
+	Neibaur, Kaylee	10
+	Orozco, Melyssa	9
+	Rangel, Nayeli	11
+	Schmitt, RayAnna	10
+	Smith, Zoe	9
+	Soltero, Arianna	9
+	Sprague, Aubrey	11
+	Tarbet, Kabree	10
+	Balkowitsch, Gabby	12
+	Anderson, Payton	10
+
+---------------------------------------------------------
+SHIRTS
+
+Brandon Jackson
+American Falls High School
+4A
+Dance
+
+S: 20
+M: 7
+
+
+
+
+---------------------------------------------------------
+IP: 162.218.180.122
+ID: d1b434eb-de80-407c-aaf8-6c32602429ae

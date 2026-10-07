@@ -6,7 +6,8 @@ class Activity extends BasicTableModel {
    protected static function getColumns(): array { 
 		return ['id' => 'activityID', 
 					'name' => 'activityName', 
-					'isIndividualed' => 'isIndividualed'];
+					'isIndividualed' => 'isIndividualed',
+					'minDiv' => 'minDiv'];
 	}
 		// no relations
 	protected static function getRelations(): array { return []; }
@@ -14,7 +15,8 @@ class Activity extends BasicTableModel {
 	public function __construct(
 		public readonly ?int $id,
 		public readonly ?string $name,
-		public readonly ?string $isIndividualed
+		public readonly ?string $isIndividualed,
+		public readonly ?int $minDiv
    ) {}
 }
 ?>

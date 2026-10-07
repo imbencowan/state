@@ -1,0 +1,52 @@
+From: Brodie Parrott
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Filer High School
+Wildcats
+Red, White & Navy
+Kelli Schroeder
+Shane Hild
+Brodie Parrott
+Jade White
+Josie Oliver 
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Caysha Whitaker	11
+	Shiloh Hills 	11
+	Kambree Bailey 	9
+	Amelia Noble	9
+	Madilyne Dyer 	12
+	Jessie Perrin 	12
+	Bailey Schlund	11
+	Olivia Sutherland 	11
+	Brigham Coltharp	11
+	Emry Wadsworth 	10
+	Jackson Sowell	11
+	Bevyn Pemberton	10
+
+---------------------------------------------------------
+SHIRTS
+
+Brodie Parrott
+Filer High School
+4A
+Cheer
+
+S: 4
+M: 4
+L: 2
+XL: 1
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 66.232.70.36
+ID: 2aebf441-5d7a-49a3-a3ad-e95fab928550

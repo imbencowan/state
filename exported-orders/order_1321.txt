@@ -1,0 +1,51 @@
+From: Cory Dickard
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Melba High School
+Mustangs
+Red & White
+Sherry Ann Adams
+Eric Forsgren
+Cory Dickard
+Curtis Johnson
+Mikaila Miller
+Maren Cooper
+Addison Herbeck
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Victoria Rivas	DS, S		12
+	2	Darby Lowber	MH	5-10	12
+	3	Jessie Rea	DS		11
+	4	Alli Dillbeck	L		12
+	5	Brenna McBride	OH		11
+	6	Kodi Adams	OPP, DS		12
+	6	Mackenzie Rose	DS	5-1	11
+	7	Nyah Richardson	, OH		12
+	8	Shelby Dean	MB	5-9	11
+	9	Mckinley Parkinson	OPP, MB		10
+	10	Aleena McBride	DS		9
+	12	Ellie Johnson	S	5-9	12
+
+---------------------------------------------------------
+SHIRTS
+
+Cory Dickard
+Melba High School
+3A
+Volleyball
+
+S: 6
+M: 6
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.111.50
+ID: e9d9c0b5-f024-4faa-ac2c-f40a7e97571b

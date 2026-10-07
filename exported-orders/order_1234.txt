@@ -1,0 +1,70 @@
+From: Zairrick Wadsworth
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Skyline High School
+Grizzlies
+Navy & Light Blue
+Karla LaOrange
+Josh Newell
+Zairrick Wadsworth
+Erick Vivar
+Katy Qualls
+Andy Solis
+Alejandro Ledezma
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+		Adrian Solis		11
+	1	Francisco Ramos	GK	12
+	2	Fabian Vivar	FB, D	11
+	3	Boston Hugues-Rutz	D	12
+	4	Victor Rivera	D	12
+	5	Jordan Lopez	MF, FB	11
+	7	Edgar Ramos	FORW, FB	12
+	8	Jair Palacios	HB, MF	11
+	9	Angel Solorio	FORW	12
+	10	Santino Antrim	STRK, MF	12
+	11	Damian Riedelbach	FORW	11
+	12	Mason Frasure	FB	12
+	13	Jovanni Gordo	HB	11
+	14	Cody Robinson	D	11
+	15	Eduardo Chiapa	MF	12
+	16	Mason Martin	FB	12
+	17	Dennys Mendez	STRK, FORW	12
+	18	Fernando Trejo	D	11
+	19	David Chavez	MF	10
+	20	Draxton Dye	D	10
+	22	Yahir Chiapa	STRK	10
+	34	Misael Trejo	D	
+	37	Kaleb Gutierrez	STRK, FB	10
+	42	Erlantz Murga-Torre	FB, D	11
+	43	Alexander Estrada	FORW	12
+
+---------------------------------------------------------
+COMMENT
+
+Please add order for coaches 1 small, 2 Large, 1 X large
+
+---------------------------------------------------------
+SHIRTS
+
+Zairrick Wadsworth
+Skyline High School
+5A
+Soccer - Boys
+
+M: 5
+L: 15
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 209.141.121.107
+ID: 938f53ca-1899-4272-b82f-c0436a590f44

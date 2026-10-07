@@ -1,0 +1,69 @@
+From: Peter Horan
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Boise High School
+Brave
+Red & White
+Lisa Roberts
+Deborah Watts
+Peter Horan
+Ali Leonard
+Sydney Smith
+Caroline Baker
+Mikayla Schachtell
+Calle Beledoff
+Miah Mollay Broz
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Joee Cromie	GK	9
+	2	Regan Walker	W	11
+	3	Lucy Hopstad	M	11
+	4	Lucy King	M	12
+	5	Sidonie Herbeck	W	12
+	6	Josie Reedy	F	10
+	7	Elle Frazier	M	11
+	8	Gianna Puopolo	OB	12
+	9	Hazel Plummer	W/F	12
+	10	Jaclyn Johnson	OB/W	11
+	11	Emerson Shirey	CB	12
+	12	McKenna Crum	W	12
+	13	Lily Colson	F	11
+	14	Claire LaMastra	OB/W	11
+	15	Olivia Lamb	HM	11
+	16	Piper Luangaphay	OB	9
+	17	Brielle Huck	M	9
+	18	Grace Hatch	F/M	12
+	20	Riley Hopstad	HM	11
+	21	Kali Bach	CB	12
+	22	Aria Zambukos	OB	9
+	25	Eden Scott	OB/CB	11
+
+---------------------------------------------------------
+COMMENT
+
+How can I order or buy more for our coaches and team managers?  4-Larges & 2-Mediums
+
+---------------------------------------------------------
+SHIRTS
+
+Peter Horan
+Boise High School
+6A
+Soccer - Girls
+
+S: 4
+M: 9
+L: 9
+
+
+
+
+---------------------------------------------------------
+IP: 207.244.138.10
+ID: 4a5b52e4-58ad-42dc-9e2d-c35cf5e8bc24

@@ -1,0 +1,55 @@
+From: Ted Reynolds
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Canyon Ridge High School
+Riverhawks
+Crimson & Silver
+Brady Dickinson
+Randall Miskin
+Ted Reynolds
+Alexis Parra
+Stephanie Teske
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Paulina Haller Cruz	12
+	Morgyn Hanks	12
+	Rissa Hempleman	12
+	Brenda Jennings	12
+	Savanna Tripp	12
+	Madison Anthoney	11
+	Emilia Baltazar	11
+	Jill Jensen	11
+	Olivia Molina	11
+	Makayla Rajacich	10
+	Finley Ross	10
+	Mackenzie Chambliss	9
+	Keyera Evans	9
+	Jaqueline Gaytan Torres	9
+	Taylor Waterman	9
+
+---------------------------------------------------------
+SHIRTS
+
+Ted Reynolds
+Canyon Ridge High School
+6A
+Cheer
+
+S: 4
+M: 8
+L: 1
+XL: 1
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 216.83.77.2
+ID: b30aeccc-a870-416a-90fb-c7d387c0ddb1

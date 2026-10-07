@@ -1,0 +1,110 @@
+From: Zach Dong
+Activity: Football
+
+---------------------------------------------------------
+SCHOOL
+
+Kimberly High School
+Bulldogs
+Red, Black & White
+Luke Schroeder
+Darin Gonzales
+Zach Dong
+Joe Dille
+Simon Olsen
+Jeff May
+Henry Champlin
+Wytt Bedke
+Tim Ryan
+Billie Peterson
+Tyler Rollins
+Wyatt Helm
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	weight	grade
+	0	Titus Osterman	MLB, WR			11
+	1	Joe Barrett	WR, FS			11
+	2	MacRaye Bruning	QB			12
+	3	Liam Browning	RB, MLB			12
+	4	Tucker Murillo	WR, DB			12
+	5	Gunner Beckstead	WR, LB			11
+	6	Dillon Chiatovich	WR, DB			12
+	7	Monroe Whitten	RB, LB			11
+	8	Quentin Pettingill	WR, DB			12
+	9	Brady Anderson	WR, DL			12
+	10	Cy Walker	WR, CB			12
+	11	Johnny Millenkamp	LB, RB			12
+	12	Hayden Black	WR, LB			11
+	13	Travis Taylor	WR, DB			11
+	14	Eduardo Paz	K, P			12
+	15	Al Santos	QB, DB			10
+	17	Braxton Dille	WR, DB			10
+	20	William Vanderkooi	CB, WR			12
+	21	Kenyan Hernandez	CB, WR			12
+	23	Connor Marriot	WR, DB			12
+	24	Caleb Okelberry	RB, LB			10
+	25	Wylie Peterson	RB, LB			10
+	35	Brent Florence	WR, DB			10
+	37	Neiko Gonzalez	LB, WR			10
+	39	Karter Hernandez	WR, DB			10
+	45	Zaye Walker	WR, LB			11
+	47	Carlos Paz	WR, K			10
+	50	Hyrum Mitton	OL, DL			10
+	51	Avry Peek	OL, DL			10
+	52	JJ Morquecho	OL, DL			12
+	53	Ethan Mendez	OL, DL			12
+	54	Colt Rudner	OL, DL			10
+	55	Kyson Hernandez	OL, DL			11
+	59	Tayden Stringham	OL, DL			12
+	60	Brayden Kraus	OL, DL			10
+	63	Jack Watson	OL, DL			11
+	65	Parker Willis	OL, DL			10
+	67	Brandon Elizondo	OL, DL			11
+	69	Josue Becerra	OL, DL			10
+	70	Evan Gearheart	OL, DL			12
+	72	Graysen Widman	T			11
+	73	Kaden Dille	OL, DL			10
+	78	Ryan Hartgrave	OL, DL			11
+	81	Rylan Christensen	WR, DB			11
+	82	Brady Mathews	WR, DB			11
+	84	Ben Muchow	WR, DB			10
+
+---------------------------------------------------------
+RECORD
+
+8	3
+
+13	Fruitland	49
+38	Layton Christian Academy	8
+28	Snake River	7
+21	Homedale	28
+14	Sugar-Salem	35
+50	Filer	6
+21	Wood River	0
+45	Buhl	21
+67	Gooding	20
+42	American Falls	0
+28	Fruitland	21
+	Homedale
+
+---------------------------------------------------------
+SHIRTS
+
+Zach Dong
+Kimberly High School
+4A
+Football
+
+M: 7
+L: 18
+XL: 15
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.110.172
+ID: e98c2a62-5662-4c2c-80c1-cae0f7da58fe
+

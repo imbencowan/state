@@ -1,0 +1,51 @@
+From: Raquel Torgerson
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+West Jefferson High School
+Panthers
+Navy, white, Columbia blue
+Shane Williams
+Kristie Scott
+Raquel Torgerson
+Kinzie Sauer
+Abbie Burtenshaw
+Sydney Good
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Leah Babcock	10
+	Kymberlee Bitter	10
+	Birklee Burtenshaw	10
+	Gracee Kimbro	11
+	Gabriela Ponce	10
+	Adilyn Robertson	12
+	Lola Robison	10
+	Alivia Simmons	10
+	Kylee Wigman	10
+	Annalise Williams	12
+	Maysa Wood	10
+
+---------------------------------------------------------
+SHIRTS
+
+Raquel Torgerson
+West Jefferson High School
+3A
+Cheer
+
+S: 4
+M: 5
+L: 1
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 67.215.32.115
+ID: bafa687c-d2cc-4de9-b0ee-3393f0240489

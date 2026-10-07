@@ -1,0 +1,49 @@
+From: Lynette Buttars
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+West Side High School
+Pirates
+Maroon, White & Gold
+Tyler Telford
+Kory Kay
+Tyson Moser
+Melinda Royer
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	5	Miley Cundick	MB, RS		12
+	6	Allie Henderson	S, RS		12
+	7	Mylee Bingham	RS, MB		11
+	9	Alivia Gailey	DS		11
+	10	Tessa Love	RS, MB		12
+	12	Ava Crouch	S, RS		11
+	14	Lauren Campbell	MB, RS		11
+	18	Jillian Waechtler	DS		12
+	20	Kamree Gunnell	S, RS		12
+	22	Bentley Cundick			
+	30	Ana Mariscal	OH, MB		11
+	31	Tess Ward	OH, MB		10
+
+---------------------------------------------------------
+SHIRTS
+
+Lynette Buttars
+West Side High School
+3A
+Volleyball
+
+S: 4
+M: 5
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 168.245.228.47
+ID: c40edea7-3924-4f73-a16d-b3a0d1286030

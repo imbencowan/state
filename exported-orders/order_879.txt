@@ -1,0 +1,52 @@
+From: Kelly Caldwell
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Genesee High School
+Bulldogs
+Blue & Gold
+Wendy Moore
+Kelly Caldwell
+Kelly Caldwell
+Brian Malcom
+Nichole Knox
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Sydney Banks	3B, SS	11
+	3	Kendra Meyer	P, SS	12
+	4	Alia Wareham	P, SS	11
+	5	Lindsey Herman	2B, P	9
+	6	Rylie Baysinger	C, OF	11
+	7	Jubalee Vandenbos	OF	11
+	9	Phoebe Haley	OF	9
+	10	JoJo Osborn	OF	10
+	15	Miley Grieser	1B, OF	10
+	16	Makayla Herman	1B, OF	12
+	21	Sophie Johnson	C, OF	11
+	23	Katie O'Connell	SS, OF	11
+	25	Kaylee Krick	3B, RF	11
+
+---------------------------------------------------------
+SHIRTS
+
+Kelly Caldwell
+Genesee High School
+1A
+Softball
+
+S: 3
+M: 6
+L: 3
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 50.37.228.3
+ID: dee805bb-4ff7-473b-aa28-abc789cb23f5

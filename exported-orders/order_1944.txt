@@ -1,0 +1,88 @@
+From: Tyler Johnson
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Bonneville High School
+Bees
+Green, Gold & White
+Scott Woolstenhulme
+Justin Jolley
+Tyler Johnson
+Cortland Hengel
+Brian Lott
+Brad Lott
+Alex Lott
+Boston Jardine
+Keenan Wilding
+Christian Deane
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Zac Spence	Guard	5-7	12
+	2	Ian Anderson	Guard	6-1	12
+	3	Grayson Temple	Guard	6-0	10
+	4	Cooper Lowry	Guard/Forward	6-1	10
+	5	Lucas Arave	Guard	6-0	11
+	10	Carter Fontes	Post	6-4	11
+	11	Hayden Moffat	Post	6-3	11
+	13	Tyler Jordan	Guard	6-0	12
+	23	Kade Littlewood	Guard/Forward	6-0	12
+	24	Logan Arnold	Forward	6-3	10
+	25	Sloan Harrigfeld	Guard	6-0	11
+	31	Kooper Cook	Post	6-2	10
+	32	Carter Bowen	Forward	6-1	12
+	42	Braelynn Clements	Post	6-3	12
+
+---------------------------------------------------------
+RECORD
+
+11	13
+
+59	Century	62
+67	Pocatello	47
+40	Thunder Ridge	70
+61	Shelley	70
+72	Idaho Falls	63
+59	Snake River	52
+55	Highland	75
+58	Sugar-Salem	61
+67	Skyline	56
+61	Blackfoot	77
+42	Highland	70
+53	Hillcrest	61
+64	Rigby	71
+40	Preston	56
+74	Shelley	57
+56	Madison	69
+67	Idaho Falls	56
+58	Skyline	54
+48	Hillcrest	59
+71	Blackfoot	73
+57	Century	54
+82	Idaho Falls	65
+65	Hillcrest	63
+81	Shelley	73
+
+---------------------------------------------------------
+SHIRTS
+
+Tyler Johnson
+Bonneville High School
+5A
+Basketball - Boys
+
+M: 1
+L: 3
+XL: 9
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 192.42.147.18
+ID: a472af74-99df-49c9-9a0c-7d55e22c9d85

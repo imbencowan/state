@@ -1,0 +1,73 @@
+From: Zairrick Wadsworth
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Skyline High School
+Grizzlies
+Navy & Light Blue
+Karla LaOrange
+Josh Newell
+Zairrick Wadsworth
+Paula Ashby
+Kamryn Shanks
+Holly Taylor
+Mandy Dalling
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Ainzley Hansen	12
+	Ava Fife	12
+	Madison Bishop	12
+	Graciela Ferrer	12
+	Zoey Camphouse	11
+	Destinee Crocker	11
+	Shayla Higbee	11
+	Kiari VanderSloot	11
+	Jozlyn Pina	11
+	Jocelyn Rodriguez	11
+	Hallie Breshears	11
+	Xavery Zollinger	10
+	Jenna Risenmay	10
+	Cydnee Romo	10
+	Crystal Ramos	10
+	Hazel Ruys	10
+	Libertee Vega	10
+	Sommer Staves	10
+	Elise Forbush	10
+	Addy Mayes	10
+	Cosette Shurtliff	9
+	Sailor Searle	9
+	Mallory Dixon	9
+	Mckel Wheeler	9
+	Annie Robinson	9
+	Ellie Hobbs	9
+	Mykah Pina	9
+	Payzlee Cook	9
+
+---------------------------------------------------------
+COMMENT
+
+Please add 5 Lrg Sweatshirt.  1 for an athlete and 4 for coaches.  
+
+---------------------------------------------------------
+SHIRTS
+
+Zairrick Wadsworth
+Skyline High School
+5A
+Cheer
+
+S: 2
+M: 23
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 216.182.103.238
+ID: 5219571d-5e99-4607-a0b2-ef717036b6ad

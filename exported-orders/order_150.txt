@@ -1,0 +1,92 @@
+From: Angie McAffee
+Activity: Football
+
+---------------------------------------------------------
+SCHOOL
+
+Butte County High School
+Pirates
+Black, White & Orange
+Joe Steele
+Allen Carter
+Angie McAffee
+Sam Thorngren
+Rye McAffee
+Todd Jensen
+Russell Cummins
+Dillon Waymire
+Chris Peterson
+Bryson Gunter
+Brian Higgenson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	weight	grade
+	1	Cooper Williams	QB, DB	6-3	160	10
+	2	Mccoy Jensen	WR, MLB	6-1	170	11
+	3	Keaton Archibald	QB, DB	5-8	150	11
+	4	Charles Bragg	OL, DL	5-7	165	12
+	5	Tripp Bowhay	TE, LB	5-8	165	9
+	7	Jose Arriaga	TE, DE	6-0	150	10
+	8	Stetson Wanstrom	QB, DB	5-9	160	11
+	9	Koden Krosch	ATH, DB	6-1	175	12
+	10	Rawson Twitchell	RB, LB	5-11	200	12
+	11	Braxtyn Parsons	WR, DB	6-0	170	11
+	12	Isaac Andersen	WR, DB	5-9	160	11
+	13	Eli Andersen	WR, DB	5-2	120	9
+	14	Bracken Powell	OL, DE	6-0	210	11
+	15	Wade Dailey	TE, DL	6-2	165	10
+	17	Lawrence Hawley	RB, DE	5-11	165	12
+	18	Levi Hendriks	TE, DB	5-10	180	12
+	21	Ethan Bogart	RB, LB	5-6	165	9
+	22	Razor Duke	RB, LB	6-1	180	12
+	24	Braxten Hymas	OL, DL	5-11	185	11
+	28	Weston Hendriks	WR, CB	5-8	150	9
+	29	Logan Ellsworth	RB, FS	5-9	130	9
+	30	Alex Stone	G, DE	6-2	250	11
+	34	Randy Andersen	WR, FS	5-9	145	10
+	42	Mason Reynolds	WR, CB	5-11	140	10
+	44	Bridger Livesay	TE, LB	6-1	170	11
+	45	Garrett Waymire	OL, DL	6-0	230	10
+	53	Jason Hooks	OL, DL	5-11	170	9
+	56	Treyson Gamett	WR, DB	5-8	140	11
+	57	Brodie Reynolds	OL, DL	6-0	230	10
+	72	Harrison Wolfe	G, NG	6-1	250	9
+	74	Kayson Parsons	OL, DL	5-10	240	11
+	80	Teagan Babcock	RB, LB	5-11	175	10
+	88	Taine Hollist	OL, DL	5-10	205	10
+
+---------------------------------------------------------
+RECORD
+
+7	1
+
+36	Logos	24
+40	Valley	22
+40	Carey	20
+67	Murtaugh	16
+83	Challis	6
+57	Raft River	14
+30	Hagerman	14
+48	Grace	22
+
+---------------------------------------------------------
+SHIRTS
+
+Angie McAffee
+Butte County High School
+2A
+Football
+
+M: 7
+L: 19
+XL: 6
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 172.71.147.197
+ID: 7215fb83-1b12-41dd-84f7-43aff324697d

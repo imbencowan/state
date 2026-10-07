@@ -1,0 +1,78 @@
+From: Andrew Nelson
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Rockland High School
+Bulldogs
+Blue, Red & White
+Greg Larson
+Greg Larson
+Andrew Nelson
+Jordan Black
+Shelly Matthews 
+Whitney O'Brien 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Madison Radford	G	5-4	12
+	3	Harmony Boyer	G	5-4	12
+	10	Jada Farr	P	5-9	11
+	11	Mahana Hatch	P	5-10	9
+	12	Gracie Freeman	P	5-8	10
+	13	Brilee Steidley	G	5-5	10
+	15	Trin Wiese	G	5-5	12
+	22	Belle Schmidt	P	6-0	10
+	24	Whitley Ralphs	G	5-4	10
+	30	Claire Hendrickson	G	5-5	10
+
+---------------------------------------------------------
+RECORD
+
+16	7
+
+53	Dietrich	28
+36	Raft River	49
+38	Murtaugh	32
+39	Aberdeen	46
+61	Hansen	30
+21	Carey	44
+59	Garden Valley	44
+46	Castleford	21
+49	Richfield	22
+48	Challis	15
+	Leadore	
+42	West Side	61
+56	Grace Lutheran	10
+25	Butte County	70
+32	Leadore	29
+48	American Heritage	13
+49	North Gem	7
+58	Sho-Ban	25
+76	Taylor's Crossing	29
+60	Watersprings	15
+60	Grace Lutheran	31
+27	Leadore	47
+48	Taylor's Crossing	28
+45	Challis 	41
+
+---------------------------------------------------------
+SHIRTS
+
+Andrew Nelson
+Rockland High School
+1A
+Basketball - Girls
+
+S: 6
+M: 4
+
+
+
+
+---------------------------------------------------------
+IP: 162.246.84.251
+ID: fcbe60f5-0b59-4e6a-bdb1-c3b2d025bc02

@@ -1,0 +1,57 @@
+From: Connor Jackson
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Cole Valley Christian High School
+Chargers
+Blue, White & Silver
+Allen Howlett
+Kim DeMain
+Connor Jackson
+Nathan Hoiosen
+Tim Owens
+Mike Reynolds
+Tom Bobrowski
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Tyler Romine	INF, P	12
+	3	Vince Maniaci	INF/P	
+	5	Dylan Irish	1B, P	12
+	6	Chris Bobrowski	INF, P	12
+	8	Blake Wilson	P, OF	12
+	10	Jake Church	OF, P	10
+	11	Cooper Kollmann	OF, P	10
+	13	Carson Kile	INF, P	10
+	14	Cole Morgan	P, INF	10
+	15	Lucas Guray	OF, P	10
+	21	Eli Hamby	INF, OF	10
+	22	Chad Timmons	OF	11
+	25	Mason Ransom	P	11
+	29	Tyler Harr	C, P, INF	
+	34	Noah Distefano	C	10
+	51	Carson Pollard	C, INF	9
+
+---------------------------------------------------------
+SHIRTS
+
+Connor Jackson
+Cole Valley Christian High School
+4A
+Baseball
+
+S: 1
+M: 5
+L: 7
+XL: 3
+
+
+
+
+---------------------------------------------------------
+IP: 174.231.129.75
+ID: bd906aa4-1409-48ab-875c-d19df3f1a4f9

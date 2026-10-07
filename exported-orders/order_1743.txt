@@ -1,0 +1,79 @@
+From: Darla Harrold
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Vision Charter School
+Golden Eagles
+Maroon, Gold & Black
+Wendy Oldenkamp
+Wendy Oldenkamp
+Billy Lamitina
+Billy Lamitina
+Ricky Robinson
+Donell Nickel
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Sami Maybon		5-4	9
+	1	Londyn "LJ" Kendall		5-2	12
+	2	Taryn Murrey		5-8	10
+	5	Brilee Nickel		5-6	10
+	10	Angel Gutierrez		5-7	11
+	12	Brook Rogers		5-5	12
+	14	Caroline Nevills		5-9	12
+	15	Sophia Godina		5-5	9
+	21	Raelynn Nickel		5-5	12
+	22	Lexi Rogers		5-7	10
+	23	Aubrie Parrish		5-10	11
+	25	Abby Porterfield		5-10	11
+	32	Bella Hannaman		5-9	9
+
+---------------------------------------------------------
+RECORD
+
+0	0
+
+67	TVCA	25
+26	Cascade	32
+23	Highland	29
+52	Horseshoe Bend	27
+47	North Star	9
+36	TVCA	30
+46	Wilder	26
+63	Notus	35
+39	The Ambrose School	69
+35	Rimrock	29
+62	GSAA	22
+24	Liberty Charter	39
+62	North Star	35
+53	Idaho City	13
+42	Compass Charter	42
+53	Riverstone International	20
+43	Victory Charter	40
+56	Centennial Baptist	24
+61	Wilder	24
+38	Rimrock	27
+37	Victory Charter	37
+
+---------------------------------------------------------
+SHIRTS
+
+Darla Harrold
+Vision Charter School
+3A
+Basketball - Girls
+
+M: 3
+L: 8
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 67.60.216.119
+ID: d354a669-8cac-4274-a445-7d7c39d71e8f

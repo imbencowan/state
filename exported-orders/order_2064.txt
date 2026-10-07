@@ -1,0 +1,33 @@
+From: Scott Burton
+Activity: Speech
+
+---------------------------------------------------------
+SCHOOL
+
+Jerome High School
+Tigers
+Black & Orange
+Brent Johnson
+Nathan Tracy
+Scott Burton
+Chezney Olsen
+
+---------------------------------------------------------
+SHIRTS
+
+Scott Burton
+Jerome High School
+5A
+Speech
+
+S: 8
+M: 5
+L: 2
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 216.83.73.186
+ID: 6c92bf7b-7507-4ca0-8c4b-b68970d04033

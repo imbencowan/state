@@ -1,0 +1,69 @@
+From: Tony Brulotte
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Eagle High School
+Mustangs
+Green & Silver
+Derek Bub
+Susan McInerney
+Tony Brulotte
+Sarah Andrews
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Alania Tiner	12
+	Adelie Cook	12
+	August Marx	10
+	Grace Ricardo	11
+	Addison Mingura	10
+	Colbie Matzger	9
+	Ava Nicholson	12
+	Kaitlin Dowling	9
+	Kaite Vickery	10
+	Baizley Bateman	10
+	Karly Stewart	9
+	Brielle Bouchie	9
+	Charlotte Reese	11
+	Hudson Froke	9
+	Jayden Tappouni	9
+	Lilly Barba	9
+	Kayla Ward	12
+	Morgan Rich	11
+	Maggie Holbrook	11
+	Mariana Harrison	9
+	Kinzey Tolman	9
+	Layla Alic	10
+	Maggie Hume	12
+	McKenley Gupton	11
+	Sienna Cavalli	9
+	Olivia Baker	10
+	Reese White	9
+	Sloane Leija	11
+	Shaye McDermott	9
+	Skyelah Bettis	10
+	Sophie Suydam	10
+	Vienna Swanson	11
+
+---------------------------------------------------------
+SHIRTS
+
+Tony Brulotte
+Eagle High School
+6A
+Cheer
+
+S: 13
+M: 17
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.101
+ID: 50e976a0-6545-48d2-88f3-6e242405b1df

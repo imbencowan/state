@@ -1,0 +1,80 @@
+From: Scott Miller
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Kellogg High School
+Wildcats
+Purple & Gold
+Lance Pearson
+Dan Davidian
+Scott Miller
+Jana Nearing
+Gus Coburn
+Megan Fisher
+Graden Nearing
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	3	Aleah Philp	G	5-6	10
+	5	Bella Schillereff	G	5-5	10
+	10	Ella Yrjana	G		10
+	11	Gretah Angle	G, PG	5-9	9
+	12	Peyton Storey	G, SF	5-7	10
+	14	Jordyn Stutzke		5-1	11
+	20	Ella Wilkinson	G		11
+	21	Dani Henrikson	C, PF	5-8	12
+	23	Jovi Sorenson	P	5-11	10
+	24	Malena Munoz	PF	5-8	10
+	32	Sarah Gloyn	P	5-7	10
+
+---------------------------------------------------------
+RECORD
+
+13	10
+
+63	Clark Fork	12
+41	Troy	25
+49	Priest River	21
+58	Wallace	36
+36	Washburn	49
+52	Haileyville	17
+22	Ramsay	71
+15	Moscow	51
+67	St. Maries	25
+57	Wallace	50
+40	Bonners Ferry	53
+58	Priest River	31
+51	Orofino	23
+59	St. Maries	25
+38	Lakeside	75
+27	Grangeville	61
+29	Timberlake	84
+30	Grangeville	66
+37	Bonners Ferry	52
+59	Orofino	27
+63	Orofino	36
+31	Grangeville	59
+43	Orofino	39
+
+---------------------------------------------------------
+SHIRTS
+
+Scott Miller
+Kellogg High School
+3A
+Basketball - Girls
+
+S: 5
+M: 5
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 209.237.139.238
+ID: 0475372a-4ae3-4a92-a900-d48d5fc78944

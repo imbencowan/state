@@ -1,0 +1,65 @@
+From: Larry Stocking
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Hillcrest High School
+Knights
+Red, Black & White
+Scott Woolstenhulme
+Tyler Mills
+Larry Stocking
+Rachel Cook
+Katelyn Huls
+Reagan Youngberg
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Ali Prince	9
+	Aliya Ward	11
+	Ally Thibodeau	10
+	Ava Grigg	10
+	Breckyn Harris	11
+	Bridget Witte	12
+	Caitlyn Cook	11
+	Danika Danklefsen	9
+	Elli Barker	9
+	Evelyn Jenkins	9
+	Grace Woolstenhulme	10
+	Harlee Groesbeck	10
+	Kassidy Perkins	10
+	Kendry Floyd	11
+	Maddi Player	11
+	Maleya Daw	9
+	Quinn Carhart	9
+	Quinn Miller	9
+	Rachael Chrysler	11
+	Reagan Sweetwood	10
+	Reegan Davis	10
+	Sadie Anderson	9
+	Sara Jardine	12
+	Sydney Richins	11
+	Stella Jennings	9
+	Taylor Benson	11
+
+---------------------------------------------------------
+SHIRTS
+
+Larry Stocking
+Hillcrest High School
+5A
+Dance
+
+M: 1
+L: 15
+XL: 10
+
+
+
+
+---------------------------------------------------------
+IP: 192.42.147.37
+ID: e0d5790b-76e3-44cf-8e73-882721b28c31

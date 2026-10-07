@@ -1,0 +1,78 @@
+From: TJ Clary
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Sandpoint High School
+Bulldogs
+Red & White
+Becky Meyer
+Jacki Crossingham
+TJ Clary
+Madison Schoening
+Joe Fata 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+		Brooklyn Ducey 		6-0	10
+		Alyssa Porter 		5-11	10
+	0	Siena Todd-murray	SG, SF		11
+	1	Jaylah Butler	SG		11
+	2	Jasmin Laing			12
+	3	Carly Laybourne	PG, SG	5-7	11
+	4	Jordyn Tomco	SF		11
+	5	Livia Driggs	PG		11
+	11	Mia Driggs	PF		12
+	13	Brecken Mire	PG, SG	5-10	11
+	15	Summer Loutzenhiser	SG, SF	5-8	11
+	21	Willow Betz	SF, PF		10
+	33	Jetta Thaete	SF		12
+
+---------------------------------------------------------
+RECORD
+
+17	4
+
+62	Post Falls	48
+54	Bonners Ferry	41
+62	Moscow	40
+65	University	36
+58	Timberlake	48
+45	Mountain Home	49
+56	Burley	47
+43	Twin Falls	34
+56	West Valley	26
+58	Timberlake	42
+55	Lewis & Clark	43
+65	Central Valley	38
+50	Mt. Spokane	27
+42	Lakeland	49
+39	Moscow	29
+58	Coeur d'Alene	67
+38	Lakeland	66
+57	Lewiston	38
+54	Lake City	47
+61	Lewiston	34
+37	Moscow	33
+	Lakeland	
+
+---------------------------------------------------------
+SHIRTS
+
+TJ Clary
+Sandpoint High School
+5A
+Basketball - Girls
+
+M: 7
+L: 6
+
+
+
+
+---------------------------------------------------------
+IP: 168.245.213.185
+ID: c8be2728-a2fe-41dd-bc17-9c18cd785217

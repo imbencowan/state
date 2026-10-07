@@ -1,0 +1,66 @@
+From: Brady Trenkle
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Minico High School
+Spartans
+Red & Gold
+Spencer Larsen
+Kimberley Kidd
+Brady Trenkle
+Kenya Aguilar
+Hannah Matsen
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Adriana Gutierrez	12
+	Alivia Kowitz	12
+	Cassy Teeple	12
+	Keairha Espinoza	12
+	Alyssa Lamb	11
+	Avelina Salinas	11
+	Adalyn Nielsen	11
+	Adalynn Paul	11
+	Avery Struchen	11
+	Gracelyn Grant	11
+	Jaslene Juarez	11
+	Jaycee Catmull	11
+	Kynli Page	11
+	McKinley Anderson	11
+	Preslee Elquist	11
+	Aiyana Cantu	10
+	Brooke Quiroz	10
+	Celeste Salinas	10
+	Esmeralda Larios	10
+	Jaycei Knutson	10
+	Jaylee McCurdy	10
+	Jazlynn Ortiz	10
+	Nataly Gil	10
+	Taylei Ortiz	10
+	Tiana Frei	10
+	Allissa Matsen	9
+	Amaya Salinas	9
+	Shiloh Heuston	9
+
+---------------------------------------------------------
+SHIRTS
+
+Brady Trenkle
+Minico High School
+5A
+Cheer
+
+S: 8
+M: 16
+L: 4
+
+
+
+
+---------------------------------------------------------
+IP: 72.22.227.228
+ID: fab25141-4511-4d20-96fb-3cd2b1f5c461

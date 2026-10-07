@@ -1,0 +1,64 @@
+From: Robert Coombs
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Snake River High School
+Panthers
+Purple, White & Black
+Mark Kress
+Ray Carter
+Robert Coombs
+Amanda Scherbinske
+Karli Thompson
+Keely Clegg
+Amy Watt
+Amy Sorensen
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Emily Monk	12
+	Kwincee Turpin	12
+	Taylee Ramirez	12
+	Juliette Tew	11
+	Isabel VanOrden	11
+	Haylie Swallow	11
+	Madison Matinez	11
+	Olivia Watt	11
+	Sophia Weathers	11
+	Alesey Trejo	11
+	Paige Wheatley	11
+	Sloan Gibbs	11
+	Cara Adams	10
+	Annie Thompson	10
+	Hanna Pagan	10
+	Jacey Mitchell	10
+	Eliza Arnsten	9
+	Katelyn Evans	9
+	Taylor Jones	9
+	Kate Murdock	9
+	Kirstin Scott	9
+	Jaycee Hendricks	9
+	Haylie Dotson	11
+	Sophie Ward	11
+
+---------------------------------------------------------
+SHIRTS
+
+Robert Coombs
+Snake River High School
+4A
+Cheer
+
+S: 3
+M: 21
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.111.114
+ID: 6e00a620-91ad-4ac4-af47-3be9b0062cce

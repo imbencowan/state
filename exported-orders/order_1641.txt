@@ -1,0 +1,44 @@
+From: Jim Lasso
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Hansen High School
+Huskies
+Green & White
+Angie Lakey-Campbell
+Staci Carter
+Jim Lasso
+Crystal Vega
+Mickenlie Hurst
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Oyuqui Orozco	
+	Keighan Wolters	
+	Paityn Wolters	
+	Kaylee Villa	
+	Kanye Schulthies	
+	Jazmine Cruz	
+
+---------------------------------------------------------
+SHIRTS
+
+Jim Lasso
+Hansen High School
+1A
+Cheer
+
+S: 1
+M: 4
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.109.81
+ID: c6c54aae-c048-42bd-aafb-3a1064aeaceb

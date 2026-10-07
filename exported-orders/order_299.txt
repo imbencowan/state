@@ -1,0 +1,74 @@
+From: Linda Zollinger
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Challis High School
+Vikings
+Red, White & Black
+Lani Rembelski
+Paul Elston
+Linda Zollinger
+Jordan Oreke
+Liegh Redick
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Jaden Shanafelt	G, F		10
+	3	Madeline Hinkle	C		9
+	4	Marcy Gregory	G		11
+	11	Danika Wolfenbarger	G		10
+	14	Kayleigh Bauchman	G		10
+	20	Savannah Michel	G		9
+	22	Taylor Redick	G, PG		12
+	23	Jalie Oerke	G, PG		12
+	25	Callyn Zollinger	C		12
+	33	Abi Laws			11
+	41	Lilly Stebbins	PF		10
+
+---------------------------------------------------------
+RECORD
+
+13	5
+
+48	Salmon	22
+45	Leadore	46
+63	Mackay	34
+40	Salmon	30
+40	Alturas Prep	10
+32	Rockland	60
+55	Watersprings	17
+57	Taylor Crossing	34
+32	Butte County	48
+57	ShoBan	19
+48	Mackay	54
+42	Watersprings	8
+41	North Gem	8
+52	American Heritage	7
+33	Carey	40
+50	Leadore	33
+55	American Heritage	13
+40	Grace Lutheran	27	
+
+
+---------------------------------------------------------
+SHIRTS
+
+Linda Zollinger
+Challis High School
+1A
+Basketball - Girls
+
+S: 1
+M: 8
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 216.182.96.198
+ID: 36f809fe-5f6e-4e4e-b69a-ab4c7f0014da

@@ -1,0 +1,86 @@
+From: Lynette Buttars
+Activity: Football
+
+---------------------------------------------------------
+SCHOOL
+
+West Side High School
+Pirates
+Maroon, White & Gold
+Tyler Telford
+Kory Kay
+Tyson Moser
+Tyson Moser
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	weight	grade
+	6	Jake Barzee				9
+	9	Luke  Hodges				12
+	10	Mitch Mumford				11
+	11	Trayce  Stone				12
+	12	Micah Benavidez				11
+	13	Jaden Fuller				11
+	14	Jayden Coats	CB, WR	5-8		11
+	15	Billy Woodward				9
+	17	Mason Williams				9
+	18	Crew Sage		5-8	155	12
+	20	Corry  Telford				12
+	22	Drake Sage				10
+	23	Tanner Henderson				10
+	24	Garrett Taylor				12
+	24	Trayce Stone		6-0	160	12
+	26	Bryson Mcdaniel	TE, DE	6-3	180	11
+	27	Will  Hurren				10
+	29	Judd Selley				11
+	30	Cooper Millburn				11
+	43	Raef Graves				12
+	54	Wit Keller				12
+	55	Hyrum Checketts				11
+	59	Gage Kidman				10
+	61	Danny Leavitt				10
+	62	McCoy  Winward				12
+	63	Beau Reeder				12
+	65	Dallas Nelson				12
+	66	Gage Smith				11
+	67	Jaxxon Bastian				11
+	68	Chet Ward				11
+	69	Cutler Bingham				11
+	70	Logan Hyde				11
+	70	Jarrett Anger				12
+	71	Ivan Campbell		6-0	215	12
+	72	Kale Breckencamp				12
+	73	Ezra Benavidez				10
+	74	Tommie Oson				9
+	75	Will Hadley				9
+	77	Max Breckencamp				9
+	80	Jake Naylor				10
+	85	Perry Westover				11
+	88	Abram Mumford				12
+
+---------------------------------------------------------
+RECORD
+
+	
+
+
+---------------------------------------------------------
+SHIRTS
+
+Lynette Buttars
+West Side High School
+3A
+Football
+
+S: 5
+M: 11
+L: 16
+XL: 8
+
+
+
+
+---------------------------------------------------------
+IP: 172.70.214.24
+ID: 09dab2b8-3800-4414-b14b-b663425947d8

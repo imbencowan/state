@@ -1,0 +1,64 @@
+From: Craig Christensen
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Post Falls High School
+Trojans
+Orange & Black
+Dena Naccarato
+Chris Sensel
+Craig Christensen
+Holly Glover
+Mackenzie Genatone
+Marissa Iacolucci
+Mackenzie Duce
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Makenna Boni	12
+	Deja Britton	9
+	Kaijah Davis	11
+	Addisyn Duce	11
+	Kenna Genatone	9
+	Angel Homolka	9
+	Lilah Lamb	9
+	Colee Loudenback	9
+	Payten Loudenback	11
+	Scarlet Malone	10
+	Jade Mattes	10
+	Presley Mcdermott	11
+	Lauren Meidinger	11
+	Hailey Neverdahl	12
+	Layla Newman	12
+	Addison Nord-Fencl	9
+	Avery O'halloran	9
+	Emma Pannell	10
+	Kendall Perkins	9
+	Macie Simpson	9
+	Sevaria Smith	12
+	Londyn Steckman	11
+	Madisyn Tune	12
+	Mckenna Zimmerman	11
+
+---------------------------------------------------------
+SHIRTS
+
+Craig Christensen
+Post Falls High School
+6A
+Cheer
+
+S: 6
+M: 13
+L: 5
+
+
+
+
+---------------------------------------------------------
+IP: 162.222.253.122
+ID: 68075ed7-41fa-4dfa-9de9-ce8e9a381896

@@ -1,0 +1,75 @@
+From: Jess Johnson
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Mackay High School
+Miners
+Red & White
+Stephanie Fullmer
+Tricia Rhead
+Jess Johnson
+Josh Pehrson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	2	Arilia Peterson			11
+	3	Reilynn Jones			9
+	5	Harlie Wanstrom			9
+	12	Trista Hawley			11
+	15	Paislee Bell			9
+	20	Addison Seefried			10
+	22	Breyan Barger			10
+	23	Makelle Holt			12
+	25	Jaida Rodriguez			11
+	30	Danika Seefried			12
+	33	Alyssa Pehrson			12
+	45	Bentley Summers			9
+
+---------------------------------------------------------
+RECORD
+
+19	2
+
+43	Salmon	26
+58	Dietrich	31
+59	Raft River	36
+63	Nampa	39
+68	Valley	49
+50	Salmon	27
+49	Leadore	42
+54	Rockland	33
+48	Butte County	66
+53	North Gem	13
+58	Challis	37
+57	Richfield	29
+63	Grace Lutheran	13
+71	Sho-Ban	28
+68	Taylor's Crossing	35
+73	Watersprings	12
+64	American Heritage	14
+35	Butte County	71
+52	North Gem	6
+70	Challis	39
+47	Leadore	37
+
+---------------------------------------------------------
+SHIRTS
+
+Jess Johnson
+Mackay High School
+1A
+Basketball - Girls
+
+M: 11
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 205.220.252.211
+ID: e41d7af2-3b2e-4e74-9d09-1f01bb698f33

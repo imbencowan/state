@@ -1,0 +1,133 @@
+From: Ty Shippen
+Activity: Football
+
+---------------------------------------------------------
+SCHOOL
+
+Rigby High School
+Trojans
+Maroon & Gold
+Chad Martin
+Bryan Lords
+Ty Shippen
+Armando Gonzalez
+Aaron Flowers
+Logan Horrocks
+Burke Mouser
+Mike Freeman
+Isaac Sahkins
+Brock Sondrup
+Vic Martinez
+Carl Hooper
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	weight	grade
+	0	GAUGE LARSEN	DE			12
+	1	KASYN THOMAS	WR			12
+	2	CANNON KORTH	DB			11
+	3	PARKER GRAHAM	WR, DB			12
+	4	JAKE FLOWERS	QB			11
+	5	JERZEY DUENES	RB			12
+	6	DALLAS WALDRON	RB			12
+	8	TAYDEN OUTHENTHAPANYA	DB			12
+	9	WYATT DYE	DB			12
+	10	AMANI MOREL	RB			11
+	11	JAYDEN BELNAP	DB			11
+	12	OWEN GOLDING	WR			11
+	13	QUINN BENNETT	DB			12
+	14	MCKREE FARNSWORTH	WR			11
+	15	BRANDT BENEDICT	LB			12
+	16	KOBE WALKER	DB			11
+	17	EVAN FREEMAN	WR, DB			10
+	18	DJ BOUDRERO	LB, QB			11
+	19	WESTON CARLSON	WR			11
+	20	GAIGE JONES	LB			12
+	21	BOSTON BALSMEIER	DL, TE			11
+	22	TUCKER CLARK	DB			11
+	23	CRU CHRISTENSEN	DB			11
+	24	WYATT WALKER	LB			11
+	25	BRYSON YOUNGSTROM	RB			12
+	26	HAYDEN OLER	DB			12
+	27	ISAAC KEPPNER	DB			12
+	28	HAYDEN HARRIS	LB			11
+	29	KUE KOFE	RB, DB			10
+	31	TRACE SHIPPEN	DB			11
+	32	DAYTON SMUCK	LB			12
+	33	RJ MELANESE	RB			11
+	34	JOEL RICKS	K, P			12
+	35	MORAN GODFREY	LB			11
+	36	DALE BUTLER	K			12
+	37	STATTON BUTIKOFER	WR, DB			10
+	38	TAYSON ALLEN	FS			10
+	39	KASEN ERICKSON	WR, DB			10
+	40	ETHAN HICKMAN	LB			11
+	41	ETHAN BUTLER	K			11
+	42	BRODY DAVIS	LB			11
+	43	CACHE DIAL	DB			10
+	44	DANIEL HIPPEN	DL			11
+	45	PRESTON FERGUSON	LB			12
+	46	KOOPER STEFFLER	WR, CB			10
+	48	HUNTER SAUTTER	DT			12
+	49	GUNNAR DAVIS	QB			10
+	50	HUNTER KOSTER	OL			12
+	51	FEKI POUHA	OL, DL			12
+	54	RYKER SERRANO	OL			11
+	55	MASON BARKER	DE			12
+	56	GAGE FRENCH	DL			11
+	57	DAKOTA DOMAN	ILB			10
+	58	VINCENT MCCONNELL	OL			11
+	60	JACOBY NORDSTROM	OL			11
+	62	DONOVIN JARA	OL			11
+	63	KANNON OSWALD	OL			12
+	65	NICK JOHNSON	OL			12
+	66	CODY RICKS	DT			12
+	71	BRONSON LEWIS	OL			10
+	71	BRODY GAST	OL			11
+	72	WILL KEARSLEY	DL			11
+	74	DAYTON BOONE	OL			12
+	75	TRAECEN JACKSON	OL			10
+	76	BRAIDEN BYRD	OL			12
+	77	GABE ALVAREZ	DL			11
+	78	CACHE WILLIAMS	DL			11
+	82	BRAEDEN HARKNESS	DT			12
+	85	TYEREL GASSER	OLB			11
+	87	SETH BRADLEY	TE			11
+	96/91	CASEN SYLVESTER	DT			12
+
+---------------------------------------------------------
+RECORD
+
+9	1
+
+14	Coeur d'Alene	24
+48	Wasatch UT	27
+47	Moses Lake WA	12
+42	Bishop Kelly	7
+35	West UT	33
+33	Highland	3
+35	Madison	21
+49	Hillcrest	39
+56	Thunder Ridge	24
+52	Post Falls	21
+
+---------------------------------------------------------
+SHIRTS
+
+Ty Shippen
+Rigby High School
+6A
+Football
+
+M: 8
+L: 35
+XL: 23
+2XL: 5
+
+
+
+
+---------------------------------------------------------
+IP: 162.158.41.80
+ID: 6e6a3cd9-225e-4c29-96c0-b8b845a995c1

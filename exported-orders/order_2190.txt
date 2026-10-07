@@ -1,0 +1,50 @@
+From: Dennis Chesnut
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Horseshoe Bend High School
+Mustangs
+Silver & Black
+Dennis Chesnut
+Dennis Chesnut
+Dennis Chesnut
+Kym Hess
+Kylee Ranft
+Rick Grint
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	3	Trin Catherman	C, P	9
+	5	Aiyonna Lupinacci	SS	8
+	7	Kinzee Ranft	1B, 2B	12
+	8	Ekko Harmony	OF	11
+	10	Lacy Sweeney	RF	9
+	11	Vilate Wilson	CF, LF	9
+	15	Harper Kennedy	2B, 3B	9
+	21	Kimber Jones	P, C	11
+	22	Ember Moroney	CF, LF	10
+	25	Addy Asher	3B, 1B	11
+	35	Tylee Moroney	OF	9
+
+---------------------------------------------------------
+SHIRTS
+
+Dennis Chesnut
+Horseshoe Bend High School
+1A
+Softball
+
+S: 3
+M: 8
+
+
+
+
+---------------------------------------------------------
+IP: 50.52.40.114
+ID: 1580c89b-3c46-4af9-99ea-9d95e103fba8
+ID: e33ce7ae-c7a1-460d-83c7-12cd1583c419

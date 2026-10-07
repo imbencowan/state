@@ -1,0 +1,48 @@
+From: Drew Kishpaugh
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Kamiah High School
+Kubs
+Maroon & White
+Paul Anselmo
+Dave Harrington
+Drew Kishpaugh
+Jackie Landmark
+Andrea Krogh
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Emma Krogh	S, OH	5-11	12
+	2	Miah Sams	S		11
+	3	Tylee Wilkins	RS, OH	5-5	9
+	4	Hope Michaelson	MB	5-5	12
+	5	Emily Puckett	MB	5-10	12
+	6	Kaelyn Walls	OH, RS	5-5	11
+	7	Audrey Puckett	MB	5-11	10
+	8	Rainbow Moses	L, DS	5-4	9
+	10	Lily Campbell	OH		10
+	11	Hailey Wilson	OH, RS	5-9	10
+
+---------------------------------------------------------
+SHIRTS
+
+Drew Kishpaugh
+Kamiah High School
+2A
+Volleyball
+
+S: 2
+M: 6
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 96.5.130.35
+ID: 84708026-a8e0-488b-bc57-75df33650b55

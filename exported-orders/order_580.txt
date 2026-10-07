@@ -1,0 +1,88 @@
+From: Jennifer Murdock
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Declo High School
+Hornets
+Orange & Black
+Sandra Miller
+Roland Bott
+Jennifer Murdock
+Jacoby Fox
+Jay Fox
+Regen Povlsen
+Kyle Redman
+Chase Matsen
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Carter Robertson	G	6-	11
+	1	Dane Garrard	, PG	6-	10
+	2	Landen Silcock	G	6-	11
+	3	Joey Garrard	PF	6-1	12
+	4	Kyle Bott	G	5-10	11
+	5	Emmett Gibby	P	6-4	12
+	10	Gage Sorensen	P	6-1	11
+	11	Zane Snedaker	PG	5-8	11
+	12	Dacx Garrard	PF	6-2	10
+	13	Gavin Rasmussen	G	6-	12
+	21	Parker Heward	PF	5-11	11
+	23	Paxton Matsen	P	6-1	9
+	25	Zaid Rodgers	G	5-4	12
+	32	Dodge Edgar	P	6-6	12
+	35	Kevyn Rios	PF	6-	11
+
+---------------------------------------------------------
+RECORD
+
+23	1
+
+41	Nampa Christian	37
+47	Melba	28
+49	Firth	40
+41	Nampa Christian	30
+51	North Fremont	33
+56	Firth	40
+51	Wendell	46
+64	Melba	25
+62	Buhl	46
+64	North Fremont	46
+55	Malad	51
+48	West Side	31
+59	Soda Springs	42
+44	Aberdeen	31
+49	Malad	34
+54	Buhl	26
+57	Westside	52
+54	Soda Springs	48
+55	Aberdeen	39
+53	Wendell	48
+44	Soda Springs	48
+45	Aberdeen	31
+55	Westside	45
+55	West Jefferson	43	
+
+
+---------------------------------------------------------
+SHIRTS
+
+Jennifer Murdock
+Declo High School
+4A
+Basketball - Boys
+
+M: 1
+L: 4
+XL: 8
+2XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 72.22.239.194
+ID: afe39896-7fa2-484c-b364-016db4f4f886

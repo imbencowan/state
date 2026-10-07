@@ -1,0 +1,65 @@
+From: Troy Rice
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Rocky Mountain High School
+Grizzlies
+Purple, Black & White
+Derek Bub
+Dan Lunt
+Troy Rice
+Kacy Banks
+Julia Moore
+Maddie Hesse
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Cambrie Ahl	9
+	Ava Allen	11
+	Hadley Andrus	10
+	Haylee Bird	11
+	Brionni Briggs	10
+	Ariana Brundage	12
+	Lily Clark	10
+	Savannah Clark	9
+	Tessa Dunlop	12
+	Callie Fineman	10
+	Claire Foss	11
+	Mylee Goto	11
+	Karina Hoeger	9
+	Sophia Hooghkirk	9
+	Samantha Jenne	9
+	Hailee Lunt	11
+	Presley Moody	10
+	Capri Payne	10
+	Laura Proudfoot	10
+	Mackayla Sheibley	12
+	Lucy Stone	9
+	Gwynn Thompson	10
+	Madisyn Walker	9
+	Spring Woods	9
+	Makayla Young	9
+
+---------------------------------------------------------
+SHIRTS
+
+Troy Rice
+Rocky Mountain High School
+6A
+Dance
+
+S: 1
+M: 6
+L: 17
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.114
+ID: 1ebc912b-5a6f-4c30-9b4b-c9863d31bbaf

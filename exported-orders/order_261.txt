@@ -1,0 +1,78 @@
+From: Lee Jay Cook
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Carey High School
+Panthers
+Blue & Gold
+Jim Foudy
+Kayla Burton
+Lee Jay Cook
+Merilee Sears
+Shelli Simpson
+Kodi Bunn
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	2	McKenzie Hennefer	G	5-3	10
+	3	Andie Simpson	G	5-3	10
+	5	Emily Ruiz	G	5-5	10
+	10	Kora Parke	F	5-7	11
+	11	Jocelyn Ruiz	G	5-5	10
+	12	Hayley Acquistapace	G	5-7	10
+	14	Ali Simpson	G	5-8	9
+	15	Viviana Palomera	F	5-7	11
+	20	Abbi Whittier	P	5-10	11
+	21	Avery Nilsen	F	5-8	10
+	23	Carole Hatch	P	5-8	11
+	24	Heidi Rojas Esparza	F	5-8	12
+	25	Paige Black	P	5-6	12
+
+---------------------------------------------------------
+RECORD
+
+14	6
+
+37	Butte County	54
+43	Shoshone	27
+42	Rockland	36
+38	North Freemont	47
+35	Richfield	24
+57	Hansen	24
+51	Castleford	28
+39	Nyssa, Or	25
+53	Ontario, Or	25
+44	Jordan Valley, Or	68
+46	Glenns Ferry	49
+46	Dietrich	42
+56	Richfield	33
+49	Hansen	18
+46	Castleford	30
+40	Challis	33
+19	Valley	66
+33	Dietrich	36
+37	Wendell	34
+48	Castleford	21
+
+---------------------------------------------------------
+SHIRTS
+
+Lee Jay Cook
+Carey High School
+1A
+Basketball - Girls
+
+S: 2
+M: 10
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 66.232.90.254
+ID: 5cd3c62a-03a7-4506-a061-f772b045ddbd

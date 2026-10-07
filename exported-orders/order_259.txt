@@ -1,0 +1,75 @@
+From: Kelly Caldwell
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Genesee High School
+Bulldogs
+Blue & Gold
+Wendy Moore
+Kelly Caldwell
+Kelly Caldwell
+Greg Hardie
+Travis Grieser
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Sydney Banks	PG, SG	5-6	11
+	2	Monica Seubert	SG, PG	5-7	12
+	3	Alia Wareham	G, SG	5-5	11
+	5	Lily Scharnhorst		5-2	9
+	10	Rylie Baysinger	SG, F	5-8	11
+	14	Miley Grieser	P, F	5-10	10
+	15	Mya White	F	5-4	9
+	20	Chloe Grieser	PG, SG	5-7	11
+	22	Kendra Meyer	SG, G	5-6	12
+	23	Sophie Johnson	F, P	5-8	11
+	30	Lindsey Herman	F	5-5	9
+
+---------------------------------------------------------
+RECORD
+
+20	1
+
+67	@ Colton	53
+58	@ Kendrick	46
+56	Nezperce	45
+66	@ Timberline	18
+34	@ Deary	29
+68	St. John Bosco	61
+54	@ Pomeroy	46
+68	Troy	46
+61	Potlatch	23
+58	@ Nezperce	32
+52	Lapwai	63
+65	Kamiah	43
+62	Highland	44
+58	Deary	40
+61	@ St. John Bosco	36
+64	Timberline	32
+52	@ Highland	44
+61	Kendrick	38
+70	Wallace	24
+48	Highland (Districts)	39
+57	Nezperce (Districts)	51
+
+---------------------------------------------------------
+SHIRTS
+
+Kelly Caldwell
+Genesee High School
+1A
+Basketball - Girls
+
+S: 5
+M: 6
+
+
+
+
+---------------------------------------------------------
+IP: 50.37.228.2
+ID: 674532e9-bdd9-4216-8e11-ffeae4e3ed1a

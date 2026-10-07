@@ -1,0 +1,56 @@
+From: Ty Price
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Malad High School
+Dragons
+Orange & Black
+Dallan Rupp
+Robert Hannah
+Ty Price
+Bri Adams
+Aysha Maddox
+Arlene Shulz
+Rachel Green
+Kelli McClellan
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Harlee Maddox		9
+	2	Logan Maroney		12
+	3	Sarah Toone		10
+	4	Sadie Hooste		9
+	5	Maci Arnout		10
+	6	Stella Merja		10
+	7	Bella Hess		9
+	8	Liddia Gonzalez		11
+	9	Kassie Rupp		9
+	10	Aubrey Shulz		12
+	11	Karlee Blaisdell		10
+	12	Kyndall Tanner		9
+	16	Kendra Rupp		12
+	18	Kialey Pickett		11
+	24	Katie Palmer		9
+	27	Aspen Bingham		10
+
+---------------------------------------------------------
+SHIRTS
+
+Ty Price
+Malad High School
+3A
+Softball
+
+S: 3
+M: 13
+
+
+
+
+---------------------------------------------------------
+IP: 216.180.185.14
+ID: 58c2cf50-e04e-4354-8731-9346f69ef62f

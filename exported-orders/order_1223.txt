@@ -1,0 +1,63 @@
+From: Cody Shelley
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Blackfoot High School
+Broncos
+Kelly Green & White
+Brian Kress
+Roger Thomas
+Cody Shelley
+Liam Pope
+Eddie Ballesteros,
+Carlos Labra
+John Batacan
+Javian Ballesteros
+Ramon Rivas
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1/99	Edwin Botello	GK	10
+	3	Aaron Torres-Garcia	D	12
+	4	Vinny Martinez	D, MF	9
+	5	Daniel Olivarez	MF	12
+	6	Graeden Adams	D	12
+	7	Fernando Orozco	STRK, MF	12
+	8	Moisses Garcia	MF	10
+	9	Caesar Chavez	MF	9
+	10	Gio Labra	MF	12
+	11	Josiah Ballesteros	MF	12
+	12	Yahir Carlon Ojeda	STRK	12
+	13	Connor Searle	MF	12
+	14	Didier Perez	MF	12
+	15/GK	Daniel Garcia	GK	12
+	16	Kaiden Hill	D, MF	10
+	17	Colton George	D	11
+	18	Efren Bermudez	D, FORW	10
+	19	Francisco Juarez Gamino		11
+	20	Riley Fransen	D	11
+	21	Arturo Juarez Gamino	D	12
+	22	Boone Bowman	D	11
+	23	German Rojo	MF	11
+
+---------------------------------------------------------
+SHIRTS
+
+Cody Shelley
+Blackfoot High School
+5A
+Soccer - Boys
+
+M: 12
+L: 10
+
+
+
+
+---------------------------------------------------------
+IP: 97.178.144.0
+ID: 22cf6ba1-b152-45d9-9781-9eee37a2956c

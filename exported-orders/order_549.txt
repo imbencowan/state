@@ -1,0 +1,81 @@
+From: Avery Brown-Sonder
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Lakeside Junior/Senior High School
+Knights
+Black, White & Red
+Tara Lere
+Jennifer Hall
+Tyler Petty
+James Twoteeth
+Kenny Louie-McGee
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Hallah Peone		5-11	11
+	3	Furyous Louie	PG	5-8	10
+	4	Joseph Falcon	P	6-	12
+	11	Brayden Greensky	G	5-8	9
+	22	Hoksila Ironcloud		5-8	10
+	23	Tobias Abuan		5-10	10
+	30	Preston SpottedHorse	PG	5-8	12
+	33	Dre'don Sines	PG	5-8	9
+	35	Tyson Charley		6-2	11
+	44	Jadin Pluff	P	6-2	10
+
+---------------------------------------------------------
+RECORD
+
+15	5
+
+99	Wallace 	43
+69	Lapwai	49
+55	Kamiah	66
+93	Coeur du Christ Academy 	50
+66	Wallace	60
+84	Post Falls JV	42
+66	Genesis Prep 	56
+74	Inchelium	80
+82	Wellpinit	53
+42	Lapwai	46
+62	Potlatch	66
+80	Potlatch	57
+70	Lake Roosevelt 	81
+80	Clark Fork 	37
+75	Clark Fork	45
+75	Timberlake 	70
+94	Genesis Prep 	74
+89	Clark Fork 	52
+81	Genesis Prep 	66
+79	Genesis Prep 	67
+
+---------------------------------------------------------
+COMMENT
+
+First game against Wallace was 107 - 43.
+It would let me put 107 in, so I just put 99.
+
+---------------------------------------------------------
+SHIRTS
+
+Avery Brown-Sonder
+Lakeside Junior/Senior High School
+2A
+Basketball - Boys
+
+S: 1
+M: 4
+L: 4
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 205.210.19.218
+ID: 0f8adc5b-ffc8-41e2-9098-629c9999b910

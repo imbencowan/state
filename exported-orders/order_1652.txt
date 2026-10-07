@@ -1,0 +1,61 @@
+From: Jennifer Murdock
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Declo High School
+Hornets
+Orange & Black
+Sandra Miller
+Roland Bott
+Jennifer Murdock
+Julie Silcock
+Melissa Silcock
+Jessica Kidd
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Analee Anthon	12
+	Sophie Barker	9
+	Ruby Boldt	9
+	Gracie Bradshaw	11
+	Hinkley Brown	10
+	Kari Dahle	9
+	Gracie Darrington	12
+	Rylee Darrington	12
+	Madison Heward	10
+	Leanna Hill	10
+	Ellie Hutchison	10
+	Avery Jones	11
+	Katelyn Kidd	9
+	Kayzlee Littledike	9
+	Ashlyn Osterhout	12
+	Kaylee Rios	11
+	Kendra Rodriguez	9
+	Mya Silcock	9
+	Hadlee Taylor	9
+	Ella Terry	9
+	Alayna Wageman	11
+	Addyson Wells	12
+	Montgomery Wolf	11
+
+---------------------------------------------------------
+SHIRTS
+
+Jennifer Murdock
+Declo High School
+3A
+Dance
+
+S: 16
+M: 7
+
+
+
+
+---------------------------------------------------------
+IP: 72.22.239.194
+ID: 0c65be64-2b01-4d77-aead-9fbbe1627808

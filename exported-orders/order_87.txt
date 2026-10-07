@@ -1,0 +1,62 @@
+From: Meagan Brockett
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Century High School
+Diamondback
+Purple, Teal, Black & Gold
+Douglas Howell
+Sheryl Brockett
+Mark Pixton
+Jamshid Roomiany
+Nate Armstrong
+Kamran Dailami
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Liam Reed		9
+	2	Dalton Poulson		9
+	3	Jack Servoss		10
+	4	Anthonie Bravo		9
+	7	Owen Stout		12
+	9	Peyton Hepworth		11
+	11	Peja Weed		12
+	12	Rylan Stout		9
+	13	Alex Sule		12
+	17	Jairo Mclean Cardona		17
+	19	Sampson Christensen		11
+	21	Lucas Dickerson		9
+	21	Jaxon Westwood		9
+	23	Daniel McGee		12
+	24	Jonathan Waters		9
+	25	Isaiah Trejo		9
+	28	Max Agres		12
+	31	Daxon Thomson-Kidwell		12
+	33	Ammon Bitton		10
+	36	Kamron Lish		11
+	40	Liam McGee		10
+	48	Jacen Seamons		11
+
+---------------------------------------------------------
+SHIRTS
+
+Meagan Brockett
+Century High School
+5A
+Soccer - Boys
+
+S: 2
+M: 6
+L: 9
+XL: 5
+
+
+
+
+---------------------------------------------------------
+IP: 172.68.23.106
+ID: 0acb6e3f-d9e1-46a0-93c2-cad5a08d5a48

@@ -1,0 +1,80 @@
+From: Bryan Rojas
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Grangeville High School
+Bulldogs
+Blue & White
+Alica Holthaus
+Amanda Bush
+Bryan Rojas
+Michelle Barger
+Megan Turner
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	2	Caryss Barger	PG, SG	5-5	11
+	3	Siena Wagner	SG, PG	5-5	12
+	4	Autumn Long	PG, SG	5-4	9
+	10	Kinzley Adams	SG	5-5	12
+	11	Dusty Bashaw	SF	5-8	12
+	12	Mikaela Klement	SG	5-8	10
+	20	Madalyn Green	SF, PF	6-2	12
+	22	Halle Told	SG	5-7	12
+	24	Adalei Lefebvre	PF	6-0	12
+	31	Keely MacGregor	PG	5-4	10
+	32	Addisyn Vanderwall	SG, SF	5-7	11
+	42	Allyson Green	SF	5-9	10
+	50	Ila Wilkinson	SF	5-7	11
+
+---------------------------------------------------------
+RECORD
+
+17	6
+
+65	McCall-Donnelly	56
+54	Cole Valley Christian	27
+45	Ririe	55
+54	Prairie	68
+41	Timberlake	51
+84	St. Maries	9
+41	McCall-Donnelly	28
+79	Orofino	12
+36	Lakeland	35
+42	Lewiston	36
+47	Clarkston	55
+51	Lapwai	47
+69	Kellogg	19
+52	Orofino	20
+69	Priest River	34
+56	Prairie	57
+49	Timberlake	48
+52	Deer Park	71
+70	Kellogg	19
+61	Priest River	30
+1	St. Maries (FF)	0
+76	Orofino	16
+69	Priest River	33
+
+---------------------------------------------------------
+SHIRTS
+
+Bryan Rojas
+Grangeville High School
+3A
+Basketball - Girls
+
+S: 3
+M: 8
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 129.222.101.130
+ID: 19c40908-c4bb-45bb-8ec4-aaad597332bf

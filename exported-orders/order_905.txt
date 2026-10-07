@@ -1,0 +1,53 @@
+From: Troy Rice
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Rocky Mountain High School
+Grizzlies
+Purple, Black & White
+Derek Bub
+Dan Lunt
+Troy Rice
+Casey Higginbotham
+Roger Higginbotham
+Matt Hampton
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Aubrey Sorensen		
+	3	Brooke Singelyn		
+	4	Kaitlyn Windau		
+	5	Lillian Lomeli		
+	6	Tinsley Torres		9
+	7	Olivia Simms		9
+	8	Jessa Spurlin		
+	10	Hadley Griggs		
+	11	Addyson Rundell		
+	12	Olivia Lee		
+	12	Megan McCormick		
+	15	Tayler Klozcko		
+	17	Danica Quinn		
+
+---------------------------------------------------------
+SHIRTS
+
+Troy Rice
+Rocky Mountain High School
+6A
+Softball
+
+S: 1
+M: 6
+L: 3
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.114
+ID: e25d4482-7b1c-409b-9788-db7bfb01119b

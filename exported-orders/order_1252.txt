@@ -1,0 +1,56 @@
+From: Brandon Jackson
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Pocatello High School
+Thunder
+Red & Blue
+Doug Howell
+Heidi Graham
+Brandon Jackson
+Mark Wetstein
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Madysen Torngren	GK	10
+	1	Jennasey Skenandore	GK	10
+	3	Taelyr Evans	D	9
+	4	Camryn Tatom	MF	11
+	5	Claire Schaugaard	D	10
+	6	Carlie Contreras	MF	9
+	7	Brooklyn Christensen	D	10
+	8	Brynlee Pool	MF	11
+	9	Aryanna Gonzalez	STRK	11
+	10	Jordynn Stevenson	MF	10
+	11	Mckall Keller	D	9
+	12	Adelynn Shuler	FORW	11
+	14	Madison Helm	MF	11
+	15	Hanna DeWall	FORW	11
+	17	Hannah Armstrong	D, MF	12
+	18	Fisher Leah	MF	10
+	19	Piper Bunderson	D	12
+	22	Peyton Jones	MF	11
+	27	Jane Porter	MF	11
+
+---------------------------------------------------------
+SHIRTS
+
+Brandon Jackson
+Pocatello High School
+5A
+Soccer - Girls
+
+S: 3
+M: 10
+L: 6
+
+
+
+
+---------------------------------------------------------
+IP: 169.197.75.109
+ID: 6a78a2e0-fa86-4385-9b30-1011210ad3fb

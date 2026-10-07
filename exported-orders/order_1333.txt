@@ -1,0 +1,49 @@
+From: Travis Deardorff
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Wilder High School
+Wildcat
+Purple, Gold & White
+Alex Zamora
+Alex Zamora
+Travis Deardorff
+Glenn Smith
+Sabrina Perez
+Yuki Longest
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Daisy Pena	DS, S		9
+	2	Nancy Ramirez	S		12
+	3	Kylie Luna	OH		12
+	4	Laylani Castellanos	DS, OH		9
+	5	Mariah Longest	MH		9
+	6	Milly Jimenez	OH, RS		9
+	7	Natalie Escutia	MH		12
+	9	Jaelynn Perales	RS, OH		9
+	14	Pilar Hurtado	DS		11
+	15	Gabi Fogg	MB, RS		11
+
+---------------------------------------------------------
+SHIRTS
+
+Travis Deardorff
+Wilder High School
+2A
+Volleyball
+
+S: 6
+M: 2
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 24.117.189.178
+ID: 96ec0dc4-efdd-4c07-ba27-fdeacaeac52b

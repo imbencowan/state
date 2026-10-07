@@ -1,0 +1,61 @@
+From: Kent Howell
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Marsh Valley High School
+Eagles
+Blue, Scarlet & White
+Gary Tucker
+Wyatt Hansen
+Kent Howell
+Jeff Smedley
+Jake Rios
+Lance Smith
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Mayan Noble		10
+	2	Shad McBride		11
+	3	Jaxson Smith		12
+	4	Colter Chandler		10
+	6	Levi Balappa		11
+	7	Roran Grunig		10
+	8	Kanyon Cottrell		10
+	9	Winston Ulrich		12
+	10	Chance Smedley		12
+	11	Candler Bennett		12
+	12	Kruz McQuivey		10
+	13	Treyson Nelson		10
+	14	Thayne Pope		11
+	15	Carter Wilson		12
+	16	Jonah Lewis		12
+	17	Gabriel Bissell		12
+	18	Christian Rivas		9
+	19	Chase Marshall		11
+	20	Francisco Pagotta		9
+	21	Nelson Briscoe		12
+	22	Cove Olsen		11
+	23	Kaden Smith		12
+
+---------------------------------------------------------
+SHIRTS
+
+Kent Howell
+Marsh Valley High School
+4A
+Soccer - Boys
+
+M: 12
+L: 8
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 172.56.149.251
+ID: 9e7c5a0e-cd45-48da-9e4e-fca474e80ee8

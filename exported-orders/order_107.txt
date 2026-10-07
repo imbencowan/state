@@ -1,0 +1,59 @@
+From: David Joyce
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Teton High School
+Timberwolves
+Orange & Maroon
+Megan Christiansen
+Sam Zogg
+David Joyce
+Kurt Mitchell
+Bryan Thomas
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1/99	Kirby Martinez	GK	10
+	2	Holden Way	FB	12
+	3	Deegan Moncur	FORW	12
+	5	Wyatt Gentry	D	12
+	7	Ian Haskell	FORW	9
+	8	Israel Ramirez	MF	10
+	9	Isaac Thomas	MF	12
+	10	Sam Ordonez	FORW	11
+	11	Elliot Lifton	MF	10
+	12	Andrew Thomas	MF	9
+	13	Trey Behrens	MF	10
+	14	David Diaz	FORW	12
+	15	Kaden Hill	MF	12
+	18	Mason Beebe	D	9
+	19	Santiago Franco	FORW	10
+	20	Shea McGuire	D	10
+	21	Samson Phillips	MF	12
+	23	Francisco Sosa	FORW	11
+	25	Paycen Hill	D	10
+	27	Vaughn Butler	D	9
+	28	Ian Mollenkof	MF	9
+
+---------------------------------------------------------
+SHIRTS
+
+David Joyce
+Teton High School
+4A
+Soccer - Boys
+
+M: 3
+L: 14
+XL: 4
+
+
+
+
+---------------------------------------------------------
+IP: 172.70.211.89
+ID: df2b73ac-e345-49fb-9a41-405168610237

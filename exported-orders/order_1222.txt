@@ -1,0 +1,61 @@
+From: Nate Kerbs
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Wendell High School
+Trojans
+Navy & Gold
+Ryan Bowman
+Justin Alsterlund
+Nate Kerbs
+Felipe Paniagua
+Angela Murillo
+Jaime Ponce
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Brian Orozco	GK	12
+	1	Alexander Payano	MF	10
+	2	Horicio Ayala	D, HB	12
+	3	Angel Diaz	HB	10
+	4	Jefferson Gutiérrez	FORW	9
+	5	Jesus Verdugo	HB	11
+	6	Tony Trujillo	MF	12
+	7	Fernando Ibarra Gutierrez	FORW, MF	12
+	8	Cesar Muralles	FORW, MF	12
+	9	Martin Nava	SWEP	12
+	10	Jeffery Gonzalez	MF	12
+	11	Cesar Carmargo	FORW, MF	12
+	13	Napoleon Jimenez	STRK	11
+	14	Kayson Acevedo	STRK	12
+	15	Angel Ramos	STRK, MF	12
+	17	Edgar Tena	MF	12
+	20	Jafery Bush	STRK	11
+	23	Saul Orozco	STRK	10
+	27	Teagan Vanderham	GK	9
+	28	Miguel Lima	HB	11
+	51	Yandel Lopez	STRK	9
+	65	William Ambriz	MF	9
+
+---------------------------------------------------------
+SHIRTS
+
+Nate Kerbs
+Wendell High School
+3A
+Soccer - Boys
+
+S: 5
+M: 14
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 173.47.27.178
+ID: cd28eaab-c000-4358-908e-00fddf7195b6

@@ -1,0 +1,48 @@
+From: Travis Draper
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Grace High School
+Grizzlies
+Red & White
+Jason Moss
+Bryan Jensen
+Travis Draper
+Tina Bitton
+Jenna Waddoups
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Aleaha Medina	12
+	Skout Hardy	11
+	Tyelor Turner	10
+	Darhaa D	10
+	Presley Judd	9
+	Myan Taggart	9
+	Berklee Mathews	9
+	Bailee Mathews	9
+	Ashlyn Welch	9
+	Charlee Ambrosek	9
+
+---------------------------------------------------------
+SHIRTS
+
+Travis Draper
+Grace High School
+2A
+Cheer
+
+S: 2
+M: 5
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 138.43.109.167
+ID: 71399537-d9ce-40ba-a8ce-4c879b3c82c3

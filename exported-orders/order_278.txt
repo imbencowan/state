@@ -1,0 +1,80 @@
+From: Cody Shelley
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Blackfoot High School
+Broncos
+Kelly Green & White
+Brian Kress
+Roger Thomas
+Cody Shelley
+Raimee Odum
+Jared Arave
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Addison Tanner	PG, SG	5-10	12
+	2	Blaklee Ball	G	5-3	9
+	3	Hallie Humpherys	SG	5-5	12
+	4	Lauren Christiansen	SG	5-9	11
+	10	Lexi Jackman	G	5-3	9
+	11	Sara Hone	PF, C	6-0	12
+	21	Preslie Martin		5-7	9
+	22	Atalyn Tomazin	F	6-2	12
+	23	Oaklee Marlow		5-3	9
+	30	Jaci Capson	SG	5-8	11
+	32	Neitiri Degarmo	SF, SG	5-10	9
+	44	Cambrie Waterhouse		6-1	12
+
+---------------------------------------------------------
+RECORD
+
+18	5
+
+41	Thunder Ridge	33
+47	Century	22
+30	Rigby	18
+58	Snake River	22
+65	Idaho Falls	54
+66	Bonneville	38
+50	Herriman	20
+27	Wasatch	40
+36	Sugar Salem	53
+61	Shelley	63
+57	Snake River	27
+56	Hillcrest	51
+63	Idaho Falls	38
+49	Madison	58
+55	Skyline	64
+48	Hillcrest	40
+50	Century	19
+57	Shelley	41
+58	Bonneville 	28
+57	Skyline	45
+52	Highland	36
+52	Hillcrest	49
+61	Skyline	43
+
+---------------------------------------------------------
+SHIRTS
+
+Cody Shelley
+Blackfoot High School
+5A
+Basketball - Girls
+
+S: 4
+M: 4
+L: 3
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 97.178.254.231
+ID: 1cf5f889-cc30-4a10-9ff0-f18447e3c7ea

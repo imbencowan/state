@@ -1,0 +1,56 @@
+From: Angie Glindeman
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Lake City High School
+Timberwolves
+Navy, Teal & Silver
+Shon Hocker
+Bryan Kelly
+Troy Anderson
+Jordyn Hensley
+Levi Wullenwaber
+Bailey Cavanaugh
+Martin Torres
+Chloe Harrison
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+		Lii Kekauoha		11
+	1	Madeline Peterson		11
+	2	KaeLee Kolden		12
+	3	Shayne McGowan		11
+	4	Karsyn DeMent		12
+	5	Scarlett Beamesderfer		9
+	7	Mia Kesner		12
+	11	Brooklyn Caan		11
+	14	Alexandria Routon		10
+	16	Macy Waterhouse		10
+	20	Tabitha Lopez		11
+	22	Kyla Smith		12
+	23	Hailey Mejie		11
+
+---------------------------------------------------------
+SHIRTS
+
+Angie Glindeman
+Lake City High School
+6A
+Softball
+
+S: 1
+M: 4
+L: 6
+XL: 1
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 162.218.182.4
+ID: e78915a0-12d9-4564-ba7a-a36606801409

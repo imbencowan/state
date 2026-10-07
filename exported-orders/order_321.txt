@@ -1,0 +1,53 @@
+From: Ted Bell
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Highland High School - Pocatello
+Rams
+Black, White & Red
+Doug Howell
+Brad Wallace
+Travis Bell
+Therese Bybee
+Vanessa Buetts
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Emma Anderson	9
+	Maylee Bringhurst	10
+	Hannah Buetts	12
+	Sara Bulla	10
+	Lila Graves	9
+	Hallie Harmon	10
+	Sari Johnson	10
+	Halli Myers	12
+	Olivia Payne	11
+	Natalie Rowan	10
+	Ember Stecklein	9
+	Skye Tsai	11
+	Emma Wilson	11
+
+---------------------------------------------------------
+SHIRTS
+
+Ted Bell
+Highland High School - Pocatello
+6A
+Dance
+
+S: 3
+M: 6
+L: 2
+XL: 1
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 169.197.75.108
+ID: 3ed1175b-a255-4587-ad13-6795808f52f5

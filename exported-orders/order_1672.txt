@@ -1,0 +1,75 @@
+From: Shayne Proctor
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Madison High School
+Bobcats
+Red, White & Gray
+Randy Lords
+Bradee Klassen
+Shayne Proctor
+Valerie Gardner
+Hollin Parkinson
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Tylo Leishman	11
+	Adelyn Earle	11
+	Kennedi Nordfelt	11
+	Brylie Larsen	11
+	Nora Cannon	10
+	Elli Freeman	11
+	KayDence Beck	11
+	Lydia Hogg	11
+	Brinlee Lords	12
+	Eden Baiamonte	12
+	Annie Angell	12
+	Audrey Sutton	12
+	Camryn Wilcox	12
+	Taylee Stock	12
+	Lexi Packard	12
+	Liv Hacking	12
+	Josie Riley 	12
+	Kynblee Benson	12
+	Ellie Woodward	10
+	Eliza Fransen	10
+	Taylor Ricks	10
+	Kalli Kay	10
+	Della Edstrom	10
+	Insley Mortensen	10
+	Addison Hebdon	10
+	Lucy Brusman	10
+	Rozlyn Packard	9
+	Taytumn Gardner	9
+	Quincee Klassen	9
+	Jadey Yates	9
+	Caimbrie Benfield	9
+	Anabelle Marler	9
+	Aveaya Miller	9
+	Scotlynn Klingler	9
+	Abigail Lewis	9
+	Michaela Dauer	9
+	Lauren Wilkes	9
+
+---------------------------------------------------------
+SHIRTS
+
+Shayne Proctor
+Madison High School
+6A
+Cheer
+
+S: 5
+M: 20
+L: 12
+
+
+
+
+---------------------------------------------------------
+IP: 192.225.186.74
+ID: 9c838bef-ae51-4f1e-a7fc-afb87c5edd6e

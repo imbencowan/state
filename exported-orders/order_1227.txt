@@ -1,0 +1,63 @@
+From: Christopher Waitley
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Canyon Ridge High School
+Riverhawks
+Crimson & Silver
+Brady Dickinson
+Randall Miskin
+Chris Waitley
+Corey Farnsworth
+Carey Farnsworth
+Steven Thueson
+Riley Scott
+Cesar Duran
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Jaxon Corujo	GK	10
+	1	Elias Alexander	MF	12
+	2	Cris Roberto	FB	12
+	3/0	Hunter Brewer	FB, GK	12
+	4	Lucas Escobar Adasme	FB	12
+	5	Wasumba Bolemo	FORW	10
+	6	Cooper Nickell	MF	10
+	7	Jonas Saka	FORW	11
+	8	Benjamin Kasombwa	MF	11
+	9	Gaspar Hernandez	FB	10
+	10	Ethan Williams	FORW	12
+	11	Edwin Flores-Cabrera	MF	12
+	12	Armando Murillo	FB	12
+	13	Yves Mugisha	MF	12
+	14	Adan Ruiz-Fregoso	MF, FB	12
+	15	Isaiah Rios	FB	10
+	16	Giovani Juarez	FORW	12
+	17	Ricardo Martinez-Ruiz	MF	11
+	18	Tanner Murdoch	FORW	9
+	19	Mwami Asukulu	FORW	10
+	24/25	Anzuluni Shabani	MF	10
+
+---------------------------------------------------------
+SHIRTS
+
+Christopher Waitley
+Canyon Ridge High School
+6A
+Soccer - Boys
+
+S: 2
+M: 12
+L: 6
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 216.83.77.2
+ID: 9cf3ce27-caa3-4f62-ac64-93b52a90bb0b

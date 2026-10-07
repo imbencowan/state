@@ -1,0 +1,71 @@
+From: Tyler Johnson
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Bonneville High School
+Bees
+Green, Gold & White
+Scott Woolstenhulme
+Justin Jolley
+Tyler Johnson
+McKenzee Howell
+Candice Dexter
+Brekell Hanson
+Rhett Hawkins
+Shelby Lords
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Elliana Agado	12
+	Erin Bake	12
+	Kinsey Bird	11
+	Ella Blanchard	10
+	Alissa Braithwaite	11
+	Melina Carlos-Villanueva	10
+	Morgan Casper	12
+	Kherrington Christensen	11
+	Marley Elliott	12
+	Shaelyn Elliott	10
+	Quincy Frasure	10
+	Aubrey George	10
+	Maia Haley	11
+	Tylee Hansen	9
+	McKinley Harker	10
+	Piper Howell	12
+	Brooklyn Larsen	12
+	Savana Lillie	12
+	Myley Lords	12
+	Emry Meppen	10
+	Dallas Owen	12
+	Kaecen Pitcher	10
+	Halle Price	12
+	Lily Stringer	11
+	LeBron Toussaint	9
+	Khloe Twitchell	10
+	Sarah Van Orden	12
+	Brinley Wadsworth	11
+	Alora Willey	11
+	Hailee Wright	10
+
+---------------------------------------------------------
+SHIRTS
+
+Tyler Johnson
+Bonneville High School
+5A
+Cheer
+
+S: 1
+M: 22
+L: 7
+
+
+
+
+---------------------------------------------------------
+IP: 192.42.147.18
+ID: 4361110f-4dd2-4abc-8e5c-5627de8d6eec

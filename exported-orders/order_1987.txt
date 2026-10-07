@@ -1,0 +1,78 @@
+From: Brian Hardy
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Valley High School
+Vikings
+Blue & White
+Ty Jones
+Risa Moffitt
+Brian Hardy
+Brian Hardy
+Jeorgi Kalisek
+Ben Christensen
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	2	Diego Damian	G	5-10	12
+	3	Lorenzo Vargas	G	5-7	11
+	10	Baylen Standlee	F	6-0	11
+	11	Brandt Jones	G	6-1	11
+	12	Devin Christensen	G	6-1	11
+	13	Damian Traughber	G	6-3	10
+	20	Kaleb Kohtz	F	6-1	10
+	22	Reese Balls	F	6-3	12
+	23	Yosgart Vivanco	F	5-10	11
+	30	Mario Torres	F	5-11	11
+	34	Jesus Urias	G	5-8	12
+
+---------------------------------------------------------
+RECORD
+
+17	5
+
+62	Dietrich	52
+37	Raft River	68
+47	Oakley	27
+67	Glenns Ferry	22
+43	Hagerman	26
+61	Sun Valley Community	64
+40	Butte County	51
+40	Murtaugh	48
+51	Shoshone	16
+65	Raft River	42
+44	Camas County	36
+57	Oakley	45
+63	Glenns Ferry	41
+51	Hagerman	50
+56	Sun Valley Community	43
+53	Liberty Charter	45
+54	Carey	44
+48	Murtaugh	52
+49	Shoshone	37
+60	Oakley	28
+63	Raft River	53
+44	Murtaugh	41
+
+---------------------------------------------------------
+SHIRTS
+
+Brian Hardy
+Valley High School
+2A
+Basketball - Boys
+
+M: 2
+L: 8
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.111.67
+ID: 10898308-0340-4da9-89bc-1b651d7e92c5

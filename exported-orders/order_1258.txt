@@ -1,0 +1,62 @@
+From: Greg Carpenter
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Nampa High School
+Bulldogs
+Red, Blue & White
+Gregg Russell
+Kasey Burkholder
+Greg Carpenter
+Clifton Thomas
+Hayden Carlson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Athoz Grimaldo	GK	9
+	2	Iddy Cervantes	D	12
+	3	Crispen Martinez	D	11
+	4	Immanuel Prokopchuk	D	10
+	5	Lucas Barker	SWEP	12
+	6	Mikeal Vivero	MF	12
+	7	Makai Venegas	STRK	12
+	8	Eric Gonzalez	D	12
+	9	Marquez Venegas	MF	10
+	10	Kevin Rosas	MF	11
+	12	Joel Silva	MF	12
+	13	Donaldo Cardenas	MF	10
+	14	Jaebets Hennie	MF	10
+	15	Jaeson Kamerick	MF	10
+	16	Cardin Madera	D	11
+	17	Vinnie Stancic	D	11
+	19	Damian Silva	MF	11
+	20	Jair Gramajo-Reyes	MF	11
+	22	Swedi Eumbu	MF	10
+
+---------------------------------------------------------
+COMMENT
+
+Can we add 1 more large and 1 more medium for coaches that NHS will pay for??
+
+---------------------------------------------------------
+SHIRTS
+
+Greg Carpenter
+Nampa High School
+5A
+Soccer - Boys
+
+S: 1
+M: 10
+L: 8
+
+
+
+
+---------------------------------------------------------
+IP: 209.127.238.194
+ID: 7c49386d-fe15-4660-b48e-4cd5eaca161f

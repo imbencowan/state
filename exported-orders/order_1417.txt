@@ -1,0 +1,53 @@
+From: Tony Brulotte
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Eagle High School
+Mustangs
+Green & Silver
+Derek Bub
+Susan McInerney
+Tony Brulotte
+Ashley Graham
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Madi Ruport	DS		12
+	2	Zoe Gordon	OH		11
+	3	Hadley Smith	DS		11
+	4	Belle Emerson	S		12
+	5/21	Brynlee Gneiting	S		11
+	6	Emme Higley	DS		10
+	7	Nicole DeVries	MB		11
+	9	Sydney Gerichs	OH		10
+	10	Bailey Kluksdal	S		12
+	11	Madison Jones	MB		12
+	12	Ellie McManigal	L		12
+	13	Sophia Giles	OPP		12
+	14	Paige Christensen	OPP, OH		11
+	15	Kiley Newberry	MB		10
+	16/23	LilyAnn Baldwin	OH		9
+
+---------------------------------------------------------
+SHIRTS
+
+Tony Brulotte
+Eagle High School
+6A
+Volleyball
+
+M: 2
+L: 11
+XL: 1
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.101
+ID: c4c27109-f1fb-4168-a0e0-9acc5163456b

@@ -1,0 +1,61 @@
+From: Rex Romander
+Activity: Football
+
+---------------------------------------------------------
+SCHOOL
+
+Dietrich High School
+Blue Devils
+Blue, White & Black
+Stefanie Shaw
+Rex Romander
+Rex Romander
+Garrett Astle
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	weight	grade
+	0	Kooper Torgerson	TE, C	6-0	165	9
+	2	Brody Torgerson	G, MLB	6-1	210	12
+	3	Chase Norman	RB, CB	5-8	155	11
+	5	Connor Perkins	QB, CB	5-9	150	12
+	6	Wyett Sneddon	QB, RB	5-6	175	11
+	8	Gavyn Hoskisson	QB, DE	5-10	180	10
+	12	Eli Weber	WR, DE	5-8	150	12
+	14	Ty Van tassel	CB	5-4	140	9
+	19	Isaac Ward	RB	5-6	150	12
+	20	Kyah Dilworth	MLB, OLB	5-3	150	12
+	21	Erick Chavez	TE, G	5-11	190	12
+	22	Jason Hollibaugh	G, DE	5-11	190	11
+	32	Angel Alvarado	QB/OLB	5-11	200	12
+	34	Kage Resz	C/NT	5-7	170	12
+	42	Crew Weber	C	5-7	115	10
+	44	Luke Johnson	OG/NT	5-8	190	11
+	52	Che Buckway	T, NG	5-11	190	12
+	57	Chris Romero	OG/NT	5-10	230	11
+
+---------------------------------------------------------
+RECORD
+
+	
+
+
+---------------------------------------------------------
+SHIRTS
+
+Rex Romander
+Dietrich High School
+3A
+Football
+
+M: 1
+L: 13
+XL: 4
+
+
+
+
+---------------------------------------------------------
+IP: 172.71.142.99
+ID: 41db7775-fda7-46cb-b93f-bf2c4cc3a740

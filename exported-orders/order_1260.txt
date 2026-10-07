@@ -1,0 +1,64 @@
+From: Allen Dade
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Vallivue High School
+Falcons
+Brown & Gold
+Lisa Boyd
+Kellie Dean
+Allen Dade
+Joel Bitters
+Fred Mora
+Reese Hyer
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+		Juan Ballesteros	MF	11
+		Jaiden Castaneda	FORW	10
+		Leo Duran	GK	11
+		Esteban Gutierrez	MF	10
+		Moises Mendoza	MF	11
+	0	Alvaro Espinoza	GK	12
+	1	Ryan Steinbach	MF	12
+	2	Josiah Escutia	MF	12
+	5	Baraka Maki	FORW	12
+	7	Marcos Madrigal	FORW	12
+	8	Isaac Kisembo	FORW	10
+	11	Elijah Grimaldo	MF	12
+	13	Isaiahs Grimaldo	STRK	10
+	14	Carlos Arizmendi	D	12
+	15	Josiah Duran	MF	11
+	17	Cameron Schnee	D	12
+	18	Ben Martinez	D	12
+	19	Horacio Hernandez	MF	12
+	20	DJ Lupongo	D	12
+	21	Carlos Hernandez	D	12
+	23	Leo Ayala	D	12
+	24	Isaiah Hernandez	MF	11
+	25	Ethan Riperto	MF	12
+
+---------------------------------------------------------
+SHIRTS
+
+Allen Dade
+Vallivue High School
+5A
+Soccer - Boys
+
+S: 3
+M: 4
+L: 12
+XL: 2
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 207.126.111.99
+ID: 5f2bff85-ff50-443e-a3ca-8a50d50a09fa

@@ -1,0 +1,64 @@
+From: Greg Carpenter
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Nampa High School
+Bulldogs
+Red, Blue & White
+Gregg Russell
+Kasey Burkholder
+Greg Carpenter
+Shania Gomez
+Calli Shankel
+Jessica Skaggs
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Abigail Schroeder	10
+	Addilyn Tompkins	10
+	Annabelle Leal	11
+	Arnett Garcia	11
+	Brailey Bledsoe	11
+	Brooklyn Spano	10
+	Claire Dyer	11
+	Danika Ramos	10
+	Emma Seable	11
+	Jace Rackham	12
+	Jaelynn Torgerson	9
+	Kalli Morphey	12
+	Layla Wilson	12
+	Lelia Kinyon	9
+	Mackenzie Davis	10
+	Madilyn Schneider	11
+	Madison Brown	10
+	Madisyn Perez	10
+	Mya Watkins	11
+	Olivia Van Komen	10
+	Paisley Badejo	9
+	Sami Kelly	9
+	Sophie Coronado	10
+	Sufia Montoya	9
+	Tori Brooks	12
+
+---------------------------------------------------------
+SHIRTS
+
+Greg Carpenter
+Nampa High School
+5A
+Cheer
+
+S: 11
+M: 11
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 209.127.238.207
+ID: 1439c506-1e3a-4e41-bb36-bf76a725197f

@@ -1,0 +1,84 @@
+From: Jason Willer
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Capital High School
+Eagles
+Black, Gold & Silver
+Lisa Roberts
+Derek Gardner
+Jason Willer
+Blas Telleria
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Sumani Dumwe	G	5-9	10
+	1	Silas Crane	G	5-10	10
+	2	Abdi Talaso	G	5-10	9
+	3	Tannen Everhart	G	6-0	12
+	4	Daniel Petros	G	6-3	12
+	10	Logan Becker	P	6-3	12
+	11	Carter Komoda	G	6-4	9
+	12	Brayden Dudley	G	6-3	12
+	13	Owen Richey	F	6-3	11
+	20	Tannen Wadsworth	G	6-2	12
+	21	Brady Ruzicka	F	6-2	11
+	22	Daiken Lowe	F	6-6	11
+	23	Quincey Clay	G	5-11	10
+	24	Isaak Stafford	G	6-1	10
+	33	Mike Stith	G	5-10	10
+
+---------------------------------------------------------
+RECORD
+
+15	11
+
+76	Vallivue	68
+71	Cole Valley Christian	57
+76	Minico	36
+67	Blackfoot	65
+62	Bishop Kelly	52
+52	Timberline	53
+60	Leuzinger	45
+58	Timpanogos	63
+55	Legacy	74
+71	Cyprus	77
+80	Mountain View	84
+58	Rocky Mountain	56
+60	Meridian	70
+50	Centennial	81
+61	Kuna	59
+69	Eagle	58
+65	Borah	54
+69	Ridgevue	64
+54	Owyhee	70
+73	Boise	85
+62	Timberline	60
+69	Eagle	61
+65	Kuna	54
+35	Centennial	75
+67	Timberline	75
+63	Meridian	62
+
+---------------------------------------------------------
+SHIRTS
+
+Jason Willer
+Capital High School
+6A
+Basketball - Boys
+
+L: 6
+XL: 6
+2XL: 3
+
+
+
+
+---------------------------------------------------------
+IP: 207.244.138.12
+ID: d5daddde-98d9-4144-8019-ee36bf82513e

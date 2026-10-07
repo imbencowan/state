@@ -1,0 +1,83 @@
+From: Conor Kennedy
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+McCall-Donnelly High School
+Vandals
+Red, White & Blue
+Tim Thomas
+Tim Thomas
+Conor Kennedy
+Jason Tinney
+Hunter Onthank
+Corey Jacobsen
+Leo Stoddard
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	00	Sam Jacobsen			12
+	1	Sam Penny	SG	6-3	12
+	2	Sam Scott	SG, PG		11
+	3	Maxton Stoddard			10
+	4	Michael Foster	PF		12
+	5	Kage Stokes			11
+	10	Jacob Lawless	SG		12
+	15	Michael Pellerin			11
+	21	Andy Scott	SG	5-10	12
+	22	Maddox Arnold	PG, SG		12
+	23	Michael Wyman	SF, SG	6-0	12
+	24	Ben Greaves			10
+	30	Colby Myers	PF	6-2	12
+	42	Ethan Roberts			12
+	55	Nolan Wadlow			10
+
+---------------------------------------------------------
+RECORD
+
+12	9
+
+59	Grangeville	24
+59	Caldwell	39
+35	Hillcrest	41
+45	Eagle	62
+51	Canyon Ridge	48
+60	Lewiston	61
+54	Moscow	63
+30	Lewiston	59
+64	Pendleton	49
+64	Grangeville	44
+55	New Plymouth	58
+68	Payette	17
+53	Fruitland	54
+48	Homedale	52
+64	Cole Valley	41
+73	Weiser	80
+67	Payette	26
+69	Fruitland	51
+48	Homedale 	46
+48	Cole Valley	44
+67	Weiser	58
+
+---------------------------------------------------------
+SHIRTS
+
+Conor Kennedy
+McCall-Donnelly High School
+4A
+Basketball - Boys
+
+M: 1
+L: 9
+XL: 3
+2XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 162.218.180.38
+ID: 504f169d-8fce-4547-b837-6b811d1fc880

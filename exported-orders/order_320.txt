@@ -1,0 +1,77 @@
+From: Lundyn Stuart
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Pocatello High School
+Thunder
+Red & Blue
+Doug Howell
+Lisa Delonas
+Robert Parker
+Carly Johnson
+Aubri Arnold
+Curtis Hedges
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Alexandria Alvarado	12
+	Taylynn Ayers	9
+	Kayleigh Cabrera	10
+	Makaya Cano	10
+	Alliann Chandler	11
+	Ambree Christensen	10
+	Sierra Clezie	10
+	Cora Coleman	11
+	McKenna Delonas	9
+	Berkley Dye	9
+	Preslee Eborn	9
+	Jocelyn Gaxiola	9
+	Blakely Harris	10
+	KayLee Hirschi	10
+	Ashtyn Jensen	12
+	Brooklyn Johnson	9
+	Ella Jorgensen	9
+	Chloe Koeberlein	10
+	Bailey Marley	10
+	Kylee Martin	9
+	Gwendolynn McGarry	9
+	Madison Moreno	10
+	Gryphon Mortensen	10
+	Myla Quilimaco	10
+	Emily Ramirez	11
+	Liberty Rasmussen	9
+	Jaycee Richards	10
+	Kelsi Robinson	10
+	Brooke Rowe	12
+	Isabelle Scow	12
+	Kaydence Snell	10
+	Shelby Sorensen	9
+	Zillia Sparrow	12
+	Gwendolyn Sullivan	9
+	Allison Talbot	11
+	Jaycee Turner	11
+	Kylie Harris	10
+
+---------------------------------------------------------
+SHIRTS
+
+Lundyn Stuart
+Pocatello High School
+5A
+Cheer
+
+S: 14
+M: 16
+L: 5
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 169.197.75.109
+ID: e5652907-5184-4853-ad9e-dcbe92cbbba4

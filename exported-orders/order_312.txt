@@ -1,0 +1,60 @@
+From: Norma Alley
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Coeur d'Alene High School
+Vikings
+Royal & White
+Shon Hocker
+Mike Randles
+Victoria Beecher
+Tiffney Murphree
+Kaylee Dinkel
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Paetyn Barker	9
+	Makiah Burdett	9
+	Lillian Dirks	9
+	Addison Durham	10
+	Carlee Fiora	11
+	Logan Hanson	11
+	Charlize Hidalgo	11
+	Brooklyn Jackman	12
+	Nadine Joubert	10
+	Clarie Kuhlmann	11
+	Madison Lee	11
+	Sophia McGinnis-Green	12
+	Hayden Montgomery	10
+	Arabella Mooring	12
+	Adilyn Murphree	12
+	Brianna Myers	12
+	Gabrielle Ramirez	12
+	Savanah Robinson	11
+	Arizona Rossi	12
+	Summer Spiker	9
+	Clarissa Susca	11
+	Abigail Varghese	12
+
+---------------------------------------------------------
+SHIRTS
+
+Norma Alley
+Coeur d'Alene High School
+6A
+Cheer
+
+S: 7
+M: 12
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 162.218.182.24
+ID: b86ba9b4-84e4-47bc-97bd-27f6d6930c88

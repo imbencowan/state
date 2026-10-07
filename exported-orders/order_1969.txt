@@ -1,0 +1,79 @@
+From: Janell Hodsdon
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+North Star Charter School
+Huskies
+Navy & Gray
+Andy Horning
+Josh Hickey
+Janell Hodsdon
+Andy Horning
+Ryan Hammons
+Blake Bedlion
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Jackson McReynolds		6-3	12
+	1	Karamjit Kanda		5-10	11
+	2	Beckett Hammons		6-0	12
+	3	Jenner Wilkie		5-9	11
+	10	Lukas Chadd		5-10	12
+	11	Jacob Hauch		6-0	11
+	12	Gage Shannon		5-7	10
+	15	Tim Baros		5-10	11
+	22	Tim Shchur		5-10	12
+	32	Logan Ellis		6-6	11
+	33	Kyler Horning		5-10	10
+	34	Paul Cougher		6-0	10
+	55	Doni Muckelroy	P	6-1	11
+
+---------------------------------------------------------
+RECORD
+
+17	3
+
+76	Treasure Valley Classical Academy	46
+43	New Plymouth	68
+61	McDermitt	44
+28	Melba	42
+51	Compass Charter	40
+50	Greenleaf Friends Academy	51
+41	Greenleaf Friends Academy	31
+55	Wilder	42
+72	Liberty Charter	61
+70	Vision	47
+55	Victory Charter	36
+58	Gem State Adventist Academy	34
+63	Riverstone International	32
+68	Notus	47
+68	Compass Charter	36
+65	Centennial Baptist	40
+53	Idaho City	38
+52	Rimrock	18
+63	Centennial Baptist	43
+65	Notus	38
+	Rimrock	
+
+---------------------------------------------------------
+SHIRTS
+
+Janell Hodsdon
+North Star Charter School
+2A
+Basketball - Boys
+
+M: 1
+L: 8
+XL: 4
+
+
+
+
+---------------------------------------------------------
+IP: 69.92.72.162
+ID: ea4a1669-0ada-4fbd-80b5-e2b4d38ac664

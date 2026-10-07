@@ -1,0 +1,60 @@
+From: Craig Christensen
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Post Falls High School
+Trojans
+Orange & Black
+Dena Naccarato
+Mark Mason
+Craig Christensen
+Holly Glover
+Mackenzie Genatone
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Britton, Deja	10
+	Duce, Addisyn	12
+	Fishman, Jacklynn	11
+	Foos-Terrazas, Alexis	11
+	Genatone, Kenna	10
+	Howell, Ashlin	9
+	Jarvis, Julia 	11
+	Lamb, Liliah 	10
+	Lee, Kayda	9
+	Loudenback, Colee	10
+	Loudenback, Payten 	12
+	Malone, Scarlet	11
+	Meidinger, Brooklyn	10
+	Meidinger, Lauren 	12
+	Mitchem, Kendall 	11
+	Pannell, Emma 	11
+	Perkins, Kendall 	10
+	Perkins, Sophia	9
+	Tomlinson, Carolyn	9
+	Zimmerman, Mckenna 	12
+	Konynenbelt, Addisen	9
+
+---------------------------------------------------------
+SHIRTS
+
+Craig Christensen
+Post Falls High School
+6A
+Cheer
+
+S: 14
+M: 5
+L: 1
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 135.134.167.37
+ID: 16e463bd-ce0d-4a75-b1d2-3b14316ae43f

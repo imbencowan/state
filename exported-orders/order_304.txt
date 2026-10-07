@@ -1,0 +1,82 @@
+From: TJ Clary
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Sandpoint High School
+Bulldogs
+Red & White
+Becky Meyer
+Jacki Crossingham
+TJ Clary
+Will Love
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Siena Todd-murray	SG, SF		10
+	1	Jaylah Butler	SG		10
+	2	Demi Driggs	SG, SF		12
+	3	Carly Laybourne	PG, SG	5-7	10
+	4	Jordyn Tomco	SF		10
+	5	Livia Driggs	PG		10
+	10	Mia Driggs	PF		11
+	11	Aubrey Knowles	PG		12
+	13	Brecken Mire	PG, SG	5-10	10
+	15	Summer Loutzenhiser	SG, SF	5-8	10
+	21	Willow Betz	SF, PF		9
+	22	Chloe Laybourne	SF		12
+	33	Jetta Thaete	SF		11
+
+---------------------------------------------------------
+RECORD
+
+	14	10
+
+68	Bonners Ferry 	34
+62	Post Falls	48
+40	Moscow 	32
+35	Timberlake 	55
+55	Coeur d' Alene 	76
+54	West Valley 	31
+64	University 	54
+53	Kennewick 	63
+45	Royal 	29
+35	Shelley 	55
+39	Hillcrest 	44
+47	Skyline 	60
+50	Lakeland 	60
+55	Moscow 	37
+44	Ridgeline 	45
+40	Coeur d'Alene 	62
+41	Lakeland 	49
+36	Timberlake 	31
+57	Lewiston 	35
+54	Lake City 	37
+56	Lewiston 	43
+65	Lewiston 	63
+44	Lakeland 	42
+59	Lakeland 	50
+
+
+
+
+---------------------------------------------------------
+SHIRTS
+
+TJ Clary
+Sandpoint High School
+5A
+Basketball - Girls
+
+M: 4
+L: 9
+
+
+
+
+---------------------------------------------------------
+IP: 107.116.255.88
+ID: e2a12c02-b9c6-401f-96e5-010a11ff7492

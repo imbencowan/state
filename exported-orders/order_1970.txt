@@ -1,0 +1,80 @@
+From: Rebecca kosinski
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Orofino High School
+Maniacs
+Royal & White
+Jason Hunter
+Rebecca Kosinski
+Rebecca Kosinski
+Rocky Barlow
+Matthew Carlock
+John Sparano
+Bo Bonner 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Jake Runia	G, F	6-1	12
+	1	Nick Bonner	F, C	6-3	12
+	2	Hudson Schneider	G	6-1	12
+	3	Cameron McCorkle	G	5-8	12
+	4	Jaeger Tondevold	G, PG	5-8	12
+	5	Landon Connolly	C, F	6-1	12
+	10	Treyton Carlock	G	5-8	10
+	11	Blake Barlow	PG, G	5-9	11
+	12	Lane Turcott	PG, G	5-9	10
+	23	Blaine Johnson	F, C	5-11	10
+	24	Chase Deyo	F	5-11	11
+	34	Quinton Naranjo	G, PG	5-9	12
+
+---------------------------------------------------------
+RECORD
+
+18	5
+
+46	Prairie	43
+68	Kamiah	34
+59	Timberline	26
+56	Kellogg	52
+63	Grangeville	37
+64	Dayton	29
+54	Prairie	45
+62	Logos	53
+51	Priest River	37
+35	Lewiston	67
+40	Kellogg	53
+53	St. Maries	47
+54	Lapwai	43
+56	Asotin	49
+65	Priest River	34
+54	Grangeville	32
+74	Logos	51
+52	Kamiah	27
+45	Lapwai	69
+42	St. Maries	68
+54	Kellogg	40
+46	St. Maries	48
+47	Kellogg	44
+
+---------------------------------------------------------
+SHIRTS
+
+Rebecca kosinski
+Orofino High School
+3A
+Basketball - Boys
+
+M: 5
+L: 7
+
+
+
+
+---------------------------------------------------------
+IP: 50.37.145.117
+ID: b837688d-44b2-440f-b792-fa9db211a6c8

@@ -1,0 +1,78 @@
+From: Brian Lee
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Nezperce High School
+Nighthawks
+Blue & Gold
+Brian Lee
+Misti Cook
+Brian Lee
+Conner McLeod
+Adam Keith
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	4	Blayne Mosman			11
+	10	Forest Nelson			10
+	12	Slater Kuther			9
+	20	Grant Ingram			12
+	22	Jace Cronce			10
+	24	Carter Williams			12
+	30	Brennen McLeod			10
+	32	Justin Meacham			11
+	34	Aidan McLeod			12
+	40	Keezen Grant			9
+	42	Kyler Brinkerhoff			9
+	44	Zane Wilcox			12
+	50	Kovyn Brinkerhoff			10
+	52	Jadin Williams			10
+
+---------------------------------------------------------
+RECORD
+
+13	5
+
+77	Clearwater Valley	68
+56	Deary	54
+57	Genesee	46
+88	Highland	58
+57	Deary	53
+55	Grangeville	81
+50	Timberline	46
+56	Deary	66
+42	Clearwater Valley	61
+67	Salmon River	45
+62	Genesee	43
+56	St. John Bosco Academy	44
+53	Grangeville	69
+58	Timberline	40
+46	Highland	22
+63	Salmon River	56
+64	St. John Bosco Academy	51
+43	Clearwater Valley	63
+	
+
+
+---------------------------------------------------------
+SHIRTS
+
+Brian Lee
+Nezperce High School
+1A
+Basketball - Boys
+
+M: 5
+L: 7
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 64.126.167.2
+ID: f6074f8c-8f2f-4655-8328-97c62602c836

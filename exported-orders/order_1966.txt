@@ -1,0 +1,81 @@
+From: Kent Howell
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Marsh Valley High School
+Eagles
+Blue, Scarlet & White
+Gary Tucker
+Wyatt Hansen
+Kent Howell
+Chris Ball
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Karter Davis		6-0	10
+	2	Mayan Noble		6-1	10
+	3	Jaxson Smith	PG, SG	5-8	12
+	4	Chandler Bennett		6-1	12
+	5	Tate Whitworth		5-10	12
+	10	Weston Aagard		6-2	12
+	12	Cooper Curzon		6-2	12
+	20	Boston Sorensen		6-1	12
+	24	Nash Guthrie		6-2	10
+	25	Tyson Peck			11
+	42	Carter Curzon			10
+	45	Weslee Evans		6-0	12
+	50	Caleb Hebdon			10
+
+---------------------------------------------------------
+RECORD
+
+15	9
+
+57	Teton	81
+44	West Side	47
+54	Firth	50
+67	Malad	41
+60	South Fremont	41
+67	North Fremont	51
+56	West Side	43
+59	Filer	45
+63	North Fremont	50
+82	Buhl	69
+50	Teton	67
+44	South Fremont	43
+51	Filer	52
+71	South Fremont	59
+68	Buhl	64
+61	American Falls	62
+32	Snake River	62
+62	Bear Lake	56
+47	American Falls	67
+41	Snake River	49
+68	Bear Lake	48
+62	American Falls	67
+69	Bear Lake	53
+62	American Falls	54
+	Snake River	
+
+---------------------------------------------------------
+SHIRTS
+
+Kent Howell
+Marsh Valley High School
+4A
+Basketball - Boys
+
+M: 3
+L: 9
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 67.215.46.44
+ID: a9f3a50a-e74c-4e21-970a-f87cf18acd05

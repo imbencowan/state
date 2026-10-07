@@ -1,0 +1,50 @@
+From: Bowe von Brethorst
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Weiser High School
+Wolverines
+Red & White
+Dave Kerby
+Drew Dickerson
+Bowe vonBrethorst
+Aimee Wootton
+Brandon Stromberg
+Lauren Oyervides 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Ellie Shirts	1B	12
+	2	Alli Navarrete	SS	10
+	3	Ali Sorensen	OF	12
+	4	Jessica Waite	OF	12
+	5	Alyvia Goff	2B	10
+	6	Ahnala Britt	OF	10
+	8	Madi Janicek	P	12
+	9	Sophia Shirts	C, OF	10
+	10	Pieper Stromberg	UTIL	9
+	11	Shelby McClain	UTIL	11
+	12	Natalya Hoobery	3B, OF	11
+
+---------------------------------------------------------
+SHIRTS
+
+Bowe von Brethorst
+Weiser High School
+4A
+Softball
+
+S: 2
+M: 8
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.110.165
+ID: e3e9c539-3a5c-4dc5-abf1-cffd6581910d

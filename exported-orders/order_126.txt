@@ -1,0 +1,61 @@
+From: Kevin Stilling
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Wood River High School
+Wolverines
+Green & White
+Jim Foudy
+Julia Grafft
+Kevin Stilling
+Vicki Foster
+Mandy Wilson
+James Foster
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Taylor Heitzman	GK	11
+	0	Nahomi Lerma	GK, MF	12
+	1	Alaska Sewell	STRK	11
+	2	Grace Rushton	HB	12
+	3	Gyzelle Monjaras	MF	10
+	4	Gisele Guzman	STRK, MF	11
+	5	Hadley Vandenberg	HB	10
+	6	Gracie Wallace	MF	10
+	7	Sydney Nickum	D	12
+	8	Persia Franz	D, FB	10
+	9	Claire Buchwalter	HB, MF	11
+	10	Stella Oelerich	D, FB	12
+	11	Julia Sinnamon	HB	12
+	12	Peyton Wood	MF, STRK	12
+	13	Parker Higgins	D, FB	12
+	14	Monse Gil	STRK, FORW	10
+	16	Asha Singh	STRK, FORW	12
+	17	Anna Gilman	MF	11
+	19	Karley Johnston	MF, D	12
+	20	Hadley Walker	HB	10
+	21	Skyler Jensen	HB, MF	10
+	22	Dylan Buck	D, FB	10
+
+---------------------------------------------------------
+SHIRTS
+
+Kevin Stilling
+Wood River High School
+5A
+Soccer - Girls
+
+S: 3
+M: 13
+L: 6
+
+
+
+
+---------------------------------------------------------
+IP: 162.158.42.61
+ID: 39753f56-318a-4362-9ebf-0e2bc2d431bb

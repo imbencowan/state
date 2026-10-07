@@ -1,0 +1,61 @@
+From: Catey Walton
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Timberlake High School
+White Tigers
+Gold & Navy
+Rusty Taylor
+Ryne Eberlin
+Catey Walton
+Logan Georgeadis
+Bailey Andrews
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Sophia Harrington	MF, FORW	9
+	2	Lillee Ward	FORW	9
+	3	Sierra Nalen	D	10
+	4	Paisley Fenton	MF	10
+	5	Kaylie Neal	FORW	10
+	6	Ellie Smith	FORW	12
+	7	Bella Link	FORW, GK	9
+	8	Brooke Gray-Trask	FORW	9
+	9	Greta Hegstad	D	12
+	10	Aurora Lippard	D, FORW	11
+	11	Liz Allen	D	9
+	12	Aubrey Higgins	FORW	9
+	13	Naomi Beuving	MF, FORW	10
+	14	Alyssa Hood	D	9
+	15	Delainey Wenstrom	D	10
+	16	Emilia Landon	MF	11
+	17	Addy Karbolis	MF	10
+	18	Gaby Fiedler- Arellano	FORW	10
+	21	Rylee Zepeda	FORW	12
+	22	Adele Morey	MF, D	10
+	23	Maddiey Longo	MF, FORW	12
+	26	Ali Grantham	GK	11
+
+---------------------------------------------------------
+SHIRTS
+
+Catey Walton
+Timberlake High School
+4A
+Soccer - Girls
+
+S: 9
+M: 10
+L: 2
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 162.218.180.34
+ID: f016842a-1a4e-4932-aa82-10bd8276cb5d

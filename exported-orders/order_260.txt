@@ -1,0 +1,81 @@
+From: Michelle Peterson
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Mackay High School
+Miners
+Red & White
+Susan Buescher
+Stephanie Fullmer
+Michelle Peterson
+Josh Pehrson
+Chris Holt
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	2	Arilia Peterson			10
+	3	Emma Guerrero			11
+	12	Trista Hawley			10
+	20	Addison Seefried			9
+	22	Breyan Barger			9
+	25	Jaida Rodriguez			10
+	30	Danika Seefried			11
+	33	Alyssa Pehrson			11
+	35	Mylee Drussel			12
+
+---------------------------------------------------------
+RECORD
+
+15	9
+
+46	Salmon	39
+34	Challis	63
+45	Grace Lutheran	41
+20	Dietrich	55
+44	Murtaugh	64
+50	Nampa	42
+36	Raft River	61
+35	Leadore	53
+60	North Gem	21
+31	Rockland	45
+36	Leadore	44
+54	Challis	48
+55	Grace Lutheran	21
+48	North Gem	14
+40	Butte County	79
+59	ShoBan	30
+43	Richfield	14
+66	Taylor's Crossing	8
+46	Watersprings	17
+61	Richfield	20
+64	American Heritage	4
+53	Grace Lutheran	22
+48	Challis	45
+38	Rockland	45
+
+---------------------------------------------------------
+COMMENT
+
+We would like to purchase one size Medium sweatshirt for our manager.
+
+---------------------------------------------------------
+SHIRTS
+
+Michelle Peterson
+Mackay High School
+1A
+Basketball - Girls
+
+M: 8
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 172.56.148.222
+ID: edac0734-ab9a-4493-ab06-16a134928418

@@ -1,0 +1,52 @@
+From: Rikki Tolmie
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Parma High School
+Panthers
+Black, White & Red
+Dale Layne
+Monique Jensen
+Rikki Tolmie
+Sam Crockett
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	2	Maya Jensen	SS, RHP	11
+	3	Hailey Kurz		12
+	4	Kinlea Cole	OF, P	9
+	5	Sawyer Watkins		9
+	7	Kinzie Keele		12
+	8	Kylie Britton	OF	10
+	9	Lakota Leppert	3B, RHP	12
+	10	Zoey Heffelfinger	C, OF	12
+	11	Kendra Simpson	2B, OF	10
+	12	Riley Calkins	2B, 3B	12
+	13	Ari Godina	OF, C	10
+	14	Mollie Calkins	OF, 2B	10
+	15	Poppy Nichols	1B, SS	9
+	22	Abby Anderson	OF	11
+	42	Wesli Crockett	P, 1B	11
+
+---------------------------------------------------------
+SHIRTS
+
+Rikki Tolmie
+Parma High School
+3A
+Softball
+
+S: 1
+M: 10
+L: 4
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.110.138
+ID: e47faf6b-7662-46b1-b409-7722141e60fa

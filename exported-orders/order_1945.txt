@@ -1,0 +1,88 @@
+From: Randy Winn
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Burley High School
+Bobcats
+Green, Gray, Black & White
+Sandra Miller
+Levi Power
+Randy Winn
+Michael Hill
+Eric Page
+Whitnee Hill
+Brandon Hosteen
+Braxton Greener
+Parker Arritt
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Teegan Schreiter	P	6-4	12
+	1	Phoenix Castro	G	5-10	11
+	2	Cove Thompson	PG, SG	5-8	12
+	3	Jake Seely	SG		12
+	5	Jacob Redder	SG		12
+	10	Nash Gillette	PG, SG		12
+	11	Jayden Garcia	G	5-10	11
+	13	Ryker Page	PG, SG	5-11	12
+	15	Fields Bangerter	F		11
+	20	Ty Shirley	G	6-0	10
+	21	Matthew Coats	P	6-4	11
+	22	Quentin Alvarado	P	6-1	10
+	23	Joseph Kloepfer	SF		11
+	24	Trevor Jones	G	5-7	11
+	32	Krew Thompson	G	5-10	10
+
+---------------------------------------------------------
+RECORD
+
+14	11
+
+63	Preston	62
+65	Century	60
+73	Canyon Ridge	86
+51	Canyon Ridge	61
+37	Thunder Ridge	61
+56	Teton	66
+33	Hillcrest	64
+32	Preston	67
+67	Century	66
+65	Blackfoot	72
+66	Blackfoot	63
+59	Minico	53
+45	Twin Falls	57
+74	Wood River	69
+67	Blackfoot	79
+83	Mountain Home	45
+57	Jerome	42
+71	Minico	69
+46	Twin Falls	78
+89	Wood River	44
+79	Mountain Home	49
+53	Minico	54
+100	Mountain Home	66
+64	Minico	50
+
+---------------------------------------------------------
+SHIRTS
+
+Randy Winn
+Burley High School
+5A
+Basketball - Boys
+
+M: 3
+L: 10
+XL: 1
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 72.22.239.194
+ID: e9329342-bf6b-4486-8e4f-f3ad1a226e17

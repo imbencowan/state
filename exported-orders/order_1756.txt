@@ -1,0 +1,68 @@
+From: Larry Stocking
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Hillcrest High School
+Knights
+Red, Black & White
+Scott Woolstenhulme
+Tyler Mills
+Larry Stocking
+Kayla Mathews
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Audrey Arevalo	12
+	Amari Beck	11
+	Alexah Cook	12
+	Kyleigh Cook	12
+	Emrie Davis	12
+	Olivia Dudley	11
+	Taylor Eliason	9
+	Enza Fazzio	11
+	Jatzel Garcia	10
+	Jocelyn Hansen	11
+	Hope Harris	11
+	Ashley Hartner	11
+	Macy Hill	9
+	Jaylee Johnson	10
+	Brielle Kovac	11
+	Oaklee Luce	11
+	Blakely Nelson	12
+	Presley Park	11
+	Lucy Paskett	9
+	Sophie Payne	11
+	Payton Popwell	12
+	Elisabeth Powell	11
+	Victoria Pullins	11
+	Allette Robison	9
+	Kynlie Russell	9
+	Ridlee Snowder	12
+	Aislyn Shea	9
+	Taybre Shuman	12
+	Londyn Spray	10
+	Diana Teskey	11
+	Brooklynn Walker	9
+	Whitney Wendling	12
+
+---------------------------------------------------------
+SHIRTS
+
+Larry Stocking
+Hillcrest High School
+5A
+Cheer
+
+S: 3
+M: 29
+
+
+
+
+---------------------------------------------------------
+IP: 192.42.147.37
+ID: fc9143a6-c866-4698-abc6-eddd7c7754f0

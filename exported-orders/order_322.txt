@@ -1,0 +1,74 @@
+From: Douglas Henderson
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Lewiston High School
+Bengals
+Purple & Gold
+Lance Hansen
+Kevin Driskill
+Doug Henderson
+Heidi Hagen
+Josh Rodgers
+Sydnee Soderberg
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Briley Nelson	9
+	Ella Rudolph	9
+	Hayden Foster	9
+	Kamden Grimm	9
+	Makenna Comer	9
+	Mia Smith	9
+	Ariana Miller	10
+	Ava Manyon	10
+	Bree Hendren	10
+	Gracie Clemenhagen	10
+	Halee Steiner	10
+	Harper Morrison	10
+	Ivy Robinson	10
+	Jorja Jelinek	10
+	Katelyn Rosenbaum	10
+	Kaylee Stachofsky	10
+	Lexys Leach	10
+	Lilja Main	10
+	Mia Faraci	10
+	Paulene Lydie	10
+	Sydney Crea	10
+	Aislinn Marks	11
+	Aliah Winterbottom	11
+	Hunter Harrell	11
+	Kadynce Scott	11
+	Kyla Nesset	11
+	Natalie Witt	11
+	Savannah Gonzales	11
+	Emily Brannan	12
+	Jossalynn Harris	12
+	Joviana Tyler	12
+	Natalee Gilmore	12
+	Paisley Seidel	12
+	Savannah Swallow	12
+	Shayla Gottschalk	12
+
+---------------------------------------------------------
+SHIRTS
+
+Douglas Henderson
+Lewiston High School
+5A
+Cheer
+
+S: 10
+M: 22
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 64.126.150.70
+ID: 92298aa0-5b4e-4045-92e0-afad0062b8ea

@@ -1,0 +1,57 @@
+From: Tony Brulotte
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Eagle High School
+Mustangs
+Green & Silver
+Derek Bub
+Susan McInerney
+Tony Brulotte
+Scott Deck
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Brandon Gosch	INF, RHP	11
+	2	Kristian Fusco	INF, OF	12
+	3	Jacob Ames	LHP	12
+	4	Carson Bowers	RHP	12
+	5	Easton Gothberg	1B	12
+	7	Tyler Forkner	LHP	12
+	9	Keaton Rust	INF, OF	11
+	10	Carter Ditlove	OF, RHP	12
+	11	Brayden Lame	OF	12
+	12	Brandon Zins	INF, C	10
+	14	Dallin Snooks	LHP, OF	12
+	17	Zac Ricks	RHP	12
+	19	Lincoln Pindroh	C	11
+	20	Owen Brent	C, 1B	12
+	22	Stephen Egan	RHP, INF	12
+	23	Caleb Zawadzki	SS, RHP	12
+	24	Nate Johansen	INF, RHP	12
+	25	Sam Palfreyman	INF, RHP	11
+	32	Ben Barowsky	OF	11
+	35	Parker Shea		11
+
+---------------------------------------------------------
+SHIRTS
+
+Tony Brulotte
+Eagle High School
+6A
+Baseball
+
+M: 1
+L: 6
+XL: 13
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.101
+ID: 9a7cf407-771a-4a2a-9051-721e360348ab

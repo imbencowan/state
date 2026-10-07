@@ -1,0 +1,76 @@
+From: Adam Keith
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Nezperce High School
+Nighthawks
+Blue & Gold
+Brian Lee
+Misti Cook
+Adam Keith
+Kaci Ralstin
+Marty Lux
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	4	Meila Johnson		5-4	10
+	10	Jada Jensen		5-5	10
+	12	Paityn Ralstin		5-6	10
+	14	Avery Lux		5-7	10
+	20	Elizabeth Duuck		5-3	12
+	22	Ellie Lee		5-0	9
+	24	Helen Wilcox		5-4	11
+	30	Lillie Branson		5-4	9
+	32	Abigail Duuck		5-6	11
+	34	Morgan Kirkland		5-5	12
+	44	Izzy Horton		5-9	12
+	50	Kairys Grant		5-8	12
+
+---------------------------------------------------------
+RECORD
+
+13	7
+
+56	Troy	50
+35	Prairie	53
+31	Grangeville	46
+48	Kamiah	50
+71	St. John Bosco Academy	29
+50	Salmon River	58
+61	Genesee	26
+46	Highland	40
+58	Clearwater Valley	27
+60	Timberline	24
+55	Clearwater Valley	29
+50	Kamiah	49
+61	Genesee	47
+46	Salmon River	66
+60	Orofino	33
+64	Highland	44
+53	Deary	65
+60	Timberline	27
+57	St. John Bosco Academy	41
+35	Deary	42
+
+---------------------------------------------------------
+SHIRTS
+
+Adam Keith
+Nezperce High School
+1A
+Basketball - Girls
+
+S: 5
+M: 5
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 64.126.167.2
+ID: 35cff284-fc40-4b88-9edc-cf5ea9f02269

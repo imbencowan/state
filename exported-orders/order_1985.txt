@@ -1,0 +1,85 @@
+From: Shaun Walker
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Twin Falls High School
+Bruins
+Navy, Lt Blue & White
+Brady Dickinson
+Nancy Jones
+Shaun Walker
+Mac Stannard
+Mitch Brizee
+Tyler Billings
+Tony Standlee
+Jeff Bowman
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Ty Hess	G	5-11	12
+	2	Jordan Bingham	G	6-0	12
+	3	Trey Billings	F	6-7	11
+	4	Cash Pedersen	G	6-0	11
+	5	Will Broadbent	G	5-11	12
+	21	Ethan Hubsmith	G	6-1	11
+	22	Gaige Harshman	G	6-2	10
+	23	Bryce Nielsen	F	6-5	11
+	24	Cam Reyes	G	6-1	12
+	30	James Dunn	F	6-6	10
+	31	Zach Stokes	F	6-3	12
+	32	Luke Wilmot	G	6	11
+	33	Cayson Burcham	G	6	11
+	34	Jaxson Kasel	F	6-2	12
+	35/50	Brock Sainsbury	F	6-2	11
+
+---------------------------------------------------------
+RECORD
+
+17	6
+
+38	Preston	44
+85	Vallivue	72
+63	Columbia	62
+59	Canyon Ridge	53
+41	Palo Verde	67
+49	Denver South	83
+56	Centennial	61
+57	Tri-City Christian	50
+53	Canyon Ridge	57
+55	Pocatello	51
+52	Preston	69
+51	Wood River	26
+61	Jerome	37
+57	Burley	45
+55	Mountain Home	33
+56	Minico	37
+67	Wood River	29
+55	Jerome	31
+78	Burley	46
+87	Mountain Home	25
+61	Minico	33
+80	Mountain Home	28
+56	Minico	38
+
+---------------------------------------------------------
+SHIRTS
+
+Shaun Walker
+Twin Falls High School
+5A
+Basketball - Boys
+
+L: 5
+XL: 8
+2XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 216.83.77.2
+ID: 4e5409bd-a542-48bb-93a9-b52af1e545ed

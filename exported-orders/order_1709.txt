@@ -1,0 +1,80 @@
+From: Lynette Buttars
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+West Side High School
+Pirates
+Maroon, White & Gold
+Tyler Telford
+Kory Kay
+Tyson Moser
+Elise Cox
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Reese Evans	PG		11
+	2	Bentley Cundick	PG, SG		10
+	4	Anslea Mumford	G		10
+	5	Miley Cundick	SF		12
+	10	Austyn Robinson	G, F	5-8	9
+	11	Teagan Jensen	G		11
+	12	Halle Taylor	PG		12
+	20	Tess Ward	SF, SG		10
+	23	Ava Myers	P	5-8	10
+	24	Lorraine Campbell	PF		12
+	31	Brooke Aston	SF		12
+	33	Ana Mariscal-Weinert	PF		11
+
+---------------------------------------------------------
+RECORD
+
+11	14
+
+40	West Jefferson	32
+25	Marsh Valley	59
+33	Grace	51
+55	Firth	61
+45	North Fremont	62
+48	Murtaugh	31
+45	Non Varsity Tournament Opponent	44
+31	Firth	51
+39	Malad	59
+22	Soda Springs	35
+42	Marsh Valley	59
+61	Rockland	42
+42	Aberdeen	46
+46	Wendell	37
+52	West Jefferson	42
+59	Declo	51
+35	Soda Springs	40
+28	Malad	66
+42	Aberdeen	46
+40	Grace	46
+41	Declo	32
+47	Soda Springs	32
+41	Malad	71
+46	Wendell	40
+31	Declo	28
+
+---------------------------------------------------------
+SHIRTS
+
+Lynette Buttars
+West Side High School
+3A
+Basketball - Girls
+
+M: 9
+L: 2
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 107.182.218.161
+ID: 64230559-55b9-4cba-ae3d-c6176b707292

@@ -138,7 +138,8 @@ class Event extends BasicTableModel {
 		return [ 'event' => self::getByID($adjacentID, $context) ];
 	}
 
-	
+		//////////////////////////////////////////////////
+		// why is this a thing	
 	static function getEventBySeriesAndYear(int $year, int $seriesID, string $context = 'orders') {
 		return [ 'data' => self::getBySeriesAndYear($seriesID, $year, $context) ];
 	}

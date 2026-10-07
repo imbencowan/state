@@ -1,0 +1,60 @@
+From: Ted Bell
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Highland High School - Pocatello
+Rams
+Black, White & Red
+Doug Howell
+Brad Wallace
+Travis Bell
+Matt Shutes
+Randy Vawdrey
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Eve Dixon	GK	9
+	1	Baili Briscoe	MF	12
+	2	Devree Bell	FORW	12
+	3	Taryn Roth	MF, FORW	11
+	4	Laynie Kunz	MF	9
+	6	Olivia Orr	D	10
+	8	Alexis Vawdrey	FORW, MF	10
+	9	Gracee Anderson	D	12
+	11	Hannah Stoker	MF	11
+	13	Lauren Flores	FORW, MF	12
+	14	Sunny Moysh	FORW	9
+	16	Cecelia Pena	D, MF	12
+	17	Ava Flores	D	12
+	18	Oakli Briscoe	D	11
+	19	Ashlyn Hale	MF, FORW	11
+	22	Sophia Flores	D	10
+	26	Delaney Dahlstrom	D	11
+	28	Presley Kap	MF, D	9
+	32	Peyton Looney	MF	12
+	36	Molli Broadhead	MF, FORW	10
+	46	Aubrey Sobolewski	MF, FORW	9
+	50	Makenzie Humphreys	GK	10
+
+---------------------------------------------------------
+SHIRTS
+
+Ted Bell
+Highland High School - Pocatello
+6A
+Soccer - Girls
+
+S: 1
+M: 5
+L: 16
+
+
+
+
+---------------------------------------------------------
+IP: 169.197.75.108
+ID: f4a6ee18-f74e-47ec-877b-ce30e416790d

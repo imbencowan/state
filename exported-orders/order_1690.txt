@@ -1,0 +1,85 @@
+From: Vince Mann
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Borah High School
+Lions
+Green & Gold
+Lisa Roberts
+Tim Standlee
+Vince Mann
+Ebony Norman
+ShamBrick Williams
+Jade Chase
+Kayla Haley-Agbeko
+Dusty Benner
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Karli Hall	G	5-3	12
+	2	Tessa Orcutt	G	5-10	12
+	3	Evodie Evans	G	5-8	9
+	4	Aubree Ream	G	6-1	10
+	5	Rylee Hale	G	5-8	11
+	11	Brooklyn Gardiner	G	5-7	11
+	12	Abi Howington	G	5-10	12
+	13	Lainey Luekenga	G	5-8	9
+	14	Evaunya Haroun	PF	6-1	10
+	15	Nakiyia Percell	G, W	6-0	11
+	20	Kamryn Krasselt	G	5-7	11
+	21	Bryan Neider-Edelmayer	G	5-10	10
+	24	Brinley Chase	G	6-1	10
+	25	Kya Davis	G	6-1	11
+	40	Hannah Romberg	PF	6-2	12
+
+---------------------------------------------------------
+RECORD
+
+18	3
+
+59	Bishop Kelly	32
+60	Kuna	22
+30	Timberline	50
+67	Ridgevue	8
+48	Owyhee	19
+42	Boise	39
+54	Burley	36
+51	Mountain Home	38
+48	Hillcrest	49
+43	Rocky Mountain	24
+51	Mountain View	42
+38	Rocky Mountain	31
+56	Capital	40
+57	Jerome	40
+38	Middleton	49
+58	Meridian	25
+59	Kuna	11
+58	Eagle	54
+69	Centennial	21
+44	Capital	30
+57	Boise	39
+	Rocky Mountain	
+
+---------------------------------------------------------
+SHIRTS
+
+Vince Mann
+Borah High School
+6A
+Basketball - Girls
+
+M: 2
+L: 7
+XL: 4
+2XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 207.244.138.111
+ID: b8ba7dc5-9a8e-4694-8ee5-0e929290e719

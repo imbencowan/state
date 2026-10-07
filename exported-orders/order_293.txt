@@ -1,0 +1,79 @@
+From: Catey Walton
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Timberlake High School
+White Tigers
+Gold & Navy
+Lisa Arnold
+Ryne Eberlin
+Catey Walton
+Matt Miller
+Rob Soumas
+Molly Miller
+Lilly Kelley
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Sophi Soumas	G	5-2	11
+	2	Hanna Milligan	G	5-5	10
+	3	Payton Young	G	5-6	11
+	4	Diana Nelson	P	6-2	12
+	5	Jozee MacArthur	G	5-6	12
+	10	Lucy Simpson	F	5-10	12
+	12	Reese Allaway	G	5-3	12
+	13	Marissa Needs	G	5-7	12
+	14	Mya Reynoldson	P	5-10	12
+	20	Malia Miller	G	5-6	11
+	23	Cora Cooper	F	5-4	10
+	24	Shae Jones	F	5-11	9
+	32	Rhylee Yetter	G	5-4	10
+
+---------------------------------------------------------
+RECORD
+
+18	3
+
+59	Lewiston	24
+60	Moscow	21
+68	Lakeside, ID	21
+63	North Central	18
+55	Sandpoint	35
+48	Moscow	37
+51	Grangeville	41
+45	Frenchtown	36
+54	Ronan	42
+46	Lakecity	38
+57	Lewiston	24
+62	North Central	19
+60	Sunnyside	36
+38	Coeur d'Alene	49
+70	Lakeside, WA	19
+63	Bonners Ferry	24
+31	Sandpoint	36
+48	Grangeville	49
+69	Lakeside	25
+62	Bonners Ferry	24
+57	Bonners Ferry	16
+
+---------------------------------------------------------
+SHIRTS
+
+Catey Walton
+Timberlake High School
+4A
+Basketball - Girls
+
+M: 9
+L: 4
+
+
+
+
+---------------------------------------------------------
+IP: 162.218.180.34
+ID: 98b40ae9-5bf4-40b3-aace-39c55ca4e7cd

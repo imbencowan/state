@@ -1,0 +1,57 @@
+From: Scott Adams
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Firth High School
+Cougars
+Blue, White & Black
+Basil Morris
+Keith Drake
+Scott Adams
+Tracy Rowe
+Jennifer Finch
+Jordyn Nelson
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	AJ Flores	12
+	Bryci Jolley	12
+	Charlotte Jones	12
+	Bella Broncho	11
+	Laeni Cederberg	11
+	Kaylee Jolley	10
+	Coraline Jones	10
+	Anyssia Luna	10
+	Addy Tatton	10
+	Keslee Allen	9
+	Presley Bouillers	9
+	Lonny Boyd	9
+	Ali Finch	9
+	Paisley Hansen	9
+	Trey Johnson	9
+	Oakley Pemberton	9
+	Emily Stuart	9
+
+---------------------------------------------------------
+SHIRTS
+
+Scott Adams
+Firth High School
+3A
+Cheer
+
+S: 7
+M: 8
+L: 1
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 67.215.46.79
+ID: fb4e7a1b-696b-4853-a74e-1cc105a0dd18

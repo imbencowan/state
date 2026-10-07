@@ -1,0 +1,79 @@
+From: Scott Adams
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Firth High School
+Cougars
+Blue, White & Black
+Basil Morris
+Keith Drake
+Scott Adams
+Jana Sorensen
+Olivia Beck
+Kylee Jolley
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Andrea Fielding			10
+	3	Madelyn Erickson			10
+	5	Baylie Mecham	G, SG	5-5	11
+	10	Adyson Park	SG, PG	5-4	12
+	11	Shelbie Perry	SG, SF	5-7	11
+	12	Ellie Christensen	G	5-4	11
+	21	Hallie Fielding	SF, SG	5-6	12
+	22	Georgianna Jolley	SF, P	5-6	12
+	23	Kadence Jacobsen	SF	5-9	11
+	24	Paityn Messick	G, PG	5-3	10
+	33	Dixee O'Haver	P, C	6-1	11
+	34	Daisha Sorensen	PF, G	5-11	9
+	44	Grace LePage	PF, W	5-10	11
+
+---------------------------------------------------------
+RECORD
+
+19	3
+
+55	American Falls	28
+61	South Fremont	36
+61	West Side	55
+44	Malad	57
+59	Aberdeen	48
+55	Murtaugh	33
+52	Declo	25
+51	West Side	31
+25	Bear Lake	48
+40	North Fremont	29
+50	Salmon	18
+	Ririe	
+68	West Jefferson	36
+59	Salmon	30
+54	Declo	31
+60	Ririe	55
+57	North Fremont	53
+48	West Jefferson	29
+52	South Fremont	44
+54	Salmon	23
+39	Ririe	36
+
+---------------------------------------------------------
+SHIRTS
+
+Scott Adams
+Firth High School
+3A
+Basketball - Girls
+
+S: 1
+M: 7
+L: 5
+
+
+
+
+---------------------------------------------------------
+IP: 67.215.46.79
+ID: fac3a97e-546c-467c-a01b-9434d4007d9b

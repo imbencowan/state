@@ -1,0 +1,53 @@
+From: Alex Zepeda
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Priest River Lamanna High School
+Spartans
+Orange & Black
+Kim Spacek
+Vanessa Haggett
+Alex Zepeda
+Charleen Lamb
+Danielle Elder
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Natalie Biglin	11
+	Jara Wells	12
+	Elsie Lamb	10
+	Kailie Elder	10
+	Makayla Larson 	9
+	Gracee Jones	12
+	Kaylee Minish 	9
+	Petra Fernandez	12
+	Rose Saunders	11
+	Riley Parke	11
+	Callie Stanger	11
+	Billie Charleston 	12
+	Elijah Blaine	12
+	Naia Lamb	9
+
+---------------------------------------------------------
+SHIRTS
+
+Alex Zepeda
+Priest River Lamanna High School
+3A
+Cheer
+
+S: 11
+M: 1
+XL: 1
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 50.52.53.108
+ID: 39ed4f84-cf6f-47aa-9ee4-a9d06f03c96d

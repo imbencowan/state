@@ -1,0 +1,90 @@
+From: Molly Olson
+Activity: Football
+
+---------------------------------------------------------
+SCHOOL
+
+Kendrick High School
+Tigers
+Orange & Black
+Steve Kirkland
+Steve Kirkland
+Molly Olson
+Ty Koepp
+Robbie Anselmo
+Mat Anderson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	weight	grade
+	2	Ralli Roetcisoender	WR, DB	6-2	175	12
+	4	Nathan Kimberling	OL, DL	6-0	210	11
+	5	Travis Hix	OL, DL	6-3	220	12
+	6	Orion Stewart	RB, LB	5-9	165	11
+	7	Kolt Koepp	TE, DL	6-3	185	12
+	8	Blake Morgan	QB	6-1	165	10
+	9	Jerry Anderson	DB, WR	6-1	170	10
+	10	Maddox Kirkland	QB, DB	6-2	165	11
+	11	Nathan Tweit	WR, LB	6-3	195	12
+	12	Hank Heimgartner	QB, FS	5-8	125	9
+	13	Reece Tefft	OL, DL	6-3	210	9
+	15	Cason Hymas	WR, DB	5-6	110	9
+	16	Colton Phillips	DB, HB	5-6	111	9
+	18	Cade Silflow	WR, DB	6-2	165	12
+	19	Kasch Littlefield	WR	6-0	145	10
+	21	Tanner Clemenhagen	RB, DB	6-2	175	12
+	22	Jamie Roberts	WR, DB	5-8	142	12
+	24	Landon Sneve	RB, LB	5-10	160	11
+	32	Izaiah Johnson	DL, OG	5-8	136	9
+	33	Brayden Daly	DB, HB	5-5	123	9
+	34	Miles Fortine	DB, WR	5-8	140	9
+	42	Keegan Anderson	OL, DL	5-10	225	11
+	55	Carson Stygar	DL, OL	5-11	145	9
+	64	Tyler Hoffman	OL, DL	5-7	180	10
+	84	Hudson Kirkland	DE, TE	6-1	171	10
+
+---------------------------------------------------------
+RECORD
+
+11	0
+
+68	Butte County	0
+96	Oakley	8
+59	Hagerman	0
+102	Clearwater Valley	0
+90	Lapwai	0
+68	Potlatch	0
+68	Kamiah	14
+48	Logos	24
+78	Prairie	8
+80	Notus	6
+82	Grace	6
+	Logos	
+
+---------------------------------------------------------
+COMMENT
+
+Additional Needed- Kendrick Athletics can pay for these- Need 29 total sweatshirts. 
+Large - 4 
+XL - 4
+2XL - 1 
+
+---------------------------------------------------------
+SHIRTS
+
+Molly Olson
+Kendrick High School
+2A
+Football
+
+S: 1
+M: 6
+L: 13
+
+
+
+
+---------------------------------------------------------
+IP: 69.130.203.66
+ID: 1cb515fe-6102-4ccc-bb90-158c0a172e0e

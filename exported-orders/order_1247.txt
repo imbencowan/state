@@ -1,0 +1,58 @@
+From: Larry Stocking
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Hillcrest High School
+Knights
+Red, Black & White
+Scott Woolstenhulme
+Tyler Mills
+Larry Stocking
+Brian Nelson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	2	Brinley Nelson		11
+	3	Londyn Ricks		10
+	4	Kynzee Hatch		11
+	5	Bailey Malcom		10
+	6	Ella Brown		9
+	7	Amelia Woolley		12
+	8	Kiera Gammon		12
+	10	Olivia King		10
+	12	Rian Elzinga		11
+	13	Eliana Barnes		12
+	16	Maizy Summers		12
+	18	Finley Belnap		11
+	20	Quincy Daw		11
+	21	Kenlee Jarrell		11
+	22	Annelly Yanez		10
+	23	Harley Jarvis		12
+	24	Raine Jarvis		11
+	25	Paisley Ricks		12
+	31	Hailee Prudent		12
+	32	Scarlett Witte		11
+	40	Sophie Stickley		11
+
+---------------------------------------------------------
+SHIRTS
+
+Larry Stocking
+Hillcrest High School
+5A
+Soccer - Girls
+
+S: 3
+M: 13
+L: 5
+
+
+
+
+---------------------------------------------------------
+IP: 38.43.23.39
+ID: f909c918-631e-4b20-8e56-9fc68827618f

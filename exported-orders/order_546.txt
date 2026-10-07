@@ -1,0 +1,81 @@
+From: Andrew Nelson
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Rockland High School
+Bulldogs
+Blue, Red & White
+Greg Larson
+Greg Larson
+Andrew Nelson
+Shae Neal
+Marshal Ralphs 
+Devon Ralphs 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Zach Permann	PG	5-8	10
+	1	Xavier Parrish	PG	5-11	10
+	2	Aidan Radford	PG	5-5	12
+	3	Ty Woodworth	SF, PF	5-10	10
+	4	Jayden Permann	P	6-4	12
+	5	Isaac Held	G	6-2	11
+	10	Woodrow Lowder	PG, SG	5-10	11
+	11	Ethan Permann	G	5-8	11
+	13	Iver Hendrickson	G	5-10	11
+	25	Hayden Smith	PF	6-1	12
+	34	Christopher Wilson	C	6-1	12
+	35	Ethan Munk	P	6-0	11
+
+---------------------------------------------------------
+RECORD
+
+20	3
+
+59	Castleford 	32
+43	Carey	42
+54	Butte County	44
+55	Murtaugh	33
+61	Raft River 	38
+63	Butte County	46
+73	Challis	58
+74	Mackay	23
+57	Aberdeen	54
+62	Leadore	19
+58	Clark County	42
+61	North Gem	19
+60	American Heritage	5
+63	Dietrich	43
+47	Watersprings 	69
+63	Sho-Ban	20
+59	Taylor's Crossing	20
+80	Richfield 	14
+67	Grace Lutheran	23
+54	Hagerman	44
+48	Grace Lutheran	36
+51	Challis	32
+51	Watersprings 	49
+
+---------------------------------------------------------
+SHIRTS
+
+Andrew Nelson
+Rockland High School
+1A
+Basketball - Boys
+
+S: 1
+M: 6
+L: 4
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.110.200
+ID: 8426deca-7879-416b-a91c-a4be3f607530

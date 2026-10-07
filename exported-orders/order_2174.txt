@@ -1,0 +1,53 @@
+From: TJ Clary
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Sandpoint High School
+Bulldogs
+Red & White
+Becky Meyer
+Jacki Crossingham
+TJ Clary
+Jesse Dunham
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Soren Caprio	3B, CF	12
+	2	Jack Schriber	C, CF	11
+	3	Landon Day	RHP, UTIL	11
+	5	Brennan Shaw	LF, RF	11
+	7	Parker Reichart	2B, RHP	12
+	9	Daniel Holman	LF	10
+	10	Coleman Inge	C	12
+	12	Dallen Williams	CF, RHP	12
+	13	Chase Miller	OF	10
+	14	Sage Medeiros	CF, RF	12
+	17	Hayden Miller	LF	12
+	18	Austyn Young	1B	11
+	23	Blake Bogadi	RHP	10
+	28	Carson Resso	1B	11
+	34	Mason Little	2B, RHP	12
+	36	Andrew Aexel	RHP, UTIL	11
+
+---------------------------------------------------------
+SHIRTS
+
+TJ Clary
+Sandpoint High School
+5A
+Baseball
+
+M: 1
+L: 13
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 168.245.213.185
+ID: 06de8b37-2125-4aae-b7bf-0928402e1fa8

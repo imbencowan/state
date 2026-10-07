@@ -1,0 +1,61 @@
+From: Richard Whitelaw
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Sun Valley Community School
+Cutthroat Trout
+Navy
+Ben Pettit
+Jessica Wasilewski
+Richard Whitelaw
+Richard Whitelaw
+Will Thomas
+Max Kwok
+Griff Rowell
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Cal Davis	GK	12
+	2	Quinn Parmenter	D	10
+	3	Reid Holman	FORW	11
+	4	Will Buchanan	D	12
+	5	Calvin Stoddard	D	9
+	6	Hunter Nelson	FORW	12
+	7	Sebi Silaghi	FORW	10
+	8	Breck Lyon	MF	12
+	9	Chris Arenas	MF	12
+	10	Tommy Hovey	MF	11
+	11	Anders Coulter	FORW	11
+	12	Jack Haynes	FORW	12
+	13	Huxley Flood	D	10
+	14	Thomas Connell	MF	11
+	15	Kobi Bilbro	D	10
+	17	Cruz Bilbro	D	11
+	19	Emmett Crist	MF	10
+	20	Hank Greener	D	10
+	22	Clive Bates	MF	10
+	23	James Duffield	MF	12
+	26	Rasmus Lahdesmaki	FORW	11
+	33	Zack Wyman	GK	10
+
+---------------------------------------------------------
+SHIRTS
+
+Richard Whitelaw
+Sun Valley Community School
+3A
+Soccer - Boys
+
+M: 7
+L: 15
+
+
+
+
+---------------------------------------------------------
+IP: 70.171.128.169
+ID: 5130d02b-e979-4793-aa2a-a5cd546824d0

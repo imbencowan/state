@@ -1,0 +1,43 @@
+From: Christopher Waitley
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Canyon Ridge High School
+Riverhawks
+Crimson & Silver
+Brady Dickinson
+Randall Miskin
+Chris Waitley
+Trina Waugh
+Mariela Polanco
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Valeria Osegura	12
+	Abigail Egbert	11
+	Clare Nosko	11
+	Juliana Hensen	11
+	Jasmine Garcia	9
+
+---------------------------------------------------------
+SHIRTS
+
+Christopher Waitley
+Canyon Ridge High School
+6A
+Dance
+
+S: 1
+M: 3
+3XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 216.83.77.2
+ID: 717af750-7fd8-4d5c-b45f-baa613faa00b

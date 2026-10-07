@@ -1,0 +1,63 @@
+From: Dane Roy
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Owyhee High School
+Storm
+Red & Grey
+Derek Bub
+Rachel Edwards
+Dane Roy
+Matt Rasmussen
+Brooks Juhasz
+Chase Hernandez
+Steve Rohlmeier
+Matt Greene
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Jack Booth	OF	11
+	2	Jack Hallenbeck	IF	11
+	3	Nathan Keith	P/IF	12
+	4	Max Menke	OF	11
+	5	Paxx Henry-Lang	P	12
+	6	Aiden Peterson	P/OF	11
+	7	Matt Robertson	IF	11
+	8	Brooks Romer	OF	12
+	9	Christian Zannitto	P/IF	11
+	10	Owen Plue	P	10
+	11	Carter Sullivan	P/OF	10
+	12	Zander Jakovac	IF	10
+	13	TeGan McGhee	OF	11
+	14	Jaden Gallegos	C	11
+	16	Ian Patterson	P/1B	11
+	17	Jacob Ruffing	IF	11
+	20	Knox Thomas	P/OF	10
+	22	Landon Medina	P/1B	12
+	23	Kelly Leak	P/1B	12
+	24	Shelby Pease	1B	12
+
+---------------------------------------------------------
+SHIRTS
+
+Dane Roy
+Owyhee High School
+6A
+Baseball
+
+M: 5
+L: 11
+XL: 4
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.160
+ID: 7d58f714-c16a-4594-b19d-e8ce635342a7
+ID: a509e3fa-eaa8-4aeb-9ea3-45052e486fde
+ID: 53e68e62-fb58-42ee-ba6c-efbdd85e1e01

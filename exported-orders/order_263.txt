@@ -1,0 +1,77 @@
+From: Josh Leighton
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Lapwai High School
+Wildcats
+Blue & White
+David Aiken
+D'Lisa Penney
+Lori Lynn Picard
+Josh Leighton Jr.
+Joslyn Leighton
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Charize Kipp	G		12
+	2	Ella Payne	G		10
+	3	Amasone George	SG		12
+	4	Skylin Picard	SG		11
+	14	Andraeana Domebo	SG		12
+	20	Lois Oatman	F		10
+	21	Cavell Samuels	F		9
+	22	Junee Picard	F		11
+	30	Jennilia WhiteTemple	F		10
+	33	Madden Bisbee	SG		11
+
+---------------------------------------------------------
+RECORD
+
+20	4
+
+56	at Orofino	28
+70	at Potlatch	35
+54	at Kendrick	44
+45	at Kamiah	27
+65	at Logos	24
+76	Clearwater Valley	27
+52	Moscow	44
+73	Troy	27
+47	at Grangeville	51
+63	Kendrick	18
+69	Lakeside	34
+63	at Genesee	52
+49	at Prairie	55
+64	Potlatch	27
+42	Kamiah	43
+66	Logos	39
+50	Prairie	46
+85	at Clearwater Valley	39
+68	at Troy	19
+63	Orofino	20
+76	Potlatch	27
+57	Kamiah	36
+49	Prairie	68
+62	Kamiah	40
+
+---------------------------------------------------------
+SHIRTS
+
+Josh Leighton
+Lapwai High School
+2A
+Basketball - Girls
+
+S: 1
+M: 9
+
+
+
+
+---------------------------------------------------------
+IP: 67.108.47.118
+ID: 40a836b4-e5ea-4cfb-9b0c-b725820e1c88

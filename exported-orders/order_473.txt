@@ -1,0 +1,63 @@
+From: Dane Pence
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Mountain View High School
+Mavericks
+Blue, Green & White
+Derek Bub
+Scot Montoya
+Dane Pence
+Hayley Greenwell
+Elena Ramos
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Katy Adams 	12
+	McKinlee Beard	11
+	Addison Berenger	10
+	Berlin Biery 	12
+	Ainsley Bishop 	11
+	Parker Buck	10
+	Avery Busch 	10
+	Aria Busch	12
+	Maddison Center 	11
+	Ainston Clements 	10
+	Madison Forst 	10
+	Juliet Freter	9
+	Penny Haws	9
+	Addyson Jones	11
+	Chloe MacDowell	9
+	Myla Martin 	9
+	Kylie McElhatton	9
+	Rylee McGuire 	9
+	Kennedi McKenna	9
+	Trinity Mitchell	12
+	Rebeka Rex	11
+	Ella Serlin	9
+	Katelyn Tueller 	10
+	KateNee Varela 	12
+	Olivia Walker	11
+
+---------------------------------------------------------
+SHIRTS
+
+Dane Pence
+Mountain View High School
+6A
+Dance
+
+M: 4
+L: 19
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.133
+ID: 60ebd347-b3c6-4251-aab1-b55b3a02a610

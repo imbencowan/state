@@ -1,0 +1,77 @@
+From: Jocelyn Hobbs
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Sugar-Salem High School
+Diggers
+Blue & White
+Jared Jenks
+Karl Gehmlich
+Jocelyn Hobbs
+Hayli Peterson
+Anni Thurber
+Krischell Hanks
+Bayli Miller
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Cameron Casperson	9
+	Destinee Hanks	9
+	Leah Huskinson	9
+	Azeile Lopez	9
+	Nyla Perez Ortega	9
+	Blaykli Peterson	9
+	Lizzie Blackburn	10
+	Sophie Curtis	10
+	Kaia Hemsley	10
+	Reese Hepworth	10
+	Luna Machuca Heredia	10
+	Jaidyn Michaelson	10
+	Lilah Monette	10
+	Ari Ricks	10
+	Britnee Robinson	10
+	Sylvie Rumsey	10
+	Ainsley Simper	10
+	Londyn Stoddard	10
+	Myra Taylor	10
+	Gracie Blaser	11
+	Logan Cook	11
+	Shilowe Cook	11
+	Evan Crapo	11
+	Emma Curry	11
+	Bella Dye	11
+	Colton Gardner	11
+	Kamry Hales	11
+	Lydia Hepworth	11
+	Jaxsen Mortensen	11
+	Addyson Stoddard	11
+	Barron Winegar	11
+	Journee Hanks	12
+	Tahlia Harris	12
+	Baylee Mortensen	12
+	Daisy Petersen	12
+	Zaylee Walker	12
+
+---------------------------------------------------------
+SHIRTS
+
+Jocelyn Hobbs
+Sugar-Salem High School
+4A
+Cheer
+
+S: 11
+M: 14
+L: 10
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 96.5.130.66
+ID: d032546b-57d3-4584-9a60-754cca160d56

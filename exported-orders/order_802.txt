@@ -1,0 +1,58 @@
+From: Kent Howell
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Marsh Valley High School
+Eagles
+Blue, Scarlet & White
+Gary Tucker
+Wyatt Hansen
+Kent Howell
+Kent Howell
+Jared Bowman
+Kent Larsen
+Reese Howell
+Karter Howell
+Wes Guthrie
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Tate Whitworth	SS	11
+	3	Canyon Lish	1B	11
+	5	Bo Larsen	3B	12
+	6	Red Curzon	UTIL	9
+	7	Cooper Curzon	OF	11
+	8	Boston Sorensen	UTIL, P	11
+	9	Chandler Bennett	C	11
+	10	Cooper Bowman	OF	12
+	11	Kutter Lish	2B	11
+	11	Preston Guthrie		10
+	12	Ethan Anderson	P	11
+	13	Nash Guthrie	C	9
+	14	Ruger Scott	P, OF	12
+	18	Karter Davis	SS	9
+	22	Hunter Solomon	OF	10
+	35	Vance Larsen	1B	10
+	37	Carson Branson	3B	9
+
+---------------------------------------------------------
+SHIRTS
+
+Kent Howell
+Marsh Valley High School
+4A
+Baseball
+
+M: 2
+L: 15
+
+
+
+
+---------------------------------------------------------
+IP: 172.56.150.188
+ID: f129c3c8-2fb0-4943-a8a0-9954211ffed6

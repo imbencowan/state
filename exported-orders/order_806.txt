@@ -1,0 +1,61 @@
+From: Shaun Walker
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Twin Falls High School
+Bruins
+Navy, Lt Blue & White
+Brady Dickinson
+Nancy Jones
+Shaun Walker
+Tim Stadelmeir
+Todd Jones
+Mark Schaal
+Kasey Jeroue
+Ryan Lehew
+Adam Reynolds
+Allyn Reynolds
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Nolan Lehew	2B, SS	12
+	2	Luke Beem	INF, RHP	11
+	3	Treyson Walker	INF, RHP	9
+	4	Slade Fisher	3B, RHP	12
+	5	Ryker Rex	OF	12
+	6	Hoyt Murray	1B, OF	11
+	7	Mason Roberts	OF	9
+	8	Charles Kendall	1B, OF	12
+	11	Jordan Bingham	OF, RHP	11
+	12	Dalton Carter	OF, LHP	11
+	13	Kaden Black	2B, SS	9
+	15	Cooper Thompson	1B, OF	12
+	16	Cameron Reyes	RHP, OF	11
+	18	Noah Thompson	C, 1B	9
+	21	Conner Lee	OF, C	10
+	22	Maddox Stadelmeir	C, RHP	11
+	24	Kentyn Ketterling	RHP, INF	12
+	25	Jaxson Kasel	RHP, OF	11
+
+---------------------------------------------------------
+SHIRTS
+
+Shaun Walker
+Twin Falls High School
+5A
+Baseball
+
+M: 1
+L: 14
+XL: 3
+
+
+
+
+---------------------------------------------------------
+IP: 96.19.35.143
+ID: 378ad909-5e60-4c71-bcb9-a7997933140b

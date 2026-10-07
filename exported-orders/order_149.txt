@@ -1,0 +1,90 @@
+From: Lee Jay Cook
+Activity: Football
+
+---------------------------------------------------------
+SCHOOL
+
+Carey High School
+Panthers
+Blue & Gold
+Jim Foudy
+Kayla Burton
+Lee Jay Cook
+John Saili
+Lane Durtschi
+Dusty Simpson
+DJ Parke
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	weight	grade
+	0	Wrangler Marcroft	OL, DL	6-0	239	11
+	1	Preston Wood	QB, LB	6-2	180	12
+	2	Eddie Gamino	RB, LB	5-3	145	12
+	3	Frankie Hoy	LB, RB	5-1	98	9
+	4	Holt Koudelka	ATH, ATH	5-9	145	9
+	5	Madden Perkes	RB, LB	5-8	145	10
+	6	Gabe Saili	TE, LB	6-0	172	11
+	7	Kade O'Crowley	DL, OL	6-0	160	12
+	9	Jonah Saili	QB, LB	5-11	167	9
+	10	Weston Baker	WR, LB	5-8	132	9
+	11	Aj Black	TE, LB	6-1	170	12
+	12	Josh Peterson	RB, LB	5-7	132	12
+	13	Garret Olsen	ATH, ATH	5-3	110	9
+	14	Brody Quillen	DE, TE	5-10	156	12
+	15	Matthew Young	TE, LB	5-10	165	12
+	17	Dawson Olsen	RB, LB	5-10	140	12
+	23	Liam Long	DE, RB	5-8	157	9
+	24	Johnathan Rojas	DE, TE	5-9	151	9
+	25	Pieran Hoy	DL, OL	5-8	160	11
+	28	Stockton Sears	RB, LB	5-10	160	11
+	34	Tripp Bailey	OL, DL	5-7	176	10
+	35	Tyler Ocrowley	DE, RB	5-11	150	9
+	40	Will Parke	TE, LB	5-10	160	11
+	45	Caden Clark	DL, OL	5-10	240	9
+	47	Kade Hansen	TE, DE	5-10	125	10
+	52	Josue Rojas	OL, DL	6-3	280	9
+	64	Jonathan Harmon	OL, DL	6-0	235	12
+	68	Gavin Long	DL, OL	6-0	267	11
+	87	Chris Ruiz	OL, DL	5-11	218	12
+	97	Luke Aquistapace	C, DL	6-0	200	12
+
+---------------------------------------------------------
+RECORD
+
+10	1
+
+62	Murtaugh	32
+20	Butte County	40
+60	Castleford	8
+80	Richfield	0
+70	Hansen	16
+64	Rockland	6
+54	Dietrich	6
+50	Shoshone	8
+15	Camas County (FF)	0
+86	Wallace	8
+70	Garden Valley	0
+
+---------------------------------------------------------
+SHIRTS
+
+Lee Jay Cook
+Carey High School
+1A
+Football
+
+S: 2
+M: 7
+L: 10
+XL: 6
+2XL: 4
+4XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 172.71.147.4
+ID: 9f1a438c-b9d5-43f7-9a32-069761d3c7ae

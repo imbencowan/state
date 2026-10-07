@@ -1,0 +1,58 @@
+From: Mark Van Weerdhuizen
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Fruitland High School
+Grizzlies
+Orange & Black
+Stoney Winston
+Wade Carter
+Mark Van Weerdhuizen
+Mark Vidlak
+Greg Christensen
+Gerrit Schoonhoven
+Adrian Martinez
+Carl Grosvenor
+Russ Wright
+Chance Stringer
+Tyson Flannery
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Blake McKinney		11
+	2	Owen Baker		12
+	3	Morgun Pettet		11
+	4	Sutton Fitch		12
+	5	Jayden Grosdidier		12
+	6	Will Echanis		11
+	7	Titus Vidlak		11
+	8	Crew Stringer		9
+	9	Cameron McKinney		11
+	10	Eli Fugate		9
+	11	Jarron Whaley		9
+	12	Emilano Ramirez		11
+	15	Alejandro Rodriguez		10
+	16	Nate Grosvenor		11
+
+---------------------------------------------------------
+SHIRTS
+
+Mark Van Weerdhuizen
+Fruitland High School
+4A
+Baseball
+
+M: 7
+L: 6
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 208.98.138.130
+ID: d5131d98-7e0e-445d-bee9-11fa3189ae20

@@ -1,0 +1,61 @@
+From: Mark Van Weerdhuizen
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Fruitland High School
+Grizzlies
+Orange & Black
+Stoney Winston
+Wade Carter
+Mark Van Weerdhuizen
+Joal Herrera
+Emmanuel Perez
+Abraham Salgado
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Payson Bratcher	GK	10
+	2	Jayda Keffer	FORW, MF	12
+	3	Karli Roubidoux	MF, FORW	10
+	4	Olivia Hymas	MF	10
+	5	Brie Freitas	MF	12
+	6	Arabella Escalante Monreal	D	11
+	7	Maisie MacKenzie	D	12
+	8	Paige Bake	MF	10
+	9	Erika Rangel	MF, FORW	11
+	10	Sophia Rynearson	FORW, MF	10
+	11	Amelia Elam	D	11
+	12	Macy Kile	MF, FORW	12
+	13	Kendall Baskett	FORW, MF	9
+	14	Ava Gibb	MF, FORW	11
+	15	Sofie Vidlak	FORW, MF	9
+	16	Lianna Tristan	D, FB	9
+	17	Myah Juarez	MF, D	11
+	18	Colbie Kile	D	9
+	19	Averi Williams	D	9
+	21	Paige Williams	FORW, MF	12
+	22	Kairi David	D	9
+	23	Alexa Palomares	GK, D	11
+
+---------------------------------------------------------
+SHIRTS
+
+Mark Van Weerdhuizen
+Fruitland High School
+4A
+Soccer - Girls
+
+S: 2
+M: 17
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 208.98.138.130
+ID: 74d4aef8-eb86-44b7-ab46-93232e230132

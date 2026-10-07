@@ -1,0 +1,61 @@
+From: Jocelyn Hobbs
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Sugar-Salem High School
+Diggers
+Blue & White
+Jared Jenks
+Karl Gehmlich
+Jocelyn Hobbs
+Scott Terry
+Kristina McRae
+Jeff Rebernak
+Vince Tafoya
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+		Journey Jackson		11
+		Lavenia Rareba		10
+	0	Paige Luke		9
+	00	Nika Nead		12
+	1	Andee Petterson		10
+	2	Sydnie Hoopes		9
+	3	Ava Rydalch		12
+	4	Ariana Ricks		9
+	5	Hadley Chambers		9
+	6	Jaylyn Shaw		10
+	7	Allie Christensen		12
+	8	Raegan Harris		9
+	9	Alice Johansen		11
+	10	Ranadi Rareba		9
+	11	Paige Birch		9
+	12	Serena Flaig		10
+	13	Kamryn Teichert		11
+	17	Isabel Falin		11
+	20	Isabelle Tuttle		12
+	22	Kylee Johansen		11
+	55	Katie Rushforth		11
+
+---------------------------------------------------------
+SHIRTS
+
+Jocelyn Hobbs
+Sugar-Salem High School
+4A
+Soccer - Girls
+
+S: 7
+M: 9
+L: 5
+
+
+
+
+---------------------------------------------------------
+IP: 162.158.41.167
+ID: bccf302b-b6da-4d4a-9224-25d2a3ddbf39

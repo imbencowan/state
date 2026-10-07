@@ -1,0 +1,66 @@
+From: Scott Burton
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Jerome High School
+Tigers
+Black & Orange
+Brent Johnson
+Nathan Tracy
+Scott Burton
+Kira Capps
+Sarah Roberts
+Lane Southwick
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Alexia Aguilar	9
+	Aliyah Ramirez	9
+	Alyson Goekner	9
+	Aniya Torres	10
+	Brooklyn Orton	9
+	Camila Zamora	9
+	Cassie Coelho	12
+	Cheli Walker	10
+	Desiray Ramirez	12
+	Elliott Christiansen 	11
+	Emma Gomes	10
+	Italy Burgess	9
+	Kambri Pallas	12
+	Kamrie Bangerter	12
+	Lake Rongen	12
+	Leelah Fuqua	11
+	Leila Capps 	9
+	Nayeli Morales 	11
+	Railey Kirk	10
+	Ryann Hansen	10
+	Sammy Slater	9
+	Shana Thomas	11
+	Sherlyn Jacome	9
+	Vivienne Staples	9
+	Xochilt Vergara 	12
+	Avery Hollifield 	10
+
+---------------------------------------------------------
+SHIRTS
+
+Scott Burton
+Jerome High School
+5A
+Cheer
+
+S: 18
+M: 5
+L: 2
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 96.18.124.215
+ID: 8979ff92-062c-412b-80b6-86ddcba5f3bb

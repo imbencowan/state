@@ -1,0 +1,51 @@
+From: Allen Hutchens
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Clearwater Valley High School
+Rams
+Red, White & Silver
+Alica Holthaus
+Vincent Martinez
+Allen Hutchens
+Sky Wilson
+Rick Ketola 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Autum Martinez	2B, SS	12
+	3	Jesse Rice	OF, C	9
+	4	Gracie Schuster	3B, RHP	11
+	5	Tiara Palmer	OF	9
+	6	Sypress Martinez	2B, RHP	9
+	7	Riley Parsons	RHP, 2B	11
+	9	Evalie Schuster	C, 1B	10
+	10	Megan Myers	1B, C	12
+	14	Anna Agazzi	OF	12
+	15	Emmalyn Boller	3B, 1B	11
+	16	Lexie Lycan	OF	10
+	18	Eva Lundgren	CF	12
+	20	Tessa Lundgren	SS, 2B	10
+	21	Seasha Reuben	OF	11
+
+---------------------------------------------------------
+SHIRTS
+
+Allen Hutchens
+Clearwater Valley High School
+2A
+Softball
+
+S: 6
+M: 8
+
+
+
+
+---------------------------------------------------------
+IP: 96.5.132.66
+ID: 4fe079a6-8182-4e2a-9630-1c7f33817fb6

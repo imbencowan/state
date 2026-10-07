@@ -1,0 +1,55 @@
+From: Kent Howell
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Marsh Valley High School
+Eagles
+Blue, Scarlet & White
+Gary Tucker
+Wyatt Hansen
+Kent Howell
+Payton Campbell
+Lacy Saxton
+Jeff Wilding
+Kent Larsen
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Madison Foster	3B, SS	12
+	2	Alyiah Van Lueven	OF	12
+	3	Ashlyn Van Leuven	OF	12
+	4	Maddy Bartschi	SS, INF	10
+	5	Ava Saxton	2B, SS	9
+	6	Jaynie Larsen	C, P	9
+	7	Mya Loertscher	1B, UTIL	11
+	8	Hazel Sorensen	OF, P	9
+	11	Olivia Campbell	OF, 1B	12
+	12	Lisa Peck	2B, P	12
+	13	Laynee Campbell	OF, 1B	9
+	15	Addie Stoor	2B, SS	9
+	16	Makenzie Jenkins	OF	9
+	21	Adrianna Jimenez	OF	9
+	22	Mckelle East	OF, C	9
+	23	Kenna Koester	1B, INF	9
+
+---------------------------------------------------------
+SHIRTS
+
+Kent Howell
+Marsh Valley High School
+4A
+Softball
+
+M: 13
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 172.56.151.124
+ID: 22300c80-56ca-465a-9312-8dead042eb01

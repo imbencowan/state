@@ -1,0 +1,48 @@
+From: Ty Price
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Malad High School
+Dragons
+Orange & Black
+Dallan Rupp
+Robert Hannah
+Ty Price
+Wendy Owens
+Kelsey Owens
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Emree Ekstrom	11
+	Samantha Schrenk	10
+	Olivia Blaisdell	9
+	Paislee Davis	11
+	Ella Sperry	10
+	Jaylee Ekstrom	12
+	Addysin Murdock	11
+	Aleah Seamons	9
+	Sophia Ward	9
+	Rylee Talbot	11
+	Kelty Thomas	11
+
+---------------------------------------------------------
+SHIRTS
+
+Ty Price
+Malad High School
+3A
+Dance
+
+S: 4
+M: 7
+
+
+
+
+---------------------------------------------------------
+IP: 199.104.23.1
+ID: 38317fad-171e-4d24-a8c1-35cd7f07dba9

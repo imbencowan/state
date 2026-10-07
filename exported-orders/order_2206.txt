@@ -1,0 +1,57 @@
+From: Allen Dade
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Vallivue High School
+Falcons
+Brown & Gold
+Lisa Boyd
+Kellie Dean
+Allen Dade
+Kevin Schimmelpfennig
+Lexi Zucker
+Dave Kemper
+Chelse Engle
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Maris Farner	P, INF	12
+	2	Khloe Flygare	INF, P	9
+	3	Cali Child	OF	12
+	5	Ella Hill	P, OF	11
+	8	Ainsley Mazzella	INF, C	9
+	11	Abbie Egglston	2B, SS	11
+	14	Journey Engle	OF, C	11
+	15	Courtnee Hart	P, IF	10
+	16	Claire Self	C, IF,OF	9
+	17	Kieran Crutcher	IF	9
+	18	Cassidy Child	IF	9
+	18	Kenley Leuthold	OF	11
+	23	Rylee Squibb	C, INF	11
+	27	Addyson Aguila	OF, 1B	10
+	31	Evonny Gonzales	1B, C	12
+	42	Karma Cervantes	C, INF	9
+	44	Sophia Kassotis	OF, SS	10
+
+---------------------------------------------------------
+SHIRTS
+
+Allen Dade
+Vallivue High School
+5A
+Softball
+
+S: 2
+M: 14
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 154.27.170.142
+ID: 4648c480-5a55-4354-8614-8b1f5a6300ad

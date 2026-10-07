@@ -1,0 +1,58 @@
+From: Greg Carpenter
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Nampa High School
+Bulldogs
+Red, Blue & White
+Gregg Russell
+Kasey Burkholder
+Greg Carpenter
+Stephanie Higgins
+Halli Higgins
+Emma Locklear
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Anna Rowley	12
+	Elliana Tieman	12
+	Jaycee Blaser	12
+	Jessi Stradling	12
+	Kennedy Wohlfeiler	12
+	Paige Raybon	12
+	Rylee Northrop	12
+	Lexine Lopez Escobedo	11
+	Maddy Nilsson	11
+	Sophie Anderson	11
+	Vivian Gibbons 	11
+	Addison Baker	10
+	Audrey Crookham	10
+	Ashlyn Beckwith	10
+	Brooklynn Shlam	10
+	Franchesca Altenbern	10
+	Mabella Kelley	10
+	Keausha Hill	10
+	Sage Carlson	9
+
+---------------------------------------------------------
+SHIRTS
+
+Greg Carpenter
+Nampa High School
+5A
+Dance
+
+S: 7
+M: 11
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 209.127.238.207
+ID: 95905670-085b-4085-b5eb-6511a30434a8

@@ -1,0 +1,46 @@
+From: Brodie Parrott
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Filer High School
+Wildcats
+Red, White & Navy
+Kelli Schroeder
+Shane Hild
+Brodie Parrott
+Jade White
+Josie Sackett 
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Abbie Pemberton 	11
+	Adalyia Lekey	12
+	Shiloh Hills	10
+	Caysha Whitaker	10
+	Jimena Alverez 	10
+	Berta Albeta 	11
+	Olivia Sutherland	10
+	Bevyn Pemberton	9
+
+---------------------------------------------------------
+SHIRTS
+
+Brodie Parrott
+Filer High School
+4A
+Cheer
+
+S: 1
+M: 6
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 66.232.70.36
+ID: da13792d-b579-4d59-863d-b0b12045247c

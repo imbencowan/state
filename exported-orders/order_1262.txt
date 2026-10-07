@@ -1,0 +1,61 @@
+From: Allen Dade
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Vallivue High School
+Falcons
+Brown & Gold
+Lisa Boyd
+Kellie Dean
+Allen Dade
+Armando (Luis) Soto
+Lizbeth Soto 
+Jorge Rodriguez
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Delaney Hughes	GK	9
+	1	Ariana Rangel	GK, D	10
+	2	Maria Hernandez	D	12
+	3	Destiny Garcia	D	12
+	4	Mariah Rodriguez	D	12
+	5	Elena Bean	MF	10
+	6	Melissa Haro	D	12
+	7	Jenna Seals	STRK	12
+	8	Priscilla Amezquita	MF	10
+	9	Brooklyn Propst	STRK	9
+	10	Amanda Soto	MF, STRK	12
+	11	Mya Stone	FORW, STRK	12
+	12	Yesenia Corpus	D	11
+	13	Sofia Soto	MF, FORW	12
+	14	Gisele Guzman	FORW	12
+	15	Jayleen Delafuente	MF	12
+	16	Lexa Banda-Chavez	D	10
+	17	Yahritzi Cuevas	MF	12
+	18	Sierra Wrench	D, FORW	10
+	19	Hailee Carrera	D, FORW	12
+	20	Aliyah Green	D, FORW	11
+	21	Evelyn Hernandez	FORW, SWEP	10
+
+---------------------------------------------------------
+SHIRTS
+
+Allen Dade
+Vallivue High School
+5A
+Soccer - Girls
+
+S: 10
+M: 9
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 207.126.111.99
+ID: 58248da5-103b-47d3-8902-cce2ff2cef3e

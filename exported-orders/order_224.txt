@@ -1,0 +1,42 @@
+From: Jim Lasso
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Hansen High School
+Huskies
+Green & White
+Angie Lakey-Campbell
+Staci Carter
+Jim Lasso
+Crystal Vega
+Mickenlie Hurst
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Maggie Stover	12
+	Liz Ambriz	12
+	Aspyn York	11
+	Yuki Orozco	11
+	Myla Fredericksen	10
+
+---------------------------------------------------------
+SHIRTS
+
+Jim Lasso
+Hansen High School
+1A
+Cheer
+
+M: 3
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.109.81
+ID: fe6a2e84-40e5-449e-bfaa-2c78e997abee

@@ -1,0 +1,84 @@
+From: Keelan McCaffrey
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Centennial High School
+Patriots
+Maroon & Silver
+Derek Bub
+Ryan Wilhite
+J. Keelan McCaffrey
+Josh Aipperspach
+Blake Huntley
+Tyson Leigh
+Zac Holm
+David Smith
+Brian Bieker
+Alex Williams
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Tobin Knudson	SG	6-4	11
+	1	Kerth Ngongo	PF	6-4	11
+	2	Gabe Eddins	SG	6-5	12
+	3	Henry Johnson	PG, SG	6-5	12
+	4	Wade Ginn	SF	6-4	12
+	5	Griffin Taylor	SG	5-11	11
+	11	Trevor Buckner	PF	6-5	11
+	12	Jeremiah Bonine	SG	6-1	12
+	20	Dylan Bolen	PG, SG	5-10	11
+	21	Julian Ruiz	SF	6-0	12
+	22	Chace Gallegos	PG, SG	5-8	12
+	24	Malachi West	G	62	11
+	32	Aaron Anderson	PG, SG	6-0	12
+
+---------------------------------------------------------
+RECORD
+
+20	2
+
+71	Skyview	40
+66	Minico	27
+80	Canyon Ridge	53
+73	Reed	53
+64	Post Falls	70
+61	Madison	54
+83	Mead	44
+83	Rigby	76
+48	Middleton	45
+56	Borah	40
+66	Eagle	33
+78	Ridgevue	57
+81	Capital	50
+53	Owyhee	73
+51	Boise	30
+66	Timberline	60
+64	Meridian	61
+52	Rocky Mountain	43
+59	Mountain View	53
+83	Kuna	76
+68	Mountain View	60
+75	Capital	35
+	Owyhee	
+
+---------------------------------------------------------
+SHIRTS
+
+Keelan McCaffrey
+Centennial High School
+6A
+Basketball - Boys
+
+L: 6
+XL: 6
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.109
+ID: 2b3d087b-8dc9-4509-b0be-7d42d758e795

@@ -1,0 +1,75 @@
+From: Jeff Kenly
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+American Falls High School
+Beavers
+Red, White & Black
+Randy Jensen
+Travis Hansen
+Jeff Kenly
+Hailey Giesbrecht
+Erin Kress
+Madison Brambila
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Alexa Hernandez	9
+	Corbin Barclay	9
+	Hailyn Workman	9
+	Marley Anderson	9
+	Max Bowen	9
+	Alex Carter	10
+	Addison Gugleman	10
+	Ali Clinger	10
+	Haydn Colucci	10
+	Maycee Mortenson	10
+	Mely Orozco	10
+	Pixie Castorena	10
+	Sheyla Alvarez	10
+	Zoe Smith	10
+	Brady Cummins	11
+	Brylee Hodgkiss	11
+	Bryn Adair	11
+	Devanni Flores	11
+	Italie Giesbrecht	11
+	Jesus Camacho	11
+	Kabree Tarbet	11
+	Kaylee Neibaur	11
+	Kenzie Hunt	11
+	Khloie Hess	11
+	Lizbeth Medel	11
+	Payton Andersen	11
+	Payzlee Castorena	11
+	Remington Warth	11
+	Ryan Crump 	11
+	Shayla Hall	11
+	Max Schwermann	11
+	Aubrey Sprague	12
+	Elizabeth Hernandez	12
+	Ella Colluci	12
+	Landon Bowen	12
+	Val Torres	12
+
+---------------------------------------------------------
+SHIRTS
+
+Jeff Kenly
+American Falls High School
+4A
+Cheer
+
+S: 18
+M: 11
+L: 7
+
+
+
+
+---------------------------------------------------------
+IP: 162.218.180.122
+ID: 48ae951e-e9bf-49d0-b212-7b2bac0a4c3d

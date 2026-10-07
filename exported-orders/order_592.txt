@@ -1,0 +1,82 @@
+From: Mandy Frank
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Victory Charter High School
+Vipers
+Green & Silver
+Marianne Saunders
+Tera Luce
+Mandy Frank
+Dave Weaver
+Nate Rex
+14
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Elijah Perez		6-0	10
+	1	Cody Luce		5-11	12
+	2	Carson Wood		6-0	12
+	3	Mark Beliy		6-0	10
+	4	Derek Holt		6-4	11
+	5	Kason Gibbs		5-9	9
+	10	Jude Graham		6-2	10
+	11	Murphy O'Malley		6-0	11
+	15	Eli Bliss		5-10	9
+	22	Jett Wood		6-3	12
+	23	Gabriel Gomez		6-0	9
+	30	Landon Miller		5-5	9
+	33	Caleb Gozart		5-8	9
+	50	Levi Wilhelmsen		6-2	11
+
+---------------------------------------------------------
+RECORD
+
+14	9
+
+55	Cascade	60
+70	Garden Valley	58
+66	Dietrich	78
+52	Richfield	37
+52	Riverstone	60
+49	Cascade	53
+52	Garden Valley	61
+52	Garden Valley	59
+47	Wilder	32
+67	Centennial Baptist	29
+62	North Star Charter	50
+44	Liberty Charter	51
+72	Vision Charter	54
+54	Idaho City	39
+80	Gem State Adventist Academy	42
+62	Notus	53
+46	Rimrock	44
+55	Riverstone International	49
+52	Compass Charter	44
+46	North Star Charter	27
+53	Compass Charter	41
+36	Riverstone International	45
+
+---------------------------------------------------------
+SHIRTS
+
+Mandy Frank
+Victory Charter High School
+2A
+Basketball - Boys
+
+S: 4
+M: 6
+L: 2
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.110.171
+ID: 199f0bfa-936a-4ba5-979e-b9a154c5348f

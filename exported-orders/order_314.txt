@@ -1,0 +1,56 @@
+From: Josh Wells
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Shelley High School
+Russets
+Red, Black & White
+Doug McLaren
+Burke Davis
+Josh Wells
+Tara Deroche
+Maddie Keck
+Zoey Carter
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Kamrie Anderson	9
+	Sydney Bandy	
+	Kaylee Christensen	
+	Brynlee DeRoche	12
+	Maddie Elizondo	
+	Kieya Finck	
+	Lacey Fisher	
+	Kate French	
+	Isabell Hokanson	
+	Maddie Huntsman	
+	Jocelyn Kovac	
+	Ellie Nulph	
+	Kandice Payne	
+	Ella Richardson	
+	Elyse Richardson	
+	Makell Robison	
+	Payton Sizemore	
+
+---------------------------------------------------------
+SHIRTS
+
+Josh Wells
+Shelley High School
+5A
+Dance
+
+S: 10
+M: 5
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 162.249.30.54
+ID: f241f024-4c39-4078-9f20-f7d2f91f1a5f

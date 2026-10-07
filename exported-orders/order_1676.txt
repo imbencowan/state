@@ -1,0 +1,73 @@
+From: Travis Hobson
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Thunder Ridge High School
+Titans
+Blue, Black, Silver
+Scott Woolstenhulme
+Trent Dabell
+Travis Hobson
+Jessica Phippen
+Amy Stenquist
+Teagan Landon
+Katie Astel
+Kendra Sutton
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Alyssa Chambers	11
+	Amber Stacey	12
+	Andi Thompson	9
+	Ashley Moulton	10
+	Ashlyn Grimmer	12
+	Ava Pelayo	11
+	Ava Lords	10
+	Blaikly Peterson	10
+	Capri Schwendiman	9
+	Charlotte Geary	9
+	Chloe Jackson	10
+	Chuck Pinder	9
+	Cylee Randolph	11
+	Eden Hill	10
+	Emree Horch	9
+	Grace Blakely	9
+	Hailee Andrus	12
+	Halle Gardner	12
+	Skyley Johnston	12
+	Jemma Feil	10
+	Jeslynn Furniss	12
+	Sam Ward	12
+	Kinzy Sautter	10
+	LaRee Hanson	12
+	Lexie Beck	11
+	Marley Grimmer	10
+	Naomi Beck	10
+	Paige Christensen	10
+	Salem Stowell	9
+	Sydney Potter	10
+	Taybree Rapp	11
+	Vanya Santos	11
+	Wakely Stevens	9
+
+---------------------------------------------------------
+SHIRTS
+
+Travis Hobson
+Thunder Ridge High School
+6A
+Cheer
+
+M: 32
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 192.42.147.77
+ID: 727825d9-3861-4725-b4c2-8d1c4f4a1543

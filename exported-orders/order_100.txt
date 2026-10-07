@@ -1,0 +1,66 @@
+From: Nate Kerbs
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Wendell High School
+Trojans
+Navy & Gold
+Tim Perrigot
+Justin Alsterlund
+Nate Kerbs
+Felipe Paniagua
+Angela Murillo
+Jaime Ponce
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	3	Roberto Orozco	FB, D	11
+	5	Brian Orozco	MF, FORW	11
+	7	Fernando Ibarra Gutierrez	FORW, MF	11
+	9	Martin Nava	HB, D	11
+	11	Cesar Carmargo	FORW, MF	11
+	13	Horicio Ayala	D, HB	11
+	15	Miguel Lima	HB, D	10
+	17	Cesar Muralles	FORW, MF	11
+	21	Kayson Acevedo		11
+	23	Saul Orozco		9
+	25	Napoleon Jimenez		10
+	27	Julian Ponce	STRK, FORW	12
+	29	Tyler Magana	D	10
+	31	Adrian Ramos		9
+	33	Reinaldo Carrillo		11
+	35	Angel Ramos	STRK	11
+	37	Edgar Tena		11
+	39	Angel Diaz		9
+	43	Jeffery Gonzales		11
+	45	Alexis Hurtado		9
+	47	Alexander Hurtado		9
+	49	Jafery Bush		10
+
+---------------------------------------------------------
+COMMENT
+
+We would like to purchase one additional sweatshirt (large) for our manage Tony. We are willing to pay for the additional sweatshirt. Thank you. 
+
+---------------------------------------------------------
+SHIRTS
+
+Nate Kerbs
+Wendell High School
+3A
+Soccer - Boys
+
+S: 6
+M: 14
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 162.158.42.18
+ID: 4b63cd60-919d-413c-b12e-cee3ad31f372

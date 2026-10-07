@@ -1,0 +1,68 @@
+From: Connor Jackson
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Cole Valley Christian High School
+Chargers
+Blue, White & Silver
+Allen Howlett
+Kim DeMain
+Connor Jackson
+Nathan Hoiosen
+Tim Owens
+Mike Reynolds
+Sean Van Elderen
+Sam Pederson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Vince Maniaci	INF, P	10
+	2	Mason Ransom	INF, P	12
+	3	Kellan Crozier	OF, P	10
+	4	Lucas Guray	INF, OF, P	11
+	5	Carson Pollard	C	10
+	6	Travis Given	OF	11
+	7	Noah Distefano	C, P	11
+	8	Lucas DeCloss	OF, INF, P	10
+	9	Austin Distefano	P	9
+	10	Jake Church	OF, P	11
+	11	Cooper Kollmann	OF, INF	11
+	13	Carson Kile	INF, P	11
+	14	Cole Morgan	INF, OF, P	11
+	15	Tyler Harr	INF, P	11
+	21	Eli Hamby	OF, INF, P	11
+	22	Chad Timmons	OF, P	12
+	24	Kobe Wagner	INF, P	10
+	29	Riggins Palmer	C, OF, P	9
+	51	Kaden Russell	INF, P	9
+
+---------------------------------------------------------
+COMMENT
+
+Can I get the following for coaches and I'll bring a check to pay for them:
+Medium-1
+Large-2
+XL-1
+2XL-2
+
+---------------------------------------------------------
+SHIRTS
+
+Connor Jackson
+Cole Valley Christian High School
+4A
+Baseball
+
+M: 9
+L: 10
+
+
+
+
+---------------------------------------------------------
+IP: 208.98.133.204
+ID: 647eb225-2f7a-4a82-bb30-9cf5136f07f2

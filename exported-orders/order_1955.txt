@@ -1,0 +1,82 @@
+From: Ryan Williams
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Garden Valley High School
+Wolverines
+Purple & Gold
+Hannah Spafford
+Alison Barber
+Ryan Williams
+Heather Kelly
+Jason Yearsley
+Tivon Miller
+Dylan Boer
+Cory Kelly
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Teigan Goff	G	5-9	11
+	3	Maxon Yearsley	G	6-0	12
+	5	Madix Miller	G	6-1	12
+	10	Will Coburn	P	6-5	12
+	11	Cody Perrin	G	6-0	11
+	15	Kegan Welsh	P	6-2	12
+	20	August Thompson	P	6-4	11
+	21	Miles Hollist	G	6-0	10
+	22	Ezrah Marchand	G	5-11	10
+	23	Tyler Rowland	G	5-10	12
+	24	Elijah Marchand	F	6-0	12
+	34	Thomas Coburn	F	6-2	10
+	41	Marshall Coley	P	6-1	11
+	44	Payson Kelly	G	6-2	10
+
+---------------------------------------------------------
+RECORD
+
+19	2
+
+61	Butte County	50
+43	Rockland	64
+58	Greenleaf Friends Academy	56
+80	Marsing	39
+90	Horseshoe Bend	34
+67	Riverstone International	36
+67	Compass Charter	56
+77	Victory Charter	29
+82	Tri-Valley	21
+69	Cascade	33
+59	Council	49
+80	Council	45
+73	Watersprings	79
+57	Council	30
+72	Greenleaf Friends Academy	43
+72	Salmon River	18
+85	Tri-Valley	34
+76	Cascade	44
+89	Horseshoe Bend	30
+51	Butte County	43
+86	Greenleaf Friends Academy	62
+
+---------------------------------------------------------
+SHIRTS
+
+Ryan Williams
+Garden Valley High School
+1A
+Basketball - Boys
+
+L: 6
+XL: 8
+
+
+
+
+---------------------------------------------------------
+IP: 97.171.205.111
+ID: f3a0eced-72c7-4009-91e2-cf72fbf416b2
+ID: fbae3b91-a7cc-4b83-9c3d-47851ca15383

@@ -1,0 +1,82 @@
+From: Casey Grove
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Homedale High School
+Trojans
+Red & White
+Rob Sauer
+Matt Holtry
+Casey Grove
+Cam Long
+Clint Thomas
+Jaxon Dines
+Ben Roberts
+Zac Taylor
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Cyrus Wetherell		5-11	11
+	1	Alejandro Martinez		5-9	10
+	2	Cain Roberts		5-10	10
+	3	Kreece Powell		5-11	10
+	4	Chance Martell		5-7	12
+	5	Tyce Fisher		6-0	11
+	11	Alec Campos		6-1	11
+	12	Jace Clover		6-3	12
+	13	Mason Taylor		6-2	10
+	14	Dylan Taylor		6-2	10
+	15	Lukas Hall		6-5	12
+	20	Chase Roy		6-2	12
+	22	Easton Dines		5-10	10
+	24	Brevin Blewett		6-0	10
+
+---------------------------------------------------------
+RECORD
+
+14	7
+
+53	Emmett	74
+54	The Ambrose School	55
+59	Marsing	21
+24	Gooding	49
+62	Baker	59
+25	The Ambrose School	50
+73	Marsing	51
+66	Council	59
+64	Baker	58
+41	Gooding	61
+36	Cole Valley Christian	53
+46	Weiser	40
+65	Payette	26
+52	McCall-Donnelly	39
+58	Fruitland	41
+35	Cole Valley Christian	67
+53	Weiser	49
+60	Payette	32
+42	McCall-Donnelly	34
+58	Fruitland	53
+64	Fruitland	45
+
+---------------------------------------------------------
+SHIRTS
+
+Casey Grove
+Homedale High School
+4A
+Basketball - Boys
+
+M: 9
+L: 4
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 96.5.129.111
+ID: e830db7a-9d14-485d-81d9-9a03294b546c

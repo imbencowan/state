@@ -1,0 +1,56 @@
+From: Greg Carpenter
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Nampa High School
+Bulldogs
+Red, Blue & White
+Gregg Russell
+Kasey Burkholder
+Greg Carpenter
+Stephanie Higgins
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Autumn Jones	
+	Paige Kish	
+	Skyla Parrish	
+	Amanda Shlam	
+	Jaycee Blaser	
+	Luna Haensch	
+	Rylee Northrop	
+	Paige Rayborn	
+	Anna Rowley	
+	Jessica Stradley	
+	Kennedy Wohlfeiler	
+	Ana Aguiar Osorio	
+	Sophie Anderson	
+	Lexine Lopez	
+	Madelyn Nilsson	
+	Addison Baker	
+	Audrey Crookham	
+	Mabella Kelley	
+
+---------------------------------------------------------
+SHIRTS
+
+Greg Carpenter
+Nampa High School
+6A
+Dance
+
+S: 7
+M: 8
+L: 3
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 104.225.183.3
+ID: fbd19204-6a2e-4d7e-b2a7-a2259eeaea0a

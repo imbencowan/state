@@ -1,0 +1,51 @@
+From: Casey Grove
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Homedale High School
+Trojans
+Red & White
+Rob Sauer
+Matt Holtry
+Casey Grove
+Heidi Lawler
+Alan Lawler
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Hannah Thornton	12
+	Lindsay Rios	11
+	Jesus Mata	12
+	Gage Brown	12
+	Jericho Reyes	12
+	Michael Vega	12
+	Sandra Montes	12
+	Amalie Schroder	11
+	Geneve Buell	9
+	Grace Sotka	9
+	Clair Allen	9
+	Sunnie Dourhit	9
+
+---------------------------------------------------------
+SHIRTS
+
+Casey Grove
+Homedale High School
+4A
+Cheer
+
+S: 5
+M: 2
+L: 4
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 96.5.129.111
+ID: b14235a1-5141-41dc-a54c-a4115b21c721

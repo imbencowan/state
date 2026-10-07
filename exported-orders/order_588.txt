@@ -1,0 +1,87 @@
+From: Todd Cady
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Columbia High School
+Wildcats
+Maroon & Gold
+Greg Russell
+Cory Woolstenhulme
+Todd Cady
+Blaine Wright
+Brent Kotter
+Cayden Wright
+Isaac Casebolt
+Oschan Schmidt
+Ryan Kotter
+Casey Wright
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Tavin Jones	PG, W	5-8	10
+	2	Marcus Deleon	W, F	6-2	9
+	3	Easton Lott	W	6-0	10
+	4	Blake Hansen	W, F	6-3	12
+	11	Ford Zickgraf	W	5-9	12
+	12	Noah Landin	W	5-11	12
+	14	Max Keller	W, PG	6-3	10
+	15	Brodey Walker	W	5-10	12
+	21	Tobias Mcentee	W	6-1	12
+	23	Camden Champlin	SF	6-2	12
+	32	Owen Ovanek	W	6-1	12
+	33	Gavin Woolstenhulme	W, PF	6-1	10
+	34	Brenten Thueson	PF	6-1	10
+
+---------------------------------------------------------
+RECORD
+
+14	12
+
+58	Rocky Mountain	75
+37	Eagle	64
+40	Ridgeline, UT	64
+61	Canyon Ridge	41
+53	Eaglke	55
+55	Sugar Salem	69
+70	Twin Falls	66
+48	Middleton	60
+0	Bishop Kelly	20
+0	Vallivue	20
+73	Skyview	60
+49	Emmett	41
+63	Nampa	42
+56	Caldwell	25
+63	Middleton	67
+60	Bishop Kelly	64
+69	Vallivue	59
+62	Skyview	70
+63	Emmett	45
+59	Nampa	37
+71	Caldwell	43
+69	Vallivue	62
+50	Middleton	62
+73	Caldwell	51
+73	Bishop Kelly	47
+77	Skyview	51
+
+---------------------------------------------------------
+SHIRTS
+
+Todd Cady
+Columbia High School
+5A
+Basketball - Boys
+
+L: 6
+XL: 7
+
+
+
+
+---------------------------------------------------------
+IP: 136.228.205.161
+ID: 0a18d61d-2a6b-4c4d-82af-b5960bd5cf14

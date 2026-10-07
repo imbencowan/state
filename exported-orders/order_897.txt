@@ -1,0 +1,62 @@
+From: Tom Shanahan
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Bishop Kelly High School
+Knights
+Black & Gold
+Bill Avey
+Sarah Quilici
+Tom Shanahan
+Travis Ribordy
+Jodie Hoagland
+Johnna Overby
+Carsen Schlienz
+Alec Clayton (Manager)
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Peri Ribordy	C	11
+	2	Margaret Acuna	P / RF	11
+	3	Terese Stroschein	RF	11
+	4	Julia Baerlocher	SS	10
+	5	Annalyn Smith	UTL	9
+	6	Jaynie Burke	LF	9
+	7	Lauren Fettic	P / 1B	12
+	8	Olivia Watt	CF	10
+	9	Gracie Cammann	1B / 3B	10
+	10	Kingsley Shea	Inf	9
+	11	Josie Cunningham	3B / C	11
+	12	Allie Warren	P / Inf / OF	10
+	13	Ellie Fitzer	UTL	9
+	14	Khloe Wright	2B / 3B	10
+	15	Anna Stroschein	UTL	9
+	16	Natalie Lange	UTL	10
+
+---------------------------------------------------------
+COMMENT
+
+Thank you.
+
+---------------------------------------------------------
+SHIRTS
+
+Tom Shanahan
+Bishop Kelly High School
+5A
+Softball
+
+S: 1
+M: 10
+L: 5
+
+
+
+
+---------------------------------------------------------
+IP: 97.139.246.130
+ID: 4373eb47-6a36-4e07-96f5-50d32bcfa287

@@ -1,0 +1,62 @@
+From: Amy Yenor
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Ambrose School
+Archers
+Navy & White
+Wade Ortego
+Joe Gerber
+Amy Yenor
+Josh Nipper
+Shaun Back
+Sean Lambert
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Tim Kalmykov		9
+	3	Britton Choules		9
+	4	Carter Langin		12
+	5	Stephen Martin		9
+	6	Hudsonn Kuntz		10
+	7	Sam Makinney		10
+	9	Nolan Bucklew		10
+	10	Christian Delhousaye		12
+	11	Matthew Babichenko		12
+	13	Skyler McVay		10
+	15	Cedric Putnam		10
+	18	Chris Schlegal		10
+	20	Jack Petersen		9
+	21	London O'Donnell		10
+	22	David Twagirayesu		12
+	23	Mark Yenor		12
+	25	Owen Brown		12
+	26	Jaden Thomas		9
+	27	Blake Anderson		10
+	28	Liam Lambert		10
+	29	Brennan Rosien		12
+
+---------------------------------------------------------
+SHIRTS
+
+Amy Yenor
+Ambrose School
+3A
+Soccer - Boys
+
+S: 1
+M: 6
+L: 9
+XL: 4
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 209.141.118.42
+ID: eb6556db-3253-4eae-921d-959668003614

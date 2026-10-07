@@ -1,0 +1,87 @@
+From: Dane Roy
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Owyhee High School
+Storm
+Red & Grey
+Derek Bub
+Rachel Edwards
+Dane Roy
+Andy Harrington
+Marcus Graham
+Andy Harrington III
+Nic Warnecke
+RC Nugent
+Matthew Bauman
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Ty Read	G	6-1-	12
+	1	Jaxon Jamerson	G	6-0	12
+	2	Owen Brown	G	6-1	10
+	3	Stockton Street	G	6-2	12
+	4	Parker Leaf	G	6-5	12
+	5	Jakobe Judd	G	6-0	10
+	10	Jack Johnson	G	60	12
+	11	Logan Haustveit	G	5-11	12
+	12	Jordan Allen	G	6-0	12
+	21	Luke Read	G	6-9	10
+	22	Donovan Vinberg	G	6-4	10
+	23	Canaan Magness	G	6-3	12
+	24	Kaleb Wilson	G	6-4	12
+	32	Braylon Larson	G	6-8	11
+	33	Kaden Rogers	G	6-5	11
+
+---------------------------------------------------------
+RECORD
+
+17	6
+
+53	Damien CA	47
+63	Layton Christian Academy	65
+73	Damien, HI	26
+67	Kohala	51
+53	Harvard Westlake	43
+53	Millennium	65
+59	Crean Lutheran	62
+46	Centennial, CA	70
+68	Clovis North	65
+56	La Mirada	65
+59	Rocky Mountain	27
+42	Meridian	44
+68	Boise	54
+76	Timberline	53
+54	Eagle	37
+73	Centennial	53
+73	Mountain View	35
+73	Kuna	35
+86	Ridgevue	65
+70	Capital	54
+63	Borah	20
+65	Ridgevue	40
+58	Meridian	38
+
+---------------------------------------------------------
+SHIRTS
+
+Dane Roy
+Owyhee High School
+6A
+Basketball - Boys
+
+L: 3
+XL: 10
+2XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.160
+ID: 25d274ed-8f28-4569-89cb-aa085c580b11
+ID: 555e937d-0314-45cb-92ee-8f49475a0c05

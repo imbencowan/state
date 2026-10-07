@@ -1,0 +1,85 @@
+From: Connie Desjarlais
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Lapwai High School
+Wildcats
+Blue & White
+David Aiken
+D'Lisa Penney
+D'Lisa Penney
+Lori Mader
+Sierra Higheagle
+Tawiya Williams
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Abreann Yearout			9
+	2	Ella Payne			11
+	3	Cavell Samuels			10
+	4	Skylin Picard			12
+	5	Jaleia Sonneck			9
+	10	Tianna Wheeler			11
+	14	Paisley McCormack			10
+	20	Lois Oatman			11
+	21	Jennilia WhiteTemple			11
+	22	Taya Yearout			12
+	23	Roni Arthur			12
+	33	Madden Bisbee			12
+
+---------------------------------------------------------
+RECORD
+
+21	1
+
+60	Orofino	14
+56	Prairie	49
+75	Potlatch	15
+47	Highland	28
+56	Kamiah	41
+50	Logos	16
+71	Clearwater Valley	10
+68	Genesee	40
+82	Kendrick	36
+39	Prairie	62
+83	Troy	37
+68	Potlatch	35
+59	Kamiah	30
+65	Timberlake	60
+72	Logos	25
+66	Kendrick	36
+91	Clearwater Valley	17
+69	Lakeside	37
+64	Troy	23
+69	Logos	22
+83	Troy	29
+41	Prairie	23
+
+---------------------------------------------------------
+COMMENT
+
+Please order sweatshirts for coaches.  2 medium and 1 large total 3.
+
+---------------------------------------------------------
+SHIRTS
+
+Connie Desjarlais
+Lapwai High School
+2A
+Basketball - Girls
+
+S: 1
+M: 8
+L: 2
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 99.191.69.125
+ID: 352ced9b-c3c9-46cc-8781-fc9f879a1b3e

@@ -1,0 +1,81 @@
+From: Corey Bobryk
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Hagerman High School
+Pirates
+Black & Orange
+Bill Hicks
+Bill Hicks
+Corey Bobryk
+Katie Knight
+Trey Berrett
+Josh Leavitt
+Jacob Hicks
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Ky Kendall	PG, SG	6-1	12
+	2	Martin Gonzalez	SG, SF	6-2	12
+	4	Sebastian Gonzalez	F	6-1	10
+	5	Alex Johnson	C, PF	6-0	11
+	10	Jace Leavitt	G	5-8	9
+	13	Wyatt Mavencamp	PF, C	6-1	11
+	15	Shaymus Merrill	SF, SG	5-10	12
+	20	Bear Rebon	SG, SF	5-9	11
+	25	Zander Cenarrusa	G	5-6	10
+	32	Casen Knight	PG, G	6-0	9
+	33	Will Mavencamp	W, PF	6-2	9
+	34	Adam Nelson	C, PF	6-2	10
+	40	Danny Marez	G	5-5	11
+	44	Ryland Slazas	G	5-7	10
+	52	Anthony Rebon	F	5-9	10
+
+---------------------------------------------------------
+RECORD
+
+	
+
+51	Murtaugh	34
+61	Shoshone	28
+67	Raft River	64
+29	Valley	64
+48	Potlatch	67
+44	Lapwai	57
+61	Glenns Ferry	56
+45	Oakley	50
+81	Sun Valley Community School	36
+91	Lighthouse Christian	24
+70	Murtaugh	36
+74	Shoshone	34
+76	Raft River	54
+38	Valley	58
+67	Glenns Ferry	44
+50	Oakley	55
+83	Sun Valley Community School	23
+44	Rockland	54
+77	Hansen	57
+78	Lighthouse Christian	19
+
+---------------------------------------------------------
+SHIRTS
+
+Corey Bobryk
+Hagerman High School
+2A
+Basketball - Boys
+
+M: 4
+L: 7
+XL: 4
+
+
+
+
+---------------------------------------------------------
+IP: 63.151.48.50
+ID: 43f59545-871e-4c55-8710-a7f8f7b67c72

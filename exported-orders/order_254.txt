@@ -1,0 +1,61 @@
+From: Randy Winn
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Burley High School
+Bobcats
+Green, Gray, Black & White
+Sandra Miller
+Levi Power
+Randy Winn
+Brook Jensen
+Jazmin Edgar
+Whitley Jensen
+Aubree Stephens
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Kelsie Schrenk	12
+	Lynnzey Mann	12
+	Rylee Samples	12
+	Shaylin Stephens	12
+	Adyson Musick	12
+	Abigail Bingham	12
+	Julixa Cruzes	12
+	Yarely Mendoza	12
+	London Woodbury	11
+	Savanna Lara	11
+	Adalynn Kruckenberg	11
+	Kaleie Gibson	11
+	Abree Darrington	11
+	Alexyz Peters	10
+	Samantha Gee	10
+	Alexis Solis	9
+	Jaycee Anderson	9
+	Ella Stephens	9
+	Susannah Martinez	9
+	Nevaeh Rodriguez	9
+	Shailey Goodrich	9
+	Shayley Adams	9
+
+---------------------------------------------------------
+SHIRTS
+
+Randy Winn
+Burley High School
+5A
+Dance
+
+S: 17
+M: 5
+
+
+
+
+---------------------------------------------------------
+IP: 72.22.239.194
+ID: 77d9e70a-d393-46ba-9b39-4c7695d9460d

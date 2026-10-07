@@ -1,0 +1,61 @@
+From: Tony Brulotte
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Eagle High School
+Mustangs
+Green & Silver
+Derek Bub
+Susan McInerney
+Tony Brulotte
+Francesca Murphy
+McCall Godfrey
+Anna Ordaz
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Olivia Baker	9
+	Paige Brown	11
+	Adelie Cook	11
+	Bridget Cox	12
+	Elexa Cunningham	12
+	Grace Gerbitz	12
+	McKenley Gupton	10
+	Faith Hayes	11
+	Kennedy Hilde	12
+	Maggie Hume	11
+	Sloane Leija	10
+	Lexie McCarroll	12
+	Grace McFadyen	12
+	Abbey Nadler	12
+	Ava Nicholson	11
+	Addisan Petrilli	12
+	Morgan Rich	10
+	Ava Ruoff	12
+	Lilly Somerville	12
+	Sophia Suydam	9
+	Vienna Swanson	10
+	Kayla Ward	11
+
+---------------------------------------------------------
+SHIRTS
+
+Tony Brulotte
+Eagle High School
+6A
+Cheer
+
+S: 18
+M: 3
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.101
+ID: f9627c13-acd5-4c6f-bf0a-51bef7bc2c66

@@ -1,0 +1,86 @@
+From: Jocelyn Hobbs
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Sugar-Salem High School
+Diggers
+Blue & White
+Jared Jenks
+Karl Gehmlich
+Jocelyn Hobbs
+Shawn Freeman
+Troy Sakota
+Caleb Carter
+Kirk Smith
+Parker Miller
+Bryant Harris
+Calum Webb
+Casey Wright 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Tyler Williams	G	5-10	12
+	1	Ace Clark	W	6-1	11
+	2	Kolter Harris	G	6-0	10
+	3	Jack Larson	G	6'3	11
+	4	Josh Peterson	W	6'0	10
+	5	Riley Williams	G	6-0	12
+	10	Teig Gehmlich	G	6'0	10
+	11	Kace Malstrom	W	6'0	12
+	12	Frank Fillmore	W	6-2	10
+	13	Hank Carter	PF	6-4	12
+	14	Layton Gillette 	W	6'3	10
+	21	Dax Rowbury	PF	6'4	11
+	22	Ky Peterson	W	6-2	12
+	23	Kaden Nate	PF	6'3	11
+	24	Abe Baldwin	W	6'0	12
+
+---------------------------------------------------------
+RECORD
+
+16	5
+
+59	Filer	60
+55	Kimberly 	53
+64	Marsh Valley 	50
+69	Columbia	55
+58	Shelley 	54
+53	Blackfoot	46
+40	Ogden	38
+60	Burley	54
+58	Century 	60
+50	Filer	37
+63	Kimberly 	54
+52	Ririe	49
+55	Snake River	57
+53	Marsh Valley 	47
+55	Snake River 	58
+58	Ririe	34
+49	Teton 	45
+49	Shelley 	62
+57	South Fremont 	44
+60	Teton 	50
+70	South Fremont 	44
+
+---------------------------------------------------------
+SHIRTS
+
+Jocelyn Hobbs
+Sugar-Salem High School
+4A
+Basketball - Boys
+
+M: 1
+L: 4
+XL: 10
+
+
+
+
+---------------------------------------------------------
+IP: 69.20.133.71
+ID: c2b98d28-ebfa-4e88-b244-833c91dba6e1

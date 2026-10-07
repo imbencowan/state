@@ -1,0 +1,151 @@
+From: Tom Shanahan
+Activity: Football
+
+---------------------------------------------------------
+SCHOOL
+
+Bishop Kelly High School
+Knights
+Black & Gold
+Bill Avey
+Sarah Quilici
+Tom Shanahan
+Chris Culig
+David Koch OL
+Kyle Kerfoot QB/OC
+Juss Jackson DC/LB
+Tamir Hill DB
+Tony Kerfoot RB
+Jay Noller DFO/OLB
+Kyler Henson WR
+Parker Weatherly DL
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	weight	grade
+	0	Bryce Root	DB	5-10	185	12
+	1	Dom Wolthuis	WR, CB	6-2	180	12
+	2	Boston Huskey	SB, WR	5-10	180	11
+	3	Ayden Boyd	LB	5-11	190	12
+	4	Jack Henderson	DE, TE	6-4	225	11
+	5	Ryan Arellano	RB	5-8	185	12
+	6	Zander Siddiqui	DB	5-8	150	11
+	7	Jackson Kite-Powell	LB	5-8	175	12
+	8	Darren Hays	WR	5-9	170	12
+	9	Jaxson Brady	QB, WR	6-3	195	11
+	10	Ben Avella	QB	6-5	215	12
+	12	Nik Ciovacco	DB	6-0	175	11
+	12	Ozzy Hibbard	RB/DB	5-5	150	9
+	13	Jared Thiel	DB, WR	5-9	165	10
+	14	Davis Glynn	DB	5-11	150	12
+	15	Gavin Yallaly	DB	5-10	140	12
+	16	David Carranza	WR	5-11	168	11
+	17	Liam O Flaherty	WR, OLB	5-11	185	12
+	18	Noah Rulon	LB	6-0	205	12
+	19	Mac Raeber	TE	6-2	180	12
+	20	Brian Quiroz	DB	5-11	170	12
+	21	Nathan Allemand	DB	5-0	175	10
+	23	Noah Horn 	LB	6-3	195	12
+	25	Logan Yallaly	WR/DB	5-9	150	10
+	26	Gavin Vincelli 	LB	6-0	205	12
+	27	Evan McLeod	LB	6-1	185	11
+	28	Hudson Friend 	LB	6-0	205	10
+	29	Jack Mullin 	LB	5-11	175	11
+	29	Alejandro Gerrish	WR	5-10	170	10
+	30	Tony Mann	RB	5-11	175	10
+	31	Eli Lynes	RB	5-8	195	11
+	32	Charlie Dahl	RB	5-6	170	11
+	33	Dane Matlock 	LB	6-0	205	11
+	34	Nick Hebert	TE	6-2	190	10
+	35	Cade McFadden	QB	5-10	165	11
+	36	Grady Noll	WR/DB	5-6	120	10
+	36	Cameron Wind 	K	5-9	150	12
+	37	Matthew Hippler	DB	5-8	140	10
+	38	Lorenzo Perez	DL	5-10	185	11
+	39	Zane Garr	LB	6-0	185	10
+	39	Patrick Copeland 	WR	5-9	150	9
+	41	Nickolas Dillen	DB/K	5-10	170	11
+	42	Vaughn Wegner	DB	5-10	155	11
+	43	Cole Gorski	DL	6-2	175	11
+	44	Dioni Lete	DB	5-10	220	12
+	45	James Inouye	LB	6-0	165	12
+	46	Drake Morgan 	DB	5-7	140	9
+	48	Wilson Bainbridge	DL	5-9	200	12
+	51	Cooper Nienhouse	DB	5-7	140	10
+	52	Luke Hippler	OL/DL	5-9	185	11
+	53	Gavin Shirley	RB	5-9	135	10
+	54	Eric Williams	DL	5-8	175	11
+	55	Quentin Powers	DL	6-0	245	12
+	56	AJ Boyd	OL/DL	5-7	175	9
+	57	Donovan Glenn	OL	6-1	195	9
+	58	Jack Nichol	DL	5-9	175	11
+	59	Caleb Klover	OL/DL	6-5	285	11
+	61	Jackson Richardson	DL	5-7	160	10
+	61	Preston Jenkins 	LB	5-10	155	9
+	62	Brandon Root	LB	5-10	210	11
+	63	Dominic Al-Shawaf	OL/DL	6-0	245	12
+	64	Hudson Thorndyke	LB	6-1	165	9
+	65	Nick Fisher	OL	6-0	240	11
+	66	Joshua Lara	DL	5-11	245	10
+	67	Boston Johnson	OL/DL	5-11	235	10
+	68	James Spytek	DL	6-1	170	9
+	70	Isaiah Friend	OL/DL	6-3	240	12
+	71	Will Kerby	OL/DL	6-0	230	12
+	72	Kyan Hankel	OL/DL	6-0	275	12
+	73	Braden Schaefer	OL/DL	5-10	220	11
+	74	Hunter Rissell	DL	5-6	190	12
+	75	Ethan Sevier	OL/DL	6-1	230	11
+	76	Tim Derden	OL	6-2	200	12
+	77	Brody Hale	OL	6-2	275	11
+	78	William Quiroz	OL/DL	5-11	250	11
+	80	Cole Keck	WR	5-9	180	11
+	81	Thacher Moore	WR	6-3	17	11
+	82	Vinnie Perry	WR	6-2	180	11
+	88	Matt Callanan	WR	5-8	150	12
+	90	Landon Papanikolas	QB	6-0	140	9
+
+---------------------------------------------------------
+RECORD
+
+12	0
+
+50	Bonneville	10
+62	Minico	14
+29	Rigby	15
+55	Nampa	27
+22	Columbia	20
+64	Skyview	0
+37	Vallivue	21
+46	Ridgevue	13
+35	Emmett	16
+56	Emmett	14
+40	Blackfoot	8
+21	Skyline	20
+	Hillcrest	
+
+---------------------------------------------------------
+COMMENT
+
+Assistant Coaches: Casey Glenn PP, Zach Boyd TE, Chris Martineau, Chris Maloney OL/DL, John Edwards DC/LB, Josh Meyers QB/WR, Andrew Markosian, James Markosian, Mike McCurry, Sam Stiener
+
+---------------------------------------------------------
+SHIRTS
+
+Tom Shanahan
+Bishop Kelly High School
+5A
+Football
+
+S: 1
+M: 16
+L: 20
+XL: 15
+2XL: 8
+
+
+
+
+---------------------------------------------------------
+IP: 75.174.54.108
+ID: 1f13ea4a-1fc4-40b0-a56b-eaf98c8e02b9

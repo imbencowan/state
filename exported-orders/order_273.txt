@@ -1,0 +1,80 @@
+From: Jeff Horsley
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Soda Springs High School
+Cardinals
+Red & Black
+Scott Muir
+Jess McMurray
+Jeff Horsley
+Mat Gronning
+Jeff Parker
+Kebra Gibson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Josey Rasmussen	SF	5-6	11
+	1	Jayden Parker	PG, G	5-5	9
+	2	Courtnee Gronning	G	5-6	11
+	3	Rosie Harris	PF	5-7	11
+	5	Madilyn Kempe	PF	5-6	11
+	10	Taylee Tingey	G	5-5	9
+	11	Tayla Petterborg	W	5-6	9
+	13	Abby Goodin	SG, PG	5-8	12
+	14	Mylee White	G	5-6	10
+	15	Jocee Tingey	G	5-5	10
+	21	Gracie Moldenhauer	PG, SG	5-7	12
+	22	Ellie Wood	W	5-7	11
+	25	Halle Ozburn	W	5-6	9
+	33	Aspen Skinner	W	5-6	10
+	34	Haizley Mumford	PF	5-9	9
+
+---------------------------------------------------------
+RECORD
+
+10	10
+
+25	Bear Lake	51
+44	Grace	40
+29	Parma	49
+51	Melba	62
+44	Grace	32
+47	Hurricane, UT	54
+39	Desert Hills, UT	49
+28	Richfield, UT	34
+43	Wendell	32
+47	West Jefferson	40
+61	Declo	40
+54	West Side	29
+35	Oakley	49
+33	Malad	54
+28	Bear Lake	66
+48	Aberdeen	28
+50	West Side	35
+49	Declo	34
+32	Malad	41
+52	Aberdeen	44
+
+---------------------------------------------------------
+SHIRTS
+
+Jeff Horsley
+Soda Springs High School
+3A
+Basketball - Girls
+
+S: 6
+M: 8
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 168.245.231.154
+ID: 8eca41df-955d-42a6-bf42-181bc1864c48

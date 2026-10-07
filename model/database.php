@@ -81,8 +81,6 @@ public static function getFromDB(string $query, array $params = []): array {
 		$statement->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
 	}
 
-if (array_intersect([':activityID'], array_keys($params))) Test::logX($statement, $params);
-
 	// $a = 'Memory before execute: ' . round(memory_get_usage() / 1024 / 1024, 2) . " MB\n";
 	$statement->execute();
 

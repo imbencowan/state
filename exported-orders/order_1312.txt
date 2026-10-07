@@ -1,0 +1,54 @@
+From: Lee Jay Cook
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Carey High School
+Panthers
+Blue & Gold
+Jim Foudy
+Melanie Blacker
+Lee Jay Cook
+Teresa Smith
+Dawn Bennion
+Felicity Black
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Andie Simpson	S	5-4	11
+	1	Evalyn Nilsen	DS	5-3	12
+	2	Viviana Palomera	OH	5-4	12
+	3	Bentley Saxton	OH	5-6	10
+	4	Hayley Acquistapace	MB, OH	5-7	11
+	5	Emily Ruiz	L	5-4	11
+	6	Madison Hoskins	S	5-6	10
+	7	Shelby May	OH	5-6	10
+	8	Emily Dahlstrom	MH	5-9	9
+	9	Kora Parke	OH	5-8	12
+	10	Jordyn Bennion	DS	5-5	12
+	11	Ali Simpson	MH	5-9	10
+	12	Abbi Whittier	MH	5-10	12
+	13	Carol Hatch	MH	5-9	12
+	14	Kenzie Hennefer	DS	5-3	11
+
+---------------------------------------------------------
+SHIRTS
+
+Lee Jay Cook
+Carey High School
+1A
+Volleyball
+
+S: 5
+M: 8
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 66.232.90.254
+ID: 606427bc-fe21-435a-8faf-eece9c47f518

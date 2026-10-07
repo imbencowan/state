@@ -1,0 +1,54 @@
+From: Scott Miller
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Kellogg High School
+Wildcats
+Purple & Gold
+Lance Pearson
+Dan Davidian
+Scott Miller
+Hollie Yrjana
+Kevin Yrjana
+Gracelyn Nearing
+Lisa Cheney
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Paige Yrjana	OH	5-7	11
+	2	Jordyn Stutzke	L, DS	5-0	11
+	3	Ella Yrjana	S, OPP	5-5	10
+	4	Dakota Hoch	DS	5-3	11
+	5	Bella Schillereff	DS, L	5-5	10
+	6	Callie Clark	MH, OPP	5-8	10
+	7	Aleah Philp	OH	5-6	10
+	8	Kamryn McDonald	S, RS	5-4	10
+	9	Peyton Storey	OH, OPP	5-6	10
+	10	Addie Sawyer	OH	5-6	9
+	11	Gretah Angle	S, MH	5-8	9
+	12	Maggie Cook	MH	5-11	10
+	13	Dani Henrikson	MB	5-7	12
+	14	Lane Smith	OPP, MH	5-8	9
+
+---------------------------------------------------------
+SHIRTS
+
+Scott Miller
+Kellogg High School
+3A
+Volleyball
+
+S: 9
+M: 4
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 50.52.78.218
+ID: 9200b54b-941d-4f26-9ef6-55fb235b6114

@@ -1,0 +1,57 @@
+From: Cody Shelley
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Blackfoot High School
+Broncos
+Kelly Green & White
+Brian Kress
+Roger Thomas
+Cody Shelley
+Caroline Andersen
+Whitney Kenworthy
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Oakley Arave	
+	Cam Kniffen	
+	Xiomara Huerta	
+	Harleigh Keller	
+	Kendyll Harkness	
+	Marlee Stewart	
+	Brez Thomas	
+	Kinlee Stuart	
+	Lilli Ellis	
+	Chloe Lilya	
+	Daci Cameron	
+	Ella Aullman	
+	Mya Mauger	
+	Lillian Hill	
+	Alissa Randell	
+	Sofia Ojeda	
+	Brooklyn Winter	
+	Koryn Will	
+	Kamy WIlliams	
+
+---------------------------------------------------------
+SHIRTS
+
+Cody Shelley
+Blackfoot High School
+5A
+Dance
+
+S: 13
+M: 5
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 97.178.254.231
+ID: 978ff409-491d-4112-bdd4-4359363da76c

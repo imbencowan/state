@@ -1,0 +1,57 @@
+From: Shaun Walker
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Twin Falls High School
+Bruins
+Navy, Lt Blue & White
+Brady Dickinson
+Nancy Jones
+Shaun Walker
+Tonia Burk
+Peyton Harrison
+Jeff Morgan
+Brooke Bertrand
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Bentley Watkins	C, OF	11
+	2	Mykan Irwin	OF	9
+	3	Kaitlyn Hudson	3B	11
+	4	Aidenah Sotelo	UTIL	11
+	5	Camryn Miller	P, UTIL	11
+	6	Juliza Gomez	UTIL	10
+	7	Jayde Brady	OF, INF	9
+	8	Bri Holcomb	P, OF	12
+	9	Allison Clymens	C, UTIL	11
+	10	Jillian Stierer	C, UTIL	10
+	11	Taylyn Fowler		
+	12	Libby Torgrimson	1B	12
+	13	Braylin Iverson	SS	12
+	14	Adella Curiel-Sparrow	P, UTIL	9
+	15	Audrey Gourley	P, 2B	10
+	20	Sailor Stringer		10
+	22	Sophia Allgood	OF	12
+
+---------------------------------------------------------
+SHIRTS
+
+Shaun Walker
+Twin Falls High School
+5A
+Softball
+
+S: 1
+M: 12
+L: 4
+
+
+
+
+---------------------------------------------------------
+IP: 216.83.77.2
+ID: e6ef7818-7a5c-45c5-bdcd-5ebc0be7d9d3

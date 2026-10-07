@@ -1,0 +1,58 @@
+From: Tina Pelkey
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Nampa Christian High School
+Trojans
+Maroon & Gold
+Greg Wiles
+Jim Eisentrager
+Tina Pelkey
+Jessie Haragos
+Hailey Bland
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Luciana Vermeer	S	5-5	11
+	2	Maddie Ward	MB, RS	5-9	10
+	3	Mia Dean	OH	5-9	9
+	4	Chloe Schwartz	DS	5-4	12
+	5	Ellie Nichols	L	5-3	9
+	6	Charli Tinsley	L	5-1	9
+	7	Hadley Compton	OH	5-9	9
+	8	Macy Boothby	DS	5-6	12
+	9	Presley Glassco	DS	5-5	12
+	10	Avery Reece	OH	5-7	11
+	11	Kati Walborn	MB, RS	5-10	9
+	12	Abi Gregory	S	5-11	10
+	13	Anna Schwartz	RS	5-9	10
+	14	Ellie Kroes	MB, RS	5-8	10
+	15	Anna Cragin	S	5-6	9
+
+---------------------------------------------------------
+COMMENT
+
+Thank you for your support of our student athletes!
+
+---------------------------------------------------------
+SHIRTS
+
+Tina Pelkey
+Nampa Christian High School
+3A
+Volleyball
+
+S: 1
+M: 11
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 67.134.58.242
+ID: 8b160f76-3dea-44c9-a273-f5a959dac51f

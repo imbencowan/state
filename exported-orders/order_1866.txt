@@ -1,0 +1,49 @@
+From: Robert Coombs
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Snake River High School
+Panthers
+Purple, White & Black
+Mark Kress
+Ray Carter
+Robert Coombs
+Christy Gardner
+Sabrina GodFrey
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Cagle, Isabell 	12
+	Clayson, Brecklyn 	12
+	Godfrey Emma	11
+	Hall Brookelynn	11
+	Metcalf Tori	10
+	Nash Mailee	11
+	Phillips Aubrey	12
+	Robinson Tessa	11
+	Stokes Hope	12
+	VanOrden Maggie	12
+
+---------------------------------------------------------
+SHIRTS
+
+Robert Coombs
+Snake River High School
+4A
+Dance
+
+S: 3
+M: 4
+L: 2
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.111.114
+ID: 3713f906-7249-40e6-92bc-a70cd86b5ca0

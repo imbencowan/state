@@ -1,0 +1,62 @@
+From: Dane Roy
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Owyhee High School
+Storm
+Red & Grey
+Derek Bub
+Rachel Edwards
+Dane Roy
+Darion Green
+Leighton Murri
+Carter Woods
+Joe Scotti
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Corbon Gill	Keeper	12
+	2	Adrian Garcia	Defender	11
+	5	Samuel Vassilaros	Midfielder	12
+	7	Dominic Ellis-Pitkin	Midfielder	10
+	8	Josue Kuzindila	Midfielder	11
+	9	Logan Snelson	Midfielder	11
+	10	Srivashjothi Balamurugan	Defender	12
+	11	Anish Bayelkoti	Defender	11
+	12	Dominic Aguirre	Defender	10
+	13	Nolan Arnold	Goalkeeper	12
+	14	Diego Ochoa	Midfielder	11
+	15	Christian Zannitto	Defender	11
+	16	Ishaq Bisharat	Defender	12
+	17	Camden Ellis-Pitkin	Forward	10
+	18	Dane Lau	Forward	10
+	19	Moise Kuzindila	Midfielder	11
+	20	Jordan Shupe	Midfielder	12
+	21	Yanis Vendee	Midfielder	12
+	22	Ryan Abernathy	Defender	12
+	23	Jedaiah Bishop	Forward	12
+	24	Greyson Pew	Defender	12
+	26	Samuel Gamette	Defender	12
+
+---------------------------------------------------------
+SHIRTS
+
+Dane Roy
+Owyhee High School
+6A
+Soccer - Boys
+
+M: 8
+L: 13
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.160
+ID: afee2da8-0cb2-4bf7-851b-e86e8933a16d

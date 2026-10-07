@@ -1,0 +1,77 @@
+From: Matt Neff
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Lakeland High School
+Hawks
+Green & Gold
+Rusty Taylor
+Jimmy Hoffman
+Matt Neff
+Caelyn Caulfield
+Carmen Gfellar
+Mark Kiefer
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Karstyn Kiefer	PG	5-7	12
+	3	Addi Forsman	G	5-5	11
+	5	Anabel Bowie	F	5-11	10
+	10	Jaeli Hoffman	G, F	6-0	9
+	11	Hunter McMurray	G	5-6	11
+	12	Kapree Kiefer	G	5-8	10
+	20	Presley Fagan	G	5-6	11
+	21	Tessa Lovell	G		9
+	25	Macy Bretveld	F	6-2	11
+	32	Jorja Coppinger	G		9
+	33	Mariana Bullington	F	6-4	11
+	34	Ava Keppner	G		9
+	44	Makena Tebbe	IR		10
+
+---------------------------------------------------------
+RECORD
+
+16	4
+
+54	Lake City	28
+67	Timberlake	40
+68	Cheney	21
+70	Lakeside	26
+41	Mead	54
+57	Bonners Ferry	45
+53	Post Falls	44
+69	Shadle Park	20
+72	Garfield-Palouse	47
+62	Skyline	38
+57	Green Canyon	66
+63	Pocatello	47
+49	Sandpoint	42
+54	Moscow	19
+51	Timberlake	57
+66	Sandpoint	38
+53	Lewiston	33
+46	Moscow	38
+64	Coeur d'Alene	75
+66	Lewiston	31
+
+---------------------------------------------------------
+SHIRTS
+
+Matt Neff
+Lakeland High School
+5A
+Basketball - Girls
+
+M: 5
+L: 8
+
+
+
+
+---------------------------------------------------------
+IP: 162.218.180.34
+ID: 1b2e8791-6f81-4906-bf55-a4fe69c66246

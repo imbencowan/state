@@ -1,0 +1,56 @@
+From: Scott Adams
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Firth High School
+Cougars
+Blue, White & Black
+Basil Morris
+Keith Drake
+Scott Adams
+Jeff Boyd
+Burkham Burnett
+Nate Pemberton
+Mallory Erickson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Meg Leslie		10
+	1	Mckenna Erickson		12
+	2	Reese Clayson		10
+	3	Linlee Telford		11
+	4	Charly White		10
+	5	Andrea Fielding		9
+	6	Paityn Grebstad		11
+	7	Erica Fielding		9
+	8	Bailee Eskelson		9
+	9	Madelyn Erickson		9
+	11	Carlee Johnson		9
+	12	Ellie Chadburn		11
+	15	Tessa Taylor		9
+	22	Kieleigh Bales		11
+	40	Kadence Jacobsen		10
+	44	Millie Jolley		11
+
+---------------------------------------------------------
+SHIRTS
+
+Scott Adams
+Firth High School
+3A
+Softball
+
+M: 8
+L: 7
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 67.215.46.79
+ID: 56fe1496-4a6a-4af4-b8c0-af984dcd0dbd

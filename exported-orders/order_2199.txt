@@ -1,0 +1,58 @@
+From: Dane Roy
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Owyhee High School
+Storm
+Red & Grey
+Derek Bub
+Rachel Edwards
+Dane Roy
+John Carpenter
+Cal Fazzio
+Jaime Malcolm
+Katie Edwards
+Dani McGrath
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Hailey Brennan	P/OF	11
+	2	Rylee Branch	2B/SS	12
+	3	Avery Hessing	UTL	11
+	4	Bradyn Herrera	2B	12
+	5	Grace Groulx	OF	10
+	6	Breann Berg	C/IF	10
+	7	Hailey Bock	P/OF	10
+	8	Bristol Reeves	2B	10
+	9	Kenadi Garrett	C	10
+	10	Saylor Shoemaker	OF	12
+	11	Avery Ostrander	P/UTL	9
+	12	Gianna Hernandez	UTL	11
+	13	Aniston Kelly	IF	9
+	15	Madalynn Mahaffey	DP/1B	10
+	16	Emalee Morrow	UTL	9
+	17	Kayden Steinmetz	UTL	10
+	18	Grace Garrett	OF	9
+
+---------------------------------------------------------
+SHIRTS
+
+Dane Roy
+Owyhee High School
+6A
+Softball
+
+S: 1
+M: 11
+L: 5
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.160
+ID: 2d9f2435-6cad-4922-a129-00865a3019fb

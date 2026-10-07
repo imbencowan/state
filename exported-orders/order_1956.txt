@@ -1,0 +1,81 @@
+From: Travis Draper
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Grace High School
+Grizzlies
+Red & White
+Jason Moss
+Bryan Jensen
+Travis Draper
+Rory Lloyd
+Greg Bergholm
+Kevin Smith
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Kade Kimball			10
+	2	Cole Barthlome			10
+	3	Keathen Edwards			11
+	5	Gavin Draper			12
+	10	Carter Mecham			10
+	14	Bodee Smith			12
+	20	Ty Stoddard			10
+	21	Bryson Andersen			11
+	22	Treyson King			10
+	24	Chase Smith			12
+	33	Boston Stoddard			9
+	34	Parker Yost			12
+	40	Rhett Hunsaker			11
+
+---------------------------------------------------------
+RECORD
+
+9	13
+
+50	West Side	56
+72	Aberdeen	18
+59	Bear Lake	60
+56	Malad	66
+28	Riverton	65
+64	Worland	52
+44	Mountain View	54
+72	Aberdeen	49
+52	Bear Lake	58
+51	Rich	64
+73	Liberty Charter	55
+54	Malad	58
+49	Soda Springs	52
+56	Raft River	35
+45	West Side	56
+57	Butte County	64
+50	Soda Springs	65
+54	Cokeville	51
+66	Oakley	32
+68	Butte County	38
+53	Butte County	54
+75	Alturas Prep	9
+	Butte County	
+
+---------------------------------------------------------
+SHIRTS
+
+Travis Draper
+Grace High School
+2A
+Basketball - Boys
+
+M: 4
+L: 7
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 138.43.99.18
+ID: 5ec23a97-ecb4-435c-b399-d77db73e8a1e

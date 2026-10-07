@@ -1,0 +1,60 @@
+From: Shaun Walker
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Twin Falls High School
+Bruins
+Navy, Lt Blue & White
+Brady Dickinson
+Nancy Jones
+Shaun Walker
+Christa Tackett
+Ashley Argyle
+Grace Tigue
+Jaime Tigue
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	2	Isabelle Pelayo		10
+	3	Lola Hudson		9
+	4	Sophia Schroeder		9
+	5	Addisen Kohring		9
+	8	Ellia Berrett		10
+	9	Kylie Henna		12
+	10	Olivia Thompson		10
+	11	Ava Fleming		9
+	12	Kenzie Mason		12
+	13	Chloe Waters		11
+	14	Ella Jorgensen		11
+	15	Mollie Larsen		12
+	16	Elektra Cresswell		11
+	17	Danika Dickson		11
+	18	Keiana Buican		10
+	20	Naomi Clysdale		9
+	22	Josie Carpenter		10
+	23	Addison Fiscus		12
+	31	Hayden Steen		11
+	32	Indey Caton		9
+
+---------------------------------------------------------
+SHIRTS
+
+Shaun Walker
+Twin Falls High School
+5A
+Soccer - Girls
+
+S: 10
+M: 9
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 162.158.42.80
+ID: 90a6d069-e92a-4bc0-af47-299d1d8df80b

@@ -1,0 +1,57 @@
+From: Jennifer Murdock
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Declo High School
+Hornets
+Orange & Black
+Sandra Miller
+Roland Bott
+Jennifer Murdock
+Katie Mitchell
+Carie Brackenbury
+Abbie Searle
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Cahoon, Krystin	12
+	Clark, Clara	9
+	Duffin, Camrynn	9
+	Evans, Jazmine	9
+	Hansen, Haedyn	12
+	Hitt, Dallas	12
+	Kidd, Deja	9
+	Rasmussen, Sophia	9
+	Schroeder, Kinsley	9
+	Searle, Adilee	9
+	Stapelman, Zabree	9
+	Stapelman, Zenna	11
+	Taylor, Tatum	9
+	Thorton, Ava	10
+	Webb, Elexia	11
+	Wickel, Shania	12
+	Wolf, Graci	9
+	Wynn, Kambree	10
+	Searle, Ruby	
+
+---------------------------------------------------------
+SHIRTS
+
+Jennifer Murdock
+Declo High School
+4A
+Cheer
+
+S: 11
+M: 8
+
+
+
+
+---------------------------------------------------------
+IP: 72.22.239.194
+ID: 41482d52-26e0-4e00-916e-b55069b549a5

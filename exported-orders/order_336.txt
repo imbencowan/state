@@ -1,0 +1,55 @@
+From: Craig Christensen
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Post Falls High School
+Trojans
+Orange & Black
+Dena Naccarato
+Chris Sensel
+Craig Christensen
+Savannah Caimi
+Elanor Fode
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Jaidyn Earle 	11
+	Lucy Grieser	11
+	Jaelah Stowell	11
+	Addison Jennings 	10
+	McKenzie Thompson	10
+	Kienna Dubay	10
+	Emily Berreth	10
+	Lynzey Davis 	10
+	Emrie Holden	10
+	Paige Crossman	10
+	Ainslie Dordea	10
+	Tennley Niver	9
+	Melanie Kramer	9
+	AnnMarie Brewer	9
+	Kloe Tonasket	9
+	Brielle Menard	9
+
+---------------------------------------------------------
+SHIRTS
+
+Craig Christensen
+Post Falls High School
+6A
+Dance
+
+S: 2
+M: 8
+L: 4
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 166.198.252.88
+ID: 0d2bc99f-0854-459d-b108-127a1ed41d02

@@ -1,0 +1,84 @@
+From: Tom Shanahan
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Bishop Kelly High School
+Knights
+Black & Gold
+Bill Avey
+Sarah Quilici
+Tom Shanahan
+Andrew Ammann
+Joe Schulkins
+Josh Muhle
+Marcus Nelson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Nick Hebert	Guard	6-2	10
+	1	Garrett LaBrie	Guard	6-1	12
+	2	Owen Graves	Guard	5-10	11
+	3	Daniel Moodie-Bramlet	Guard	6-0	11
+	4	Davis Glynn	Guard	5-11	12
+	5	Jack Robinson	Guard	6-2	11
+	10	Colin Brazil	Guard	6-0	11
+	12	Conor Goss	Guard	6-1	12
+	20	Eli Richins	Guard	6-2	10
+	21	Noah Horn	Forward 	6-3	12
+	23	Gavin Kerr	Forward	6-3	11
+	24	Cash Davis	Guard	6-6	11
+	32	Beck Mueller	Forward	6-6	10
+	33	Andrew Johnson	Center	6-4	12
+
+---------------------------------------------------------
+RECORD
+
+17	6
+
+58	Eagle	47
+56	The Ambrose School	44
+48	Timberline	51
+78	Mountain Home	43
+53	Cole Valley Christian	49
+52	Capital	62
+46	Rocky Mountain	51
+55	Caldwell	42
+58	Columbia	62
+59	Emmett	39
+50	Middleton	48
+61	Nampa	34
+69	Vallivue	75
+75	Caldwell	53
+65	Skyview	58
+55	Columbia	70
+58	Emmett	43
+63	Middleton	57
+90	Nampa	60
+55	Skyview	52
+69	Vallivue	67
+64	Caldwell	54
+67	Vallivue	51
+	Columbia	
+
+---------------------------------------------------------
+SHIRTS
+
+Tom Shanahan
+Bishop Kelly High School
+5A
+Basketball - Boys
+
+L: 8
+XL: 5
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 204.8.54.148
+ID: 0cbe7c91-01a8-4e4c-8303-0f257bd94d5e

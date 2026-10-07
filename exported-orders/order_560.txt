@@ -1,0 +1,90 @@
+From: Connor Jackson
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Cole Valley Christian High School
+Chargers
+Blue, White & Silver
+Allen Howlett
+Kim DeMain
+Connor Jackson
+Leif Karlberg
+Sydney Donaldson
+Chris Graham
+Kevin Rima
+Sam Winter
+Tyson Hughes
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Owen McDonald		5-11	12
+	2	Adam Ashmead		6-2	12
+	3	Isaiah Holsinger		5-10	11
+	4	Colton Graham		5-10	11
+	5	Ethan Thomas		6-2	12
+	10	Kaden Krogh		6-1	11
+	11	Cooper Kollman		6-4	10
+	12	Madden Compton		6-3	10
+	15	Eli Hamby		6-1	10
+	21	Bryson Long		6-4	10
+	23	Jamin Hughes		5-9	9
+	30	Lucas Guray		5-11	10
+	34	Brady Sautebin		6-4	11
+	35	Soren Fraas		6-5	9
+
+---------------------------------------------------------
+RECORD
+
+15	6
+
+65	Melba	34
+60	Capital	71
+47	Ririe	39
+65	Soda Springs	34
+38	American Falls	43
+53	Melba	44
+55	Nampa Christian	41
+71	Ambrose	78
+57	Weiser	45
+56	Nampa Christian	40
+69	Ambrose	60
+73	Fruitland	42
+77	Payette	24
+41	McCall	64
+57	Homedale	36
+76	Fruitland	80
+68	Weiser	57
+64	Payette	20
+44	McCall	48
+55	Homedale	37
+
+---------------------------------------------------------
+COMMENT
+
+Can I get the following sizes and pay for it at the State Breakfast?
+2XL - 1
+XL - 5
+L - 2
+M - 1 
+
+---------------------------------------------------------
+SHIRTS
+
+Connor Jackson
+Cole Valley Christian High School
+4A
+Basketball - Boys
+
+L: 7
+XL: 7
+
+
+
+
+---------------------------------------------------------
+IP: 24.245.201.242
+ID: 34133038-b96a-41a8-999f-84e9f31acbdc

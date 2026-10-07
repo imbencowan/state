@@ -1,0 +1,61 @@
+From: Dane Roy
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Owyhee High School
+Storm
+Red & Grey
+Derek Bub
+Rachel Edwards
+Dane Roy
+Matt Rasmussen
+Colin Domene
+Matt Greene
+Chase Hernandez
+Steve Rohlmeier
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Easton Price	OF	12
+	2	Keagan Kelly	IF	12
+	4	Max Meinke	OF	10
+	5	Jack Booth	OF	10
+	6	Cade Walker	OF	12
+	7	Matt Robertson	IF	10
+	8	Gage Haws	DH	12
+	9	Christian Zannitto	INF/P	10
+	10	Hunter Mahaffey	1B/P	12
+	11	Cody Freed	C	12
+	12	Bryce Tam	P	12
+	13	Brooks Romer	OF	11
+	14	A.J. Jaramillo	IF	12
+	15	Jack Hallenbeck	IF	10
+	17	Cohen Cole	OF	12
+	18	Michael Clark	C	12
+	19	Kaleb Doty	P	12
+	20	Heath Sasser-Gunson	P	12
+	21	Shelby Pease	IB	11
+	22	Alex Oldridge	P	12
+
+---------------------------------------------------------
+SHIRTS
+
+Dane Roy
+Owyhee High School
+6A
+Baseball
+
+M: 9
+L: 8
+XL: 3
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.160
+ID: 4ce18d34-b7e6-45e3-971a-c27df25f0211

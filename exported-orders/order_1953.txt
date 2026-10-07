@@ -1,0 +1,85 @@
+From: Brodie Parrott
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Filer High School
+Wildcats
+Red, White & Navy
+Kelli Schroeder
+Shane Hild
+Brodie Parrott
+Robert Anderson
+Nick Kelsey
+Matt Miller 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Carsten Eskelsen	G	5-10	12
+	2	MaKray Bailey	G	5-11	12
+	3	Kason Coon	G	6-0	11
+	4	Jace Hoyer	S	6-3	11
+	5	Talyn Weaver	G	5-10	12
+	10	Cache Palmer	P	6-4	12
+	11	Bryce Thomas	P	5-11	12
+	12	Xavier Kelsey	G	5-8	12
+	15	Dallan Nielson	S	6-0	11
+	20	Dalon Parish	G	6-0	11
+	21	Bryker Darrington	G	6-0	9
+	22	Cole Kelsey	G	6-0	11
+	30	Griffen Grant	S	6-0	11
+	32	Sam Christensen	G	5-10	12
+	34	Brett Paxton	P	6-3	11
+
+---------------------------------------------------------
+RECORD
+
+10	14
+
+77	Skyline	67
+51	Sugar-Salem	63
+38	Snake River	47
+56	Mountain Home	50
+46	Nampa Christian	49
+45	West Jefferson	52
+49	Owyhee	28
+36	Snake River	42
+60	Wendell	55
+45	Marsh Valley	59
+46	Gooding	51
+63	Mountain Home	45
+38	Wendell	65
+50	Sugar-Salem	56
+52	Marsh Valley	51
+77	Buhl	71
+46	Skyline	61
+56	Kimberly	48
+49	Gooding	55
+40	Buhl	46
+45	Kimberly	60
+52	Kimberly	53
+56	Buhl	40
+70	Kimberly	46
+
+---------------------------------------------------------
+SHIRTS
+
+Brodie Parrott
+Filer High School
+4A
+Basketball - Boys
+
+M: 3
+L: 8
+XL: 3
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 66.232.70.36
+ID: df9d0ea9-a2d1-4e12-ac6e-3d4e64086f44

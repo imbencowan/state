@@ -1,0 +1,64 @@
+From: Vince Mann
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Borah High School
+Lions
+Green & Gold
+Lisa Roberts
+Tim Standlee
+Vince Mann
+Brittany Zeigler
+Sofia Minich
+Macy Crawford
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Amelia Koltonski 	10
+	Andrea Mejer	11
+	Anabella Shelton	12
+	Arianna Strand (Ari) 	10
+	Charlotte Bolin	11
+	Chloe Fronk	12
+	Hartley Sorenson	9
+	Iris Castro	9
+	Isabella Walker	9
+	Ivy Turner	11
+	Jacobi Bach 	12
+	Josiah Crawford 	11
+	Josphine Mkambwa	9
+	Jovani Lopez	11
+	Landry Johnson	10
+	Lilah Kniesner	11
+	Lilian Joyocan 	12
+	Liliauna Bradford	11
+	Lilly Reeves 	9
+	Londyn Pruett	11
+	Lucy Butler	9
+	Marlee White 	9
+	Normandie Pfleger	11
+	Ramona Luque 	11
+	Stella Cromwell 	11
+	Tristyn Brown 	10
+
+---------------------------------------------------------
+SHIRTS
+
+Vince Mann
+Borah High School
+6A
+Dance
+
+S: 5
+M: 15
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.23.210
+ID: b81cf4f7-0e17-4ce4-9064-4b5acc2873f6

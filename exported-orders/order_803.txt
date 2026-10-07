@@ -1,0 +1,57 @@
+From: Eric Bonds
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Skyview High School
+Hawks
+Navy, Silver, Light Blue
+Gregg Russell
+Dave Young
+Eric Bonds
+Ryan Bobo
+Patrick Patterson
+Jacob Strong
+Jonas Plew
+Steve Fleshmenm
+Ryker Loman
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Tyler Russell		11
+	3	Trevan Plew		10
+	5	Brodie Fleshman		12
+	6	Nixon Downs		12
+	7	Jacoby Navarro		12
+	8	Mason Krahn		12
+	13	Elijah Strong		9
+	16	Jessy Krahn		9
+	17	Parker Kons		12
+	20	Henry Downey		12
+	21	Ledger Downs		10
+	22	John Tyson		11
+	23	Keegan Sullivan		11
+	24	Joe Bernal		12
+	27	Marcus Martinez		11
+	34	Aaron Vavold		10
+	44	Killian Darney		10
+	45	Jole Henry		10
+
+---------------------------------------------------------
+SHIRTS
+
+Eric Bonds
+Skyview High School
+5A
+Baseball
+
+
+
+
+
+---------------------------------------------------------
+IP: 67.60.135.229
+ID: c97fd7f2-a2ec-42a8-857e-aaf08ccb02ab

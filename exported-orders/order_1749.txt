@@ -1,0 +1,53 @@
+From: James Stoner
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Troy High School
+Trojans
+Orange, White & Black
+Klaire Vogt
+Aaron Dail
+James Stoner
+Maddalyn George
+Halee Dail
+Tammany Bendel
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Abby Yanak	12
+	Sophia Tibbals	12
+	Dancia Salerno	12
+	Remi Moyer	12
+	Ella Ferry	12
+	Brock Foote	12
+	Lincoln Marone	10
+	Joe Powell	10
+	Bree Fien	11
+	Piper Byrd	9
+	Scarlet Donigian	10
+	Elin Nordin	10
+	Elie Howard	10
+
+---------------------------------------------------------
+SHIRTS
+
+James Stoner
+Troy High School
+2A
+Cheer
+
+S: 3
+M: 5
+L: 4
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 69.130.203.82
+ID: 2b77ff37-0811-4ff5-951d-84d6ede88228

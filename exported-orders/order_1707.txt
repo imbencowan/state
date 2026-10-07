@@ -1,0 +1,82 @@
+From: Jocelyn Hobbs
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Sugar-Salem High School
+Diggers
+Blue & White
+Jared Jenks
+Karl Gehmlich
+Jocelyn Hobbs
+Crystal Dayley
+Chalyse Nye
+Jetta Goff-Burch
+Jared Clark
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Tasha Larsen	SG		12
+	1	Andee Petterson	PG		11
+	2	Raegen Harris 	SG		10
+	3	Miya Freeman	SG, PG		11
+	4	Hannah Dalling 	SG		10
+	5	Hallie Llewellyn	SG		11
+	10	Lyvia Pocock	SG		11
+	12	Sorelle Clark	PF		10
+	15	Ariah Cook 	SG		10
+	22	Kalena Dayley	PF		10
+	23	Brinley Bradshaw	PF		12
+	32	Ruby Carter	C		11
+	Unkno				
+	Unkno				
+	Unkno				
+
+---------------------------------------------------------
+RECORD
+
+21	0
+
+58	Shelley	31
+59	Bear Lake	50
+72	Butte County	56
+69	Kimberly	47
+58	Grantsville	26
+53	Preston	23
+51	Blackfoot	26
+69	Snake River	32
+60	South Fremont	33
+62	Teton	57
+56	Ririe	33
+61	Shelley	57
+59	Butte County	30
+58	Bear Lake	37
+65	Oakley	25
+57	Ririe	45
+52	Teton	34
+60	Jerome	30
+67	Kimberly	42
+62	Snake River	29
+74	South Fremont	42
+	Teton	
+
+---------------------------------------------------------
+SHIRTS
+
+Jocelyn Hobbs
+Sugar-Salem High School
+4A
+Basketball - Girls
+
+M: 3
+L: 9
+
+
+
+
+---------------------------------------------------------
+IP: 96.5.130.66
+ID: c15b6d76-f2f0-48fc-bfdf-2333e28c5bf2

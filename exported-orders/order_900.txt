@@ -1,0 +1,63 @@
+From: Cody Shelley
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Blackfoot High School
+Broncos
+Kelly Green & White
+Brian Kress
+Roger Thomas
+Cody Shelley
+Tammy Sorenson
+Hadlie Henderson
+Keith Cook
+Anicia Luna
+Tudie Brooks
+Taylor Aguayo
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Berkley Moore		10
+	2	Cassy Duke		11
+	3	Olivia Mickelsen		12
+	4	Anna Hepworth		12
+	4	Rylee Ybarguen		10
+	7	Mady Olsen		10
+	8	Sela Christiansen		12
+	9	Adi Ybarguen		10
+	10	Brianna Reynolds		11
+	13	Emma McGuire		10
+	14	Leah Mecham		12
+	22	Shea Staley		11
+	25	Avelee Barnard		10
+	27	Kylee Pratt		12
+
+---------------------------------------------------------
+COMMENT
+
+I will email an order for coaches sweatshirts
+4 large, 1 xl, 1 2xl.
+
+---------------------------------------------------------
+SHIRTS
+
+Cody Shelley
+Blackfoot High School
+5A
+Softball
+
+S: 4
+M: 5
+L: 4
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 97.138.115.180
+ID: ef48ced9-653f-4d47-beff-5c54637b0599

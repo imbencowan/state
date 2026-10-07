@@ -1,0 +1,120 @@
+From: Casey Grove
+Activity: Football
+
+---------------------------------------------------------
+SCHOOL
+
+Homedale High School
+Trojans
+Red & White
+Rob Sauer
+Matt Holtry
+Casey Grove
+Matt Holtry
+Tony Uranga
+Darren Uranga
+Josh White
+Cam Long
+Dan Holtry
+Rod Linder
+Ben Roberts
+Zac Taylor
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	weight	grade
+	1	Wade Ingram	WR, LB	5-8	135	10
+	2	Alec Campos	WR, CB	6-0	155	11
+	3	Daniel Juarez	WR, DB	5-9	155	11
+	4	Sebastian Larzelier	FB, OLB	5-7	150	12
+	5	Luke Holland	WR, DB	5-8	145	12
+	7	Bentley Holland	WR, DB	5-8	145	10
+	8	Aron Sotelo	RB, CB	5-8	134	11
+	9	Carson Fine	WR, DB	6-2	160	12
+	10	Boston Garrett	TE, CB	5-11	162	11
+	11	Easton Dines	RB, LB	5-10	170	10
+	12	Donovan Uranga	QB, DB	5-9	155	10
+	13	Alejandro Martinez	WR, DB, K	5-10	155	10
+	14	Xavier Uranga	QB, FS	5-9	150	12
+	15	Kreece Powell	QB, CB	5-10	135	10
+	17	Drew Heck	WR, DB	5-5	130	9
+	19	Dylan Taylor	TE, DE	6-0	155	10
+	20	Domingo Asumendi	WR, DB	6-0	170	12
+	21	Chance Martell	WR, FS	5-7	160	12
+	22	Tyce Fisher	MLB, RB	5-11	170	11
+	23	Conner Grove	RB, LB	6-1	170	9
+	24	Lukas Hall	TE, DE	6-5	195	12
+	26	David Bowden	WR, DB	6-0	150	12
+	27	Nick Schlenker	RB, OLB	5-8	156	11
+	28	Keiser Garrett	TE, LB	5-8	140	10
+	29	Reece Mays	WR, DB	5-8	130	10
+	30	Bradley Garrett	WR, DB	5-9	155	9
+	31	Porter Swan	WR, LB	5-5	132	10
+	32	Javid Blewett	RB, OLB	6-0	184	12
+	36	Mason Taylor	TE, LB	6-0	155	10
+	38	Tuff Neider	RB, DL	5-10	170	10
+	39	Owen Erickson	TE, LB	5-11	170	10
+	40	Noah Campbell	TE, DB	6-0	145	10
+	41	Zander Gonzalez	RB, DB	5-8	150	10
+	42	Kade Hall	RB, DE	6-0	202	12
+	43	Mateo Black	RB, LB	5-8	150	10
+	51	Grady Walgamott	T, DE	6-0	210	12
+	52	William Dunne	RB, OLB	5-10	166	11
+	53	Anthony Ramirez	OL, DL	5-8	175	11
+	54	Brevin Blewett	OL, DL	5-10	165	10
+	55	Sebastian Soto	OL, DL	5-7	200	10
+	56	Nathan Marston	C, DT	5-10	159	12
+	57	Kayden Barrett	OL, DL	6-0	230	12
+	58	Zavy Cortinas	OL, DL	5-3	155	9
+	59	James Chandler	G, DT	5-9	208	12
+	60	David Cortez	OL, DL, K	5-6	150	9
+	61	Hunter Bell	OL, DL	6-1	185	9
+	62	Shayde Volk	G, DT	5-11	171	11
+	63	Jesus Mata	OL, DL	6-0	225	12
+	64	Colt Nelson	OL, DL	6-2	240	11
+	65	Jonathan Bowden	WR, DB	5-8	140	10
+	67	Peyton McCarney	OL, DL	6-0	195	11
+	70	Bradley Walker	OL, DL	6-1	170	11
+	72	Symon Carrillo	OL, DL	5-11	220	10
+	73	Danny Mercado	OL, DL	5-6	155	9
+	74	Carlos Hurtado Vega	T, DT	6-1	310	12
+	76	Cooper Livingston	OL, DL	5-9	162	10
+	78	Andrew Tibbett	OL, DL	6-0	175	10
+
+---------------------------------------------------------
+RECORD
+
+10	1
+
+31	Snake River	6
+48	Gooding	21
+28	Kimberly	21
+62	Jerome	21
+48	Payette	0
+24	Weiser	14
+21	Fruitland	43
+42	McCall-Donnelly	21
+70	Cole Valley Christian	26
+30	Weiser	22
+30	Sugar-Salem	20
+	Kimberly
+
+---------------------------------------------------------
+SHIRTS
+
+Casey Grove
+Homedale High School
+4A
+Football
+
+S: 3
+M: 28
+XL: 9
+
+
+
+
+---------------------------------------------------------
+IP: 96.5.129.111
+ID: 497804e4-04d0-43a1-9dde-6edd88ba2643

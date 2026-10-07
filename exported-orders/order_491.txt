@@ -1,0 +1,54 @@
+From: Chad Hill
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+South Fremont High School
+Cougars
+Red & Black
+Brandon Farris
+Drex Hathaway
+Chad Hill
+Courtney Cannon
+Alyssa Barney
+Noelia Olvera
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Zoya Abbasi	10
+	Addison Berry	9
+	Alexia Calzadias	12
+	Aaron Garcia	9
+	BrundaLynn Grover	9
+	Brooklyn Hathaway	9
+	Sonnie Haws	11
+	Kelsey Hendricks	9
+	Avynlee Miller	9
+	Kaylee Moulton	11
+	Celeste Orme	9
+	Hanna Rydalch	12
+	Amelia Schultz	12
+	Maylie Squires	9
+	Emrielle Vining	9
+
+---------------------------------------------------------
+SHIRTS
+
+Chad Hill
+South Fremont High School
+4A
+Cheer
+
+S: 2
+M: 5
+L: 8
+
+
+
+
+---------------------------------------------------------
+IP: 192.225.188.98
+ID: 14675c82-57c9-4aec-9544-d2da6b0e898a

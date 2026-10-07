@@ -1,0 +1,62 @@
+From: Kris Knowles
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Vallivue High School
+Falcons
+Brown & Gold
+Lisa Boyd
+Kellie Dean
+Kris Knowles
+Christian Adamson
+Fred Mora
+Adam Flores
+Martin Casillas 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+		Juan Ballesteros		10
+	00	Connor Blaisdell	GK	12
+	0	Jackson McDonald	GK	12
+	1	Ryan Steinbach	MF	11
+	2	Gael Gomez	D, MF	12
+	3	Leo Ayala	D	11
+	6	Cesar Gomez	MF	12
+	7	Elijah Grimaldo	MF	11
+	7	Marcos Madrigal	MF	11
+	9	Isai Ramos	MF	12
+	9	Emanuel Stoica	FORW	11
+	10	Diego Rangel	D	12
+	12	Izaya Martin	D	12
+	12	Gavin Garrett	D	12
+	15	Diego Rosales	MF, D	12
+	16	Julian Gutierrez	D	12
+	16	Benjamin Martinez	D	11
+	17	Asher Adamson	D	12
+	18	Cristian Gonzalez	MF	12
+	19	Samuel Diaz Murillo	MF	12
+	19	Jose Bonilla	D, MF	11
+	24	Leo Gonzalez	D	12
+
+---------------------------------------------------------
+SHIRTS
+
+Kris Knowles
+Vallivue High School
+5A
+Soccer - Boys
+
+S: 9
+M: 9
+L: 4
+
+
+
+
+---------------------------------------------------------
+IP: 108.162.245.29
+ID: 63d01acb-045c-4fe3-9728-e11fbfbe8071

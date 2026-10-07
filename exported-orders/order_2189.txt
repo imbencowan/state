@@ -1,0 +1,55 @@
+From: Ted Bell
+Activity: Softball
+
+---------------------------------------------------------
+SCHOOL
+
+Highland High School - Pocatello
+Rams
+Black, White & Red
+Doug Howell
+Brad Wallace
+Travis Bell
+Bryce Bybee
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	00	Taytum Bybee	2B, RF	9
+	1	Janae Whitehead	C, 2B	12
+	2	Bailey Hill	RF, 2B	11
+	3	Reece Bybee	SS, P	12
+	4	Molli Broadhead	C, 1B	10
+	5	Dawson Sommers	P, 3B	10
+	6	Brystol Burrop	2B, P	10
+	7	Cedar Lacey	OF	12
+	8	Madi Devore	CF	12
+	9	Emery Walls	P, 1B	9
+	10	McKenna Sutton	P, 3B	12
+	11	Katelyn Humphrys	1B, P	12
+	12	Zoe Hirschie	1B, RF	12
+	13	Cinncee Washakie	RF, 2B	12
+	16	Makenzie Humphrys	1B, P	10
+	20	Brae Blair		10
+	21	Kaydence Cluff		11
+	22	Rachel Colt		10
+	23	Jaycee Shepherd		10
+
+---------------------------------------------------------
+SHIRTS
+
+Ted Bell
+Highland High School - Pocatello
+6A
+Softball
+
+M: 10
+L: 7
+
+
+
+
+---------------------------------------------------------
+IP: 169.197.75.108
+ID: 76257038-a66e-4060-b585-3d6002d52733

@@ -1,0 +1,80 @@
+From: Allen Dade
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Vallivue High School
+Falcons
+Brown & Gold
+Lisa Boyd
+Kellie Dean
+Allen Dade
+Mario Betancourt
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Victor Gutierrez	PG, SG	5-8	10
+	1	Koby Perez	PG, SG	6-0	12
+	2	Dominik Betancourt	PG, SG	5-7	12
+	3	Zakary Hogg	PG, SG	6-2	12
+	5	Xander Wilson	SF, PF	6-5	12
+	10	Aiden Karren	G	6-0	10
+	11	Noah Mitchell	SG, SF	6-3	12
+	12	Jaren Moran	G	5-11	9
+	15	Cole Hogg	G	5-11	9
+	22	Andre Rodriguez	G	5-7	9
+	23	Derek Gomez	G	5-5	12
+	24	Giovanni Montelongo	F	6-2	11
+	35	Chad Bingham	PF	6-1	11
+
+---------------------------------------------------------
+RECORD
+
+16	7
+
+68	Capital	76
+72	Twin Falls	85
+77	Parma	48
+65	Hillcrest	64
+58	Boise	70
+59	Sandpoint	54
+72	Ridgevue	57
+74	Skyview	55
+70	Nampa	47
+66	Columbia	74
+66	Emmett	54
+51	Middleton	48
+88	Caldwell	64
+75	Bishop Kelly	69
+61	Skyview	59
+76	Nampa	71
+79	Columbia	67
+60	Emmett	43
+57	Middleton	59
+62	Caldwell	55
+67	Bishop Kelly	69
+83	Nampa	59
+51	Bishop Kelly	67
+
+---------------------------------------------------------
+SHIRTS
+
+Allen Dade
+Vallivue High School
+5A
+Basketball - Boys
+
+M: 4
+L: 4
+XL: 4
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 207.126.111.99
+ID: 3012b5e5-b577-4263-8cce-cf3ffad0303d

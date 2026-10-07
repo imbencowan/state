@@ -1,0 +1,66 @@
+From: Zairrick Wadsworth
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Skyline High School
+Grizzlies
+Navy & Light Blue
+Karla LaOrange
+Josh Newell
+Zairrick Wadsworth
+Jeremy Johnson
+John Douglass
+Zach Bramwell
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	00	Tyler Ann Thompson	GK	10
+	3	Evelyn Wilcox	MF	9
+	4	Macy Marlow	MF	11
+	5	Isley Dixon	MF	11
+	6	Kate Johnson	MF	11
+	7	Abby Muir	STRK	12
+	8	Skye Wegener	FORW	12
+	9	Natalya Garcia	D	11
+	11	Emery Galbreaith	D	12
+	14	Ashlyn Ransom	FORW	10
+	15	Lindsay DeMott	HB	11
+	18	Rylie Jephson		9
+	19	Theodora Hummel	D	9
+	20	Madison Merzlock	GK	12
+	21	Tylie Harker	FORW	9
+	23	Karen Rivas	FB	12
+	24	Abby Davis	FORW	10
+	26	Anora Klinkel Wilson		10
+	27	Arianna Zuniga	MF	10
+	29	Tessa Russon	FORW	9
+	30	Ivy Sermon		9
+	33	Lacey Teske	MF	11
+	34	Cadence Miller	HB	10
+
+---------------------------------------------------------
+COMMENT
+
+Please add for coaches 2 med, 2 large, 1 XL, XXL 
+
+---------------------------------------------------------
+SHIRTS
+
+Zairrick Wadsworth
+Skyline High School
+5A
+Soccer - Girls
+
+M: 12
+L: 10
+
+
+
+
+---------------------------------------------------------
+IP: 192.225.190.52
+ID: 6a9d71ec-863c-4c1e-9813-376629c0ba2a

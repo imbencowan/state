@@ -1,0 +1,60 @@
+From: Robert Parker
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Pocatello High School
+Thunder
+Red & Blue
+Doug Howell
+Lisa Delonas
+Robert Parker
+Mark Wetstein
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Madysen Torngren	GK	9
+	1	Kira Jorgensem	GK	12
+	2	Brooke Murphy	D	12
+	3	Tandi Aplington	STRK, FORW	12
+	4	Skylar Nestor	FORW	12
+	5	Brooklyn Christensen	D	9
+	6	Alivia Marshall	D, MF	12
+	7	Hallie Bringhurst	FB, HB	12
+	8	Brynlee Pool	MF	10
+	9	Aryanna Gonzalez	STRK	10
+	10	Kellie Christensen	MF	12
+	11	Lexi Wells	STRK, FORW	12
+	12	Riley Wellard	D, MF	12
+	13	Emily Holm	FORW	12
+	15	Camryn Tatom	MF	10
+	16	Marcella Bills	MF	12
+	17	Hannah Armstrong	D, MF	11
+	18	Hailee Pool	MF	12
+	19	Piper Bunderson	D	11
+	20	Adelynn Shuler	FORW	10
+	21	Reagan Lyon	MF, FORW	12
+	24	Jordyn Gossett	STRK, FORW	12
+
+---------------------------------------------------------
+SHIRTS
+
+Robert Parker
+Pocatello High School
+5A
+Soccer - Girls
+
+S: 3
+M: 10
+L: 8
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 172.68.22.54
+ID: 0dd7e1e6-e5b2-4b32-bac5-e3e5cbcc1504

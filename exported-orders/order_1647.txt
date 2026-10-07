@@ -1,0 +1,63 @@
+From: Brady Trenkle
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Minico High School
+Spartans
+Red & Gold
+Spencer Larsen
+Kimberley Kidd
+Brady Trenkle
+Krista Tracy
+Brittney Tracy
+Adina Osterhout
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Aiyana Cantu	11
+	Amaya Salinas	10
+	Anna Smith	9
+	Ashley Gonzalez	10
+	Avanni Watkins	9
+	Avery Struchen	12
+	Briana Bradford	9
+	Brooke Quiroz	11
+	Esmerelda Miranda	11
+	Gracelyn Grant	12
+	Jazlynn Ortiz	11
+	Karlee Searle	10
+	Kassandra Murillo	9
+	Kinley Andersen	12
+	Olivia Takeshita	11
+	Melody Fox	12
+	Mya Goldaraz	9
+	Nataly Gil	11
+	Nylea Magana	12
+	Scarlet Ruiz	9
+	Shiloh Heuston	10
+	Sophie Mitchell	9
+	Tiana Frei	11
+	Tracy Martin	9
+
+---------------------------------------------------------
+SHIRTS
+
+Brady Trenkle
+Minico High School
+5A
+Cheer
+
+S: 12
+M: 10
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 72.22.227.228
+ID: 4f609a1b-1172-4d64-bce3-33da262873ca

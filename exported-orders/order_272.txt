@@ -1,0 +1,90 @@
+From: Jodi Beard
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+North Fremont High School
+Huskies
+Purple & Gold
+Brandon Farris
+Jaren Bean
+Jodi Beard
+Ben Lenz
+Jared Hawkes
+Chase Silvers
+Eddy Lenz
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Brooklyn Allen			10
+	2	Yadira Patino			11
+	3	Peyton Lenz			11
+	4	Josie Richardson			12
+	5	Mackenzie Parkinson			10
+	12	Talia Hawkes			9
+	15	Nancy Morales			10
+	20	Lexi Phillips			10
+	21	Madison Powell			10
+	23	Brooklyn Ingle			10
+	32	Jayden Warnke			10
+	33	Taylor Sessions			11
+	34	Catie Pickard			10
+	42	Grace Heiner			12
+
+---------------------------------------------------------
+RECORD
+
+13	13
+
+50	Butte	55
+61	Aberdeen	29
+45	South Fremont	50
+25	Bear Lake	64
+51	Aberdeen	25
+31	Butte	49
+59	Wood River	20
+47	Carey	38
+60	Salmon	32
+53	West Jefferson	60
+57	Firth	32
+36	Teton	43
+55	Ririe	51
+50	South Fremont	59
+35	Bear Lake	57
+47	Firth	53
+65	Salmon	37
+47	Teton	50
+42	West Jefferson	48
+44	Salmon	14
+55	West Jefferson	37
+52	Firth	45
+40	Ririe	49
+48	Wendell	31
+
+---------------------------------------------------------
+COMMENT
+
+I submitted a form earlier, but needed to make some corrections. This is the correct one.
+Thank you
+
+---------------------------------------------------------
+SHIRTS
+
+Jodi Beard
+North Fremont High School
+3A
+Basketball - Girls
+
+S: 9
+M: 2
+L: 3
+
+
+
+
+---------------------------------------------------------
+IP: 172.56.85.217
+ID: 94269b2b-dd4c-480c-bd46-7a4bab931a6e

@@ -1,0 +1,84 @@
+From: Tom Shanahan
+Activity: Basketball - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Bishop Kelly High School
+Knights
+Black & Gold
+Bill Avey
+Sarah Quilici
+Tom Shanahan
+Derek McCormick
+Mike Griswold
+Haley McKinnis 
+Jamie Schultz
+Brady Reed 
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	0	Cate Boots	SF	5-5	11
+	1	Lauren Park	PF	5-9	10
+	2	Mya Glynn	SG	5-7	10
+	3	Ava Batt	SG	5-8	12
+	4	Julia Baerlocher	SG	5-6	11
+	10	Payton Hutchinson	PG	5-5	9
+	11	Lucia Welp	SG	5-2	10
+	12	Abby Iglesias	SF	5-8	11
+	20	Aubree McCarthy	SF	5-8	12
+	22	Khloe Wright	SF	5-7	11
+	23	Reagan Williams	SF	5-10	11
+	33	Alaina Stiffler	PG	5-6	11
+	34	Celeste Dennis	SF	5-6	10
+	44	Evie Klaas	SF	5-6	11
+	55	Amari Brady	PG	5-6	9
+
+---------------------------------------------------------
+RECORD
+
+14	7
+
+32	Borah	59
+44	Mountain Home	55
+42	Skyline	43
+26	Capital	56
+57	Columbia	24
+51	Caldwell	19
+52	Kimberly	51
+38	Hillcrest	56
+41	Mountain Home	51
+35	Jerome	40
+81	Nampa	26
+55	Skyview	44
+44	Vallivue	24
+84	Caldwell	20
+48	Columbia	41
+43	Emmett	41
+68	Nampa	20
+52	Emmett	23
+41	Skyview	39
+55	Vallivue	36
+51	Vallivue	29
+	Columbia	
+
+---------------------------------------------------------
+SHIRTS
+
+Tom Shanahan
+Bishop Kelly High School
+5A
+Basketball - Girls
+
+S: 1
+M: 13
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 204.8.54.148
+ID: 42f31b03-e3ce-4e75-8729-fa9d9dc76d02

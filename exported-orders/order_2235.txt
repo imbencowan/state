@@ -1,0 +1,58 @@
+From: Casey Grove
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Homedale High School
+Trojans
+Red & White
+Rob Sauer
+Matt Holtry
+Casey Grove
+Darren Uranga
+Trey Spath
+Ryan Robinson
+Kevin Fine
+Zac Taylor
+Tony Uranga 
+Mark Thatcher
+David Jordan
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Donovan Uranga		10
+	2	Xavier Uranga		12
+	3	Cole Fossette		11
+	4	Bently Holland		10
+	5	Lukas Hall		12
+	7	Dylan Taylor		10
+	8	Mason Taylor		10
+	9	Carson Fine		12
+	10	Chance Martell		12
+	11	Colt Nelson		11
+	12	Wylee Bidiman		12
+	13	Cooper Jordan		10
+	16	Boston Ivie		10
+	20	Dawson King		11
+
+---------------------------------------------------------
+SHIRTS
+
+Casey Grove
+Homedale High School
+4A
+Baseball
+
+M: 8
+L: 5
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 174.204.1.43
+ID: 4825bc57-e04e-4c5c-9b32-01eb6f855132

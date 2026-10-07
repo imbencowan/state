@@ -1,0 +1,63 @@
+From: Bowe von Brethorst
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Weiser High School
+Wolverines
+Red & White
+Dave Kerby
+Drew Dickerson
+Bowe vonBrethorst
+Nicole Ramirez
+Sydnee Reyes
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Ailyn Lopez	12
+	Ariana Tarelo	12
+	Ashley Ortiz	10
+	Athziri Lazaro	12
+	Atiya Perez	12
+	Aunaliyah Herrera	9
+	Aylein Alva	10
+	Bree Gomez	12
+	Cambria Maldonado	12
+	Doreli Villalobos	12
+	Bella Torres	9
+	Izzie Ho	9
+	Kayleigh Frazier	11
+	Kendal Nicholson	12
+	Sylvia Kynlee	10
+	Lilly Torres	9
+	Ortiz McKenzie	10
+	Meagan Zubieta	9
+	Natasha Sierra-Casa	12
+	Olivia Ramirez	10
+	Presley Martin	12
+	Reesa Alder	10
+	Ruby Funkhouser	9
+	Sophie Funkhouser	11
+	Via Magana	12
+	Ximena Lopez	12
+
+---------------------------------------------------------
+SHIRTS
+
+Bowe von Brethorst
+Weiser High School
+4A
+Cheer
+
+S: 15
+M: 11
+
+
+
+
+---------------------------------------------------------
+IP: 104.245.110.165
+ID: 2b34e812-5e45-4f45-8054-1a7230fd92b5

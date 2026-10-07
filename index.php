@@ -28,7 +28,8 @@
 				<select id="selectYear"></select>
 			</div>
 			<div id="addOrdersDiv">
-				<label for="fileInput">Upload an order here</label><br />
+				<button id="getEmailOrdersButton">Get Orders from Email</button><br />
+				<label for="fileInput">Or choose files to load</label><br />
 				<input id="fileInput" type="file" accept=".txt" multiple>
 			</div>
 		</div>

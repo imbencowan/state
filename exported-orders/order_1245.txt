@@ -1,0 +1,61 @@
+From: Jeff Kenly
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+American Falls High School
+Beavers
+Red, White & Black
+Randy Jensen
+Travis Hansen
+Jeff Kenly
+Brett Reed
+Reginald Jackson
+Lacy Reed
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Cassie Osborne	MF, D	10
+	2			
+	2	Aliana Cruces	MF, FORW	12
+	3	Linda Carrillo Muniz	MF	9
+	4	Jazzy Fonseca	FORW	12
+	5	Kaylah Angulo	MF	9
+	6	Courtney Hunt	D	12
+	7	Adley Selga	D, MF	12
+	8	Haydin Lewis	MF	9
+	9	Estrella Mosqueda	D, MF	9
+	10	Yareli Carrillo	D	11
+	11	Soanny Cardona	MF	9
+	12	Melani Alvarez	MF	10
+	13	Kayla Mendez	D, GK	12
+	14	Stephanie Rosales	FORW, GK	12
+	15	Natalie Castro	MF, FORW	11
+	16	Naomi Rivas	D, MF	11
+	18	Janet Hernandez	D	10
+	19	Ingrid Cordova	MF	9
+	20	Yuridia Rios Hernandez	D	9
+	21	Quetzaly Valencia	FORW, MF	9
+	22	Kenzie Mendez	D	10
+
+---------------------------------------------------------
+SHIRTS
+
+Jeff Kenly
+American Falls High School
+4A
+Soccer - Girls
+
+S: 8
+M: 12
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 162.218.180.122
+ID: afc89807-af1e-4a6c-8768-f54acc621139

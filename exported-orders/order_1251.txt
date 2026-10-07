@@ -1,0 +1,63 @@
+From: Patrick Laney
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Moscow High School
+Bears
+Red, Black & White
+Shawn Tiegs
+Erik Perryman
+Patrick Laney
+Jessica Brown
+Juan Saldana
+Seth Vieux
+Lily Camin
+Emilia Otto
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	2	Hannah Lowry	FORW, MF	11
+	3	Brooklyn Beeker	D	12
+	4	Rebekah Abbott	MF, HB	11
+	5	Kolbi Kiblen	MF, HB	12
+	6	Addison Vieux	MF, FORW	11
+	7	Bryn Bowersox	MF	12
+	8	Mattea Nuhn	D, MF	11
+	9	Kaylee Wood	MF, HB	12
+	10	Edie Sumner	MF, HB	11
+	11	Addison Lassen	MF, FORW	12
+	12	Nia Jakich-Kunze	FORW, FB	10
+	13	Winnie Colvin	MF, FORW	11
+	14	Antonina Berkamn	FORW	12
+	16	Saskia Hohenlohe	MF, FORW	11
+	17	Kiah Dudley	MF, HB	12
+	18	Emmy Mordhorst	MF, HB	9
+	19	Hazel Stevens		10
+	20	Amelia Modad	HB	10
+	21	Nora Newlan	HB	9
+	23	Emma Wheaton	D, FB	10
+	55	Kyanna Winther	GK	11
+	99	Bailie Brown	GK, FB	9
+
+---------------------------------------------------------
+SHIRTS
+
+Patrick Laney
+Moscow High School
+5A
+Soccer - Girls
+
+S: 3
+M: 17
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 174.204.1.222
+ID: aaf8be5c-0bf7-4081-a8fd-75dffb65dc28

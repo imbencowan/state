@@ -1,0 +1,52 @@
+From: Natalie Lewis
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Aberdeen High School
+Tigers
+Orange & Black
+Jane Ward
+Travis Pincock
+Natalie Lewis
+Tara Pratt
+Alesia Vollmer
+Ryley Barclay
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Jensen King	12
+	Olivia Pratt	12
+	Maricsa Carrillo	12
+	Reegan Barclay	12
+	Anahi Cardona	12
+	Secilia Ayala	12
+	Hadley Pincock	11
+	Radley Barclay	11
+	Addie Falter	10
+	Breanna Centeno	10
+	Paislie Vollmer	9
+	Arianny Valeriano	9
+
+---------------------------------------------------------
+SHIRTS
+
+Natalie Lewis
+Aberdeen High School
+3A
+Cheer
+
+S: 7
+M: 3
+L: 1
+2XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 104.225.191.227
+ID: f38f0a31-c901-41ef-9aae-7cf8ab8362b2

@@ -1,0 +1,62 @@
+From: Dane Roy
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Owyhee High School
+Storm
+Red & Grey
+Derek Bub
+Rachel Edwards
+Dane Roy
+Darion Green
+Leighton Murri
+Carter Woods
+Dylan Shaw
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	2	Wyatt Blackwood		12
+	3	Josue Kuzindila		10
+	5	Samuel Vassilaros		11
+	6	Moise Kuzindila		10
+	7	Diell Gashi		12
+	8	Owen Selby		12
+	9	Kyle Jesus		12
+	10	Liam Cauble		12
+	12	Colton Papa		12
+	13	Nolan Arnold		11
+	14	Anish Bayelkoti		10
+	15	Christian Zannitto		10
+	16	Ishaq Bisharat		11
+	17	Greyson Pew		11
+	19	Jordan Shupe		11
+	20	Ryan Abernathy		11
+	21	Jason Gill		11
+	22	Brady Greenwald		12
+	23	Easton Estes		12
+	24	Graham Herzog		12
+	26	Yanis Vendee		11
+	28	Aidan Branley		10
+
+---------------------------------------------------------
+SHIRTS
+
+Dane Roy
+Owyhee High School
+6A
+Soccer - Boys
+
+M: 5
+L: 15
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 172.71.146.188
+ID: 82f89246-3f7a-400a-85a2-4bd2033ef003

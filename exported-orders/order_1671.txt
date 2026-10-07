@@ -1,0 +1,61 @@
+From: Conor Kennedy
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+McCall-Donnelly High School
+Vandals
+Red, White & Blue
+Tim Thomas
+BJ Sorensen
+Conor Kennedy
+Julie Carroll
+Christine Naugle
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Tiffany Atkinson	10
+	Natalie Basye	9
+	Elle Carroll	12
+	Jordan Dewinter	11
+	Esa Erekson	9
+	Emilia Frost	12
+	Sophia Koppa	10
+	Dashia Kremer	12
+	Isabella McKnight	11
+	Delilah Moon	11
+	Clara Naugle	11
+	Tessa Nay	12
+	Kelsey O'Brien	12
+	Iris Patton	11
+	Hillarie Peak	12
+	Emmeline Pinard	9
+	Grace Ratliff	10
+	Callie Robles	12
+	Georgia Spilotros	10
+	Taylor Swainston	12
+	Rylee Walters	11
+	Camila Jaime	9
+	Claudia Barral	10
+
+---------------------------------------------------------
+SHIRTS
+
+Conor Kennedy
+McCall-Donnelly High School
+4A
+Cheer
+
+S: 5
+M: 13
+L: 5
+
+
+
+
+---------------------------------------------------------
+IP: 50.37.248.26
+ID: 6e8d1efc-bd21-46a6-90f8-911d6e8281c6

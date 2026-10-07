@@ -1,0 +1,54 @@
+From: Troy Rice
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Rocky Mountain High School
+Grizzlies
+Purple, Black & White
+Derek Bub
+Scott Connors
+Troy Rice
+Judyann Balukoff
+Alisa Schiele
+Payton Stastny
+Kayla Caton
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Sophie Tanner	L, DS	5-5	11
+	2	Brianna Ellis	L, DS		11
+	3	Claire Ranstrom	OH	5-11	11
+	4	Allie Chandler	OH, RS	5-7	9
+	5	Chloe Hansen	OH	6-0	12
+	6	Claire Cullison	MB	5-11	10
+	7	Katelynn Morrison	S	5-7	11
+	8	London Armstrong	OH, RS	6-0	12
+	9	Evelyn Radke	MB	6-0	11
+	10	Olivia Sangsland	S, RS	5-8	11
+	11	Kelbie Giberson	OH, RS	5-9	9
+	12	Ava Baumann	RS, OH		10
+	13	Bella Shannon	S	5-6	10
+	14	Bella Haener	MB	6-1	11
+	15	Charli Russell	RS	5-10	12
+
+---------------------------------------------------------
+SHIRTS
+
+Troy Rice
+Rocky Mountain High School
+6A
+Volleyball
+
+L: 3
+XL: 12
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.114
+ID: bcdb7197-bcb5-41ac-8bc9-1cb31e91f687

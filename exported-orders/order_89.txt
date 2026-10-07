@@ -1,0 +1,58 @@
+From: Brandon Jackson
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+American Falls High School
+Beavers
+Red, White & Black
+Randy Jensen
+Travis Hansen
+Brandon Jackson
+Brett Reed
+Reggie Jackson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Leila Jackson	MF	12
+	1	Leila Jackson	GK	12
+	2	Aliana Cruces	MF, FORW	11
+	3	Addison Jensen	D	12
+	4	Jazzy Fonseca	FORW	11
+	6	Courtney Hunt	D	11
+	7	Jelly Oseguera	MF	12
+	8	Leslie Hernandez		12
+	9	Adley Selga	D	11
+	10	Yareli Carrillo	D	10
+	11	Sherlyn Lopez	D	12
+	12	Jazmine Olsen	MF	12
+	13	Kayla Mendez	D	11
+	14	Stephanie Rosales	FORW, GK	11
+	15	Natalie Castro	MF	10
+	16	Naomi Rivas	D	10
+	18	Ixchel Fonseca	D	12
+	21	Destiny Ortiz	FORW	12
+	22	Kenzie Mendez	D	9
+	23	Brianna Morales	MF	12
+
+---------------------------------------------------------
+SHIRTS
+
+Brandon Jackson
+American Falls High School
+4A
+Soccer - Girls
+
+S: 7
+M: 11
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 172.71.150.10
+ID: 977e6855-4427-46d3-a3bd-053393782306

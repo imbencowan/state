@@ -1,0 +1,61 @@
+From: Ted Reynolds
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Canyon Ridge High School
+Riverhawks
+Crimson & Silver
+Brady Dickinson
+Randall Miskin
+Ted Reynolds
+Corey Farnsworth
+Cesar Duran
+Carey Farnsworth
+Steven Thueson
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Hunter Brewer	GK	11
+	1	Elias Alexander		11
+	2	Lucas Escobar		11
+	3	Ricardo Martinez		10
+	4	Adan Ruiz		11
+	5	Wasamba Bolomo		9
+	6	Cooper Nickell		9
+	7	Alejandro Valencia		11
+	8	Benjamin Kasombwa		10
+	9	Linkin Wood		12
+	10	Ethan Williams		11
+	11	Braulio Cardial		12
+	12	Kawat Adam		12
+	13	Yves Mugisha		11
+	14	Armando Murillo		11
+	15	Nathadaniel Archila		9
+	16	Giovani Juarez		11
+	17	Blake Schultz		12
+	18	Jonas Saka		10
+	19	Mwami Asukulu		9
+
+---------------------------------------------------------
+SHIRTS
+
+Ted Reynolds
+Canyon Ridge High School
+6A
+Soccer - Boys
+
+S: 2
+M: 13
+L: 3
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 108.162.245.119
+ID: eb4a64b8-eccb-48ce-8e8e-3c33b93754bb

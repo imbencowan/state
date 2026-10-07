@@ -1,0 +1,72 @@
+From: Ted Bell
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Highland High School - Pocatello
+Rams
+Black, White & Red
+Doug Howell
+Brad Wallace
+Travis Bell
+Jessica Gallup
+Staci Orr
+Kristi Watson
+Abby Farnsworth
+Makayla Goulding
+Jillian Cameron
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Xoey Anderson	9
+	Haven Barlow	12
+	Justice Bates	10
+	Cloee Bobish	10
+	Chloe Carslon	10
+	Brianna DaBell	11
+	Mia Demuzio	9
+	Peyton Eddie	9
+	Miley Gallup	11
+	Cora George	9
+	Lillian Heaney	10
+	Ellie Hedstrom	12
+	Charly Henderson	11
+	Oaklee Howard	9
+	Blaikly Larsen	10
+	Reece Larsen	12
+	Amelia Lucero	11
+	Stella Merzlock	9
+	Gracellen Michaelson	12
+	McKinley Nielsen	9
+	Alivia Pfannenstiel	9
+	Sienna Richardson	9
+	Eva Schrade	12
+	Mylie Schwartz	10
+	Taylor Solomon	12
+	Kaytlyn Thurman	12
+	Zoey Voorheis	9
+	Addisyn Walje	10
+	Maggie Ward	11
+	Kamree Wheatley	9
+
+---------------------------------------------------------
+SHIRTS
+
+Ted Bell
+Highland High School - Pocatello
+6A
+Cheer
+
+S: 2
+M: 17
+L: 11
+
+
+
+
+---------------------------------------------------------
+IP: 169.197.75.108
+ID: aa85cd92-996d-4889-96fa-4096b542fd22

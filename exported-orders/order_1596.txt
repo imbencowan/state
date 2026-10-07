@@ -1,0 +1,118 @@
+From: Larry Stocking
+Activity: Football
+
+---------------------------------------------------------
+SCHOOL
+
+Hillcrest High School
+Knights
+Red, Black & White
+Scott Woolstenhulme
+Tyler Mills
+Larry Stocking
+Brennon Mossholder
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	weight	grade
+	0	Ryan Mecham	ILB, TE	5-10	200	12
+	1	Mason Davis	WR, DB	6-0	170	12
+	2	Brody Dorning	DE, RB	6-2	215	11
+	3	Ethan Saunders	WR, CB	6-1	170	10
+	4	Jaxon Gottlob-Lagana	OLB, WR	5-9	150	11
+	5	Jayden Milano	QB, S	5-9	165	12
+	6	Tayden Packard	WR, S	6-1	150	11
+	7	Krew Holland	DE, WR	6-3	185	12
+	8	Creiden Nield	WR, DB	6-0	145	12
+	9	Kyler Spang	CB, WR	6-0	165	12
+	10	Maddox Ellingford	HB, LB	5-11	195	11
+	11	Tate Prince	WR, CB	6-0	155	12
+	12	Logan Miller	S, WR	5-11		10
+	13	Gavin Lamph	S, WR	6-0	175	10
+	14	Michael Mihu	WR, CB	5-7	140	10
+	15	Cache Clements	WR, OL	6-0	170	10
+	16	Hayes Benson	TE, DE	6-5	190	11
+	17	Rylan Borgmann	K, P	6-5	205	12
+	18	Tyson Sweetwood	QB, FS	6-5	200	12
+	19	Trezden Thomson	WR, FS	6-1	175	12
+	20	Logan Taylor	QB	6-2	230	10
+	21	Jose Lozoya	RB, MLB	5-7	200	12
+	22	Justin Spencer	TE, OLB	6-3	195	12
+	23	Elam Miner	RB, OLB	5-10	175	10
+	24	Austin Snarr	MLB, TE	6-0	215	11
+	25	Liam Ferguson	S	5-8	140	11
+	26	Zach Steadham	S, WR	6-2	190	12
+	28	Tristen Lewis	HB, OLB	5-9	150	11
+	29	Ki Simpson	WR, S	6-0	165	11
+	31	Lucas Benson	OLB, TE	6-0	175	12
+	32	Dax Sargent	RB, ILB	6-0	190	12
+	33	Jacob Stephens	ILB, RB	5-10	195	11
+	34	Bo Ellsworth	FB, ILB	5-9	220	12
+	35	Tayson Orme	WR, OLB	5-10	150	11
+	36	Boston Morris	TE, DE	6-3	210	11
+	40	Cam Cates	TE, OLB	6-0	170	12
+	42	Ethan Lords	ILB, RB	5-8	165	12
+	50	Austin Reeves	C, NG	6-2	260	12
+	51	Tony Maw	T, DE	6-2	255	11
+	52	Dylan Furniss	T, DE	5-10	220	10
+	54	Tyrell Francis	DE, T	5-10	215	12
+	59	Kylar Christensen	T, DE	5-11	200	12
+	60	Kade Young	C, DE	5-10	180	10
+	61	Bodie Stepp	G, NG	6-3	290	11
+	62	Justin Furniss	G, NG	6-2	240	11
+	63	Maddox Medellin	OLB, C	6-4	190	12
+	65	Will Vasquez	C, NG	6-2	265	12
+	66	Damien Simmons	DE, T	6-4	220	12
+	70	Yaser Elabed	G, NG	5-9	335	11
+	71	Landon Murphy	G, NG	6-4	290	12
+	72	Gavin Allen	T, DE	6-4	270	11
+	74	Gavin Hillman	G, NG	5-7	245	12
+	78	Jeremiah Morris	G, NG	5-9	230	12
+	90	Mason Henrie	QB, DB	5-9	125	9
+	92	Mason McCartney	WR, S	6-2	175	9
+	93	Isaias Becerra	WR, CB	5-7	140	11
+	94	Beckett Packard	QB, OLB	5-11	170	9
+	95	Joey Macedo	WR, DB	5-11	140	9
+	96	Lincoln Giles	WR, DB	5-10	135	9
+	99	Sawyer Tibbitts	TE, DE	6-0	195	9
+
+---------------------------------------------------------
+RECORD
+
+11	1
+
+23	Madison	22
+49	Bonneville	14
+49	Thunder Ridge	28
+25	Skyline	19
+44	Shelley	20
+41	Blackfoot	21
+49	Twin Falls	28
+22	Rigby	35
+55	Idaho Falls	6
+49	Shelley	15
+35	Lakeland	14
+44	Twin Falls	20
+	Bishop Kelly
+
+---------------------------------------------------------
+SHIRTS
+
+Larry Stocking
+Hillcrest High School
+5A
+Football
+
+M: 10
+L: 25
+XL: 19
+2XL: 5
+3XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 192.42.147.37
+ID: 2a6ed575-d057-48e6-bd0e-6a916f585f84

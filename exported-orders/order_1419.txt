@@ -1,0 +1,54 @@
+From: Kelly Caldwell
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Genesee High School
+Bulldogs
+Blue & Gold
+Wendy Moore
+Kelly Caldwell
+Kelly Caldwell
+Pete Crowley
+Sherrie Johnson
+Michelle Sperber
+Abby Calene
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Sydney Banks	L		12
+	2	Caylee Madison	DS		12
+	3	Ilena Smith	OH		11
+	4	Alia Wareham	S		12
+	5	Chloe Grieser	OH		12
+	6	Rylie Baysinger	MB		12
+	7	Jubalee Vandenbos	MB		12
+	8	Rayna Loewen	RS		11
+	9	Maggie Lowe	S		9
+	10	Lindsey Herman	MB		10
+	11	Natalie Lowe	DS		11
+	12	Miley Grieser	RS		11
+	13	Ainsley Hubbard	OH		10
+	14	Phoebe Haley	RS		10
+
+---------------------------------------------------------
+SHIRTS
+
+Kelly Caldwell
+Genesee High School
+1A
+Volleyball
+
+S: 3
+M: 9
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 50.37.228.3
+ID: f4f7309f-a3aa-40ef-a7de-2a770a02ac98

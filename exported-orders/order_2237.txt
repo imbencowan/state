@@ -1,0 +1,57 @@
+From: Dane Pence
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Mountain View High School
+Mavericks
+Blue, Green & White
+Derek Bub
+Scot Montoya
+Dane Pence
+Justin Schneidt
+Brent Mehling
+Brandon Mehling
+Adam Hiaring
+Adam Miller
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Tyler Gray	C, OF	12
+	2	Cooper Schneidt	SS, P	10
+	3	Dax Fizer	C	10
+	4	Cooper Robbins	INF	12
+	5	Ryan Yesford	INF, P	11
+	6	Cooper Willoughby	OF, P	11
+	7	Ryder Hollifield	1B, P	11
+	8	Tav Hiaring	C, P	11
+	9	Beckham Hatfield	INF, P	10
+	10	Zach Dowdle	P	12
+	11	Chris Maiocca	OF, P	12
+	12	Patrick Wilson	P, UTIL	11
+	13	Easton Pierce	P	10
+	15	Owen Perry	OF, P	11
+	17	Deegan Gonzalez	P, OF	11
+	22	Preston Flournoy	INF, P	12
+	27	Braylon Schellhammer	OF	11
+
+---------------------------------------------------------
+SHIRTS
+
+Dane Pence
+Mountain View High School
+6A
+Baseball
+
+L: 6
+XL: 11
+
+
+
+
+---------------------------------------------------------
+IP: 64.226.154.133
+ID: a5ecfe3d-7fa3-4c94-b6ab-2c0e1c4bfc1a

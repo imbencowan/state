@@ -1,0 +1,52 @@
+From: Brady Trenkle
+Activity: Dance
+
+---------------------------------------------------------
+SCHOOL
+
+Minico High School
+Spartans
+Red & Gold
+Spencer Larsen
+Kimberley Kidd
+Brady Trenkle
+Sandee Nelson
+Luz Gonzales
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Aaliah Ambriz	10
+	Angeles Macias	9
+	Abby Gregory	10
+	Yeimi Guadarrama	10
+	Ashley Rodriguez	10
+	Alexandria Alcantar	9
+	Natalie Vega	10
+	Jasmin Vargas	10
+	Juliette Rodriquez	12
+	Kate Rosales	12
+	Valeria Linares	10
+	Shania Ramirez	11
+	McKenna Gomez	11
+
+---------------------------------------------------------
+SHIRTS
+
+Brady Trenkle
+Minico High School
+5A
+Dance
+
+S: 6
+M: 2
+L: 2
+XL: 3
+
+
+
+
+---------------------------------------------------------
+IP: 72.22.227.228
+ID: 8fc8a81b-d195-4530-93dc-a0f4820414be

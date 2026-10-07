@@ -1,0 +1,58 @@
+From: Travis Hobson
+Activity: Soccer - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Thunder Ridge High School
+Titans
+Blue, Black, Silver
+Scott Woolstenhulme
+Trent Dabell
+Travis Hobson
+Logan Murri
+Brigham Redd
+Luis Bocardo
+Jason Harris
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Steven West	GK	11
+	1	Grady Peterson	GK/D	12
+	3	Steven Paz	D	9
+	4	Logan Leischmann	FORW	10
+	5	Walter Riviera	FORW	9
+	6	Tanner Layton	D	11
+	7	Damian Carmona	MF	12
+	9	Cesar Diaz	FORW	11
+	10	Kai Redd	MF	9
+	11	Richard Munguia	MF	12
+	12	Cade Jorgensen	MF	12
+	13	Axel Resendiz	D	9
+	14	Aaron Laisley	FORW	7
+	16	Thatcher Funderburg	MF	9
+	21	Will Mangum	MF	12
+	22	Cooper Harris	MF	10
+	23	Karson Kindree	MF	10
+
+---------------------------------------------------------
+SHIRTS
+
+Travis Hobson
+Thunder Ridge High School
+6A
+Soccer - Boys
+
+S: 4
+M: 9
+L: 3
+XL: 1
+
+
+
+
+---------------------------------------------------------
+IP: 192.42.147.77
+ID: 65109935-cf54-4d6b-87d0-d7c8058ee4c0

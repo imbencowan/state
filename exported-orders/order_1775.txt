@@ -1,0 +1,55 @@
+From: Patrick Laney
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Moscow High School
+Bears
+Red, Black & White
+Shawn Tiegs
+Erik Perryman
+Patrick Laney
+Icelyn Bird
+Tiffany Scripter
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Abby Cox	11
+	Ashlyn Fakhouri	12
+	Ashley Hansen	12
+	Anna Linskey	11
+	Ashley Stenlund 	12
+	Charlie Maxcer 	10
+	Hailey Brewer	10
+	Kenzie Mortensen	12
+	Mason Schulte	12
+	Mishalyn Miller 	11
+	Peyton Lowry 	10
+	Sarai Ajauro	12
+	Kenzie Kriebel 	9
+	Luci Salmond 	11
+	Quincy Smith 	9
+	Shaelyn Garcia	10
+
+---------------------------------------------------------
+SHIRTS
+
+Patrick Laney
+Moscow High School
+5A
+Cheer
+
+S: 1
+M: 9
+L: 3
+XL: 3
+
+
+
+
+---------------------------------------------------------
+IP: 64.126.141.208
+ID: 36cafebd-f62f-4161-8f17-2a06fe566ece

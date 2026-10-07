@@ -1,0 +1,49 @@
+From: Corey Miller
+Activity: Volleyball
+
+---------------------------------------------------------
+SCHOOL
+
+Wallace High School
+Miners
+Red & Black
+Todd Howard
+Don Almquist
+Corey Miller
+Katie Bauer
+Martha House
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	Anna Rehnborg	L		12
+	2	Megan Hull	S, OH		11
+	3	Aubrey Birdsell	S	5-4	11
+	4	Kayden Stutzke	S, DS		11
+	5	Grace DeLano	OH, OPP		11
+	6	Rory Kromer	OPP, OH		9
+	7	Khepri Wood	MB	5-6	11
+	8	Kylee Phillips	MB	5-7	12
+	9	Lauren Voorhees	OPP, S		10
+	10	Addison Kunze	DS		11
+	11	Olivia Berry	DS, OPP		12
+
+---------------------------------------------------------
+SHIRTS
+
+Corey Miller
+Wallace High School
+2A
+Volleyball
+
+S: 7
+M: 3
+L: 1
+
+
+
+
+---------------------------------------------------------
+IP: 172.82.99.18
+ID: e6fd09b8-27b2-4155-9752-cd613f292bec

@@ -1,0 +1,77 @@
+From: Kellen Clemens
+Activity: Basketball - Boys
+
+---------------------------------------------------------
+SCHOOL
+
+Coeur du Christ Academy
+Saints
+Navy, Crimson, White
+
+Lucas Heintschel
+Kellen Clemens
+Austin Paulsen
+Ben Connelly
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	height	grade
+	1	LIAM ANDERSON		5-8	11
+	3	JUDE GAMA		6-6	9
+	10	KAMDEN MANUEL		5-8	9
+	11	GRANT CLEMENS		6-2	10
+	12	BECKETT BEYER		5-10	10
+	14	MATTHEW CLUTE		6-1	11
+	15	GREG HAYES		5-11	12
+	21	JEROME COOLS		6-3	12
+	22	ABRAHAM MUDRICK		6-4	11
+	24	ANDERS SUNDHOLM		6-0	9
+	25	MAX ELOE		5-7	10
+	31	AEDAN O'NEILL		6-2	12
+
+---------------------------------------------------------
+RECORD
+
+15	6
+
+61	Clark Fork	46
+45	Chesterton Academy of Notre Dame	57
+36	Non Varsity Opponent	68
+59	Immaculate Conception Academy	42
+57	Mullan	10
+51	Genesis Prep Academy	16
+69	Immaculate Conception Academy	49
+53	Chesterton Academy of Notre Dame	51
+57	Wallace	60
+66	Non Varsity Opponent	47
+69	Clark Fork	57
+45	Priest River	65
+51	Kootenai	14
+52	Clearwater Valley	40
+65	Mullan	31
+73	Priest River	76
+51	Genesis Prep Academy	23
+77	Non Varsity Opponent	61
+54	Wallace	63
+63	Kootenai	30
+54	Kootenai	27
+
+---------------------------------------------------------
+SHIRTS
+
+Kellen Clemens
+Coeur du Christ Academy
+1A
+Basketball - Boys
+
+M: 4
+L: 6
+XL: 2
+
+
+
+
+---------------------------------------------------------
+IP: 50.52.75.102
+ID: 98ee7f2c-02e4-4765-8ecf-de79d0bd3a84

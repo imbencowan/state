@@ -1,0 +1,44 @@
+From: Travis Draper
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Grace High School
+Grizzlies
+Red & White
+Jason Moss
+Bryan Jensen
+Travis Draper
+Shelli Welch
+Diane Windley
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Brynlee Hubbard	9
+	Bailey Mickelson	12
+	Presley Judd	10
+	Val Chavez	11
+	Ashlyn Welch	10
+	Bailey Mathews	10
+	Berklee Mathews	10
+
+---------------------------------------------------------
+SHIRTS
+
+Travis Draper
+Grace High School
+2A
+Cheer
+
+S: 4
+M: 3
+
+
+
+
+---------------------------------------------------------
+IP: 138.43.99.18
+ID: be28e1bc-0a68-4197-b1ec-90ced75d7d52

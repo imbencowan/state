@@ -1,0 +1,60 @@
+From: Rachael Petersen
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Lake City High School
+Timberwolves
+Navy, Teal & Silver
+Shon Hocker
+Deanne Clifford
+Troy Anderson
+Matt Ruchti
+Nik Bjurstrom
+Laura Tolzmann
+Nicole Medirios
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Savannah Spencer	GK	10
+	1	Addyson Kerley	F/M	9
+	2	Chloe Burkholder	F/M	10
+	3	Nell Hutchins	M/D	10
+	4	Makaela Randall	D	10
+	5	Adelynn Blessing	F/M/D	9
+	6	Olivia Smith	D/M	10
+	7	Kamryn Kirk	D	11
+	8	Kathryn Kovatch	F/M	10
+	9	Cameron Fischer	F/M/D	10
+	10	Bailey Koster	F	11
+	11	Finley Wright	F/M/D	9
+	12	Ella Pearson	M	10
+	13	Emerson Rakes	D	11
+	15	Ryann Blair	M/D	9
+	17	Leah Cysewski	F	12
+	18	Riley Brazle	F/M	10
+	19	Kennedy Hartzell	D/M	12
+	20	Mary Koziol	D	12
+	21	Ava Roberts	F	9
+	22	Catherine Storey	D	9
+
+---------------------------------------------------------
+SHIRTS
+
+Rachael Petersen
+Lake City High School
+6A
+Soccer - Girls
+
+M: 19
+L: 2
+
+
+
+
+---------------------------------------------------------
+IP: 172.68.23.200
+ID: 97fd4e2c-f831-4f33-91c4-56e58c799c45

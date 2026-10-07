@@ -1,0 +1,62 @@
+From: Jocelyn Hobbs
+Activity: Baseball
+
+---------------------------------------------------------
+SCHOOL
+
+Sugar-Salem High School
+Diggers
+Blue & White
+Jared Jenks
+Karl Gehmlich
+Jocelyn Hobbs
+Brady Gardner
+Jace McInelly
+Parker Summers 
+Jared Chappell
+Rieley Telford 
+Bob Torres
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	1	Payton Blaser	CF, RHP	11
+	2	Jaxton Hanks	C	10
+	3	Kolter Harris	LF, RHP	10
+	4	Sam Chappell	2B, LF	10
+	5	Latrell Markle	LF, RHP	10
+	6	Thatcher Morris	C	11
+	7	Will Chappell	CF	12
+	8	Trevon Butikofer	RHP	10
+	10	Brayden Pocock	3B	12
+	11	Ben Aldrich	3B, RHP	12
+	12	Jack Gardner	RHP, SS	12
+	13	Hank Carter	1B	12
+	17	Dawson McInelly	SS, P	12
+	20	Dyson Hepworth	RHP	10
+	21	Wyatt Telford	LHP	10
+	24	Kace Malstrom	RF, RHP	12
+	32	Tragen Mattson	C	12
+	33	Brooks Robinson	C, RF	10
+	44	Preston Harris	UTIL	11
+	99	Dax Crapo	RHP	10
+
+---------------------------------------------------------
+SHIRTS
+
+Jocelyn Hobbs
+Sugar-Salem High School
+4A
+Baseball
+
+M: 2
+L: 8
+XL: 10
+
+
+
+
+---------------------------------------------------------
+IP: 96.5.130.66
+ID: 16ea7c6d-0cf9-45e9-83b9-533c1659e237

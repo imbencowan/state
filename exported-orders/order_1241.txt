@@ -1,0 +1,60 @@
+From: Ty Shippen
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Rigby High School
+Trojans
+Maroon & Gold
+Chad Martin
+Bryan Lords
+Ty Shippen
+Juan Navarro
+Tony Chavez
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	00	Summer Josephson		10
+	1	Alyssa Johnson		12
+	3	Aubrey Jones		12
+	4	Heidi Chavez		12
+	6	Avary Christensen		12
+	8	Olivia Howard		12
+	9	Maria Lopez		12
+	10	Rowan Reese		11
+	11	Lily Chavez		10
+	12	Kinley Nickerson		12
+	13	Olivia Johnson		11
+	17	Reilly Smith		12
+	18	Tyalor Judy		12
+	21	Mykalana hansen		12
+	25	Kiera States		10
+	29	Crystal Cook		11
+	31	Abigail Demitropolulos		10
+	33	Emilee Lewis		11
+	35	Sophia Hill		10
+	37	Addison Aicher		10
+	38	Hailey Coates		10
+	44	Leily Bramwell		10
+
+---------------------------------------------------------
+SHIRTS
+
+Ty Shippen
+Rigby High School
+6A
+Soccer - Girls
+
+S: 1
+M: 16
+L: 5
+
+
+
+
+---------------------------------------------------------
+IP: 162.249.30.7
+ID: 057c5a00-2b0c-4885-abdd-cb546f997142

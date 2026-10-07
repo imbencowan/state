@@ -1,0 +1,64 @@
+From: Ted Bell
+Activity: Soccer - Girls
+
+---------------------------------------------------------
+SCHOOL
+
+Highland High School - Pocatello
+Rams
+Black, White & Red
+Doug Howell
+Brad Wallace
+Travis Bell
+Matt Stucki
+Randy Vawdry
+
+---------------------------------------------------------
+ROSTER
+
+	jersey	name	position	grade
+	0	Grace Kirkpatrick	GK	11
+	2	Devree Bell	MF, FORW	11
+	3	Taryn Roth	MF, D	10
+	5	Anna Bagley	MF	11
+	6	Olivia Orr	D	9
+	7	Presley Johnson	D	11
+	8	Alexis Vawdrey	MF, FORW	9
+	9	Gracee Anderson	D	11
+	13	Lauren Flores	FORW	11
+	14	Molli Broadhead	FORW	9
+	15	Reese Valentine	FORW	10
+	17	Ava Flores	D	11
+	18	Oakli Briscoe	D	10
+	19	Ashlyn Hale	MF	10
+	22	Elizabeth Ralphs	MF	11
+	23	Cecelia Pena	D, MF	11
+	27	Norah Wilde	D	11
+	31	Grace Johnson	D	10
+	32	Peyton Looney	MF	11
+	33	Lucy Rhodehouse	FORW	11
+	36	Macey Estevez	MF	10
+	39	Makenzie Humpherys	GK	9
+
+---------------------------------------------------------
+COMMENT
+
+Would like to order and pay for one additional sweatshirt, size Large.
+
+---------------------------------------------------------
+SHIRTS
+
+Ted Bell
+Highland High School - Pocatello
+6A
+Soccer - Girls
+
+L: 18
+XL: 4
+
+
+
+
+---------------------------------------------------------
+IP: 162.158.42.234
+ID: 13538304-af40-4890-a68c-e2957493e5d9

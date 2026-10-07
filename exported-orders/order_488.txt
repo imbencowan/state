@@ -1,0 +1,59 @@
+From: Dane Pence
+Activity: Cheer
+
+---------------------------------------------------------
+SCHOOL
+
+Mountain View High School
+Mavericks
+Blue, Green & White
+Derek Bub
+Scot Montoya
+Dane Pence
+Chyrell Debenham
+Lily Krall
+Shammie Fisher Royce
+Mattie Bittick
+Kendal Real
+
+---------------------------------------------------------
+ROSTER
+
+	name	grade
+	Shaylee Bennett	10
+	Brylee Bennett 	10
+	Tayci Dye	10
+	Kelsey Reines	11
+	Reygan Bates	11
+	Kylie Meyer	10
+	Alivia Juring	9
+	Caidie Rusco	12
+	Brynn Fisher	12
+	Rylee Taylor	9
+	Kylie McKee-Powell	11
+	Nora Ballew	10
+	Emma Bradley	10
+	Addison Knowles	11
+	Addison Hollingshead	12
+	Hayden Wilson	12
+	Maleah Via	10
+	Peyton Barnes	12
+	Jayden Miller	11
+	Amelia Thomas	9
+	Katie Baker	11
+	Haden Stevens	11
+	Autumn Wickham	9
+	Peyton Urizar	11
+	Addy Tipton	9
+
+---------------------------------------------------------
+SHIRTS
+
+Dane Pence
+Mountain View High School
+6A
+Cheer
+
+S: 13
+M: 9
+L: 2
