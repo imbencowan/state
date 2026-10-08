@@ -25,7 +25,6 @@ export async function submitOrderFiles() {
 	if (!responseJSON) return;
 
 	modal.open(buildOrderUploadResults(responseJSON.ordersAdded, responseJSON.preexistingOrders));
-	
 }
 
 	// this came from gpt, because i'm still fuzzy on how to work with promises. and map.
@@ -270,7 +269,36 @@ function buildCommentsTable(orders) {
 
 
 
+	// emails receives the cc email address. we need to update the submission code to accept that.
+export async function getEmailOrders() {
+		// load a look up
+	await runtime.allActivities.load();
 
-export function getEmailOrders() {
-	const response = actionFetch('getEmailOrders', 'MailAccess');
+	let request = new ActionRequest('getEmailOrders', 'MailAccess', {});
+	let response = await myFetch(request);
+	if (response.success) {
+		const emails = response.data;
+		console.log('emails', emails);
+
+		const orders = [];
+
+		for (const email of emails) {
+			for (const attachment of email.attachments) {
+				const order = getOrder(attachment.content, attachment.filename);
+
+				orders.push(order);
+			}
+		}
+
+		request = new ActionRequest('uploadOrders', 'SchoolOrder', { 'orders': orders });
+		response = await myFetch(request);
+
+		if (response.success) {
+			const emailIDs = emails.map(email => email.id);
+			request = new ActionRequest('markEmailsRead', 'MailAccess', { emailIDs });
+			await myFetch(request);
+
+			modal.open(buildOrderUploadResults(response.ordersAdded, response.preexistingOrders));
+		}
+	}
 }
