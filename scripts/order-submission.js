@@ -284,9 +284,7 @@ export async function getEmailOrders() {
 
 		for (const email of emails) {
 			for (const attachment of email.attachments) {
-				const order = getOrder(attachment.content, attachment.filename);
-
-				orders.push(order);
+				orders.push(getOrder(attachment.content, attachment.filename));
 			}
 		}
 

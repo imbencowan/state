@@ -66,23 +66,6 @@ class SchoolOrder extends BasicTableModel {
 			'oTransfers' => array_values($this->oTransfers)
 		];
    }
-		
-	
-	// public function getMessageFileNames() {
-	// 	$fileNames = [];
-	// 	foreach ($this->messageOrders as $order) {
-	// 		$fileNames[] = $order->fileName;
-	// 	}
-	// 	return implode(", ", $fileNames);
-	// }
-	
-	// public function getMessageOrdersText() {
-	// 	$orderTexts = [];
-	// 	foreach ($this->messageOrders as $order) {
-	// 		$orderTexts[] = $order->orderText;
-	// 	}
-	// 	return implode("\n", $orderTexts);
-	// }
 	
 
 	 
@@ -170,7 +153,6 @@ class SchoolOrder extends BasicTableModel {
 				$activityID = $order['activityID'];
 				$divisionID = Division::getIDByName($order['division']);
 				$schoolID = School::getIDByName($order['school']);
-if (!$schoolID) Test::logX('School not found: ' . $order['school']);
 					// get the whole series, we need series->minDiv later
 				$series = EventSeries::getByName($order['series']);
 				$activity = Activity::getByID($activityID);

@@ -194,96 +194,98 @@ function buildOrdersThead() {
 }
 
 function buildOrdersTbodies(orders) {
-      // we'll need this for a data- in the trs
-   const allStyles = runtime.allStyles.getSync();
-   const teamStyleID = Object.values(allStyles).find(style => style.shortName === "Dairy Hoods").id;
+		// we'll need this for a data- in the trs
+	const allStyles = runtime.allStyles.getSync();
+	const teamStyleID = Object.values(allStyles).find(style => style.shortName === "Dairy Hoods").id;
 
 	const tbodies = [];
 
-   orders.forEach(so => {
-      const teamStyle = so.getTeamStyle();
-		if (teamStyle == undefined) console.log(so);
+	orders.forEach(so => {
+
+		const teamStyle = so.getTeamStyle();
+		// if (teamStyle == undefined) console.log(so);
 		const teamShirts = Object.values(teamStyle?.colors ?? {})[0];
 
-      let tds = [];
+		let tds = [];
 
-         // first td, the school name
-      tds.push(buildElement("td", {
-            // include id and fileName in title text for qol
-         title: (so.id + " / " + so.getMessageFileNames()), 
-         text: so.school.shortName
-      }));
-         // then the sizes
-      makeSizeTDs(tds, teamShirts, '-');
-         // then the total
-      let totalText = so.getDairyTotal();
-         // add "/ qualifiers" if totals != qualifiers
-      if (so.qualifiers && (so.qualifiers != so.getDairyTotal())) totalText += "/" + so.qualifiers;
-      tds.push(buildElement("td", { title: 'total', text: totalText }));
+			// first td, the school name
+		tds.push(buildElement("td", {
+				// include id and fileName in title text for qol
+			title: (so.id + " / " + so.getMessageFileNames()), 
+			text: so.school.shortName
+		}));
+			// then the sizes
+		makeSizeTDs(tds, teamShirts, '-');
+			// then the total
+		let totalText = so.getDairyTotal();
+			// add "/ qualifiers" if totals != qualifiers
+		if (so.qualifiers && (so.qualifiers != so.getDairyTotal())) totalText += "/" + so.qualifiers;
+		tds.push(buildElement("td", { title: 'total', text: totalText }));
 
-         // make an input to stick at the end
-      const chkBx = buildElement("input", { classes: 'orderChckBx', 
-         id: ('check' + so.id), 
-         title: 'mark order complete'
-      });
-      chkBx.type = 'checkbox';
-      chkBx.name = ('check' + so.id);
-      chkBx.value = so.id;
-      if (so.completeness === 1) chkBx.checked = true;
+			// make an input to stick at the end
+		const chkBx = buildElement("input", { classes: 'orderChckBx', 
+			id: ('check' + so.id), 
+			title: 'mark order complete'
+		});
+		chkBx.type = 'checkbox';
+		chkBx.name = ('check' + so.id);
+		chkBx.value = so.id;
+		if (so.completeness === 1) chkBx.checked = true;
 
-         // and then we can put the buttons in the last cell
-      const rowBtns = orderRowButtons.map(btn => makeRowIconButton(btn));
-      tds.push(buildElement("td", { children: [ ...rowBtns, chkBx ] }));
+			// and then we can put the buttons in the last cell
+		const rowBtns = orderRowButtons.map(btn => makeRowIconButton(btn));
+		tds.push(buildElement("td", { children: [ ...rowBtns, chkBx ] }));
 
-         // build the first row
-      const trs = [];
-      trs.push(buildElement("tr", { dataset: { styleID: teamStyleID }, children: tds }));
-         // if there are any add on shirts, make rows for them
-      if (so.hasAddedShirts()) trs.push(...buildAddedStyleRows(so));
-         // if there are any add on transfers, make rows for them
-      if (so.hasAddedTransfers()) trs.push(...buildAddedTransferRows(so));
+			// build the first row
+		const trs = [];
+		trs.push(buildElement("tr", { dataset: { styleID: teamStyleID }, children: tds }));
+			// if there are any add on shirts, make rows for them
+		if (so.hasAddedShirts()) trs.push(...buildAddedStyleRows(so));
+			// if there are any add on transfers, make rows for them
+		if (so.hasAddedTransfers()) trs.push(...buildAddedTransferRows(so));
 
 
-      const tbody = buildElement("tbody", { 
-         id: ('row' + so.id),
-         classes: getRowCompletenessClass(so), 
-         dataset: { schoolOrderID: so.id },
-         children: trs 
-      });
-      tbodies.push(tbody);
-   });
+		const tbody = buildElement("tbody", { 
+			id: ('row' + so.id),
+			classes: getRowCompletenessClass(so), 
+			dataset: { schoolOrderID: so.id },
+			children: trs 
+		});
+		tbodies.push(tbody);
+   	});
 
 	return tbodies;
 }
 
    // returns an array of rows, one for each added style for a SchoolOrder
 function buildAddedStyleRows(so) {
-   const trs = [];
+	const trs = [];
 
-   for (const aStyle of so.getAddedStyles()) {
-		for (const color of Object.values(aStyle.colors)) {
-			let tds = [];
+	for (const aStyle of so.getAddedStyles()) {
+			for (const color of Object.values(aStyle.colors)) {
+				let tds = [];
 
-				// first td, the style name
-			tds.push(buildElement("td", {	text: `${aStyle.style.shortName}` }));
-				// then the sizes
-			makeSizeTDs(tds, color);
-				// then the total
-			let sTotal = 0
-			for (const s of Object.values(color.sizeMap)) {
-				sTotal += s.quantity;
+					// first td, the style name
+				tds.push(buildElement("td", {	text: `${aStyle.style.shortName}` }));
+					// then the sizes
+				makeSizeTDs(tds, color);
+					// then the total
+				let sTotal = 0
+				for (const s of Object.values(color.sizeMap)) {
+					sTotal += s.quantity;
+				}
+
+				tds.push(buildElement("td", { title: 'total', text: sTotal }));
+					// an empty td to fill the table
+				tds.push(buildElement("td"));
+
+					// make the row
+				trs.push(buildElement("tr", { classes: "addOnRow", children: tds,
+											dataset: { styleID: aStyle.style.id, colorID: color.id } }));
 			}
-			tds.push(buildElement("td", { title: 'total', text: sTotal }));
-				// an empty td to fill the table
-			tds.push(buildElement("td"));
+	}
 
-				// make the row
-			trs.push(buildElement("tr", { classes: "addOnRow", children: tds,
-										dataset: { styleID: aStyle.id, colorID: color.id } }));
-		}
-   }
-
-   return trs;
+	return trs;
 }
 
    // use this to force all shirt rows through the same construction, so they have the same attributes
@@ -701,7 +703,7 @@ async function uploadQualifiers() {
 	});
 
 	const data2 = {'upSchools': upSchools, 'esdIDs': esdIDs};
-	const responseJSON = await actionFetch('editSizes', 'SchoolOrder', data2);
+	const responseJSON = await actionFetch('uploadQualifiers', 'SchoolOrder', data2);
 
 		// if school names didn't match, display them in the modal
 	if (Array.isArray(responseJSON.data.unmatchedSchools) && responseJSON.data.unmatchedSchools.length) {

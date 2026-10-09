@@ -806,6 +806,7 @@ export class SchoolOrder {
    }
 	
 	getTeamStyle() {
+         // there is no console.log on line 809 any more  
       return Object.values(this.getSOItemsByStyleByColor())
             .find(({ style }) => style.id === DAIRY_STYLE_ID);
 	}
