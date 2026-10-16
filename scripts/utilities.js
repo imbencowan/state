@@ -315,6 +315,26 @@ export function parseInputDate(value) {
 
 
 
+   // sort an array of objects by a given property. //localeCompare is used to handle strings with numbers correctly (e.g., "item2" comes before "item10").
+export function sortByProperty(arr, prop) {
+   return arr.sort((a, b) => {
+      const getValue = (obj) => prop.split('.').reduce((value, key) => value?.[key], obj);
+
+      const aValue = getValue(a) ?? '';
+      const bValue = getValue(b) ?? '';
+
+      const result = String(aValue).localeCompare(String(bValue), undefined, {
+         numeric: true,
+         sensitivity: 'base'
+      });
+
+      return result;
+   });
+}
+
+
+
+
 
 // function hasItems(arr) {
 //    return (Array.isArray(arr) && arr.length > 0);

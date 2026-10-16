@@ -8,4 +8,6 @@ export const ADULT_HOOD_STYLE_ID = 6;
 export const DAIRY_STYLE_ID = 9;
 export const DAIRY_COLOR_ID = 2;
 
+export const SCHOOL_NAMES_TRANSFER_ID = 9;
+
 export const FOCUSABLE_SELECTOR = 'input, button, select, textarea, a[href], [tabindex]:not([tabindex="-1"])';

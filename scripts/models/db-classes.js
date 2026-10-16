@@ -6,7 +6,7 @@
    // import helper functions
 import * as Utils from '../utilities.js';
 import { parseWithRegistry } from '../hydration.js';
-import { sizeList, ADULT_HOOD_STYLE_ID, DAIRY_STYLE_ID, DAIRY_COLOR_ID } from '../constants.js';
+import { sizeList, ADULT_HOOD_STYLE_ID, DAIRY_STYLE_ID, DAIRY_COLOR_ID, SCHOOL_NAMES_TRANSFER_ID } from '../constants.js';
 import { actionFetch } from '../fetch.js';
 import { getDivisionsString } from '../formatters.js';
 // DO NOT IMPORT RUNTIME, no circular dependencies.
@@ -74,15 +74,11 @@ export class StateEvent {
 	getEsdByDivIDAndGenderID(divID, genderID = null) {
 		if (divID < this.series.minDiv) divID = this.series.minDiv;
 		for (const es of this.eventSites) {
-            // if a genderID was passed (soccer) check it matches the EventSite's gender
-         if ((genderID == null) || (es.gender.id === Number(genderID))) {
-            for (const esd of es.esDivisions) {
-               if (esd.division.id === Number(divID)) {
-                  return esd;
-               }
-            }
+         for (const esd of es.esDivisions) {
+            if (esd.division.id === Number(divID) && ((genderID === null) || (esd.gender.id === Number(genderID)))) return esd;
          }
 		}
+      
 		return null;
 	}
 
@@ -198,6 +194,83 @@ export class StateEvent {
       return this.eventSites.every(es =>
          es.esDivisions.every(esd => esd.activity?.id == firstActivityID)
       );
+   }
+
+   getItemsSoldByStyleAndColor() {
+      const itemsByStyleAndColor = new Map();
+
+      const addSoldQuantity = (item, quantity) => {
+         const { style, color, size } = item;
+         const isAccessory = style.sizingCategoryID === 4;
+         if (![1, 2, 3, 4].includes(style.sizingCategoryID)) return;
+         if (!isAccessory && !sizeList.includes(size.displayChar)) {
+            throw new Error(`Unknown size: ${size.displayChar}`);
+         }
+
+         const key = `${style.id}-${color.id}`;
+         itemsByStyleAndColor.set(key, itemsByStyleAndColor.get(key) ?? {
+            style,
+            color,
+            sizes: Object.fromEntries(sizeList.map(sizeChar => [sizeChar, isAccessory ? '' : 0])),
+            total: 0
+         });
+
+         const row = itemsByStyleAndColor.get(key);
+         if (!isAccessory) row.sizes[size.displayChar] += quantity;
+         row.total += quantity;
+      };
+
+      for (const es of this.eventSites) {
+         for (const inventoryItem of es.inventory) {
+            addSoldQuantity(inventoryItem.item, inventoryItem.getSoldQ());
+         }
+
+         for (const esd of es.esDivisions) {
+            for (const order of esd.schoolOrders) {
+               for (const orderItem of order.oItems) {
+                  if (orderItem.item.style.id !== DAIRY_STYLE_ID) {
+                     addSoldQuantity(orderItem.item, orderItem.quantity);
+                  }
+               }
+            }
+         }
+      }
+
+      const rows = [...itemsByStyleAndColor.values()]
+         .sort((a, b) => a.style.listOrder - b.style.listOrder || a.color.name.localeCompare(b.color.name))
+         .map(({ style, color, sizes, total }) => [
+            style.inventoryName,
+            style.code,
+            color.name,
+            ...sizeList.map(size => sizes[size]),
+            total
+         ]);
+
+      const transfersByPrice = new Map();
+      for (const es of this.eventSites) {
+         for (const transfer of es.transfers) {
+            if (Number(transfer.transferID) === SCHOOL_NAMES_TRANSFER_ID || transfer.soldQ <= 0) continue;
+
+            const price = Number(transfer.price);
+            if (!Number.isFinite(price)) {
+               throw new Error(`Invalid transfer price: ${transfer.price}`);
+            }
+
+            transfersByPrice.set(price, (transfersByPrice.get(price) ?? 0) + Number(transfer.soldQ));
+         }
+      }
+
+      for (const [price, quantity] of [...transfersByPrice].sort(([a], [b]) => a - b)) {
+         rows.push([
+            `Transfers ($${price.toFixed(2)} each)`,
+            '',
+            '',
+            ...sizeList.map(() => ''),
+            quantity
+         ]);
+      }
+
+      return rows;
    }
 
       // this function is a wrapper to conveniently call on a stateEvent instance

@@ -12,7 +12,7 @@ import { buildActionButton } from '../page-utils.js';
 import { topOrderActions, orderRowActions, attachOrdersPanel, toggleOrderCompleteness, 
 			changeCommentHandled } from './orders.js';
 import { topInventoryActions, inventorySiteActions, attachInventoryPanel } from './inventory.js';
-import { attachResultsPanel, resultsSiteActions } from './results.js';
+import { attachResultsPanel, resultsSiteActions, resultsTopActions } from './results.js';
 import { modal, childModal } from '../../modal.js';
 
 
@@ -39,7 +39,8 @@ const topActions = {
 	printSoSPDF: ({ target }) => printSoSPDF(runtime.stateEvent.getESDivisionByID(target.dataset.eshdid)),
 	...prevNextActions,
 	...topOrderActions,
-	...topInventoryActions
+	...topInventoryActions,
+	...resultsTopActions
 };
 
 		

@@ -477,23 +477,32 @@ function makeSoSGridVert(doc, sos, topY, cursor) {
 // generating invoices
 	// as named
 export async function downloadInvoicePDF({ order, type = "Invoice" }) {
+	const sEvent = runtime.stateEvent;
 	if (!order) order = runtime.activeOrder;
 
 		// if there are no add ons, don't do any thing
 	if (!order.hasAddOns()) return;
 	
 	const { jsPDF } = window.jspdf; 
-   const doc = new jsPDF('p', 'mm', 'letter');
+	const doc = new jsPDF('p', 'mm', 'letter');
 	
 	genInvoicePDF(doc, order, type);
 
-	// let genderName = '';
-	// if (runtime.stateEvent.series.name.toLowerCase() === "soccer") genderName
+	let genderStr = '';
+	if (runtime.stateEvent.series.name.toLowerCase() === "soccer") {
+		const esd = order.getESD(sEvent);
+		const genderID = esd.gender.id;
+
+		if ((genderID !== null) && (Number(genderID) < 3)) {
+			if (Number(genderID) === 1) genderStr = "Boys ";
+			if (Number(genderID) === 2) genderStr = "Girls ";
+		}
+	}
 
 	let suffix = '';
 	if (type !== "Invoice") suffix = ` - ${type}`;
 
-	const fileName = `${order.school.shortName} ${runtime.stateEvent.series.name} ${runtime.stateEvent.getRealYear()} Add Ons${suffix}`;
+	const fileName = `${order.school.shortName} ${genderStr}${sEvent.series.name} ${sEvent.getRealYear()} Add Ons${suffix}`;
 
 	Helpers.downloadPDF(doc, fileName);
 }
@@ -532,6 +541,8 @@ export function printAllInvoices() {
 
     // actual invoice generation
 async function genInvoicePDF(doc, order, type = "Invoice") {
+	const sEvent = runtime.stateEvent;
+
 	let invP = new InvoicePage(doc);
 	const currentFont = doc.getFont().fontName;
 	
@@ -651,12 +662,15 @@ async function genInvoicePDF(doc, order, type = "Invoice") {
 	
 	invP.lineDown(2);
 
+	const esd = order.getESD(sEvent);
+	const genderID = esd.gender.id;
+
 	let gndrStr = '';
-	if ((order.genderID !== null) && (Number(order.genderID) < 3)) {
-		if (Number(order.genderID) === 1) gndrStr = "Boys ";
-		if (Number(order.genderID) === 2) gndrStr = "Girls ";
+	if ((genderID !== null) && (Number(genderID) < 3)) {
+		if (Number(genderID) === 1) gndrStr = "Boys ";
+		if (Number(genderID) === 2) gndrStr = "Girls ";
 	}
-	let str = `${gndrStr}${runtime.stateEvent.series.name} ${runtime.stateEvent.startDate.getFullYear()}`
+	let str = `${gndrStr}${sEvent.series.name} ${sEvent.startDate.getFullYear()}`;
 	invP.centerTextInPage(str);
 }
 

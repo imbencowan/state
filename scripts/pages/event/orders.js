@@ -4,7 +4,7 @@ import { runtime } from '../../runtime.js';
 import { sizeList } from '../../constants.js';
 import { actionFetch } from '../../fetch.js';
 import { modal, childModal } from '../../modal.js';
-import { buildElement } from '../../utilities.js';
+import { buildElement, sortByProperty } from '../../utilities.js';
 import { buildIcon, buildActionButton, makeTypeActionLabel, 
 			makeSubmitCancelButtons, makeButtonActionMap } from '../page-utils.js';
 import { SchoolOrder } from '../../models/db-classes.js';
@@ -169,13 +169,16 @@ function attachOrders(cntnr, sEvent) {
 }
 
 function buildOrdersTable(orders, eventID, esID, esdID) {
-   const thead = buildOrdersThead();	
+	sortByProperty(orders, 'school.shortName');
+	console.log(orders);
+	
+  	const thead = buildOrdersThead();	
 	const tbodies = buildOrdersTbodies(orders);	
       
-   const table = buildElement("table", { classes: "orderTable", children: [ thead, ...tbodies ], 
+	const table = buildElement("table", { classes: "orderTable", children: [ thead, ...tbodies ], 
                   dataset: { eventID: eventID, eventSiteID: esID, eventSiteDivisionID: esdID } });
 
-   return table;
+   	return table;
 }
 
 function buildOrdersThead() {

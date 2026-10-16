@@ -7,7 +7,8 @@ import { buildActionButton, buildIcon, makeSubmitCancelButtons, makeTypeActionLa
          makeLabelInputList, makeButtonActionMap } from '../page-utils.js';
 import { buildFillTable, submitFillInventory } from './inventory.js';
 import { InventoryTransfer } from '../../models/db-classes.js';
-import {  } from '../../print.js';
+import { printAutoTable } from '../../print.js';
+import { sizeList } from '../../constants.js';
 
 
    // buttons for each site
@@ -20,10 +21,18 @@ const resultsSiteButtons = [
    { action: "editCostAndPrice", title: "edit cost/price", icon: "edit", text: " Cost/Price", 
       handler: showEditCostAndPrice, submitHandler: submitEditCostAndPrice, cancelHandler: cancelEditCostAndPrice },
    { action: "updateCost/Price", title: "update cost/prices from default item data", icon: "refresh", text: "Cost/Price", 
-      handler: updateCostAndPrice }
+      handler: updateCostAndPrice },
+   { action: "printResults", title: "print site results", icon: "print", text: " Results",
+      handler: printSiteResults }
 ];
    // an array of action/handler pairs based on buttons to be used the page's event listener
 export const resultsSiteActions = makeButtonActionMap(resultsSiteButtons);
+
+const resultsTopButtons = [
+   { action: "printEventItemsSold", title: "print items sold for the event", icon: "print",
+      text: " Items Sold", handler: printEventItemsSold }
+];
+export const resultsTopActions = makeButtonActionMap(resultsTopButtons);
 
 
 export async function attachResultsPanel(panel, sEvent) {
@@ -32,6 +41,12 @@ export async function attachResultsPanel(panel, sEvent) {
    await sEvent.loadOrders(runtime.allItems, runtime.allTransfers);
    await runtime.allCosts.load();
    await runtime.allEmployees.load();
+
+   const topButtons = resultsTopButtons.map(buildActionButton);
+   panel.appendChild(buildElement("div", {
+      classes: "buttonContainer",
+      children: buildElement("h1", { children: topButtons })
+   }));
 
       // for each EventSite
       sEvent.eventSites.forEach(es => {
@@ -243,6 +258,27 @@ function getReportTable(esID) {
 	}
 
 	return tbl;
+}
+
+function printSiteResults({ target }) {
+   const tbl = getReportTable(target.dataset.eventSiteID);
+   if (!tbl) return;
+
+   const headers = [...tbl.querySelectorAll('thead th')].map(th => th.textContent.trim());
+   const rows = [...tbl.querySelectorAll('tbody tr')].map(row =>
+      [...row.cells].map(cell => cell.textContent.trim())
+   );
+   const tableName = tbl.parentElement.querySelector('h2')?.textContent.trim() ?? '';
+
+   printAutoTable(headers, rows, tableName);
+}
+
+function printEventItemsSold() {
+   const headers = [ "Item", "Style", "Color", ...sizeList, "Total" ];
+   const rows = runtime.stateEvent.getItemsSoldByStyleAndColor();
+   const tableName = `${runtime.stateEvent.startDate.getFullYear()} ${runtime.stateEvent.series.name} Items Sold`;
+
+   printAutoTable(headers, rows, tableName);
 }
 
 
