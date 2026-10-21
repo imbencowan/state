@@ -8,7 +8,7 @@ import * as Utils from '../utilities.js';
 import { parseWithRegistry } from '../hydration.js';
 import { sizeList, ADULT_HOOD_STYLE_ID, DAIRY_STYLE_ID, DAIRY_COLOR_ID, SCHOOL_NAMES_TRANSFER_ID } from '../constants.js';
 import { actionFetch } from '../fetch.js';
-import { getDivisionsString } from '../formatters.js';
+import { getFormattedDivsString } from '../formatters.js';
 // DO NOT IMPORT RUNTIME, no circular dependencies.
 
 
@@ -358,7 +358,21 @@ export class EventSite {
          divisions.push(esd.division);
       }
 
-      return getDivisionsString(divisions, this.gender);
+      const divsStr = getFormattedDivsString(divisions, this.getESDsGender());
+      return divsStr;
+   }
+
+   getESDsGender() {
+         // establish the first esd's gender for reference
+       const gender = this.esDivisions[0]?.gender;
+
+      if ((gender?.id === 1 || gender?.id === 2) &&
+         this.esDivisions.every(esd => esd.gender.id === gender.id)) {
+         return gender;
+      }
+
+         // fall back
+      return Gender.fromValues(3, '');
    }
 
    getSeriesStrGendered(sEvent) {

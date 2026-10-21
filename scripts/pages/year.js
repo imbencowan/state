@@ -6,7 +6,7 @@ import { arraysEqualIgnoreOrder, buildElement, getPropertyValues, formatDateInpu
          getDateRangeString } from '../utilities.js';
 import { buildActionButton, makeTypeActionLabel, makeLabelInputList, 
          makeButtonActionMap, buildIcon } from './page-utils.js';
-import { getDivisionsString } from '../formatters.js';
+import { getFormattedDivsString } from '../formatters.js';
 import { modal, childModal } from '../modal.js';
 import { EventSite, Season, Site, StateEvent } from '../models/db-classes.js';
 import { showPage } from './page-handling.js';
@@ -546,7 +546,7 @@ async function parseYear({ file, txt }) {
 
          const bigKids = [];
          for (const es of e.eSites) {
-            bigKids.push(`${getDivisionsString(es.divs)} / ${es.site.name}`);
+            bigKids.push(`${es.getDivisionsString()} / ${es.site.name}`);
             bigKids.push(buildElement('br'));
          }
          tds.push(buildElement('td', { children: bigKids }));
@@ -1264,7 +1264,7 @@ function showConfirmAddEvents(addEvents) {
          }
 
          spans.push(buildElement("span", { text: siteName }));
-         spans.push(buildElement("span", { text: getDivisionsString(divisions) }));
+         spans.push(buildElement("span", { text: getFormattedDivsString(divisions) }));
       }
 
       const sitesDiv = buildElement("div", { children: spans, classes: [ 'grid', 'gridCols2' ] });

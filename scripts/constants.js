@@ -10,4 +10,11 @@ export const DAIRY_COLOR_ID = 2;
 
 export const SCHOOL_NAMES_TRANSFER_ID = 9;
 
+
+export const UNGENDERED_ID = 3;
+
+
+
+
+
 export const FOCUSABLE_SELECTOR = 'input, button, select, textarea, a[href], [tabindex]:not([tabindex="-1"])';

@@ -1,7 +1,7 @@
 // rendering and interaction functions for the orders tab of the event page
 
 import { runtime } from '../../runtime.js';
-import { sizeList } from '../../constants.js';
+import { sizeList, DAIRY_STYLE_ID, UNGENDERED_ID } from '../../constants.js';
 import { actionFetch } from '../../fetch.js';
 import { modal, childModal } from '../../modal.js';
 import { buildElement, sortByProperty } from '../../utilities.js';
@@ -170,7 +170,6 @@ function attachOrders(cntnr, sEvent) {
 
 function buildOrdersTable(orders, eventID, esID, esdID) {
 	sortByProperty(orders, 'school.shortName');
-	console.log(orders);
 	
   	const thead = buildOrdersThead();	
 	const tbodies = buildOrdersTbodies(orders);	
@@ -461,8 +460,9 @@ async function makeBlankOrder() {
 			return;
 		}
 
-			// initialize gender as null
-		let gender = null;
+			// initialize gender as ungendered 
+		let gender = UNGENDERED_ID;
+		console.log('chang', gender);
 			// check if the gender form exists. currently only true for soccer
 		const genderForm = wrapper.querySelector(".genderRadio");
 		if (genderForm) {
@@ -760,11 +760,13 @@ function printTotals() {
 
 			for (const so of esd.schoolOrders) {
 				for (const soi of so.oItems) {
-					const s = soi.item.size.displayChar;
-					divTotals[esd.division.name][s] += soi.quantity;
-					divTotals[esd.division.name].Total += soi.quantity;
-					divTotals['Total'][s] += soi.quantity;
-					divTotals['Total'].Total += soi.quantity;
+					if (soi.item.style.id === DAIRY_STYLE_ID) {
+						const s = soi.item.size.displayChar;
+						divTotals[esd.division.name][s] += soi.quantity;
+						divTotals[esd.division.name].Total += soi.quantity;
+						divTotals['Total'][s] += soi.quantity;
+						divTotals['Total'].Total += soi.quantity;
+					}
 				}
 			}
 		}

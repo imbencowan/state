@@ -691,8 +691,6 @@ function getItemByStyleIDSizeChar(styleID, displayChar) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // generating inventories
-const inventoryStates = ['START', 'END', 'SOLD'];
-
 	// pages parameter allows printing just the start page
 export async function printInventories({ pages = 3, eSites = runtime.stateEvent.eventSites }) {
 		// validate eSites is an array of EventSite objects

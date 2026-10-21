@@ -3,7 +3,7 @@
 
 
     // takes an Array of Divisions, returns a string for display
-export function getDivisionsString(divisions, gender = null) {
+export function getFormattedDivsString(divisions, gender = null) {
     if (!divisions || divisions.length === 0) return '';
 
         // create a map of id -> name (also removes duplicates)
