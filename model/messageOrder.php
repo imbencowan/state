@@ -53,12 +53,12 @@ class MessageOrder extends BasicTableModel {
 	
 	//////////////////////////////////////////////////////
 	// Database functions	
-	public static function getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID) {
-		$query = "SELECT schoolOrderID FROM schoolorders 
-					WHERE eventSiteHasDivisionID = :eshdID AND schoolID = :schoolID";
-		$rows = static::getFromDB($query, [':eshdID' => $eshdID, ':schoolID' => $schoolID]);
-		return !empty($rows) ? $rows : null;
-	}
+	// public static function getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID) {
+	// 	$query = "SELECT schoolOrderID FROM schoolorders 
+	// 				WHERE eventSiteHasDivisionID = :eshdID AND schoolID = :schoolID";
+	// 	$rows = static::getFromDB($query, [':eshdID' => $eshdID, ':schoolID' => $schoolID]);
+	// 	return !empty($rows) ? $rows : null;
+	// }
 	
 	
 	

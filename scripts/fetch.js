@@ -12,13 +12,15 @@ export async function myFetch(request) {
             headers: {'Content-Type': 'application/json'}, 
             body: JSON.stringify(request)
         });
-            // get the response data
+        
+        // get the response data
         const data = await response.json().catch(() => null);
             
             
             // Throw on HTTP-level errors
         if (!response.ok) throw new Error(data?.error || data?.message || response.statusText);
-            // back end error
+            // back end errors
+        if (data === null) throw new Error("Invalid response from server");
         if (data?.success === false) throw new Error(data.message || "Unknown server error");
        
 
@@ -27,7 +29,7 @@ export async function myFetch(request) {
     } catch (error) {
         console.error("Fetch Error:", error.message);
         modal.open("Fetch Error: " + error.message);
-        return null;
+        return { success: false, error: error.message };
     }
 }
 

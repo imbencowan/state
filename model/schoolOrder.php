@@ -123,7 +123,7 @@ class SchoolOrder extends BasicTableModel {
 	}
 	
 	
-	public static function getIDByEventSiteHasDivisionAndSchool(int $eshdID, int $schoolID) {
+	public static function getIDByESDAndSchool(int $eshdID, int $schoolID) {
 		$query = "SELECT schoolOrderID FROM schoolorders 
 					WHERE eventSiteHasDivisionID = :eshdID AND schoolID = :schoolID";
 		$rows = static::getFromDB($query, [':eshdID' => $eshdID, ':schoolID' => $schoolID]);
@@ -153,6 +153,7 @@ class SchoolOrder extends BasicTableModel {
 				$activityID = $order['activityID'];
 				$divisionID = Division::getIDByName($order['division']);
 				$schoolID = School::getIDByName($order['school']);
+if (!$schoolID) Test::logX($order['school']);
 					// get the whole series, we need series->minDiv later
 				$series = EventSeries::getByName($order['series']);
 				$activity = Activity::getByID($activityID);
@@ -203,7 +204,7 @@ class SchoolOrder extends BasicTableModel {
 				
 
 					// check if a schoolOrder already exists
-				$schoolOrderID = self::getIDByEventSiteHasDivisionAndSchool($eshdID, $schoolID);
+				$schoolOrderID = self::getIDByESDAndSchool($eshdID, $schoolID);
 					// if there is no schoolOrder, add it, and return the id for the new row
 				if (!$schoolOrderID) $schoolOrderID = self::addNewOrder($eshdID, $schoolID);
 

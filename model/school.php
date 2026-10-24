@@ -51,6 +51,8 @@ class School extends BasicTableModel {
 			$shortSchoolName = 'Timberline';
 		} elseif ($longSchoolName == 'Highland High School - Pocatello') {
 			$shortSchoolName = 'Highland';
+		// } elseif ($longSchoolName == 'The Ambrose School') {
+		// 	$shortSchoolName = 'Ambrose';
 		} elseif ($longSchoolName == 'Idaho School for the Deaf & the Blind') {
 			$shortSchoolName = 'Idaho School for the Deaf & the Blind';
 		} elseif ($longSchoolName == 'Midvale High School' || $longSchoolName == 'Cambridge High School') {
@@ -58,8 +60,8 @@ class School extends BasicTableModel {
 		} else {
 				// order matters here, we have to do ' High School' after these oddballs, or they won't get caught this way
 					// do not remove "Charter" from the names
-			$remove = [" Lamanna High School", " Jr/Sr High School", " Junior/Senior High School", " High School", 
-							"aratory Academy", " Academy", " School"];
+			$remove = [ " Lamanna High School", " Jr/Sr High School", " Junior/Senior High School", " High School", 
+							"aratory Academy", " Academy", " School", "The " ];
 			$shortSchoolName = str_replace($remove, "", $longSchoolName);
 		}
 		return $shortSchoolName;

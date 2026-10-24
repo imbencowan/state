@@ -13,9 +13,8 @@ class MailAccess {
         $connection = @imap_open($mailbox, self::$email, self::$password);
 
         if ($connection === false) {
-            $msg = 'Connection failed:<br>';
-            echo htmlspecialchars(imap_last_error());
-            exit;
+            Test::logX("IMAP connection failed: " . imap_last_error());
+            throw new ErrorException(imap_last_error() ?: 'IMAP connection failed');
         }
 
         return $connection;

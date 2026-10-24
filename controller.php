@@ -13,6 +13,16 @@
 
 		// make warnings throw rather than silently fail
 	set_error_handler(function (int $severity, string $message, string $file, int $line) {
+			// 'PHP Request Shutdown' errors can occur outside the try/catch, and their error messages corrupt the JSON response
+				// log them and return true to prevent the default error handler from running
+		if (str_starts_with($message, 'PHP Request Shutdown:')) {
+			error_log($message);
+			return true;
+		}
+
+			// checks whether this error's $severity is enabled in PHP's error_reporting() settings // if not, let the default error handler handle it
+		if (!(error_reporting() & $severity)) return false;
+
 		throw new ErrorException($message, 0, $severity, $file, $line);
 	});
 	
