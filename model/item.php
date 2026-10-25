@@ -14,7 +14,8 @@ class Item extends BasicTableModel {
 					'stock' => 'stock',
 					'caseQ' => 'caseQ',
 					'inventoryMin' => 'inventoryMinimum',
-					'inventoryStep' => 'inventoryStep']; 
+					'inventoryStep' => 'inventoryStep',
+					'alu' => 'alu'];
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
 			// $interTable = null, $stopContexts = [])
@@ -37,7 +38,8 @@ class Item extends BasicTableModel {
       public readonly ?Color $color = null,
       public readonly ?Style $style = null,
       public readonly ?Size $size = null,
-      public readonly ?int $stock = 0
+      public readonly ?int $stock = 0,
+      public readonly ?string $alu = null
    ) {}
 
 }

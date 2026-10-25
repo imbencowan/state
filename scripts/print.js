@@ -692,7 +692,7 @@ function getItemByStyleIDSizeChar(styleID, displayChar) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // generating inventories
 	// pages parameter allows printing just the start page
-export async function printInventories({ pages = 3, eSites = runtime.stateEvent.eventSites }) {
+export async function printInventories({ pages = 3, eSites = runtime.stateEvent.eventSites, colorRows = true }) {
 		// validate eSites is an array of EventSite objects
    if (!Array.isArray(eSites) || !eSites.every(es => es instanceof EventSite)) {
       modal.open("Invalid event sites data.");
@@ -705,7 +705,7 @@ export async function printInventories({ pages = 3, eSites = runtime.stateEvent.
 
 		// generate the sheets for each site
 	eSites.forEach((es, i) => {
-		genInventoryPDF(doc, es, pages);
+		genInventoryPDF(doc, es, pages, colorRows);
 			// add a page for each inventory but the last
 		if (i < eSites.length - 1) doc.addPage();
 	});
@@ -714,7 +714,7 @@ export async function printInventories({ pages = 3, eSites = runtime.stateEvent.
 	Helpers.openBlobInNewTab(doc);
 }
 
-function genInventoryPDF(doc, eSite, pages) {
+function genInventoryPDF(doc, eSite, pages, colorRows) {
 	const page = new InventoryPage(doc);
 	const cursor = page.cursor;
 	
@@ -725,7 +725,7 @@ function genInventoryPDF(doc, eSite, pages) {
 		// get the current y so we can reset to it
 	const tableYInit = cursor.y;
 		// build the table for the starting inventory
-	buildInventoryTable(doc, page, cursor, eSite);
+	buildInventoryTable(doc, page, cursor, eSite, colorRows);
 		// reset the y to the top of the table
 	cursor.y = tableYInit;
 	fillInventoryTable(doc, page, cursor, eSite);
@@ -737,13 +737,13 @@ function genInventoryPDF(doc, eSite, pages) {
 			// END page
 		page.addPage();
 		writeInventoryHeader(doc, page, cursor, eSite, 'END');
-		buildInventoryTable(doc, page, cursor, eSite);
+		buildInventoryTable(doc, page, cursor, eSite, colorRows);
 		inventoryEndAddendum(page);
 
 			// SOLD page
 		page.addPage();
 		writeInventoryHeader(doc, page, cursor, eSite, 'SOLD');
-		buildInventoryTable(doc, page, cursor, eSite);
+		buildInventoryTable(doc, page, cursor, eSite, colorRows);
 		inventorySoldAddendum(page, eSite);
 	}
 
@@ -773,7 +773,7 @@ function writeInventoryHeader(doc, page, cursor, eSite, sheet) {
 	page.textToCell({ text: eSite.getEmployeesString(), align: 'right' });
 }
 
-function buildInventoryTable(doc, page, cursor, eSite) {
+function buildInventoryTable(doc, page, cursor, eSite, colorRows) {
 	const invSizeList = sizeList.slice(0, 6);
 
 	const yGridStart = cursor.y + 2;
@@ -806,9 +806,10 @@ function buildInventoryTable(doc, page, cursor, eSite) {
 		page.textToCell({ text: s.code });
 
 		Object.values(s.colors).forEach((c, i) => {
-				// color the row for the garment color // x1, y1, x2, y2
-			doc.setFillColor(c.hex);
+				// color the row for the garment color // set it white if colorRows is false
+			doc.setFillColor(colorRows ? c.hex : '#FFFFFF');
 			const w = page.colsX[11] - page.colsX[page.col];
+				// x1, y1, x2, y2
 			doc.rect(page.colsX[page.col], (page.cursor.y + 2), w, -page.lineStep, "F");
 
 			page.textToCell({ text: c.name });

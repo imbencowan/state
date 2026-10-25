@@ -14,7 +14,7 @@ import { printInventories } from '../../print.js';
    // define the top inventory buttons. what they say, and who they call
 export const topInventoryButtons = [
    { action: "printAllInventoriesPage1", title: "print all starting inventories", icon: "print", 
-      text: " All Page 1", handler: () => printInventories({ pages: 1 }) },
+      text: " All Page 1", handler: () => printInventories({ pages: 1, colorRows: false }) },
    { action: "printAllInventories", title: "print all full inventories", icon: "print", text: " All Full",
       handler: () => printInventories({ pages: 3 }) }
 ];
@@ -25,7 +25,7 @@ export const topInventoryActions = Object.fromEntries(
    // define per site inventory buttons
 const inventorySiteButtons = [
    { action: "printSiteInventoryPage1", icon: "print", title: "print site's starting inventory", text: " Page 1",
-      handler: ({ eSite }) => printInventories({ pages: 1, eSites: [eSite] }) },
+      handler: ({ eSite }) => printInventories({ pages: 1, eSites: [eSite], colorRows: false }) },
    { action: "printSiteInventory", icon: "print", title: "print site's inventory sheets", text: " Full",
       handler: ({ eSite }) => printInventories({ pages: 3, eSites: [eSite] }) },
    { action: "editInventory", icon: "edit", title: "edit inventory", text: " Edit", handler: showEditInventory,

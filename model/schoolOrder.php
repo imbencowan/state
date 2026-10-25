@@ -74,15 +74,18 @@ class SchoolOrder extends BasicTableModel {
 		// // Database Functions
 	public static function updateDue($db, $orderID) {
 		$stmt = $db->prepare("UPDATE schoolorders
-					SET due = (
-						SELECT SUM(a.price * si.sOrderItemsQuantity)
-						FROM sorderitems si
-						JOIN apparel a ON si.itemID = a.itemID
-						WHERE si.schoolOrderID = schoolorders.schoolOrderID
-					)
-					WHERE schoolOrderID = :id");
+			SET due = (
+				SELECT COALESCE(SUM(orderPrice * sOrderItemsQuantity), 0)
+				FROM sorderitems
+				WHERE schoolOrderID = schoolorders.schoolOrderID
+			) + (
+				SELECT COALESCE(SUM(orderPrice * sOrderTransfersQuantity), 0)
+				FROM sordertransfers
+				WHERE schoolOrderID = schoolorders.schoolOrderID
+			)
+			WHERE schoolOrderID = :id");
 		$stmt->execute([':id' => $orderID]);
-		
+
 			// return new due
 		return self::getColForID('due', $orderID);
 	}

@@ -1021,8 +1021,9 @@ export class MessageOrder {
 export class Item {
    static registry = null;
 
-   constructor({ id, price, cost, stock, caseQ, inventoryMin, inventoryStep, color, size, style }) {
+   constructor({ id, price, cost, stock, caseQ, inventoryMin, inventoryStep, color, size, style, alu = null }) {
       this.id = id;
+      this.alu = alu;
       this.price = price;
       this.cost = cost;
       this.stock = stock;
@@ -1034,8 +1035,8 @@ export class Item {
       this.style = Utils.parseToInstance(style, Style);
    }
 
-   static fromValues(id, price, cost, stock, caseQ, inventoryMin, inventoryStep, color, size, style) {
-      return new Item({ id, price, cost, stock, caseQ, inventoryMin, inventoryStep, color, size, style });
+   static fromValues(id, price, cost, stock, caseQ, inventoryMin, inventoryStep, color, size, style, alu = null) {
+      return new Item({ id, price, cost, stock, caseQ, inventoryMin, inventoryStep, color, size, style, alu });
    }
 
    static fromJSON(json) {

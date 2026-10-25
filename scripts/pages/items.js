@@ -20,7 +20,8 @@ const columns = {
    stock:            { hText: "Stock",             value: i => i.stock,                 align: "right",  editable: true },
    caseQ:            { hText: "Case Qty",          value: i => i.caseQ,                 align: "right",  editable: true },
    inventoryMinimum: { hText: "Inventory Minimum", value: i => i.inventoryMin,          align: "right",  editable: true },
-   inventoryStep:    { hText: "Inventory Step",    value: i => i.inventoryStep,         align: "right",  editable: true }
+   inventoryStep:    { hText: "Inventory Step",    value: i => i.inventoryStep,         align: "right",  editable: true },
+   alu:              { hText: "ALU",               value: i => i.alu ?? '',             align: "left",   editable: true }
 };
    // define some titles down here, so the above stays pretty
 columns.mcuCost.btnTitle = "edit our cost";
@@ -29,13 +30,14 @@ columns.stock.btnTitle = "edit stock";
 columns.caseQ.btnTitle = "edit the quantity in a case";
 columns.inventoryMinimum.btnTitle = "edit the minimum quantity for a basic inventory";
 columns.inventoryStep.btnTitle = "edit the amount to increase inventory quantities by";
+columns.alu.btnTitle = "edit ALUs";
 
 const baseColumns = [ 'style', 'color', 'size', 'id' ];
 const startColumns = [ ...baseColumns, 'mcuCost', 'price', 'stock' ];
 
 
    // define which columns get top edit buttons. // same as columns.editable, but i wanted to order them
-const topButtons = [ 'stock', 'mcuCost', 'price', 'caseQ', 'inventoryMinimum', 'inventoryStep' ];
+const topButtons = [ 'stock', 'mcuCost', 'price', 'caseQ', 'inventoryMinimum', 'inventoryStep', 'alu' ];
 
 
 
@@ -321,12 +323,14 @@ function showUpdateItems({ target }) {
 
 function makeTableInput(td) {
 	const input = document.createElement('input');
-		input.type = 'number';
+		input.type = td.dataset.column === 'alu' ? 'text' : 'number';
 		input.name = `stock${td.parentElement.dataset.itemId}`;
 		input.value = td.dataset.oValue;
-		input.min = 0; 
-		input.max = 5000;
-		input.step = 1;
+      if (input.type === 'number') {
+         input.min = 0;
+         input.max = 5000;
+         input.step = 1;
+      }
 	return input;
 }
 
@@ -339,8 +343,10 @@ async function submitUpdateItems({ target }) {
    const updateItems = [];
 
    tds.forEach(td => {
-      const inputValue = Number(td.querySelector('input').value);
-		if (Number(td.dataset.oValue) !== inputValue) {
+      const input = td.querySelector('input');
+      const inputValue = colKey === 'alu' ? input.value : Number(input.value);
+      const originalValue = colKey === 'alu' ? td.dataset.oValue : Number(td.dataset.oValue);
+		if (originalValue !== inputValue) {
 			updateItems.push({
 				itemID: Number(td.parentElement.dataset.itemID), 
 				[colKey]: inputValue,

@@ -52,9 +52,10 @@ class MailAccess {
 
                 if (!empty($attachments)) $results[] = [ 'id' => $emailID, 'submitter' => $submitter, 'attachments' => $attachments ];
             }
-        }
 
-        imap_clearflag_full($mailbox, implode(',', $emailIDs), '\\Seen');
+                // ensure emails remain unread so they can be processed first. markEmailsRead() is called after successful processing
+            imap_clearflag_full($mailbox, implode(',', $emailIDs), '\\Seen');
+        }
 
         imap_close($mailbox);
 
