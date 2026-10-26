@@ -233,7 +233,8 @@ tr.addOnRow {
 }
 
 
-.needTable {
+.needSizeTable,
+.needBoxTable {
 	table-layout: fixed;
 	width: 100%;
 	border: 3px solid black;
@@ -241,8 +242,15 @@ tr.addOnRow {
 	background-color: white;	
 }
 
-.needTable td {
+.needSizeTable td,
+.needBoxTable td {
 	text-align: center;
+}
+
+.boxSymbol {
+	width: 24px;
+	height: 24px;
+	vertical-align: middle;
 }
 
 

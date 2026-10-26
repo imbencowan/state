@@ -6,7 +6,7 @@
    // import helper functions
 import * as Utils from '../utilities.js';
 import { parseWithRegistry } from '../hydration.js';
-import { sizeList, ADULT_HOOD_STYLE_ID, DAIRY_STYLE_ID, DAIRY_COLOR_ID, SCHOOL_NAMES_TRANSFER_ID } from '../constants.js';
+import { sizeList, BOX_QUANTITIES, ADULT_HOOD_STYLE_ID, DAIRY_STYLE_ID, DAIRY_COLOR_ID, SCHOOL_NAMES_TRANSFER_ID } from '../constants.js';
 import { actionFetch } from '../fetch.js';
 import { getFormattedDivsString } from '../formatters.js';
 // DO NOT IMPORT RUNTIME, no circular dependencies.
@@ -130,6 +130,31 @@ export class StateEvent {
       }
 
       return neededSizes;
+   }
+
+   getNeededBoxes() {
+      const boxSizes = Object.keys(BOX_QUANTITIES);
+      const neededBoxes = Object.fromEntries(boxSizes.map(size => [size, 0]));
+      neededBoxes.total = 0;
+
+      for (const es of this.eventSites) {
+         for (const esd of es.esDivisions) {
+            for (const so of esd.schoolOrders) {
+               if (!so.completeness && (so.qualifiers === null || so.getDairyTotal() <= so.qualifiers)) {
+                  let remaining = so.getBoxTotal();
+                  while (remaining > 0) {
+                     const boxSize = boxSizes.find(size => remaining <= BOX_QUANTITIES[size])
+                        ?? boxSizes[boxSizes.length - 1];
+                     neededBoxes[boxSize]++;
+                     neededBoxes.total++;
+                     remaining -= BOX_QUANTITIES[boxSize];
+                  }
+               }
+            }
+         }
+      }
+
+      return neededBoxes;
    }
 	
       // only if they are not blank

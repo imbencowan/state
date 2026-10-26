@@ -1,7 +1,7 @@
 // rendering and interaction functions for the orders tab of the event page
 
 import { runtime } from '../../runtime.js';
-import { sizeList, DAIRY_STYLE_ID, UNGENDERED_ID } from '../../constants.js';
+import { sizeList, BOX_QUANTITIES, DAIRY_STYLE_ID, UNGENDERED_ID } from '../../constants.js';
 import { actionFetch } from '../../fetch.js';
 import { modal, childModal } from '../../modal.js';
 import { buildElement, sortByProperty } from '../../utilities.js';
@@ -55,6 +55,7 @@ export async function attachOrdersPanel(panel, sEvent) {
    await sEvent.loadOrders(runtime.allItems, runtime.allTransfers);
 
    attachOrdersTopButtons(panel);
+   attachNeededBoxTable(panel, sEvent);
    attachNeededTable(panel, sEvent);
    attachOrders(panel, sEvent);
    attachCommentTable(panel, sEvent);
@@ -85,7 +86,7 @@ function attachNeededTable(cntnr, sEvent) {
    const tbody = buildElement("tbody", { children: needRow });
    
       // build the table and a label
-   const t = buildElement("table", { id: "needTable", classes: [ "needTable" ], children: [ thead, tbody ] });
+   const t = buildElement("table", { id: "needSizeTable", classes: [ "needSizeTable" ], children: [ thead, tbody ] });
    const p = buildElement("p", { text: "We still need: " });
 
       // attach to the container
@@ -97,6 +98,82 @@ function attachNeededTable(cntnr, sEvent) {
    if (needSizes.total === 0) div.classList.add('displayNone');
 
    cntnr.appendChild(div);
+}
+
+function attachNeededBoxTable(cntnr, sEvent) {
+   const boxSizes = Object.keys(BOX_QUANTITIES);
+   const labels = { single: 'Single box', double: 'Double box', S: 'Small box', M: 'Medium box', L: 'Large box', XL: 'Extra large box' };
+   const headers = [
+      ...boxSizes.map(size => [size, `${labels[size]} (up to ${BOX_QUANTITIES[size]} shirts)`]),
+      ['total', 'Total']
+   ];
+   const ths = headers.map(([key, label]) => {
+      const th = buildElement("th", { title: label, attrs: { 'aria-label': label } });
+      if (key === 'total') {
+         th.textContent = label;
+      } else {
+         th.appendChild(buildBoxSymbol(key));
+      }
+      return th;
+   });
+   const thead = buildElement("thead", { children: buildElement("tr", { children: ths }) });
+
+   const neededBoxes = sEvent.getNeededBoxes();
+   const tds = headers.map(([key, label]) => {
+      const quantity = neededBoxes[key];
+      return buildElement("td", {
+         title: label,
+         text: quantity === 0 ? "-" : quantity,
+         dataset: { boxSize: key }
+      });
+   });
+   const tbody = buildElement("tbody", { children: buildElement("tr", { children: tds }) });
+   const table = buildElement("table", {
+      id: "needBoxTable",
+      classes: [ "needBoxTable" ],
+      children: [ thead, tbody ]
+   });
+   const p = buildElement("p", { text: "Boxes still needed: " });
+   const div = buildElement("div", { id: "needBoxContainer", children: [ p, table ] });
+
+   if (neededBoxes.total === 0) div.classList.add('displayNone');
+   cntnr.appendChild(div);
+}
+
+function buildBoxSymbol(size) {
+   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+   svg.setAttribute('viewBox', '0 0 14 14');
+   svg.setAttribute('class', 'boxSymbol');
+   svg.setAttribute('aria-hidden', 'true');
+   svg.setAttribute('fill', 'none');
+   svg.setAttribute('stroke', 'currentColor');
+   svg.setAttribute('stroke-width', '1.4');
+   svg.setAttribute('stroke-linecap', 'square');
+
+   const shape = (tag, attrs) => {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for (const [name, value] of Object.entries(attrs)) el.setAttribute(name, value);
+      svg.appendChild(el);
+   };
+
+   if (size === 'single' || size === 'double') {
+      shape('line', { x1: size === 'single' ? 7 : 5, y1: 1, x2: size === 'single' ? 7 : 5, y2: 13 });
+      if (size === 'double') shape('line', { x1: 9, y1: 1, x2: 9, y2: 13 });
+   } else {
+      const bottom = size === 'S' ? 9 : size === 'M' ? 5 : 1;
+      shape('rect', { x: 2, y: bottom, width: 10, height: 13 - bottom });
+      if (size === 'M') shape('line', { x1: 2, y1: 9, x2: 12, y2: 9 });
+      if (size === 'L') {
+         shape('line', { x1: 2, y1: 5, x2: 12, y2: 5 });
+         shape('line', { x1: 2, y1: 9, x2: 12, y2: 9 });
+      }
+      if (size === 'XL') {
+         shape('line', { x1: 2, y1: 1, x2: 12, y2: 13 });
+         shape('line', { x1: 2, y1: 13, x2: 12, y2: 1 });
+      }
+   }
+
+   return svg;
 }
 
 function buildNeedRow(sEvent) {
@@ -1316,6 +1393,7 @@ async function submitSizeEdit({ target, order }) {
 	if (response.success) {
 		order.updateFromJSON(response.data.newOrder);
 		cleanInputRows(rows);
+      refreshNeededTables();
 			// exit edit mode
 		runtime.activeMode = null;
 	}
@@ -1352,12 +1430,16 @@ export async function toggleOrderCompleteness(box, order) {
 			if (completeness) {
 				tbody.classList.remove("unDoneRow", "partDoneRow", "overRow", "unOrderedRow");
 				tbody.classList.add("doneRow");
-					// don't updateNeeded for partDone/overRows. they are not counted in the needed table
-				if (order.completeness < 2) updateNeeded(order);
+					// don't updateNeededSizes for partDone/overRows. they are not counted in the needed table
+				if (order.completeness < 2) {
+					updateNeededSizes(order);
+					updateNeededBoxes(order);
+				}
 			} else {
 				tbody.classList.remove("doneRow", "partDoneRow");
 				tbody.classList.add("unDoneRow");
-				updateNeeded(order, false);
+				updateNeededSizes(order, false);
+				updateNeededBoxes(order, false);
 			}
 				// do this last
 			order.completeness = completeness;
@@ -1368,7 +1450,7 @@ export async function toggleOrderCompleteness(box, order) {
 }
 
 	// updates a one row table at the top of the page displaying how many more of each size are needed
-function updateNeeded(order, add = true) {
+function updateNeededSizes(order, add = true) {
 	const nCntnr = document.getElementById('needContainer');
 	const tds = nCntnr.querySelectorAll('tbody tr td');
 	const totalCell = Array.from(tds).find(td => td.title === "total");
@@ -1406,6 +1488,55 @@ function updateNeeded(order, add = true) {
 	if (totalCell) totalCell.textContent = total;
 		// if total needed == 0, hide the table
 	if (total === 0) nCntnr.classList.add('hidden');
+}
+
+function updateNeededBoxes(order, add = true) {
+   const container = document.getElementById('needBoxContainer');
+   const cells = container.querySelectorAll('tbody tr td');
+   const boxCounts = Object.fromEntries(Object.keys(BOX_QUANTITIES).map(size => [size, 0]));
+   boxCounts.total = 0;
+   let remaining = order.getBoxTotal();
+
+   while (remaining > 0) {
+      const boxSizes = Object.keys(BOX_QUANTITIES);
+      const boxSize = boxSizes.find(size => remaining <= BOX_QUANTITIES[size])
+         ?? boxSizes[boxSizes.length - 1];
+      boxCounts[boxSize]++;
+      boxCounts.total++;
+      remaining -= BOX_QUANTITIES[boxSize];
+   }
+
+   const direction = add ? -1 : 1;
+   let total = 0;
+   for (const cell of cells) {
+      const key = cell.dataset.boxSize;
+      const current = Number.parseInt(cell.textContent, 10) || 0;
+      const updated = current + (boxCounts[key] ?? 0) * direction;
+      cell.textContent = updated === 0 ? "-" : updated;
+      if (key === 'total') total = updated;
+   }
+
+   container.classList.toggle('displayNone', total === 0);
+}
+
+function refreshNeededTables() {
+   const neededSizes = runtime.stateEvent.getNeededSizes();
+   const sizeContainer = document.getElementById('needContainer');
+   for (const cell of sizeContainer.querySelectorAll('tbody tr td')) {
+      const quantity = neededSizes[cell.title];
+      cell.textContent = quantity === 0 ? '-' : quantity;
+   }
+   const noNeededSizes = neededSizes.total === 0;
+   sizeContainer.classList.toggle('displayNone', noNeededSizes);
+   sizeContainer.classList.toggle('hidden', noNeededSizes);
+
+   const neededBoxes = runtime.stateEvent.getNeededBoxes();
+   const boxContainer = document.getElementById('needBoxContainer');
+   for (const cell of boxContainer.querySelectorAll('tbody tr td')) {
+      const quantity = neededBoxes[cell.dataset.boxSize];
+      cell.textContent = quantity === 0 ? '-' : quantity;
+   }
+   boxContainer.classList.toggle('displayNone', neededBoxes.total === 0);
 }
 
 

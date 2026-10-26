@@ -1,4 +1,4 @@
-import { sizeList } from '../constants.js';
+import { sizeList, BOX_QUANTITIES } from '../constants.js';
 
 //these are used to structure output for a state event, mostly in the form of pdfs
 
@@ -255,14 +255,14 @@ export class Label {
         if (boxTotal === 0) {
                 // don't add a symbol to a blank order
             return;
-        } else if (boxTotal < 3 && boxTotal > 0) {
+        } else if (boxTotal < BOX_QUANTITIES.S && boxTotal > 0) {
             this.doc.line(boxX, boxY, boxX, (boxY - boxH));
-            if (boxTotal > 1) this.doc.line((boxX + 1.5), boxY, (boxX + 1.5), (boxY - boxH));
-        } else if (boxTotal < 20 && boxTotal > 0) {
+            if (boxTotal == BOX_QUANTITIES.double) this.doc.line((boxX + 1.5), boxY, (boxX + 1.5), (boxY - boxH));
+        } else if (boxTotal <= BOX_QUANTITIES.L && boxTotal > 0) {
                 // mid size boxes, drawn sequentially as needed to represent s, m, l
             boxRect(this.doc, boxW, (boxH / 3));
-            if (boxTotal > 6) boxRect(this.doc, boxW, (boxH * 2 / 3));
-            if (boxTotal > 14) boxRect(this.doc, boxW, boxH);
+            if (boxTotal > BOX_QUANTITIES.S) boxRect(this.doc, boxW, (boxH * 2 / 3));
+            if (boxTotal > BOX_QUANTITIES.M) boxRect(this.doc, boxW, boxH);
         } else {
             const w = boxW * 1.3;
             boxRect(this.doc, w, boxH);

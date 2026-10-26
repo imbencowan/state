@@ -14,6 +14,9 @@ export const SCHOOL_NAMES_TRANSFER_ID = 9;
 export const UNGENDERED_ID = 3;
 
 
+export const BOX_QUANTITIES = { single: 1, double: 2, S: 6, M: 14, L: 19, XL: 28 };
+
+
 
 
 
