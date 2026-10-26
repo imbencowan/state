@@ -1,6 +1,5 @@
 import { ihsaaSizeList } from './constants.js';
 import { actionFetch, myFetch } from './fetch.js';
-import { ActionRequest, InputOrder } from './models/other-classes.js';
 import { runtime } from './runtime.js';
 import { modal, childModal } from './modal.js';
 import { buildElement } from './utilities.js';
@@ -18,9 +17,8 @@ export async function submitOrderFiles() {
 		// read the files and build orders from them
 	let orders = await readFiles(files);
 	
-		// constructor(action, actionClass, data)
-	let request = new ActionRequest('uploadOrders', 'SchoolOrder', { 'orders': orders });
-	let responseJSON = await myFetch(request);
+		// (action, actionClass, data)
+	let responseJSON = await actionFetch('uploadOrders', 'SchoolOrder', { 'orders': orders });
 
 	if (!responseJSON) return;
 
@@ -274,8 +272,7 @@ export async function getEmailOrders() {
 		// load a look up
 	await runtime.allActivities.load();
 
-	let request = new ActionRequest('getEmailOrders', 'MailAccess', {});
-	let response = await myFetch(request);
+	let response = await actionFetch('getEmailOrders', 'MailAccess', {});
 	if (response.success) {
 		const emails = response.data;
 		console.log('emails', emails);
@@ -288,13 +285,11 @@ export async function getEmailOrders() {
 			}
 		}
 
-		request = new ActionRequest('uploadOrders', 'SchoolOrder', { 'orders': orders });
-		response = await myFetch(request);
+		response = await actionFetch('uploadOrders', 'SchoolOrder', { 'orders': orders });
 
 		if (response.success) {
 			const emailIDs = emails.map(email => email.id);
-			request = new ActionRequest('markEmailsRead', 'MailAccess', { emailIDs });
-			await myFetch(request);
+			await actionFetch('markEmailsRead', 'MailAccess', { emailIDs });
 
 			modal.open(buildOrderUploadResults(response.ordersAdded, response.preexistingOrders));
 		}
