@@ -455,7 +455,7 @@ export function buildFillTable(eSite) {
 }
 
 function buildFillTHead() {
-   const cols = [ "Style", "Color", "Size", "Starting", "Ending", "Added", "Mess Ups", "Dairy", "Sold" ];
+   const cols = [ "Style", "Color", "Size", "Starting", "Ending", "Added/Removed", "Mess Ups", "Dairy", "Sold" ];
    const ths = [];
 
 	cols.forEach(c => {
@@ -549,7 +549,7 @@ function buildItemFillTDs(tds, invItem, rowCount, row) {
 				dataset: { fillType: 'startQ', oValue: startQ } }));
 
 		// input columns
-	const inputCols = [ 'endQ', 'addedQ', 'writeOffQ', 'sponsorQ' ];
+	const inputCols = [ 'endQ', 'addOrRemoveQ', 'writeOffQ', 'sponsorQ' ];
 	inputCols.forEach((col, i) => {
 			// make an empty td in the dairy column for all but adult hoods
 		if ((col == 'sponsorQ') && ((invItem.item.style.id != ADULT_HOOD_STYLE_ID) 
@@ -586,7 +586,7 @@ function makeFillInput(oValue, type) {
 function updateFillRow(row) {
 	const start = row.querySelector('[data-fill-type="startQ"]')?.textContent ?? 0;
 	const end = row.querySelector('[data-fill-type="endQ"]')?.value ?? 0;
-	const added = row.querySelector('[data-fill-type="addedQ"]')?.value ?? 0;
+	const added = row.querySelector('[data-fill-type="addOrRemoveQ"]')?.value ?? 0;
 	const removed = row.querySelector('[data-fill-type="writeOffQ"]')?.value ?? 0;
 	const dairy = row.querySelector('[data-fill-type="sponsorQ"]')?.value ?? 0;
 
@@ -615,7 +615,7 @@ export async function submitFillInventory({ target }) {
 
 	for (const row of rows) {
 		const end = row.querySelector('[data-fill-type="endQ"]');
-		const added = row.querySelector('[data-fill-type="addedQ"]');
+		const added = row.querySelector('[data-fill-type="addOrRemoveQ"]');
 		const writeOff = row.querySelector('[data-fill-type="writeOffQ"]');
 		const dairy = row.querySelector('[data-fill-type="sponsorQ"]');
 
@@ -630,7 +630,7 @@ export async function submitFillInventory({ target }) {
 		update.push({
 			eventSiteInventoryID: row.dataset.id,
 			endQ: getValue(end),
-			addedQ: getValue(added),
+			addOrRemoveQ: getValue(added),
 			writeOffQ: getValue(writeOff),
 			sponsorQ: getValue(dairy),
 		});
@@ -761,7 +761,7 @@ async function submitAddItems(e, form) {
 				itemID: it.transferID,
 				startQ: it.quantity,
 				endQ: null,
-				addedQ: 0,
+				addOrRemoveQ: 0,
 				writeOffQ: 0,
 				sponsorQ: 0,
 				price: it.price,

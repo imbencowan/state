@@ -340,12 +340,15 @@ export class Series {
 
 export class EventSite {
    constructor({ id, eventID, site, siteID, managerName, gender, vehicles, employees, inventory, transfers, costs,
-               plusSizePricing, esDivisions = [] }) {
+               plusSizePricing, esDivisions = [], card = 0, cash = 0, checks = 0 }) {
 		this.id = id;
 		this.eventID = eventID;
 		this.site = parseWithRegistry(site, Site, siteID);
 		this.managerName = managerName;
       this.gender = gender;
+      this.card = card;
+      this.cash = cash;
+      this.checks = checks;
 		this.vehicles = Utils.parseToInstancesArr(vehicles, Vehicle);
       this.employees = Utils.parseToInstancesArr(employees, EventSiteEmployee);
       this.inventory = Utils.parseToInstancesArr(inventory, InventoryItem);
@@ -359,9 +362,9 @@ export class EventSite {
 	}
 
    static fromValues(id, eventID, site, siteID, managerName, gender, vehicles, employees, inventory, transfers, 
-                     costs, plusSizePricing, esDivisions = []) {
+                     costs, plusSizePricing, esDivisions = [], card = 0, cash = 0, checks = 0) {
       return new EventSite({ id, eventID, site, siteID, managerName, gender, vehicles, employees, inventory, 
-                           transfers, costs, plusSizePricing, esDivisions });
+                           transfers, costs, plusSizePricing, esDivisions, card, cash, checks });
    }
 
    static fromJSON(json) {
@@ -1078,13 +1081,13 @@ export class Item {
 }
 
 export class InventoryItem {
-   constructor({ id, eventSiteID, itemID, startQ, endQ, addedQ, writeOffQ, sponsorQ, price, cost, item }) {
+   constructor({ id, eventSiteID, itemID, startQ, endQ, addOrRemoveQ, writeOffQ, sponsorQ, price, cost, item }) {
 		this.id = id;
 		this.eventSiteID = eventSiteID;
 		this.itemID = itemID;
       this.startQ = startQ;
       this.endQ = endQ;
-      this.addedQ = addedQ;
+      this.addOrRemoveQ = addOrRemoveQ;
       this.writeOffQ = writeOffQ;
       this.sponsorQ = sponsorQ;
       this.price = price;
@@ -1092,8 +1095,8 @@ export class InventoryItem {
       this.item = parseWithRegistry(item, Item, itemID);   
 	}
 
-   static fromValues(id, eventSiteID, itemID, startQ, endQ, addedQ, removedQ, price, cost, item) {
-      return new InventoryItem({ id, eventSiteID, itemID, startQ, endQ, addedQ, removedQ, price, cost, item });
+   static fromValues(id, eventSiteID, itemID, startQ, endQ, addOrRemoveQ, writeOffQ, sponsorQ, price, cost, item) {
+      return new InventoryItem({ id, eventSiteID, itemID, startQ, endQ, addOrRemoveQ, writeOffQ, sponsorQ, price, cost, item });
    }
 
    static fromJSON(json) {
@@ -1103,7 +1106,7 @@ export class InventoryItem {
    getSoldQ() {
       if (this.endQ == null) return 0;
 
-      return this.startQ + this.addedQ - this.endQ - this.writeOffQ - this.sponsorQ;
+      return this.startQ + this.addOrRemoveQ - this.endQ - this.writeOffQ - this.sponsorQ;
    }
 }
 

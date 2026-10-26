@@ -242,6 +242,14 @@ tr.addOnRow {
 	background-color: white;	
 }
 
+.needSizeTable {
+	background-color: #dddddd;
+}
+
+.needBoxTable {
+	background-color: #ead9bf;
+}
+
 .needSizeTable td,
 .needBoxTable td {
 	text-align: center;
@@ -575,6 +583,10 @@ tr.addOnRow {
 	color: black;
 }
 
+.sitePaymentsTable {
+	margin-top: 1rem;
+}
+
 .reportTable td {
 	border-top: 1px solid black;
 	padding: 0 .6rem;
@@ -598,6 +610,17 @@ tr.addOnRow {
 	grid-template-columns: max-content max-content max-content;
 	align-items: center;
 	gap: .5em 1em;
+}
+
+#editPaymentsForm fieldset {
+	display: grid;
+	grid-template-columns: max-content max-content;
+	align-items: center;
+	gap: .5em 1em;
+}
+
+#editPaymentsForm legend {
+	grid-column: 1 / -1;
 }
 
 #addEventsTable tbody td {

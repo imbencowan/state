@@ -16,7 +16,10 @@ class EventSite extends BasicTableModel {
 					'cost3X' => 'cost3X',
 					'price3X' => 'price3X',
 					'cost4X' => 'cost4X',
-					'price4X' => 'price4X'];
+					'price4X' => 'price4X',
+					'card' => 'card',
+					'cash' => 'cash',
+					'checks' => 'checks'];
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
 			// $interTable = null, $stopContexts = [], $loadSeparate = false)
@@ -58,7 +61,10 @@ class EventSite extends BasicTableModel {
 			// public, not readonly, so 
 		public array $inventory = [],
 		public readonly array $transfers = [],
-		public readonly array $costs = []
+		public readonly array $costs = [],
+		public readonly float $card = 0,
+		public readonly float $cash = 0,
+		public readonly float $checks = 0
    ) {
 		// $this->esDivisions = self::organizeDivisions($esDivisions);
 	}
@@ -77,6 +83,9 @@ class EventSite extends BasicTableModel {
 			'inventory' => $this->inventory,
 			'transfers' => $this->transfers,
 			'costs' => $this->costs,
+			'card' => $this->card,
+			'cash' => $this->cash,
+			'checks' => $this->checks,
 			'plusSizePricing' => $this->getPlusSizePricing()
 		];
 	}
@@ -201,6 +210,32 @@ class EventSite extends BasicTableModel {
 			}
 		}
 		return 'made it to the server function';
+	}
+
+	public static function updatePayments(array $updates): bool {
+		$rows = [];
+		foreach ($updates as $update) {
+			if (!isset($update['eventSiteID'])) {
+				throw new InvalidArgumentException('Missing eventSiteID for payment update.');
+			}
+
+			$row = ['eventSiteID' => (int)$update['eventSiteID']];
+			foreach (['card', 'cash', 'checks'] as $paymentType) {
+				if (!isset($update[$paymentType]) || !is_numeric($update[$paymentType])) {
+					throw new InvalidArgumentException("Invalid payment amount for $paymentType.");
+				}
+
+				$amount = (float)$update[$paymentType];
+				if (!is_finite($amount) || $amount < 0) {
+					throw new InvalidArgumentException("Invalid payment amount for $paymentType.");
+				}
+				$row[$paymentType] = $amount;
+			}
+
+			$rows[] = $row;
+		}
+
+		return self::updateRowsByIDs($rows);
 	}
 
 	public static function editEventSiteInventory(int $eventSiteID, $updateItems = [], $updateTransfers = []) {

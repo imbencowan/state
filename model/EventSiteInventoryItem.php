@@ -10,17 +10,17 @@ class EventSiteInventoryItem extends BasicTableModel {
 		// formatted 'propertyName' => 'columnName'
    protected static function getColumns(): array { 
 		return [
-         'id' => 'eventSiteInventoryID', 
-         'eventSiteID' => 'eventSiteID', 
-         'itemID' => 'itemID',
-         'startQ' => 'startQ',
-         'endQ' => 'endQ',
-         'addedQ' => 'addedQ',
-         'writeOffQ' => 'writeOffQ', 
+			'id' => 'eventSiteInventoryID', 
+			'eventSiteID' => 'eventSiteID', 
+			'itemID' => 'itemID',
+			'startQ' => 'startQ',
+			'endQ' => 'endQ',
+			'addOrRemoveQ' => 'addOrRemoveQ',
+			'writeOffQ' => 'writeOffQ', 
 			'sponsorQ' => 'sponsorQ',
-         'price' => 'price',
+			'price' => 'price',
 			'cost' => 'mcuCost'
-      ]; 
+]; 
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
 			// $interTable = null, $stopContexts = [])
@@ -33,12 +33,12 @@ class EventSiteInventoryItem extends BasicTableModel {
 		public readonly ?int $id,
 		public readonly int $eventSiteID,
 		public readonly int $itemID,
-      public readonly ?int $startQ,
-      public readonly ?int $endQ = null,
-      public readonly int $addedQ = 0,
-      public readonly int $writeOffQ = 0,
+		public readonly ?int $startQ,
+		public readonly ?int $endQ = null,
+		public readonly int $addOrRemoveQ = 0,
+		public readonly int $writeOffQ = 0,
 		public readonly int $sponsorQ = 0,
-      public readonly ?float $price = null,
+		public readonly ?float $price = null,
 		public readonly ?float $cost = null,
 		public readonly ?Item $item = null
 	) {}

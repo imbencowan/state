@@ -22,6 +22,8 @@ const resultsSiteButtons = [
       handler: showEditCostAndPrice, submitHandler: submitEditCostAndPrice, cancelHandler: cancelEditCostAndPrice },
    { action: "updateCost/Price", title: "update cost/prices from default item data", icon: "refresh", text: "Cost/Price", 
       handler: updateCostAndPrice },
+   { action: "editPayments", title: "edit site payment totals", icon: "edit", text: " Payments",
+      handler: showEditPayments },
    { action: "printResults", title: "print site results", icon: "print", text: " Results",
       handler: printSiteResults }
 ];
@@ -30,9 +32,13 @@ export const resultsSiteActions = makeButtonActionMap(resultsSiteButtons);
 
 const resultsTopButtons = [
    { action: "printEventItemsSold", title: "print items sold for the event", icon: "print",
-      text: " Items Sold", handler: printEventItemsSold }
+      text: " Items Sold", handler: printEventItemsSold },
+   { action: "editAllPayments", title: "edit payment totals for all sites", icon: "edit",
+      text: " All Payments", handler: showEditPayments }
 ];
 export const resultsTopActions = makeButtonActionMap(resultsTopButtons);
+
+
 
 
 export async function attachResultsPanel(panel, sEvent) {
@@ -55,10 +61,11 @@ export async function attachResultsPanel(panel, sEvent) {
          const siteH2 = buildElement("h2", { text: hTxt, dataset: { eventSiteId: es.id } });
          const btns = attachSiteBtns(es.id);
          const tbl = buildSiteTable(es);
+         const paymentsTable = buildSitePaymentsTable(es);
    
             
             // stick them in a div in the panel
-         panel.appendChild(buildElement("div", { children: [ siteH2, btns, tbl ] }));
+         panel.appendChild(buildElement("div", { children: [ siteH2, btns, tbl, paymentsTable ] }));
       });
 }
 
@@ -79,6 +86,31 @@ function buildSiteTable(es) {
    const tbody = buildSiteTbody(es);
 
    return buildElement("table", { classes: 'reportTable', children: [ thead, tbody ], dataset: { eventSiteID: es.id } });
+}
+
+function buildSitePaymentsTable(es) {
+   const headers = [ "Card $", "Cash $", "Checks $", "Total $" ];
+   const thead = buildElement("thead", {
+      children: buildElement("tr", {
+         children: headers.map(text => buildElement("th", { text }))
+      })
+   });
+   const total = Number(es.card ?? 0) + Number(es.cash ?? 0) + Number(es.checks ?? 0);
+   const values = [es.card, es.cash, es.checks, total];
+   const tbody = buildElement("tbody", {
+      children: buildElement("tr", {
+         children: values.map(value =>
+            buildElement("td", { text: formatCurrency(Number(value ?? 0)) })
+         )
+      })
+   });
+
+   return buildElement("table", {
+      id: `sitePaymentsTable-${es.id}`,
+      classes: ["reportTable", "sitePaymentsTable"],
+      children: [thead, tbody],
+      dataset: { eventSiteID: es.id }
+   });
 }
 
 function buildSiteThead() {
@@ -192,7 +224,8 @@ function makeRow(name, sold, cost, price, lost, first, total, rowData) {
    const lostTotal = (lost) ? (lost * cost) : 0;
    total.lost += lostTotal;
    total.cost += tCost;
-   if (name != 'school names') total.resale += tResale;
+   // if (name != 'school names') total.resale += tResale;
+   total.resale += tResale;
    total.profit += tProfit;
       // if this is the first row, assign a class for a thicker border
    const classes = first ? ['topRow'] : [];
@@ -279,6 +312,82 @@ function printEventItemsSold() {
    const tableName = `${runtime.stateEvent.startDate.getFullYear()} ${runtime.stateEvent.series.name} Items Sold`;
 
    printAutoTable(headers, rows, tableName);
+}
+
+function showEditPayments({ target }) {
+   const eventSites = target.dataset.eventSiteID
+      ? [runtime.stateEvent.getEventSiteByID(target.dataset.eventSiteID)]
+      : runtime.stateEvent.eventSites;
+   const form = buildElement("form", { id: "editPaymentsForm" });
+   form.appendChild(buildElement("p", { text: "Enter payment totals for each site:" }));
+
+   for (const eSite of eventSites) {
+      const legend = buildElement("legend", {
+         text: `${eSite.site.name} ${eSite.getDivisionsString()}`
+      });
+      const fields = ["card", "cash", "checks"].flatMap(paymentType => {
+         const inputID = `${eSite.id}-${paymentType}`;
+         const input = buildElement("input", {
+            attrs: {
+               type: "number",
+               id: inputID,
+               name: inputID,
+               value: eSite[paymentType] ?? 0,
+               min: 0,
+               step: 0.01,
+               required: true
+            }
+         });
+         const label = buildElement("label", {
+            text: `${paymentType[0].toUpperCase()}${paymentType.slice(1)}:`,
+            attrs: { for: inputID }
+         });
+         return [label, input];
+      });
+      form.appendChild(buildElement("fieldset", { children: [legend, ...fields] }));
+   }
+
+   form.append(
+      buildElement("button", { text: "Save Payments", attrs: { type: "submit" } }),
+      buildElement("button", { text: "Cancel", attrs: { type: "button" }, on: { click: modal.close } })
+   );
+   form.addEventListener("submit", event => submitEditPayments(event, form, eventSites));
+   modal.open(form, eventSites.length > 1 ? "wide" : "");
+}
+
+async function submitEditPayments(event, form, eventSites) {
+   event.preventDefault();
+
+   const updates = [];
+   for (const eSite of eventSites) {
+      const paymentUpdate = { eventSiteID: eSite.id };
+      let hasChanges = false;
+      for (const paymentType of ["card", "cash", "checks"]) {
+         const input = form.elements.namedItem(`${eSite.id}-${paymentType}`);
+         const value = Number(input.value);
+         paymentUpdate[paymentType] = value;
+         if (value !== Number(eSite[paymentType] ?? 0)) hasChanges = true;
+      }
+      if (hasChanges) updates.push(paymentUpdate);
+   }
+
+   if (updates.length === 0) {
+      modal.close();
+      return;
+   }
+
+   const response = await actionFetch("updatePayments", "EventSite", { updates });
+   if (!response.success) return;
+
+   for (const update of updates) {
+      const eSite = runtime.stateEvent.getEventSiteByID(update.eventSiteID);
+      eSite.card = update.card;
+      eSite.cash = update.cash;
+      eSite.checks = update.checks;
+      const table = document.getElementById(`sitePaymentsTable-${eSite.id}`);
+      table?.replaceWith(buildSitePaymentsTable(eSite));
+   }
+   modal.close();
 }
 
 
