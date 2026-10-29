@@ -62,9 +62,14 @@ export function makeItemLoader() {
       getItemsByStyle(styleID) {
             // get all sizes for a style/color combo
          const styleByColor = styleColorSizeLookup?.[styleID] ?? {};
-         console.log(styleByColor);
 
          return styleByColor;
+      },
+
+      getItemsByStyleColor(styleID, colorID) {
+            // get all sizes for a style/color combo
+         const itemsByStyleColor = styleColorSizeLookup?.[styleID]?.[colorID] ?? {};
+         return Object.values(itemsByStyleColor);
       },
 
       async refresh() {

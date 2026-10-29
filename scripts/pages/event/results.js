@@ -53,6 +53,7 @@ export async function attachResultsPanel(panel, sEvent) {
       classes: "buttonContainer",
       children: buildElement("h1", { children: topButtons })
    }));
+   panel.appendChild(buildEventPaymentsTable(sEvent));
 
       // for each EventSite
       sEvent.eventSites.forEach(es => {
@@ -110,6 +111,30 @@ function buildSitePaymentsTable(es) {
       classes: ["reportTable", "sitePaymentsTable"],
       children: [thead, tbody],
       dataset: { eventSiteID: es.id }
+   });
+}
+
+function buildEventPaymentsTable(sEvent) {
+   const headers = [ "Cash $", "Card $", "Checks $", "Total $" ];
+   const thead = buildElement("thead", {
+      children: buildElement("tr", {
+         children: headers.map(text => buildElement("th", { text }))
+      })
+   });
+   const totals = sEvent.getPaymentTotals();
+   const total = totals.cash + totals.card + totals.checks;
+   const tbody = buildElement("tbody", {
+      children: buildElement("tr", {
+         children: [totals.cash, totals.card, totals.checks, total].map(value =>
+            buildElement("td", { text: formatCurrency(value) })
+         )
+      })
+   });
+
+   return buildElement("table", {
+      id: "eventPaymentsTable",
+      classes: ["reportTable", "eventPaymentsTable"],
+      children: [thead, tbody]
    });
 }
 
@@ -308,7 +333,7 @@ function printSiteResults({ target }) {
 
 function printEventItemsSold() {
    const headers = [ "Item", "Style", "Color", ...sizeList, "Total" ];
-   const rows = runtime.stateEvent.getItemsSoldByStyleAndColor();
+   const rows = runtime.stateEvent.getRowsForItemsSoldByStyleAndColor();
    const tableName = `${runtime.stateEvent.startDate.getFullYear()} ${runtime.stateEvent.series.name} Items Sold`;
 
    printAutoTable(headers, rows, tableName);
@@ -387,6 +412,7 @@ async function submitEditPayments(event, form, eventSites) {
       const table = document.getElementById(`sitePaymentsTable-${eSite.id}`);
       table?.replaceWith(buildSitePaymentsTable(eSite));
    }
+   document.getElementById("eventPaymentsTable")?.replaceWith(buildEventPaymentsTable(runtime.stateEvent));
    modal.close();
 }
 
@@ -440,7 +466,7 @@ function showEnterSoldTransfers({ target }) {
 
       // fill labels/inputs in the form
    const fieldset = makeLabelInputList({ list: listTransfers, getName: (t => t.transfer.transferName), 
-                                          getID: (t => t.transfer.id) });
+                                             getID: (t => t.transfer.id), getValue: (t => t.soldQ ?? 0) });
    frm.appendChild(fieldset);
 
       // make a label, a button, put them in the modal

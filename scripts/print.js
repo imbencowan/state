@@ -797,8 +797,8 @@ function buildInventoryTable(doc, page, cursor, eSite, colorRows) {
 
 		// make each garment style's row. style name, styleCode, color, sizes, total
 	for (const s of structInventory.garments) {
-		const youth = (s.sizingCategoryID === 2);
-		const align = (youth) ? 'right' : 'left';
+			// align youth style cell right, to differentiate them
+		const align = (s.sizingCategoryID === 2) ? 'right' : 'left';
 
 		page.hr(.4);
 		page.newLine();
@@ -814,16 +814,6 @@ function buildInventoryTable(doc, page, cursor, eSite, colorRows) {
 
 			page.textToCell({ text: c.name });
 
-				// skip the Small column for youth hoods
-			if (s.id === 7) page.textToCell({ text: '---' });
-
-				// shift the cell over to '---' non existent youth sizes
-			page.col += Object.keys(c.sizes).length;
-				// '---' non existent youth sizes
-			if (youth) {
-				for (; page.col < 10;) { page.textToCell({ text: '---' }); }
-			}
-
 				// if there are multiple colors, start the next color at column 3
 			if (i < Object.keys(s.colors).length - 1) {
 				page.hr(null, page.colsX[3]);
@@ -837,8 +827,9 @@ function buildInventoryTable(doc, page, cursor, eSite, colorRows) {
 	page.hr();
 		// vertical grid lines
 	const ySizesBreak = (cursor.y + 2);
-	page.colsX.forEach(x => {
-		doc.line(x, yGridStart, x, ySizesBreak);
+		// skip the first column coordinate set at x = 0
+	page.colsX.slice(1).forEach(x => {
+		if (x !== 0) doc.line(x, yGridStart, x, ySizesBreak);
 	});
 
 		// a row for garments total
@@ -866,6 +857,8 @@ function buildInventoryTable(doc, page, cursor, eSite, colorRows) {
 }
 
 function fillInventoryTable(doc, page, cursor, eSite) {
+	const inventorySizeList = sizeList.slice(0, -1);
+	console.log(inventorySizeList);
 	page.newLine();
 		// a small step to divide the head of the table
 	cursor.y += 1.5;
@@ -883,13 +876,13 @@ function fillInventoryTable(doc, page, cursor, eSite) {
 			page.col = 4;
 			let total = 0;
 
-				// skip the Small column for youth hoods
-			if (s.id === 7) ++page.col;
+				// put in values for each size			
+			inventorySizeList.forEach(s => {
+				const sizeMatch = c.sizes[s];
+				const txt = c.sizes[s]?.startQ ?? '---';
+				page.textToCell({ text: txt });
 
-				// put in values for each size
-			Object.values(c.sizes).forEach(z => {
-				page.textToCell({ text: z.startQ });
-				total += z.startQ;
+				total += sizeMatch?.startQ ?? 0;
 			});
 				// put in the total
 			page.col = 10;

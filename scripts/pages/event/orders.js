@@ -1,7 +1,7 @@
 // rendering and interaction functions for the orders tab of the event page
 
 import { runtime } from '../../runtime.js';
-import { sizeList, BOX_QUANTITIES, DAIRY_STYLE_ID, UNGENDERED_ID } from '../../constants.js';
+import { sizeList, BOX_QUANTITIES, DAIRY_STYLE_ID, DAIRY_COLOR_ID, UNGENDERED_ID } from '../../constants.js';
 import { actionFetch } from '../../fetch.js';
 import { modal, childModal } from '../../modal.js';
 import { buildElement, sortByProperty } from '../../utilities.js';
@@ -826,6 +826,9 @@ function showAllSchoolsAZ() {
 
 
 function printTotals() {
+	console.log(runtime.allItems.getSync());
+	const dairyShirts = runtime.allItems.getItemsByStyleColor(DAIRY_STYLE_ID, DAIRY_COLOR_ID);
+	console.log(dairyShirts);
 	const sizeObj = { Total: 0 };
 	for (const s of sizeList) { sizeObj[s] = 0; }
 
@@ -849,7 +852,16 @@ function printTotals() {
 		}
 	}
 
-	const headers = [ '', ...sizeList, 'Total' ];
+		// initialize with an empty cell
+	const headers = [ '' ];
+		// fill with each size and it's alu
+	for (const s of sizeList) {
+		const alu = dairyShirts.find(item => item.size.displayChar === s)?.alu || '';
+		console.log(alu);
+		headers.push(s + '\n' + alu); 
+	}
+		// a final cell for the total column
+	headers.push('Total');
 
 	const rows = [];
 	for (const [key, value] of Object.entries(divTotals)) {
@@ -1463,7 +1475,6 @@ function updateNeededSizes(order, add = true) {
 	const teamStyle = order.getTeamStyle();
 	const sizeMap = Object.values(teamStyle.colors)[0].sizeMap;
 	for (const [sChar, soi] of Object.entries(sizeMap)) {
-		console.log(sChar, soi);
 		const match = Array.from(tds).find(td => td.title === sChar);
       if (match) {
          let current = parseInt(match.textContent.trim(), 10);
@@ -1567,15 +1578,155 @@ function showMoreRowOptions({ order }) {
 		// set so modal function can access
 	runtime.activeOrder = order
 
-	const wrapper = document.createElement('div');
+	const qualifiersInput = buildElement("input", {
+		id: "orderQualifiers",
+		attrs: {
+			type: "number",
+			name: "qualifiers",
+			min: 0,
+			max: 4000,
+			step: 1,
+			required: true,
+			value: order.qualifiers ?? 0
+		}
+	});
+	const qualifiersForm = buildElement("form", {
+		children: [
+			buildElement("label", { text: "Qualifiers: ", attrs: { for: "orderQualifiers" } }),
+			qualifiersInput,
+			buildElement("button", { text: "Update Qualifiers", attrs: { type: "submit" } })
+		]
+	});
+	qualifiersForm.addEventListener("submit", event => submitQualifiersEdit(event, order, qualifiersInput));
 
-	// if (order.hasAddOns())
+	const paidButton = buildElement("button", {
+		text: Number(order.paid) === 1 ? "Mark as unpaid" : "Mark as paid",
+		attrs: { type: "button" },
+		on: { click: () => toggleOrderPaid(order, paidButton) }
+	});
+	const deleteButton = buildElement("button", {
+		text: "Delete Order",
+		attrs: { type: "button" },
+		on: { click: () => showDeleteOrderConfirmation(order) }
+	});
 
-	let html = `<button class="clickable quote" title="download add on quote">Quote</button>`;
-	html += `<label>Download the invoice as a quote</label><br />
-				<button class="clickable receipt" title="download add on receipt">Receipt</button>`;
-	html += `<label>Download the invoice as a Receipt</label><br />`;
-
-	wrapper.innerHTML = html;
+	const wrapper = buildElement("div", {
+		children: [
+			buildElement("button", {
+				text: "Quote",
+				classes: ["clickable", "quote"],
+				title: "download add on quote"
+			}),
+			buildElement("label", { text: "Download the invoice as a quote" }),
+			buildElement("br"),
+			buildElement("button", {
+				text: "Receipt",
+				classes: ["clickable", "receipt"],
+				title: "download add on receipt"
+			}),
+			buildElement("label", { text: "Download the invoice as a Receipt" }),
+			buildElement("br"),
+			qualifiersForm,
+			buildElement("br"),
+			paidButton,
+			buildElement("br"),
+			deleteButton
+		]
+	});
 	modal.open(wrapper);
+}
+
+function showDeleteOrderConfirmation(order) {
+	const confirmation = buildElement("div", {
+		children: [
+			buildElement("p", {
+				text: `Permanently delete the order for ${order.school.shortName}? Its messages, items, and transfers will also be deleted.`
+			}),
+			buildElement("button", {
+				text: "Cancel",
+				attrs: { type: "button" },
+				on: { click: modal.close }
+			}),
+			buildElement("button", {
+				text: "Permanently Delete Order",
+				attrs: { type: "button" },
+				on: { click: () => deleteOrder(order) }
+			})
+		]
+	});
+	modal.open(confirmation);
+}
+
+async function deleteOrder(order) {
+	const response = await actionFetch("deleteOrder", "SchoolOrder", order.id);
+	if (!response.success) return;
+	if (!response.data) {
+		modal.open("The order could not be deleted. It may have already been removed.");
+		return;
+	}
+
+	const event = runtime.stateEvent;
+	const esd = event.getESDivisionByID(order.eshdID);
+	if (esd) esd.schoolOrders = esd.schoolOrders.filter(existingOrder => existingOrder.id !== order.id);
+	event.orderMap?.delete(order.id);
+	document.getElementById(`row${order.id}`)?.remove();
+
+	const commentsTable = document.getElementById("commentsTable");
+	for (const row of commentsTable?.querySelectorAll("tbody tr") ?? []) {
+		if (row.cells[0]?.title === String(order.id)) row.remove();
+	}
+	if (commentsTable && commentsTable.tBodies[0]?.rows.length === 0) {
+		document.getElementById("commentTableDiv")?.remove();
+	}
+
+	runtime.activeOrder = null;
+	refreshNeededTables();
+	modal.close();
+}
+
+async function toggleOrderPaid(order, button) {
+	const paid = Number(order.paid) === 1 ? 0 : 1;
+	const response = await actionFetch("updateByID", "SchoolOrder", [
+		order.id,
+		{ paid }
+	]);
+	if (!response.success || !response.data) {
+		if (response.success) modal.open("The order paid status was not updated.");
+		return;
+	}
+
+	order.paid = paid;
+	button.textContent = paid ? "Mark as unpaid" : "Mark as paid";
+}
+
+async function submitQualifiersEdit(event, order, input) {
+	event.preventDefault();
+	const qualifiers = Number(input.value);
+	if (qualifiers === Number(order.qualifiers ?? 0)) {
+		modal.close();
+		return;
+	}
+
+	const response = await actionFetch("updateByID", "SchoolOrder", [
+		order.id,
+		{ qualifiers }
+	]);
+	if (!response.success || !response.data) {
+		if (response.success) modal.open("The order qualifiers were not updated.");
+		return;
+	}
+
+	order.qualifiers = qualifiers;
+	const tbody = document.getElementById(`row${order.id}`);
+	const totalCell = tbody?.querySelector('td[title="total"]');
+	if (totalCell) {
+		let totalText = order.getDairyTotal();
+		if (order.qualifiers && order.qualifiers !== order.getDairyTotal()) {
+			totalText += `/${order.qualifiers}`;
+		}
+		totalCell.textContent = totalText;
+	}
+	if (tbody) setCompletenessClass(order, tbody);
+	refreshNeededTables();
+	modal.close();
 }

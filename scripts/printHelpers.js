@@ -14,7 +14,9 @@ export function getTransferDisplayName(t) {
 }
 
 export function getTransferInvoiceName(t) {
-   return "McUs add on transfers - " + getTransferDisplayName(t);
+   console.log(t);
+   const tName = (t.invoiceName) ? t.invoiceName : getTransferDisplayName(t);
+   return "McUs add on transfers - " + tName;
 }
 
    // generate a pdf and open it in a new tab

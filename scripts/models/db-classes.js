@@ -6,7 +6,7 @@
    // import helper functions
 import * as Utils from '../utilities.js';
 import { parseWithRegistry } from '../hydration.js';
-import { sizeList, BOX_QUANTITIES, ADULT_HOOD_STYLE_ID, DAIRY_STYLE_ID, DAIRY_COLOR_ID, SCHOOL_NAMES_TRANSFER_ID } from '../constants.js';
+import { sizeList, BOX_QUANTITIES, ADULT_HOOD_STYLE_ID, DAIRY_STYLE_ID, DAIRY_COLOR_ID, SCHOOL_NAMES_TRANSFER_ID, ID_SALES_TAX } from '../constants.js';
 import { actionFetch } from '../fetch.js';
 import { getFormattedDivsString } from '../formatters.js';
 // DO NOT IMPORT RUNTIME, no circular dependencies.
@@ -98,6 +98,15 @@ export class StateEvent {
       }
 
       return this.orderMap.get(id);
+   }
+
+   getPaymentTotals() {
+      return this.eventSites.reduce((totals, eSite) => {
+         totals.cash += Number(eSite.cash ?? 0);
+         totals.card += Number(eSite.card ?? 0);
+         totals.checks += Number(eSite.checks ?? 0);
+         return totals;
+      }, { cash: 0, card: 0, checks: 0 });
    }
 
       // returns an object with props for each size named by displayChar and a total prop
@@ -221,8 +230,12 @@ export class StateEvent {
       );
    }
 
-   getItemsSoldByStyleAndColor() {
+   getRowsForItemsSoldByStyleAndColor() {
       const itemsByStyleAndColor = new Map();
+
+      let subTotal = 0;
+      let totalTotal = 0;
+      let totalItems = 0;
 
       const addSoldQuantity = (item, quantity) => {
          const { style, color, size } = item;
@@ -236,17 +249,26 @@ export class StateEvent {
          itemsByStyleAndColor.set(key, itemsByStyleAndColor.get(key) ?? {
             style,
             color,
-            sizes: Object.fromEntries(sizeList.map(sizeChar => [sizeChar, isAccessory ? '' : 0])),
+            sizes: Object.fromEntries(sizeList.map(sizeChar => [
+               sizeChar,
+               isAccessory ? '' : { quantity: 0, alu: null, price: null }
+            ])),
             total: 0
          });
 
          const row = itemsByStyleAndColor.get(key);
-         if (!isAccessory) row.sizes[size.displayChar] += quantity;
+         if (!isAccessory) {
+            const sizeCell = row.sizes[size.displayChar];
+            sizeCell.quantity += quantity;
+            sizeCell.alu = item.alu;
+            sizeCell.price = item.price;
+         }
          row.total += quantity;
       };
 
       for (const es of this.eventSites) {
          for (const inventoryItem of es.inventory) {
+
             addSoldQuantity(inventoryItem.item, inventoryItem.getSoldQ());
          }
 
@@ -267,7 +289,20 @@ export class StateEvent {
             style.inventoryName,
             style.code,
             color.name,
-            ...sizeList.map(size => sizes[size]),
+            ...sizeList.map(size => {
+               if (sizes[size] === '') return '';
+               const { quantity, alu, price } = sizes[size];
+               if (quantity === 0) return 0;
+
+               const adjustedPrice = Number(price) / (1 + Number(ID_SALES_TAX));
+               const formattedPrice = price != null && Number.isFinite(adjustedPrice)
+                  ? `$${adjustedPrice.toFixed(2)}`
+                  : String(price ?? '');
+               const totalPrice = quantity * adjustedPrice;
+               subTotal += totalPrice;
+               totalItems += quantity;
+               return [quantity, alu ?? '', formattedPrice, totalPrice.toFixed(2)].join('\n');
+            }),
             total
          ]);
 
@@ -277,9 +312,7 @@ export class StateEvent {
             if (Number(transfer.transferID) === SCHOOL_NAMES_TRANSFER_ID || transfer.soldQ <= 0) continue;
 
             const price = Number(transfer.price);
-            if (!Number.isFinite(price)) {
-               throw new Error(`Invalid transfer price: ${transfer.price}`);
-            }
+            if (!Number.isFinite(price)) throw new Error(`Invalid transfer price: ${transfer.price}`);
 
             transfersByPrice.set(price, (transfersByPrice.get(price) ?? 0) + Number(transfer.soldQ));
          }
@@ -293,7 +326,13 @@ export class StateEvent {
             ...sizeList.map(() => ''),
             quantity
          ]);
+
+         subTotal += quantity * price;
+         totalItems += quantity;
       }
+
+      rows.push([ 'Subtotal', subTotal.toFixed(2) ]);
+      rows.push([ 'Total Items', totalItems ]);
 
       return rows;
    }
@@ -1274,18 +1313,19 @@ export class Brand {
 }
 
 export class Transfer {
-   constructor({ id, transferName, inventoryName, price, cost, listOrder }) {
+   constructor({ id, transferName, inventoryName, price, cost, listOrder, invoiceName = null }) {
       this.id = id;
       this.name = transferName;
       this.transferName = transferName;
       this.inventoryName = inventoryName ?? transferName;
+      this.invoiceName = invoiceName;
       this.price = price;
       this.cost = cost;
       this.listOrder = listOrder;
    }
 
-   static fromValues(id, transferName, inventoryName, price, cost, listOrder) {
-      return new Transfer({ id, transferName, inventoryName, price, cost, listOrder });
+   static fromValues(id, transferName, inventoryName, price, cost, listOrder, invoiceName = null) {
+      return new Transfer({ id, transferName, inventoryName, price, cost, listOrder, invoiceName });
    }
 
    static fromJSON(json) {

@@ -57,6 +57,8 @@ class School extends BasicTableModel {
 			$shortSchoolName = 'Idaho School for the Deaf & the Blind';
 		} elseif ($longSchoolName == 'Midvale High School' || $longSchoolName == 'Cambridge High School') {
 			$shortSchoolName = 'Tri-Valley';
+		} elseif ($longSchoolName == "Taylor's Crossing Public Charter School") {
+			$shortSchoolName = "Taylor's Crossing";
 		} else {
 				// order matters here, we have to do ' High School' after these oddballs, or they won't get caught this way
 					// do not remove "Charter" from the names

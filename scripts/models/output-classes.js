@@ -255,7 +255,7 @@ export class Label {
         if (boxTotal === 0) {
                 // don't add a symbol to a blank order
             return;
-        } else if (boxTotal < BOX_QUANTITIES.S && boxTotal > 0) {
+        } else if (boxTotal < 3) {
             this.doc.line(boxX, boxY, boxX, (boxY - boxH));
             if (boxTotal == BOX_QUANTITIES.double) this.doc.line((boxX + 1.5), boxY, (boxX + 1.5), (boxY - boxH));
         } else if (boxTotal <= BOX_QUANTITIES.L && boxTotal > 0) {

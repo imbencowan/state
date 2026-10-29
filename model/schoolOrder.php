@@ -254,6 +254,39 @@ if (!$schoolID) Test::logX($order['school']);
 		return ['rowsAffected' => $rowsAffected];
 	}
 
+	public static function deleteOrder(int $orderID): bool {
+		if ($orderID <= 0) {
+			throw new InvalidArgumentException('Invalid school order ID.');
+		}
+
+		return Database::withDB(function($db) use ($orderID): bool {
+			$checkOrder = $db->prepare(
+				'SELECT schoolOrderID FROM schoolorders WHERE schoolOrderID = :orderID FOR UPDATE'
+			);
+			$checkOrder->bindValue(':orderID', $orderID, PDO::PARAM_INT);
+			$checkOrder->execute();
+			if (!$checkOrder->fetchColumn()) return false;
+
+			foreach (['messageorders', 'sorderitems', 'sordertransfers'] as $table) {
+				$deleteRelated = $db->prepare("DELETE FROM $table WHERE schoolOrderID = :orderID");
+				$deleteRelated->bindValue(':orderID', $orderID, PDO::PARAM_INT);
+				$deleteRelated->execute();
+			}
+
+			$deleteOrder = $db->prepare(
+				'DELETE FROM schoolorders WHERE schoolOrderID = :orderID'
+			);
+			$deleteOrder->bindValue(':orderID', $orderID, PDO::PARAM_INT);
+			$deleteOrder->execute();
+
+			if ($deleteOrder->rowCount() !== 1) {
+				throw new RuntimeException('The school order could not be deleted.');
+			}
+
+			return true;
+		});
+	}
+
 			// this will set due programatically by the sOrderItems currently in the db
 	public static function addAddOns($orderID, $addItems, $addTransfers) {
 
@@ -318,7 +351,9 @@ if (!$schoolID) Test::logX($order['school']);
 			'priest river lamanna' => 'priest river',
 			'sho-ban' => 'shoshone-bannock',
 			'timberline (boise)' => "timberline",
-			'timberline (weippe)' => 'timberline - weippe'
+			'timberline (weippe)' => 'timberline - weippe',
+			'compass honors' => 'compass charter',
+			'the ambrose school' => 'ambrose'
 		];
 
 			// find the uploaded school's data from the db list of schools
@@ -369,8 +404,9 @@ if (!$schoolID) Test::logX($order['school']);
 
 				$sUp['dbName'] = $matchedSchool->shortName;
 
-					// account for schools smaller than minDiv.i
+					// account for schools smaller than minDiv
 				$divID = max($matchedSchool->division->id, $minDivID);
+				if ($divID === 99) Test::logX($matchedSchool->shortName, $matchedSchool->id);
 				$sUp['esdID'] = $esdIDs[$divID];
 			} else {
 					// if no match was found put it in the container 
