@@ -420,11 +420,13 @@ function genSoS(doc, div) {
 		doc.setTextColor(black);
 		
 		const addedStyles = order.getAddedStyles();
-		addedStyles.forEach(style => {
-			for (const color of Object.values(style.colors)) {
-				if ((style.id != ADULT_HOOD_STYLE_ID) || (addedStyles.length > 1)) {
+		addedStyles.forEach(s => {
+			console.log(s);
+			for (const color of Object.values(s.colors)) {
+				if ((s.style.id != ADULT_HOOD_STYLE_ID) || (addedStyles.length > 1 || order.oTransfers.length)) {
+					console.log('here', s.style.shortName, s.style.id, ADULT_HOOD_STYLE_ID, addedStyles.length);
 					sos.col = 3;
-					sos.textToCell({ text: style.shortName, align: 'right' });
+					sos.textToCell({ text: s.style.shortName, align: 'right' });
 				}
 				sos.col = 4;
 				let shirts = color.sizeMap;
