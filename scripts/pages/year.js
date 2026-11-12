@@ -8,7 +8,10 @@ import { buildActionButton, makeTypeActionLabel, makeLabelInputList,
          makeButtonActionMap, buildIcon } from './page-utils.js';
 import { getFormattedDivsString } from '../formatters.js';
 import { modal, childModal } from '../modal.js';
-import { EventSite, Season, Site, StateEvent } from '../models/db-classes.js';
+import { EventSite } from '../models/db-classes/EventSite.js';
+import { Season } from '../models/db-classes/Season.js';
+import { Site } from '../models/db-classes/Site.js';
+import { StateEvent } from '../models/db-classes/StateEvent.js';
 import { showPage } from './page-handling.js';
 import { printYearSchedule, printSeasonStockPDF, printYearPreprintQs } from '../print.js';
 import { DAIRY_STYLE_ID, sizeList } from '../constants.js';

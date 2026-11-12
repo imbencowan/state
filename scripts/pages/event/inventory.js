@@ -7,7 +7,8 @@ import { modal, childModal } from '../../modal.js';
 import { buildElement, giveFirstFocus, parseToInstancesArr } from '../../utilities.js';
 import { buildActionButton, makeSubmitCancelButtons, makeTypeActionLabel, 
 			makeLabelInputList } from '../page-utils.js';
-import { InventoryItem, InventoryTransfer } from '../../models/db-classes.js';
+import { InventoryItem } from '../../models/db-classes/InventoryItem.js';
+import { InventoryTransfer } from '../../models/db-classes/InventoryTransfer.js';
 import { printInventories } from '../../print.js';
 
 

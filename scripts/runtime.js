@@ -1,8 +1,22 @@
 	//////////////////// a container to hold data at runtime
 	// holds page data, made available to the console
 import { makeDataLoader, makeItemLoader, makeSeasonLoader, makeSeriesLoader } from "./models/loaders.js";
-import { Activity, Color, Cost, Division, Employee, Item, Person, School, Season, Series, Site, SiteAlias, Size, 
-			Style, Transfer, Vehicle } from "./models/db-classes.js";
+import { Activity } from "./models/db-classes/Activity.js";
+import { Color } from "./models/db-classes/Color.js";
+import { Cost } from "./models/db-classes/Cost.js";
+import { Division } from "./models/db-classes/Division.js";
+import { Employee } from "./models/db-classes/Employee.js";
+import { Item } from "./models/db-classes/Item.js";
+import { Person } from "./models/db-classes/Person.js";
+import { School } from "./models/db-classes/School.js";
+import { Season } from "./models/db-classes/Season.js";
+import { Series } from "./models/db-classes/Series.js";
+import { Site } from "./models/db-classes/Site.js";
+import { SiteAlias } from "./models/db-classes/SiteAlias.js";
+import { Size } from "./models/db-classes/Size.js";
+import { Style } from "./models/db-classes/Style.js";
+import { Transfer } from "./models/db-classes/Transfer.js";
+import { Vehicle } from "./models/db-classes/Vehicle.js";
 
 export const runtime = {
 		// global containers

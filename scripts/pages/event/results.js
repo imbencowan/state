@@ -6,9 +6,9 @@ import { buildElement, buildTD, buildDollarTD, parseToInstancesArr, formatCurren
 import { buildActionButton, buildIcon, makeSubmitCancelButtons, makeTypeActionLabel, 
          makeLabelInputList, makeButtonActionMap } from '../page-utils.js';
 import { buildFillTable, submitFillInventory } from './inventory.js';
-import { InventoryTransfer } from '../../models/db-classes.js';
+import { InventoryTransfer } from '../../models/db-classes/InventoryTransfer.js';
 import { printAutoTable } from '../../print.js';
-import { sizeList } from '../../constants.js';
+import { sizeList, SCHOOL_NAMES_TRANSFER_ID } from '../../constants.js';
 
 
    // buttons for each site
@@ -34,7 +34,9 @@ const resultsTopButtons = [
    { action: "printEventItemsSold", title: "print items sold for the event", icon: "print",
       text: " Items Sold", handler: printEventItemsSold },
    { action: "editAllPayments", title: "edit payment totals for all sites", icon: "edit",
-      text: " All Payments", handler: showEditPayments }
+      text: " All Payments", handler: showEditPayments },
+   { action: "updatePaymentDiscrepancies", title: "update school-name adjustments from payment discrepancies",
+      icon: "refresh", text: " Update Adjustments", handler: showUpdatePaymentDiscrepancies }
 ];
 export const resultsTopActions = makeButtonActionMap(resultsTopButtons);
 
@@ -89,31 +91,6 @@ function buildSiteTable(es) {
    return buildElement("table", { classes: 'reportTable', children: [ thead, tbody ], dataset: { eventSiteID: es.id } });
 }
 
-function buildSitePaymentsTable(es) {
-   const headers = [ "Card $", "Cash $", "Checks $", "Total $" ];
-   const thead = buildElement("thead", {
-      children: buildElement("tr", {
-         children: headers.map(text => buildElement("th", { text }))
-      })
-   });
-   const total = Number(es.card ?? 0) + Number(es.cash ?? 0) + Number(es.checks ?? 0);
-   const values = [es.card, es.cash, es.checks, total];
-   const tbody = buildElement("tbody", {
-      children: buildElement("tr", {
-         children: values.map(value =>
-            buildElement("td", { text: formatCurrency(Number(value ?? 0)) })
-         )
-      })
-   });
-
-   return buildElement("table", {
-      id: `sitePaymentsTable-${es.id}`,
-      classes: ["reportTable", "sitePaymentsTable"],
-      children: [thead, tbody],
-      dataset: { eventSiteID: es.id }
-   });
-}
-
 function buildEventPaymentsTable(sEvent) {
    const headers = [ "Cash $", "Card $", "Checks $", "Total $" ];
    const thead = buildElement("thead", {
@@ -165,6 +142,9 @@ function buildSiteTbody(es) {
          const cost = color.cost;
          const price = color.price;
          const lost = color.lostTotal;
+         
+         // console.log(`${style.vShortName} - ${color.name}`, (sold * price), es.getStyleColorDollars(style.id, color.id));
+         // es.getStyleColorDollars(style.id, color.id)
 
          const rowData = { type: 'garments', colorID: color.id, styleID: style.id };
          rows.push(makeRow(name, sold, cost, price, lost, first, total, rowData));
@@ -202,9 +182,13 @@ function buildSiteTbody(es) {
       //push the transfers
    first = true;
    for (const t of inventory.transfers) {
-      if (t.soldQ > 0) {
+      const soldQ = Number(t.soldQ) + es.getSchoolOrderTransferQ(t.transferID);
+      const adjustedSoldQ = Number(t.transferID) === SCHOOL_NAMES_TRANSFER_ID
+         ? es.getAdjustedSchoolNamesSoldQ(soldQ)
+         : soldQ;
+      if (adjustedSoldQ > 0) {
          const rowData = { type: 'transfers', eventTransferID: t.id };
-         rows.push(makeRow(t.transfer.transferName, t.soldQ, t.cost, t.price, '', first, total, rowData));
+         rows.push(makeRow(t.transfer.transferName, adjustedSoldQ, t.cost, t.price, '', first, total, rowData));
          first = false;
       }
    }
@@ -288,6 +272,31 @@ function makeCostRow(name, quantity, rate, first, total, rowData) {
    ];
 
    return buildElement("tr", { children: tds, classes: classes });
+}
+
+function buildSitePaymentsTable(es) {
+   const headers = [ "Card $", "Cash $", "Checks $", "Total $", "Resale" ];
+   const thead = buildElement("thead", {
+      children: buildElement("tr", {
+         children: headers.map(text => buildElement("th", { text }))
+      })
+   });
+   const total = Number(es.card ?? 0) + Number(es.cash ?? 0) + Number(es.checks ?? 0);
+   const values = [ es.card, es.cash, es.checks, total, es.getSalesTotal() ];
+   const tbody = buildElement("tbody", {
+      children: buildElement("tr", {
+         children: values.map(value =>
+            buildElement("td", { text: formatCurrency(Number(value ?? 0)) })
+         )
+      })
+   });
+
+   return buildElement("table", {
+      id: `sitePaymentsTable-${es.id}`,
+      classes: ["reportTable", "sitePaymentsTable"],
+      children: [thead, tbody],
+      dataset: { eventSiteID: es.id }
+   });
 }
 
 async function refreshTable(esID) {
@@ -413,6 +422,67 @@ async function submitEditPayments(event, form, eventSites) {
       table?.replaceWith(buildSitePaymentsTable(eSite));
    }
    document.getElementById("eventPaymentsTable")?.replaceWith(buildEventPaymentsTable(runtime.stateEvent));
+   modal.close();
+}
+
+
+
+function showUpdatePaymentDiscrepancies() {
+   const eventSites = runtime.stateEvent.eventSites;
+   const schoolNamesTransfer = runtime.allTransfers.getByID(SCHOOL_NAMES_TRANSFER_ID);
+   if (!schoolNamesTransfer || !Number.isFinite(Number(schoolNamesTransfer.price)) || Number(schoolNamesTransfer.price) === 0) {
+      modal.open("The school names transfer price could not be found.");
+      return;
+   }
+
+   const updates = eventSites.map(eSite => {
+      const discrepancy = eSite.getSalesTotal() - eSite.getReceivedDollars();
+      return {
+         eventSiteID: eSite.id,
+         sNamesAdjustment: Math.round(discrepancy / Number(schoolNamesTransfer.price))
+      };
+   });
+   const hasExistingValues = eventSites.some(eSite => Number(eSite.paymentDiscrepancy) !== 0);
+
+   if (!hasExistingValues) {
+      updatePaymentDiscrepancies(updates);
+      return;
+   }
+
+   const confirmation = buildElement("div", {
+      children: [
+         buildElement("p", {
+            text: "One or more sites have a nonzero payment discrepancy. Are you sure you want to overwrite the school-name adjustment quantities?"
+         }),
+         buildElement("button", {
+            text: "Cancel",
+            attrs: { type: "button" },
+            on: { click: modal.close }
+         }),
+         buildElement("button", {
+            text: "Overwrite Adjustments",
+            attrs: { type: "button" },
+            on: { click: () => updatePaymentDiscrepancies(updates) }
+         })
+      ]
+   });
+   modal.open(confirmation);
+}
+
+async function updatePaymentDiscrepancies(updates) {
+   const response = await actionFetch("updateRowsByIDs", "EventSite", {
+      update: updates.map(({ eventSiteID, sNamesAdjustment }) => ({
+         eventSiteID,
+         schoolNamesAdjustmentQ: sNamesAdjustment
+      }))
+   });
+   if (!response.success) return;
+
+   for (const { eventSiteID, sNamesAdjustment } of updates) {
+      const eSite = runtime.stateEvent.getEventSiteByID(eventSiteID);
+      eSite.sNamesAdjustment = sNamesAdjustment;
+   }
+   await Promise.all(updates.map(({ eventSiteID }) => refreshTable(eventSiteID)));
    modal.close();
 }
 

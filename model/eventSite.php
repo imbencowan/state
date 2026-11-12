@@ -19,7 +19,9 @@ class EventSite extends BasicTableModel {
 					'price4X' => 'price4X',
 					'card' => 'card',
 					'cash' => 'cash',
-					'checks' => 'checks'];
+					'checks' => 'checks',
+					'paymentDiscrepancy' => 'paymentDiscrepancy',
+					'sNamesAdjustment' => 'schoolNamesAdjustmentQ'];
 	}
 		// defined as: new Relation($property, $rClass, $leftKey, $rightKey, $isMany = false, 
 			// $interTable = null, $stopContexts = [], $loadSeparate = false)
@@ -64,7 +66,9 @@ class EventSite extends BasicTableModel {
 		public readonly array $costs = [],
 		public readonly float $card = 0,
 		public readonly float $cash = 0,
-		public readonly float $checks = 0
+		public readonly float $checks = 0,
+		public readonly float $paymentDiscrepancy = 0,
+		public readonly int $sNamesAdjustment = 0
    ) {
 		// $this->esDivisions = self::organizeDivisions($esDivisions);
 	}
@@ -86,6 +90,8 @@ class EventSite extends BasicTableModel {
 			'card' => $this->card,
 			'cash' => $this->cash,
 			'checks' => $this->checks,
+			'paymentDiscrepancy' => $this->paymentDiscrepancy,
+			'sNamesAdjustment' => $this->sNamesAdjustment,
 			'plusSizePricing' => $this->getPlusSizePricing()
 		];
 	}

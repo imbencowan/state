@@ -7,7 +7,7 @@ import { modal, childModal } from '../../modal.js';
 import { buildElement, sortByProperty } from '../../utilities.js';
 import { buildIcon, buildActionButton, makeTypeActionLabel, 
 			makeSubmitCancelButtons, makeButtonActionMap } from '../page-utils.js';
-import { SchoolOrder } from '../../models/db-classes.js';
+import { SchoolOrder } from '../../models/db-classes/SchoolOrder.js';
 import { printBoxLabel, printUndoneBoxLabels, downloadInvoicePDF, printAllInvoices, printSoSPDF, printAllSoSPDF, 
 			printOMessages, printAutoTable } from '../../print.js';
 
@@ -712,6 +712,7 @@ async function uploadQualifiers() {
 		let schoolColsIndices = [];
 		let totalColsIndices = [];
 
+		
 			// find the actual header row, grab the school indexes
 		rows.forEach((row, i) => {
 			if (headerRowIndex) return; // already found, skip the rest
@@ -979,7 +980,12 @@ async function submitAddOns({ target, order }) {
 				const item = runtime.allItems.getByStyleColorSize(style.id, style.defaultColor.id, sizeID);
 				const shirt = {
 					itemID: item.id,
-					quantity: input.value
+					quantity: input.value,
+					itemInfo: {
+						style: item.style.name,
+						color: item.color.name,
+						size: item.size.displayChar
+					}
 				};
 				addItems.push(shirt);
 			});

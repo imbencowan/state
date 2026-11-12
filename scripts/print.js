@@ -2,7 +2,7 @@ import { runtime } from './runtime.js';
 import { Label, InvoicePage, SoSPage, InventoryPage, labelPage } from './models/output-classes.js';
 import { sizeList, ADULT_HOOD_STYLE_ID } from './constants.js';
 import { modal, childModal } from './modal.js';
-import { EventSite } from './models/db-classes.js';
+import { EventSite } from './models/db-classes/EventSite.js';
 import * as Helpers from './printHelpers.js';
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -421,10 +421,8 @@ function genSoS(doc, div) {
 		
 		const addedStyles = order.getAddedStyles();
 		addedStyles.forEach(s => {
-			console.log(s);
 			for (const color of Object.values(s.colors)) {
 				if ((s.style.id != ADULT_HOOD_STYLE_ID) || (addedStyles.length > 1 || order.oTransfers.length)) {
-					console.log('here', s.style.shortName, s.style.id, ADULT_HOOD_STYLE_ID, addedStyles.length);
 					sos.col = 3;
 					sos.textToCell({ text: s.style.shortName, align: 'right' });
 				}

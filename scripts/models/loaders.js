@@ -1,6 +1,8 @@
 import { actionFetch } from "../fetch.js";
 import { mapObjsBy } from "../utilities.js";
-import { Item, Season, Series } from "../models/db-classes.js";
+import { Item } from "../models/db-classes/Item.js";
+import { Season } from "../models/db-classes/Season.js";
+import { Series } from "../models/db-classes/Series.js";
 
 
    // a specific loader for Items that gives a getByStyleColorSize() method

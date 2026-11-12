@@ -1,5 +1,5 @@
 import { actionFetch } from '../fetch.js';
-import { StateEvent } from './db-classes.js';
+import { StateEvent } from './db-classes/StateEvent.js';
 
 export class EventCollection {
    constructor(events = []) {

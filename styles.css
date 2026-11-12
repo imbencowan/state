@@ -359,6 +359,11 @@ tr.addOnRow {
 	border-radius: 8px;
 }
 
+.modal-window button,
+.modal-window input {
+	margin: 0.35em;
+}
+
 /* allow a wider modal */
 .modal-window.wide {
 	max-width: 800px;

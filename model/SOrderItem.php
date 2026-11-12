@@ -39,25 +39,45 @@ class SOrderItem extends BasicTableModel {
 			// first we need to get the prices
 
 			// collect itemIDs
-		$itemIDs = array_column($addItems, 'itemID');
+		$itemIDs = array_values(array_unique(array_column($addItems, 'itemID')));
 
 		$inPlaceholders = implode(',', array_fill(0, count($itemIDs), '?'));
-			// fetch current prices
-		$stmt = $db->prepare("SELECT itemID, price FROM apparel WHERE itemID IN ($inPlaceholders)");
+			// fetch prices and item names for any validation errors
+		$stmt = $db->prepare(
+			"SELECT apparel.itemID, apparel.price, styles.styleName, colors.colorName, sizes.displayChar
+				FROM apparel
+				LEFT JOIN styles ON apparel.styleID = styles.styleID
+				LEFT JOIN colors ON apparel.colorID = colors.colorID
+				LEFT JOIN sizes ON apparel.sizeID = sizes.sizeID
+				WHERE apparel.itemID IN ($inPlaceholders)"
+		);
 		$stmt->execute($itemIDs);
 
-			// [itemID => price]
-		$prices = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-		
+		$itemsByID = [];
+		foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+			$itemsByID[(string) $row['itemID']] = $row;
+		}
 
 		$data = [];
 			// now match values to column names and insert
 		foreach ($addItems as $item) {
-			$data[] = ['schoolOrderID' => $orderID, 
-						'itemID' => $item['itemID'], 
+			$itemID = (string) $item['itemID'];
+			$priceRow = $itemsByID[$itemID] ?? null;
+			if (!$priceRow || $priceRow['price'] === null) {
+				$itemInfo = $item['itemInfo'] ?? [];
+				$styleName = $priceRow['styleName'] ?? $itemInfo['style'] ?? 'Unknown style';
+				$colorName = $priceRow['colorName'] ?? $itemInfo['color'] ?? 'unknown color';
+				$sizeName = $priceRow['displayChar'] ?? $itemInfo['size'] ?? 'unknown size';
+				throw new RuntimeException(
+					"Price not found for item {$item['itemID']} ({$styleName} / {$colorName} / {$sizeName})."
+				);
+			}
+
+			$data[] = ['schoolOrderID' => $orderID,
+						'itemID' => $item['itemID'],
 						'sOrderItemsQuantity' => $item['quantity'],
-           			'orderPrice' => $prices[$item['itemID']] ?? 0
-						];
+						'orderPrice' => $priceRow['price']
+					];
 		}
 		
 		self::insertMany($data, $db);

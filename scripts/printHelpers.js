@@ -1,6 +1,6 @@
    // self explanatory, separate layer to avoid import issues else where
 import { runtime } from './runtime.js';
-import { Transfer } from './models/db-classes.js';
+import { Transfer } from './models/db-classes/Transfer.js';
 
 
 

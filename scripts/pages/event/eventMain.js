@@ -5,7 +5,7 @@ import { actionFetch } from '../../fetch.js';
 import { navigate } from '../../navigation.js';
 import { splitPath } from '../../routerHelpers.js';
 import { parseEventRoute } from './routeHelpers.js';
-import { StateEvent } from '../../models/db-classes.js';
+import { StateEvent } from '../../models/db-classes/StateEvent.js';
 import { buildElement } from '../../utilities.js';
 import { downloadInvoicePDF, printSoSPDF } from '../../print.js';
 import { buildActionButton } from '../page-utils.js';
