@@ -79,7 +79,7 @@ export async function goToEventPage(seriesID = null, year = null, tab = 'orders'
 		runtime.activeMode = null;
 
 		if (response.data !== null) {
-			runtime.stateEvent = StateEvent.fromJSON(response.data);
+			runtime.stateEvent = new StateEvent(response.data);
 
 			const pageContent = buildEventPage(runtime.stateEvent, tab);
 			document.getElementById("display").replaceChildren(pageContent);
@@ -200,7 +200,7 @@ async function showPrevNextEvent(drctn) {
 			modal.open(`There is no ${qlfr} event for ${runtime.stateEvent.series.name}`);
 		} else {
 				// assign the new runtime event
-			const sEvent = StateEvent.fromJSON(response.data.event);
+			const sEvent = new StateEvent(response.data.event);
 
 			if (sEvent.year !== runtime.stateEvent.year) {
 				history.pushState({}, '', `/state/${sEvent.series.slug}/${sEvent.year}/${tab}`);

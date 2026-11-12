@@ -1,5 +1,3 @@
-import { Color } from './Color.js';
-
 export class Season {
    constructor({ id, name, startMonth, startDay, endMonth, endDay, color }) {
       this.id = id;
@@ -11,13 +9,6 @@ export class Season {
       this.color = color;
    }
 
-   static fromValues(id, name, startMonth, startDay, endMonth, endDay, color) {
-      return new Season({ id, name, startMonth, startDay, endMonth, endDay, color });
-   }
-
-   static fromJSON(json) {
-      return new Season(json);
-   }
 
    containsDate(date) {
       let month, day;

@@ -69,17 +69,5 @@ class School extends BasicTableModel {
 		return $shortSchoolName;
 	}
 	
-	//////////////////////////////////////////////////
-   // user actions
-		// takes us to the Schools page, displaying all schools
-	static function showSchools() {
-		$schools = School::getAllFromDB(context: '');
-		// $schools = School::getAllFromDB(context: 'test');
-		ob_start();
-		include 'view/schools.php';
-		$htmlContent = ob_get_clean();
-		
-		return [ 'html' => $htmlContent, 'data' => $schools ];
-	}
 }
 ?>

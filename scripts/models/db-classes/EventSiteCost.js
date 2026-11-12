@@ -12,11 +12,5 @@ export class EventSiteCost {
       this.cost = Utils.parseToInstance(cost, Cost);
    }
 
-   static fromValues(id, eventSiteID, costID, rate, quantity, note) {
-      return new EventSiteCost({ id, eventSiteID, costID, rate, quantity, note });
-   }
 
-   static fromJSON(json) {
-      return new EventSiteCost(json);
-   }
 }

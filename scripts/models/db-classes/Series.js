@@ -13,11 +13,5 @@ export class Series {
       this.labelColor = labelColor;
    }
 
-   static fromValues(id, name, isGendered, isIndividualed, maxTeamSize, minDiv, labelColor) {
-      return new Series({ id, name, isGendered, isIndividualed, maxTeamSize, minDiv, labelColor });
-   }
 
-   static fromJSON(json) {
-      return new Series(json);
-   }
 }

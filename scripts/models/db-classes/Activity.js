@@ -8,11 +8,5 @@ export class Activity {
       this.minDiv = minDiv
    }
 
-   static fromValues(id, name, isIndividualed, minDiv) {
-      return new Activity({ id, name, isIndividualed, minDiv });
-   }
 
-   static fromJSON(json) {
-      return new Activity(json);
-   }
 }

@@ -756,7 +756,7 @@ async function submitAddItems(e, form) {
 
 		const newItems = [];
 		updateItems.forEach(it => {
-			newItems.push(InventoryItem.fromJSON({ 
+			newItems.push(new InventoryItem({
 				id: null,
 				eventSiteID: esID,
 				itemID: it.transferID,
@@ -849,7 +849,7 @@ async function submitAddTransfer(e, form) {
 
 		const newTransfers = [];
 		updateTransfers.forEach(ut => {
-			newTransfers.push(InventoryTransfer.fromJSON({ 
+			newTransfers.push(new InventoryTransfer({
 				id: null,
 				eventSiteID: esID,
 				transferID: ut.transferID,

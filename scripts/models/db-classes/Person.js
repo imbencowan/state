@@ -10,11 +10,5 @@ export class Person {
       this.fax = fax;
    }
 
-   static fromValues(id, name, email, phone, extension, fax) {
-      return new Person({ id, name, email, phone, extension, fax });
-   }
 
-   static fromJSON(json) {
-      return new Person(json);
-   }
 }

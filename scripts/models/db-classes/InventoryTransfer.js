@@ -1,5 +1,4 @@
 import { Transfer } from './Transfer.js';
-import { Cost } from './Cost.js';
 import * as Utils from '../../utilities.js';
 
 export class InventoryTransfer {
@@ -16,13 +15,6 @@ export class InventoryTransfer {
       this.transfer = Utils.parseToInstance(transfer, Transfer);
    }
 
-   static fromValues(id, eventSiteID, transferID, startQ, soldQ, price, cost, transfer) {
-      return new InventoryTransfer({ id, eventSiteID, transferID, startQ, soldQ, price, cost, transfer });
-   }
-
-   static fromJSON(json) {
-      return new InventoryTransfer(json);
-   }
 
    static fromTransfer({ t, eventSiteID = null, startQ = 0, soldQ = 0 }) {
       return new InventoryTransfer({

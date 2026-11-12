@@ -7,11 +7,5 @@ export class Site {
       this.city = city;
    }
 
-   static fromValues(id, name, city) {
-      return new Site({ id, name, city });
-   }
 
-   static fromJSON(json) {
-      return new Site(json);
-   }
 }

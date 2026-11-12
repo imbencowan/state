@@ -9,11 +9,5 @@ export class Color {
       this.hex = `#${hex}`;
    }
 
-   static fromValues(id, name, hex) {
-      return new Color({ id, name, hex });
-   }
 
-   static fromJSON(json) {
-      return new Color(json);
-   }
 }

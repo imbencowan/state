@@ -1,10 +1,6 @@
 import { Division } from './Division.js';
 import { SchoolOrder } from './SchoolOrder.js';
-import { School } from './School.js';
-import { Item } from './Item.js';
-import { Size } from './Size.js';
 import { Activity } from './Activity.js';
-import { Gender } from './Gender.js';
 import * as Utils from '../../utilities.js';
 import { parseWithRegistry } from '../../hydration.js';
 
@@ -20,13 +16,6 @@ export class EventSiteDivision {
       this.ordersLoaded = this.schoolOrders.length > 0;
    }
 
-   static fromValues(id, eventSiteID, division, schoolOrders = []) {
-      return new EventSiteDivision({ id, eventSiteID, division, schoolOrders });
-   }
-
-   static fromJSON(json) {
-      return new EventSiteDivision(json);
-   }
 
    sortSchoolOrders() {
       this.schoolOrders.sort((a, b) => {

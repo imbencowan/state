@@ -10,11 +10,5 @@ export class Cost {
       this.units = units
    }
 
-   static fromValues(id, name, rate, units) {
-      return new Cost({ id, name, rate, units });
-   }
 
-   static fromJSON(json) {
-      return new Cost(json);
-   }
 }

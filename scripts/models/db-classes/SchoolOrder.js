@@ -1,8 +1,4 @@
 import { School } from './School.js';
-import { Item } from './Item.js';
-import { Style } from './Style.js';
-import { Size } from './Size.js';
-import { Color } from './Color.js';
 import { SOrderTransfer } from './SOrderTransfer.js';
 import { SOrderItem } from './SOrderItem.js';
 import * as Utils from '../../utilities.js';
@@ -29,23 +25,14 @@ export class SchoolOrder {
       this.oTransfers = Utils.parseToInstancesArr(oTransfers, SOrderTransfer);
    }
 
-   static fromValues(id, eshdID, school, genderID, qualifiers, completeness, due, paid, schoolOrderNote, 
-                     invoiceSent, messageOrders) {
-      return new SchoolOrder({ id, eshdID, school, genderID, qualifiers, completeness, due, paid, schoolOrderNote, 
-                              invoiceSent, messageOrders });
-   }
 
-   static fromJSON(json) {
-      return new SchoolOrder(json);
-   }
-	
 	updateFromJSON(json) {
 		this.id = json.id;
 		this.eshdID = json.eshdID;
 		this.school = json.school instanceof School
 			? json.school
 			: json.school != null
-				? School.fromJSON(json.school)
+				? new School(json.school)
 				: null;
 		this.completeness = json.completeness;
 		this.due = json.due;

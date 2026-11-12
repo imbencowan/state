@@ -1,23 +1,13 @@
-import { Series } from './Series.js';
 import { Site } from './Site.js';
 import { Vehicle } from './Vehicle.js';
 import { EventSiteDivision } from './EventSiteDivision.js';
-import { Division } from './Division.js';
 import { SchoolOrder } from './SchoolOrder.js';
-import { School } from './School.js';
-import { Item } from './Item.js';
 import { InventoryItem } from './InventoryItem.js';
-import { Style } from './Style.js';
-import { Size } from './Size.js';
-import { Employee } from './Employee.js';
 import { EventSiteEmployee } from './EventSiteEmployee.js';
-import { Color } from './Color.js';
-import { Transfer } from './Transfer.js';
 import { InventoryTransfer } from './InventoryTransfer.js';
-import { Cost } from './Cost.js';
 import { EventSiteCost } from './EventSiteCost.js';
-import { Activity } from './Activity.js';
 import { Gender } from './Gender.js';
+
 import * as Utils from '../../utilities.js';
 import { parseWithRegistry } from '../../hydration.js';
 import { ADULT_HOOD_STYLE_ID, DAIRY_STYLE_ID } from '../../constants.js';
@@ -50,17 +40,6 @@ export class EventSite {
       this.sortESDs();
 	}
 
-   static fromValues(id, eventID, site, siteID, managerName, gender, vehicles, employees, inventory, transfers, 
-                     costs, plusSizePricing, esDivisions = [], card = 0, cash = 0, checks = 0, paymentDiscrepancy = 0,
-                     sNamesAdjustment = 0) {
-      return new EventSite({ id, eventID, site, siteID, managerName, gender, vehicles, employees, inventory, 
-                           transfers, costs, plusSizePricing, esDivisions, card, cash, checks, paymentDiscrepancy,
-                           sNamesAdjustment });
-   }
-
-   static fromJSON(json) {
-      return new EventSite(json);
-   }
 
    sortESDs() {
       this.esDivisions.sort((a, b) =>
@@ -91,7 +70,7 @@ export class EventSite {
       }
 
          // fall back
-      return Gender.fromValues(3, '');
+      return new Gender({ id: 3, name: '' });
    }
 
    getSeriesStrGendered(sEvent) {

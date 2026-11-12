@@ -11,11 +11,5 @@ export class EventSiteEmployee {
       this.employee = Utils.parseToInstance(employee, Employee);
    }
 
-   static fromValues(id, esID, employeeID, payRate, hours, employee) {
-      return new EventSiteEmployee({ id, esID, employeeID, payRate, hours, employee });
-   }
 
-   static fromJSON(json) {
-      return new EventSiteEmployee(json);
-   }
 }

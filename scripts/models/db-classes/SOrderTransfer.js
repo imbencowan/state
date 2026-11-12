@@ -1,5 +1,4 @@
 import { Transfer } from './Transfer.js';
-import { Cost } from './Cost.js';
 import * as Utils from '../../utilities.js';
 
 export class SOrderTransfer {
@@ -13,13 +12,6 @@ export class SOrderTransfer {
       this.transfer = Utils.parseToInstance(transfer, Transfer);
    }
 
-   static fromValues(id, schoolOrderID, transferID, quantity, price, cost, transfer) {
-      return new SOrderTransfer({ id, schoolOrderID, transferID, quantity, price, cost, transfer });
-   }
-
-   static fromJSON(json) {
-      return new SOrderTransfer(json);
-   }
 
    getSoldDollars() {
       return this.quantity * this.price;

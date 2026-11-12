@@ -13,11 +13,5 @@ export class MessageOrder {
       this.orderDate = orderDate;
    }
 
-   static fromValues(id, schoolOrderID, genderID, orderedBy, mOrderComment, mOrderCommentHandled, orderText, fileName, orderDate) {
-      return new MessageOrder({id, schoolOrderID, genderID, orderedBy, mOrderComment, mOrderCommentHandled, orderText, fileName, orderDate});
-   }
 
-   static fromJSON(json) {
-      return new MessageOrder(json);
-   }
 }

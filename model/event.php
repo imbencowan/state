@@ -213,25 +213,25 @@ class Event extends BasicTableModel {
 	}
 
 	
-	public function getDateRangeString() {
-		$start = $this->startDate->format('F j');
-			// check if it is a one day event
-		if ($this->startDate == $this->endDate) {
-			return $start;
-		} else {
-				// check if the event starts and ends within the same month to format correctly
-			if ($this->startDate->format('Y-m') === $this->endDate->format('Y-m')) {
-				$end = $this->endDate->format('j');
-				$conjunction = '-';
-			} else {
-				$end = $this->endDate->format('F j');
-				$conjunction = ' - ';
-			}
-			$rangeStr = $start . $conjunction . $end;
-			$rangeStr = preg_replace('/ (\S+)$/', '&nbsp;$1', $rangeStr);
-			return $rangeStr;
-		}
-	}
+	// public function getDateRangeString() {
+	// 	$start = $this->startDate->format('F j');
+	// 		// check if it is a one day event
+	// 	if ($this->startDate == $this->endDate) {
+	// 		return $start;
+	// 	} else {
+	// 			// check if the event starts and ends within the same month to format correctly
+	// 		if ($this->startDate->format('Y-m') === $this->endDate->format('Y-m')) {
+	// 			$end = $this->endDate->format('j');
+	// 			$conjunction = '-';
+	// 		} else {
+	// 			$end = $this->endDate->format('F j');
+	// 			$conjunction = ' - ';
+	// 		}
+	// 		$rangeStr = $start . $conjunction . $end;
+	// 		$rangeStr = preg_replace('/ (\S+)$/', '&nbsp;$1', $rangeStr);
+	// 		return $rangeStr;
+	// 	}
+	// }
 
 
 	public function getSeason() {
@@ -274,7 +274,7 @@ class Event extends BasicTableModel {
 		//
 		// 1. Get current-season events and sort them chronologically.
 		// 2. Group concurrent events.
-		// 3. For each item, track cumulative previous-year demand (retail sales + team orders)
+		// 3. For each group, track cumulative previous-year demand (retail sales + team orders)
 		//    and the maximum stock requirement seen so far.
 		// 4. For each group of concurrent events, calculate:
 		//       current events' combined startQ + cumulative previous-year demand

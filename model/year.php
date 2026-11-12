@@ -77,7 +77,7 @@ class Year implements JsonSerializable {
 	
 	public static function convertDateToSchoolYear(DateTime $date) {
 		$defaultMonth = 6;
-		$defaultStartDay = 16;
+		// $defaultStartDay = 16;
 		$defaultEndDay = 15;
 		
 		$year = $date->format('y');

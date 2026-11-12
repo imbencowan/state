@@ -88,7 +88,7 @@ function buildYearTbody(events) {
    console.log(events);
 
    for (const e of events) {
-      const sEvent = StateEvent.fromJSON(e);
+      const sEvent = new StateEvent(e);
       const season = runtime.allSeasons.getByDate(sEvent.startDate);
 
       for (const [i, es] of sEvent.eventSites.entries()) {

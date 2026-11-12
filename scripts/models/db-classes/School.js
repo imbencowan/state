@@ -15,17 +15,11 @@ export class School {
       this.addressMailing = addressMailing;
       this.addressLine2 = addressLine2;
       this.ad = Utils.parseToInstance(ad, Person);
+      this.district = district;
       this.division = parseWithRegistry(division, Division, divisionID);
    }
 
-   static fromValues(id, name, shortName, addressPhysical, addressMailing, addressLine2, district, division) {
-      return new School({ id, name, shortName, addressPhysical, addressMailing, addressLine2, district, division });
-   }
 
-   static fromJSON(json) {
-      return new School(json);
-   }
-	
 	getSchoolCode() {
 		return this.name.slice(0, 3).toUpperCase() + String(this.id);
 	}

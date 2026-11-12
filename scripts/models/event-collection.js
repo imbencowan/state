@@ -32,7 +32,7 @@ export class EventCollection {
       const response = await actionFetch('fetchDateRange', 'Event', { start, end });
       if (!response?.success || !Array.isArray(response.data)) return new EventCollection();
 
-      const evnts = response.data.map(evnt => StateEvent.fromJSON(evnt));
+      const evnts = response.data.map(evnt => new StateEvent(evnt));
       return new EventCollection(evnts);
    }
 }

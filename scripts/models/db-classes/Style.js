@@ -1,4 +1,3 @@
-import { Size } from './Size.js';
 import { Color } from './Color.js';
 import { Brand } from './Brand.js';
 import * as Utils from '../../utilities.js';
@@ -32,16 +31,7 @@ export class Style {
       }
    }
 
-   static fromValues(id, code, name, inventoryName, shortName, vShortName, brand, sizingCategoryID, minSizeID,
-                     maxSizeID, listOrder, sizes = []) {
-      return new Style({ id, code, name, inventoryName, shortName, vShortName, brand, sizingCategoryID, minSizeID, 
-                     maxSizeID, listOrder, sizes });
-   }
 
-   static fromJSON(json) {
-      return new Style(json);
-   }
-	
 	getTotalQuantity() {
 		if (!this.sizes) return 0;
 		let total = 0;

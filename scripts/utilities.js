@@ -29,13 +29,11 @@ export function parseToInstancesArr(data, ClassRef) {
       .map(item => (item instanceof ClassRef) 
                 // if (item instanceof ClassRef), put the item in the .mapped array
          ? item 
-                // else check if there actually is an item, and if ClassRef has a .fromJSON()
-         : (item != null && typeof ClassRef.fromJSON === 'function') 
-                    // if that was true, try to make a ClassRef object
-            ? ClassRef.fromJSON(item) 
+         : (item != null)
+            ? new ClassRef(item)
                     // else map null
             : null)
-                // filter out nonconforming elements
+                // filter out null elements
       .filter(Boolean);
 }
 
@@ -43,8 +41,8 @@ export function parseToInstance(value, ClassRef) {
         // returns an instance of ClassRef from value if possible
    return (value instanceof ClassRef) ? 
       value
-      : (value != null && typeof ClassRef.fromJSON === 'function')
-         ? ClassRef.fromJSON(value)
+      : (value != null)
+         ? new ClassRef(value)
          : null;
 }
 

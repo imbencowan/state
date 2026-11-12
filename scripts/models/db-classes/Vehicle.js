@@ -9,11 +9,5 @@ export class Vehicle {
       this.isUnique = isUnique;
    }
 
-   static fromValues(id, name, isUnique) {
-      return new Vehicle({ id, name, isUnique });
-   }
 
-   static fromJSON(json) {
-      return new Vehicle(json);
-   }
 }

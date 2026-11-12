@@ -1,5 +1,3 @@
-import { Cost } from './Cost.js';
-
 export class Transfer {
    constructor({ id, transferName, inventoryName, price, cost, listOrder, invoiceName = null }) {
       this.id = id;
@@ -12,11 +10,5 @@ export class Transfer {
       this.listOrder = listOrder;
    }
 
-   static fromValues(id, transferName, inventoryName, price, cost, listOrder, invoiceName = null) {
-      return new Transfer({ id, transferName, inventoryName, price, cost, listOrder, invoiceName });
-   }
 
-   static fromJSON(json) {
-      return new Transfer(json);
-   }
 }

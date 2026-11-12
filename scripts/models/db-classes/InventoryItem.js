@@ -1,5 +1,4 @@
 import { Item } from './Item.js';
-import { Cost } from './Cost.js';
 import { parseWithRegistry } from '../../hydration.js';
 
 export class InventoryItem {
@@ -17,13 +16,6 @@ export class InventoryItem {
       this.item = parseWithRegistry(item, Item, itemID);   
 	}
 
-   static fromValues(id, eventSiteID, itemID, startQ, endQ, addOrRemoveQ, writeOffQ, sponsorQ, price, cost, item) {
-      return new InventoryItem({ id, eventSiteID, itemID, startQ, endQ, addOrRemoveQ, writeOffQ, sponsorQ, price, cost, item });
-   }
-
-   static fromJSON(json) {
-      return new InventoryItem(json);
-   }
 
    getSoldQ() {
       if (this.endQ == null) return 0;

@@ -12,11 +12,5 @@ export class Size {
       this.quantity = quantity;
    }
 
-   static fromValues(id, name, charName, quantity) {
-      return new Size({ id, name, charName, quantity });
-   }
 
-   static fromJSON(json) {
-      return new Size(json);
-   }
 }

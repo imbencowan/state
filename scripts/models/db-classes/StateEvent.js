@@ -1,17 +1,6 @@
 import { Series } from './Series.js';
 import { EventSite } from './EventSite.js';
-import { Site } from './Site.js';
-import { Division } from './Division.js';
-import { SchoolOrder } from './SchoolOrder.js';
-import { School } from './School.js';
-import { Item } from './Item.js';
-import { InventoryItem } from './InventoryItem.js';
-import { Style } from './Style.js';
-import { Size } from './Size.js';
-import { Color } from './Color.js';
-import { Transfer } from './Transfer.js';
-import { Activity } from './Activity.js';
-import { Gender } from './Gender.js';
+
 import * as Utils from '../../utilities.js';
 import { sizeList, BOX_QUANTITIES, DAIRY_STYLE_ID, DAIRY_COLOR_ID, SCHOOL_NAMES_TRANSFER_ID, ID_SALES_TAX } from '../../constants.js';
 
@@ -29,14 +18,7 @@ export class StateEvent {
       this.orderMap = null;
    }
 
-   static fromValues(id, series, startDate, endDate, year, eventSites = []) {
-      return new StateEvent({ id, series, startDate, endDate, year, eventSites });
-   }
 
-   static fromJSON(json) {
-      return new StateEvent(json);
-   }
-	
 	getEventSiteByID(id) {
       id = Number(id);
 		if (!this.esMap) {

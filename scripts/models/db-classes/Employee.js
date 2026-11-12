@@ -12,11 +12,5 @@ export class Employee {
       this.payRate = payRate;
    }
 
-   static fromValues(id, name, shortName, phone, email, payRate) {
-      return new Employee({ id, name, phone, email, payRate });
-   }
 
-   static fromJSON(json) {
-      return new Employee(json);
-   }
 }
