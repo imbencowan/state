@@ -2,9 +2,9 @@
 // js functions for the event page
 import { runtime } from '../../runtime.js';
 import { actionFetch } from '../../fetch.js';
-import { navigate } from '../../navigation.js';
-import { splitPath } from '../../routerHelpers.js';
-import { parseEventRoute } from './routeHelpers.js';
+import { navigate, updateURL } from '../../navigation.js';
+import { splitPath, setYearSelect } from '../../routerHelpers.js';
+import { parseEventRoute } from './eventRouteHelpers.js';
 import { StateEvent } from '../../models/db-classes/StateEvent.js';
 import { buildElement } from '../../utilities.js';
 import { downloadInvoicePDF, printSoSPDF } from '../../print.js';
@@ -194,17 +194,18 @@ async function showPrevNextEvent(drctn) {
 	const response =  await actionFetch('getPrevNextSeriesEvent', 'Event', data);
 
 	if (response.success) {
+			// if no event is fetched, display a message
 		if (response.data.event == null) {
 				// this presumes drctn can only be 'prev' or 'next'
-			const qlfr = drctn === 'prev' ? 'earlier' : 'later';
+			const qlfr = (drctn === 'prev') ? 'earlier' : 'later';
 			modal.open(`There is no ${qlfr} event for ${runtime.stateEvent.series.name}`);
 		} else {
 				// assign the new runtime event
 			const sEvent = new StateEvent(response.data.event);
 
 			if (sEvent.year !== runtime.stateEvent.year) {
-				history.pushState({}, '', `/state/${sEvent.series.slug}/${sEvent.year}/${tab}`);
-				document.getElementById('selectYear').value = sEvent.year;
+				updateURL(`${sEvent.series.slug}/${sEvent.year}/${tab}`);
+				setYearSelect(sEvent.year);
 			}
 
 			runtime.stateEvent = sEvent;

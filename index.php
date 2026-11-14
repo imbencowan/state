@@ -6,22 +6,27 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ?>
 
-<?php require 'controller.php'; ?>
+<?php 
+	require 'controller.php'; 
+		// get configuration variables. used in the head below, and accessed else where in the app
+	$config = require __DIR__ . '/config.php';
+?>
 
 <!DOCTYPE html>
 <html>
 <head>
-	<base href="/state/">
+	<base href="<?= htmlspecialchars($config['client']['appRoot']); ?>/">
 	<title>State</title>
 	<link rel="stylesheet" href="everycss.css">
 	<link rel="stylesheet" href="styles.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<script>window.APP_CONFIG = <?= json_encode($config['client']); ?>;</script>
 	<script type="module" src="main.js?v=1"></script>
 </head>
 <body>
 	<main>
 	<header id="pageHeader">
-		<h1 id="pageHeaderText">State Stuff</h1>
+		<h1 id="pageHeaderText">Dev State Stuff</h1>
 		<div id="pageHeaderRight">
 			<div id="yearDiv">
 				<label>View Year: </label>
