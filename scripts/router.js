@@ -59,7 +59,7 @@ function handleYear({ parts, path }) {
    const parsed = parseYearParts(parts);
 
    if (parsed.valid) {
-      history.replaceState(null, "", `/${appRoot}/${parts[0]}/${parsed.year}`);
+      history.replaceState(null, "", `${appRoot}/${parts[0]}/${parsed.year}`);
       setYearSelect(parsed.year);
       goToYearPage(parsed.year);
    } else {
@@ -104,8 +104,6 @@ function handleSeries({ parts, match: series, path, from }) {
          if (isEventTab(lastPart)) fromTab = lastPart;
       }
       if (!parsed.tab) parsed.tab = fromTab ?? 'orders';
-
-      console.log(appRoot);
       
       const revisedPath = `${appRoot}/${parts[0]}/${parsed.year}/${parsed.tab}`;
       history.replaceState(null, "", revisedPath);
