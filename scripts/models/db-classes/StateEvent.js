@@ -215,8 +215,9 @@ export class StateEvent {
       );
    }
 
-   getRowsForItemsSoldByStyleAndColor() {
+   getRowsForItemsSoldByStyleAndColor(eventSite = null) {
       const itemsByStyleAndColor = new Map();
+      const eventSites = eventSite ? [eventSite] : this.eventSites;
 
       let subTotal = 0;
       let totalTotal = 0;
@@ -251,7 +252,7 @@ export class StateEvent {
          row.total += quantity;
       };
 
-      for (const es of this.eventSites) {
+      for (const es of eventSites) {
          for (const inventoryItem of es.inventory) {
 
             addSoldQuantity(inventoryItem.item, inventoryItem.getSoldQ());
@@ -292,7 +293,7 @@ export class StateEvent {
          ]);
 
       const transfersByPrice = new Map();
-      for (const es of this.eventSites) {
+      for (const es of eventSites) {
          for (const transfer of es.transfers) {
             if (Number(transfer.transferID) === SCHOOL_NAMES_TRANSFER_ID || transfer.soldQ <= 0) continue;
 

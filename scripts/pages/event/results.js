@@ -25,7 +25,9 @@ const resultsSiteButtons = [
    { action: "editPayments", title: "edit site payment totals", icon: "edit", text: " Payments",
       handler: showEditPayments },
    { action: "printResults", title: "print site results", icon: "print", text: " Results",
-      handler: printSiteResults }
+      handler: printSiteResults },
+   { action: "printSiteItemsSold", title: "print items sold for the site", icon: "print",
+      text: " Items Sold", handler: printSiteItemsSold }
 ];
    // an array of action/handler pairs based on buttons to be used the page's event listener
 export const resultsSiteActions = makeButtonActionMap(resultsSiteButtons);
@@ -344,6 +346,20 @@ function printEventItemsSold() {
    const headers = [ "Item", "Style", "Color", ...sizeList, "Total" ];
    const rows = runtime.stateEvent.getRowsForItemsSoldByStyleAndColor();
    const tableName = `${runtime.stateEvent.startDate.getFullYear()} ${runtime.stateEvent.series.name} Items Sold`;
+
+   printAutoTable(headers, rows, tableName);
+}
+
+function printSiteItemsSold({ target }) {
+   const eSite = runtime.stateEvent.getEventSiteByID(target.dataset.eventSiteID);
+   if (!eSite) {
+      modal.open("Could not find event site for items sold report");
+      return;
+   }
+
+   const headers = [ "Item", "Style", "Color", ...sizeList, "Total" ];
+   const rows = runtime.stateEvent.getRowsForItemsSoldByStyleAndColor(eSite);
+   const tableName = `${runtime.stateEvent.startDate.getFullYear()} ${runtime.stateEvent.series.name} ${eSite.site.name} ${eSite.getDivisionsString()} Items Sold`;
 
    printAutoTable(headers, rows, tableName);
 }
