@@ -12,6 +12,7 @@ import { config } from './config.js';
 	// init is called onload() and does stuff after the script and html is in place
 		// importantly it adds event listeners after the elements exist
 export async function init() {
+	console.log(config);
 		// set background colors based on environment
 	document.documentElement.style.setProperty('--body-bg', config.css.bodyBkgrnd);
 	document.documentElement.style.setProperty('--section-bg', config.css.sectionBkgrnd);
