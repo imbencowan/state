@@ -9,7 +9,7 @@
 
 abstract class BasicTableModel implements JsonSerializable {
 	
-		// Each subclass must define its table, columns, and dependent tales
+		// Each subclass must define its table, columns, and dependent tables
 	abstract protected static function getTableName(): string;
 	abstract protected static function getPrimaryKey(): string;
 		// format as: return [propName1 => colName1, propName2 => colName2]
