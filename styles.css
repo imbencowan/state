@@ -1,5 +1,5 @@
 body {
-	background-color: #080808;
+	background-color: var(--body-bg);
 	color: #fff;
 	font-family: Grown, serif; 
 }
@@ -105,7 +105,7 @@ main {
 
 section {
 	/* width: 100%; */
-	background: #116;
+	background: var(--section-bg);
 	border-radius: 8px;
 	padding: 16px;
 }

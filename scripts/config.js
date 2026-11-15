@@ -1,0 +1,1 @@
+export const config = Object.freeze(window.APP_CONFIG);

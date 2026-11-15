@@ -1,6 +1,6 @@
 RewriteEngine On
 
-RewriteBase /state/
+RewriteBase /state-dev/
 
 # Don't rewrite real files or folders
 RewriteCond %{REQUEST_FILENAME} !-f

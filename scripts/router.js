@@ -1,6 +1,7 @@
 // FUNCTIONS TO HANDLE PAGE NAVIGATION ///////////////////////////////////////////////////////
    // translates urls to js functions to navigate to correct displays //
 import { runtime } from "./runtime.js";
+import { config } from './config.js';
 
 import { goToEventPage } from './pages/event/eventMain.js';
 import { goToItemsPage } from "./pages/items.js";
@@ -9,8 +10,11 @@ import { goToCostsPage } from './pages/costs.js';
 import { goToSchoolsPage } from "./pages/schools.js";
 import { goToYearPage } from "./pages/year.js";
 
-import { splitPath } from "./routerHelpers.js";
-import { parseEventRoute, isEventTab, isEventYear } from "./pages/event/routeHelpers.js";
+import { splitPath, setYearSelect } from "./routerHelpers.js";
+import { parseEventRoute, isEventTab, isEventYear } from "./pages/event/eventRouteHelpers.js";
+
+
+const appRoot = config.appRoot;
 
 
    // define valid routes
@@ -30,7 +34,7 @@ const routes = [
 export async function router(from) {
    runtime.clearPageData();
    
-   const path = location.pathname.replace('/state', '')
+   const path = location.pathname.replace(appRoot, '');
       // make an array, splitting the url at '/'s. // remove falsy parts. // trim()
    const parts = splitPath(path);
       // we need this to route series
@@ -55,7 +59,7 @@ function handleYear({ parts, path }) {
    const parsed = parseYearParts(parts);
 
    if (parsed.valid) {
-      history.replaceState(null, "", `/state/${parts[0]}/${parsed.year}`);
+      history.replaceState(null, "", `/${appRoot}/${parts[0]}/${parsed.year}`);
       setYearSelect(parsed.year);
       goToYearPage(parsed.year);
    } else {
@@ -100,9 +104,11 @@ function handleSeries({ parts, match: series, path, from }) {
          if (isEventTab(lastPart)) fromTab = lastPart;
       }
       if (!parsed.tab) parsed.tab = fromTab ?? 'orders';
+
+      console.log(appRoot);
       
-      const revisedPath = `state/${parts[0]}/${parsed.year}/${parsed.tab}`;
-      history.replaceState(null, "", `/${revisedPath}`);
+      const revisedPath = `${appRoot}/${parts[0]}/${parsed.year}/${parsed.tab}`;
+      history.replaceState(null, "", revisedPath);
 
       setYearSelect(parsed.year);
 
@@ -112,13 +118,6 @@ function handleSeries({ parts, match: series, path, from }) {
    }
 }
 
-
-
-   // use this to maintain a selected year on refresh
-      // html won't set the value to an invalid year (nonexistent option) *shrug*
-function setYearSelect(y) {
-   document.getElementById('selectYear').value = String(y);
-}
 
 
    ////////////////////////////////////////////////////////////////////////////////////

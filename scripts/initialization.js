@@ -5,12 +5,17 @@ import { submitOrderFiles, getEmailOrders } from './order-submission.js';
 	// utility for building the nav bar
 import { buildElement } from './utilities.js';
 import { navigate } from './navigation.js';
+import { config } from './config.js';
 
 
 
 	// init is called onload() and does stuff after the script and html is in place
 		// importantly it adds event listeners after the elements exist
 export async function init() {
+		// set background colors based on environment
+	document.documentElement.style.setProperty('--body-bg', config.css.bodyBkgrnd);
+	document.documentElement.style.setProperty('--section-bg', config.css.sectionBkgrnd);
+
 		// add options to the year select
 	fillYearSelect();
 
