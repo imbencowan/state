@@ -1,5 +1,4 @@
 misc/
 
-TODO.txt
-config.php
-.htaccess
+/config.php
+/.htaccess
