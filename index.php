@@ -26,7 +26,7 @@
 <body>
 	<main>
 	<header id="pageHeader">
-		<h1 id="pageHeaderText">Dev State Stuff</h1>
+		<h1 id="pageHeaderText"><?php if ($config['environment'] === 'development') echo 'Dev '; ?>State Stuff</h1>
 		<div id="pageHeaderRight">
 			<div id="yearDiv">
 				<label>View Year: </label>
