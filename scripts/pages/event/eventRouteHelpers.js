@@ -37,8 +37,6 @@ export function parseEventRoute(parts) {
       // coerce year in case it's a string
    year = Number(year);
 
-   console.log(tab);
-
    return { valid, year, tab };
 }
 
