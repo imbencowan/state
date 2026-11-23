@@ -223,7 +223,7 @@ export class StateEvent {
       let totalTotal = 0;
       let totalItems = 0;
 
-      const addSoldQuantity = (item, quantity) => {
+      const addSoldQuantity = (item, quantity, price) => {
          const { style, color, size } = item;
          const isAccessory = style.sizingCategoryID === 4;
          if (![1, 2, 3, 4].includes(style.sizingCategoryID)) return;
@@ -231,7 +231,8 @@ export class StateEvent {
             throw new Error(`Unknown size: ${size.displayChar}`);
          }
 
-         const key = `${style.id}-${color.id}`;
+            // price is included in the key to account for sites that have a different price scale, like UofI
+         const key = `${style.id}-${color.id}-${price}`;
          itemsByStyleAndColor.set(key, itemsByStyleAndColor.get(key) ?? {
             style,
             color,
@@ -243,26 +244,28 @@ export class StateEvent {
          });
 
          const row = itemsByStyleAndColor.get(key);
+         console.log(key);
          if (!isAccessory) {
             const sizeCell = row.sizes[size.displayChar];
             sizeCell.quantity += quantity;
             sizeCell.alu = item.alu;
-            sizeCell.price = item.price;
+            sizeCell.price = price;
+         } else {
+            // row.sizes['S'] = { quantity, alu: item.alu, price: item.price };
          }
          row.total += quantity;
       };
 
       for (const es of eventSites) {
          for (const inventoryItem of es.inventory) {
-
-            addSoldQuantity(inventoryItem.item, inventoryItem.getSoldQ());
+            addSoldQuantity(inventoryItem.item, inventoryItem.getSoldQ(), inventoryItem.price);
          }
 
          for (const esd of es.esDivisions) {
             for (const order of esd.schoolOrders) {
                for (const orderItem of order.oItems) {
                   if (orderItem.item.style.id !== DAIRY_STYLE_ID) {
-                     addSoldQuantity(orderItem.item, orderItem.quantity);
+                     addSoldQuantity(orderItem.item, orderItem.quantity, orderItem.price);
                   }
                }
             }

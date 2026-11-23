@@ -1,0 +1,10 @@
+fix inventory pdf generation to handle inventories with 4X
+
+there is a bug some where. i added a blank order for Highland HS for football. 
+        i added add ons to the order, prior to receiving the main order. 
+        when i received the order, i went to print it, and the Due: was $0, which is incorrect. 
+        probably time to fix how due is handled.
+
+add site name to sign off sheet
+    // may be create an option to put multiple divisions on the same sheet of paper for some thing like football
+    // where there may be multiple divisions at one site, but only two teams per division.

@@ -46,7 +46,6 @@ export class SchoolOrder {
 	}
 
    getES(sEvent) {
-      console.log('nes')
       const esd = this.getESD(sEvent);
       return sEvent.getEventSiteByID(esd.eventSiteID);
    }

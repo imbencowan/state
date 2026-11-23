@@ -646,6 +646,7 @@ async function submitEditCostAndPrice({ target }) {
       transfers: []
    };
    
+      // get each of the appropriate rows
    const rows = tbl.querySelectorAll(
       'tr[data-type="garments"], tr[data-type="plusSize"], tr[data-type="accessories"], tr[data-type="transfers"]'
    );
@@ -687,6 +688,7 @@ function buildUpdate(row, eSite, plusSizePricing) {
          const sGarments = garments.find(s => (s.id == row.dataset.styleID));
          const scGarments = sGarments.colors.find(c => (c.id == row.dataset.colorID));
 
+         
          for (const [sChar, invItem] of Object.entries(scGarments.sizes)) {
             const u = { eventSiteInventoryID: invItem.id };
             for (const [propName, value] of Object.entries(changes)) {
